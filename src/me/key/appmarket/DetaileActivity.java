@@ -38,6 +38,7 @@ import android.widget.Toast;
 @SuppressLint("HandlerLeak")
 /**
  * 分类Activity
+ * test
  */
 public class DetaileActivity extends Activity {
 	private ArrayList<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
