@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="0dip"
+    android:paddingTop="0dip" >
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="220dip"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:paddingBottom="0dip"
+        android:paddingTop="0dip"
+        android:scaleType="fitXY"
+        android:src="@drawable/banner_default" />
+</FrameLayout>

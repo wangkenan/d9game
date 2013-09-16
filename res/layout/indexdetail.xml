@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:id="@+id/top_bar" 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+  	xmlns:android="http://schemas.android.com/apk/res/android">
+  			<RelativeLayout android:id="@+id/topbar" style="@style/topbar">
+		        <ImageView
+		            android:id="@+id/back_icon"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_marginLeft="10dip"
+		            android:layout_marginRight="0dip"
+		            android:contentDescription="@null"
+		            android:layout_centerVertical="true"
+		            android:paddingRight="10dip"
+		            android:src="@drawable/hi_setting_more_nor_left" />
+<!--   			    <Button 
+  			        android:layout_height="wrap_content"
+  			        android:layout_centerVertical="true"
+  			        android:paddingTop="2sp"
+  			        android:paddingLeft="15sp"
+  			        android:paddingRight="15sp"
+  			        android:paddingBottom="2sp"
+  			        android:text="@string/back"
+  			        android:id="@+id/back"
+  			        style="@style/topbar_title"
+  			        android:textSize="15sp"
+  			        android:background="@drawable/btn_topbar_selector"
+  			        /> -->
+		        <TextView android:id="@+id/topbar_title" 
+		            android:layout_width="wrap_content" 
+		            android:layout_height="wrap_content"
+		            android:layout_centerInParent="true"
+		            android:text="@string/main_index"
+		            style="@style/topbar_title" />
+			</RelativeLayout>
+	 		<ProgressBar 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:id="@+id/pro_bar" 
+                android:layout_centerInParent="true"
+                style="@style/circle_progress" />
+			 <TextView 
+			    android:layout_width="fill_parent"
+			    android:layout_height="fill_parent"
+			    android:layout_centerInParent="true"
+			    android:id="@+id/empty"
+			    android:gravity="center"
+			    android:visibility="gone"
+			    android:textSize="15sp"
+			    android:layout_below="@id/topbar_title"
+			    style="@style/topbar_title"
+			    android:text="@string/none"/>
+			<ListView 
+			    android:layout_width="fill_parent"
+			    android:layout_height="fill_parent"
+			    android:layout_below="@id/topbar"
+			    android:listSelector="@drawable/list_item_selector"
+			    android:id="@+id/mlist"></ListView>
+</RelativeLayout>

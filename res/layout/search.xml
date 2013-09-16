@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/index_select"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+    <RelativeLayout
+        android:id="@+id/app_topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:background="@drawable/section_bg" >
+
+        <!-- 返回的icon -->
+
+        <ImageView
+            android:id="@+id/back_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="0dip"
+            android:contentDescription="@null"
+            android:layout_centerVertical="true"
+            android:src="@drawable/hi_setting_more_nor_left" />
+
+        <ImageView
+            android:id="@+id/logo_title"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_toRightOf="@id/back_icon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5sp"
+            android:src="@drawable/icon" />
+
+        <TextView
+            android:id="@+id/topbar_title1"
+            style="@style/topbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7sp"
+            android:layout_toRightOf="@+id/logo_title"
+            android:text="@string/main_search" />
+    </RelativeLayout>
+
+    
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_topbar"
+        android:background="@drawable/sub_top_bg" >
+
+        <Button
+            android:id="@+id/btn_search"
+            style="@style/topbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:layout_marginRight="6sp"
+            android:background="@drawable/btn_topbar_selector"
+            android:text="@string/main_search"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/edit_search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="5sp"
+            android:layout_marginLeft="12sp"
+            android:layout_marginTop="5sp"
+            android:layout_toLeftOf="@id/btn_search"
+            android:background="@drawable/input"
+            android:hint="@string/input_soft"
+            android:inputType="text"
+            android:paddingLeft="6sp"
+            android:textSize="15sp" />
+    </RelativeLayout>
+    
+	<LinearLayout
+        android:id="@+id/search_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="30dip"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dip"
+        android:layout_below="@id/top"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:background="@drawable/btn_bar_1" >
+        <Button 
+            android:id="@+id/search_hot"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@drawable/btn_bar_2"
+            android:text="热门搜索"
+            />
+        <Button
+            android:id="@+id/search_history" 
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:text="历史搜索"
+            />
+    </LinearLayout>
+
+	<TextView 
+	    android:id="@+id/text_delete"
+	    android:layout_width="fill_parent"
+	    android:layout_height="45dip"
+	    android:layout_weight="1"
+	    android:layout_below="@id/search_linear"
+	    android:background="@drawable/btn_head_selector"
+	    android:gravity="center"
+	    android:visibility="gone"
+	    android:text="删除历史搜索记录" />
+
+	
+    <ListView
+        android:id="@+id/search_history_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/text_delete"
+        android:listSelector="@drawable/list_item_selector" >
+    </ListView>
+	
+    <ProgressBar
+        android:id="@+id/pro_bar"
+        style="@style/circle_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+    
+
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        layout="@layout/error_layout"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/total_size"
+        android:listSelector="@drawable/list_item_selector"
+        android:visibility="gone" >
+    </ListView>
+    
+    <TextView 
+        android:id="@+id/total_size"
+		android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:gravity="center"
+        android:layout_below="@+id/top"
+        android:background="@color/activity_bg_gray"
+        android:text="找到214项符合的软件"
+        android:visibility="gone"/>
+
+</RelativeLayout>

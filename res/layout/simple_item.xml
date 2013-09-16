@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:id="@+id/top_bar" 
+    android:layout_width="fill_parent" 
+    android:layout_height="50sp"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+      <TextView android:id="@+id/item" 
+          android:layout_width="wrap_content" 
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="10sp"
+          android:textSize="15sp"
+          android:layout_centerVertical="true"
+          android:text="@string/main_home"
+          style="@style/topbar_title" />
+</RelativeLayout>

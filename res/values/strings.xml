@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">D9市场游戏中心</string>
+    <string name="main_home">首页</string>
+    <string name="main_index">分类</string>
+    <string name="main_game">游戏</string>
+    <string name="main_app">本地</string>
+    <string name="main_rank">排行</string>
+    <string name="install">安装</string>
+    <string name="main_setting">设置</string>
+    <string name="main_rec">推荐</string>
+    <string name="main_search">搜索</string>
+    <string name="main_manager">管理</string>
+    <string name="down">下载</string>
+    <string name="is_install">已安装</string>
+    <string name="about">关于软件</string>
+    <string name="update">检查更新</string>
+    <string name="down_install">下载后安装</string>
+    <string name="app_fankui">反馈意见</string>
+    <string name="exit">退出软件</string>
+    <string name="software">软件</string>
+    <string name="game">游戏</string>
+    <string name="back">返回</string>
+    <string name="input_soft">输入软件名称</string>
+    <string name="pull_refesh">下拉刷新</string>
+    <string name="pull_last_refesh">上次刷新</string>
+    <string name="error_msg">出错啦,检查网络设置</string>
+    <string name="refesh">重新载入</string>
+    <string name="none">该类暂无软件</string>
+    <string name="update_failed">升级包下载失败</string>
+    <string name="update_starting">开始下载</string>
+    <string name="err_network">网络错误</string>
+    <string name="update_no">已经是最新版本</string>
+    <string name="next_time">下次再说</string>
+	<string name="update_yes_version">版本号：</string>
+	<string name="ok">确定</string>
+	<string name="has_update">检测到新版本，是否升级?</string>
+	<string name="quit_alert">再按一次返回键退出</string>
+	
+    <string-array name="index_softwares">
+        <item>系统安全</item>
+        <item>壁纸美化</item>
+        <item>聊天通讯</item>
+        <item>生活实用</item>
+        <item>书籍阅读</item>
+        <item>学习办公</item>
+        <item>其它软件</item>
+    </string-array>
+    
+    <string-array name="index_games">
+        <item>休闲益智</item>
+        <item>角色冒险</item>
+        <item>动作格斗</item>
+        <item>策略游戏</item>
+        <item>飞行射击</item>
+        <item>体育竞速</item>
+        <item>其它游戏</item>
+        <item></item>
+    </string-array>
+    
+        
+    <!-- 详情页 -->
+    <string name="app_detail_download_counts">下载：%1$s</string>
+    <string name="app_detail_version">版本：%1$s</string>
+    <string name="app_detail_size">大小：%1$s</string>
+    <string name="app_detail_update_time">时间：%1$s</string>
+    <string name="app_detail_language">语言：中文版</string>
+    <string name="app_detail_des">软件介绍</string>
+    <string name="app_share">分享</string>
+    <string name="app_fun">收藏</string>
+    <string name="app_download">下载</string>
+    
+
+</resources>

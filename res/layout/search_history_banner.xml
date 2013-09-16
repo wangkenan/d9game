@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text_delete"
+    android:layout_width="fill_parent"
+    android:layout_height="45dip"
+    android:layout_weight="1"
+    android:background="@drawable/btn_head_selector"
+    android:gravity="center"
+    android:text="删除历史搜索记录" />

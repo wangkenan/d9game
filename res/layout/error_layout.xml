@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <LinearLayout 
+android:gravity="center" 
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/ll_error"
+android:orientation="vertical"
+android:layout_width="fill_parent"
+android:layout_height="wrap_content" >
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+               	android:layout_gravity="center_horizontal"
+                android:src="@drawable/web_error" 
+          />
+            <TextView 
+                android:textAppearance="?android:textAppearanceMedium" 
+                android:textColor="@color/black" 
+                android:gravity="center" 
+                android:layout_marginTop="5sp"
+                android:textSize="15sp"
+                android:layout_marginBottom="5sp"
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content" 
+                android:text="@string/error_msg" />
+        <Button 
+                android:layout_width="wrap_content"
+                android:layout_marginTop="8sp"
+                android:id="@+id/btn_Refsh"
+                android:textSize="15sp"
+                android:text="@string/refesh"
+                android:textColor="@color/white"
+                android:padding="6sp"
+                android:layout_height="wrap_content"
+                 android:background="@drawable/general__shared__single_option2"
+          />
+ </LinearLayout>

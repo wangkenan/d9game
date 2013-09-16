@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+<!-- 	<me.key.appmarket.widgets.GalleryFlow
+        android:id="@+id/tuijian_gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="110dip"
+        android:padding="4dip"
+        android:spacing="5sp" 
+        android:background="@color/activity_bg_gray"
+        android:unselectedAlpha="1.1"
+		android:fadingEdge="none"
+        />  -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <ProgressBar
+            android:id="@+id/pro_bar"
+            style="@style/circle_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            layout="@layout/error_layout"
+            android:visibility="gone" />
+
+        <me.key.appmarket.MyListView
+            android:id="@+id/list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fadingEdge="none"
+            android:listSelector="@drawable/list_item_selector" >
+        </me.key.appmarket.MyListView>
+    </RelativeLayout>
+
+</LinearLayout>

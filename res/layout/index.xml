@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/top_bar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <ListView
+        android:id="@+id/list_game"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:listSelector="@drawable/list_item_selector">
+    </ListView>
+
+</RelativeLayout>

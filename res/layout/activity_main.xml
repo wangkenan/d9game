@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:id="@+id/home_whole_layout" 
+    android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout android:orientation="horizontal" 
+            android:id="@+id/home_bottom_layout" 
+            android:background="@drawable/tab_bg" 
+            android:layout_width="fill_parent" 
+            android:layout_height="53sp" 
+            android:layout_alignParentBottom="true">
+                <TextView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:onClick="onClick"
+                    android:id="@+id/tab_home"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:clickable="true"
+                     android:textColor="@color/default_text"
+                    android:drawableTop="@drawable/main_home_selector"
+                    android:text="@string/main_home"/>
+                <TextView
+                    android:id="@+id/tab_index"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/main_index_selector"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:layout_weight="1.0"
+                    android:text="@string/main_index"
+                    android:textColor="@color/default_text" />
+                 <TextView
+                     android:id="@+id/tab_rank"
+                     android:layout_width="wrap_content"
+                     android:layout_height="fill_parent"
+                     android:clickable="true"
+                     android:layout_weight="1.0"
+                     android:drawableTop="@drawable/main_rank_selector"
+                     android:gravity="center"
+                     android:text="@string/main_rank"
+                     android:textColor="@color/default_text" />
+                 <TextView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                     android:clickable="true"
+                     android:layout_weight="1.0"
+                     android:gravity="center"
+                     android:id="@+id/tab_setting"
+                     android:textColor="@color/default_text"
+                    android:drawableTop="@drawable/main_setting_selector"
+                    android:text="@string/main_setting"/>
+        </LinearLayout>
+   <TabHost android:id="@android:id/tabhost"
+	 android:layout_above="@id/home_bottom_layout"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent">
+    <LinearLayout android:orientation="vertical" 
+        android:layout_width="fill_parent" 
+        android:layout_height="fill_parent">
+        <FrameLayout android:id="@android:id/tabcontent" 
+            android:layout_width="fill_parent" 
+            android:layout_height="0.0dip" 
+            android:layout_weight="1.0" />
+        <TabWidget android:id="@android:id/tabs" 
+            android:visibility="gone" 
+            android:layout_width="fill_parent" 
+            android:layout_height="wrap_content" 
+            android:layout_weight="0.0" />
+    </LinearLayout>
+</TabHost>
+</RelativeLayout>

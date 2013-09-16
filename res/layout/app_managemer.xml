@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/index_select"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/tab_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="30dip"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dip"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:background="@drawable/btn_bar_1" >
+        <Button 
+            android:id="@+id/install_app"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@drawable/btn_bar_2"
+            android:text="已安装"
+            />
+        <Button
+            android:id="@+id/update_app" 
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:text="可升级"
+            />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/manager_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tab_linear"
+        android:listSelector="@drawable/list_item_selector" >
+    </ListView>
+    
+    <ProgressBar
+        android:id="@+id/pro_bar"
+        style="@style/circle_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" 
+        android:visibility="gone"/>
+
+</RelativeLayout>

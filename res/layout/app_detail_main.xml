@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 应用详情页布局 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <!-- 头部apk信息 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_detail_title_divider_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="6dip"
+            android:paddingLeft="5dip"
+            android:paddingRight="10dip"
+            android:paddingTop="6dip" >
+
+            <!-- 返回的icon -->
+
+            <ImageView
+                android:id="@+id/back_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dip"
+                android:layout_marginRight="0dip"
+                android:contentDescription="@null"
+                android:src="@drawable/hi_setting_more_nor_left" />
+            <!-- 应用icon -->
+
+            <ImageView
+                android:id="@+id/app_icon"
+                android:layout_width="46dip"
+                android:layout_height="46dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@null"
+                android:src="@drawable/app_detail_empty_icon" />
+            <!-- 应用名称、开发者 -->
+
+            <LinearLayout
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dip"
+                    android:textSize="16dip" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/app_developer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="安卓开发者"
+                        android:textColor="#535353"
+                        android:textSize="14dip" />
+                    <!-- 应用下载量 -->
+
+                    <TextView
+                        android:id="@+id/app_download_counts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="@string/app_detail_download_counts"
+                        android:textSize="14dip" />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_background_light"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/tab_backgound"
+                    android:gravity="center"
+                    android:text="应用介绍"
+                    android:textColor="@color/default_text"
+                    android:textSize="15.0dip" />
+
+                <TextView
+                    android:id="@+id/text2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/tab_backgound"
+                    android:gravity="center"
+                    android:text="应用评论"
+                    android:textColor="@color/default_text"
+                    android:textSize="15.0dip" />
+            </LinearLayout>
+            
+		<ListView
+            android:id="@+id/list_comment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="70dip"
+            android:listSelector="@drawable/list_item_selector"
+            android:visibility="gone" >
+        </ListView>
+
+        <!-- 详细内容 -->
+
+        <me.key.appmarket.widgets.CustomScrollView
+            android:id="@+id/scroll_app"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="70dip"
+            android:fadingEdge="none" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <!-- 描述图片 -->
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="250dip"
+                        android:fadingEdge="none"
+                        android:paddingBottom="5dip"
+                        android:paddingLeft="10dip"
+                        android:paddingRight="10dip"
+                        android:paddingTop="5dip"
+                        android:scrollbars="@null" >
+
+                        <LinearLayout
+                            android:id="@+id/app_des_pic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" >
+                        </LinearLayout>
+                    </HorizontalScrollView>
+                    <!-- 版本、大小 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginRight="10dip"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/app_version"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_detail_version"
+                            android:textColor="#535353"
+                            android:textSize="15dip" />
+
+                        <TextView
+                            android:id="@+id/app_size"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_detail_size"
+                            android:textColor="#535353"
+                            android:textSize="15dip" />
+                    </LinearLayout>
+                    <!-- 更新时间、语言 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dip"
+                        android:layout_marginLeft="10dip"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="2dip"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/app_update_time"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_detail_update_time"
+                            android:textColor="#535353"
+                            android:textSize="15dip" />
+
+                        <TextView
+                            android:id="@+id/app_language"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/app_detail_language"
+                            android:textColor="#535353"
+                            android:textSize="15dip" />
+                    </LinearLayout>
+                    <!-- 软件介绍 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="10dip" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="5dip"
+                                android:text="@string/app_detail_des"
+                                android:textSize="16dip" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="2px"
+                                android:background="@drawable/app_detail_divider_bg" />
+                        </LinearLayout>
+                        <!-- 软件介绍，文字 -->
+
+                        <me.key.appmarket.widgets.EllipsizingTextView
+                            android:id="@+id/app_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dip"
+                            android:layout_marginTop="7dip"
+                            android:ellipsize="marquee"
+                            android:lineSpacingExtra="3dip"
+                            android:maxLines="5"
+                            android:singleLine="false" 
+                            android:textColor="#535353"
+                            android:textSize="15dip" />
+                        <!-- 软件介绍，按钮 -->
+
+                        <ImageButton
+                            android:id="@+id/app_des_expand"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginBottom="10dip"
+                            android:background="@null"
+                            android:paddingBottom="10dip"
+                            android:paddingLeft="20dip"
+                            android:paddingRight="30dip"
+                            android:paddingTop="8dip"
+                            android:src="@drawable/app_detail_des_expand_button" />
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+        </me.key.appmarket.widgets.CustomScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_gravity="bottom"
+        android:background="@drawable/detail_bottom_page_fun_bar_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:src="@drawable/detail_share"
+            android:textColor="#535353"
+            android:textSize="11dip"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/app_download"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/app_detail_download_btn"
+            android:text="@string/app_download"
+            android:textColor="#ffffff"
+            android:textSize="16dip" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:src="@drawable/detail_favor_1"
+            android:textColor="#535353"
+            android:textSize="11dip"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</FrameLayout>

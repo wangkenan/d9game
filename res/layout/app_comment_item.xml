@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/top_bar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dip"
+    android:paddingBottom="10dip" >
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/topbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:focusable="false"
+        android:text="梦幻爱琴海"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        style="@style/topbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:focusable="false"
+        android:text="2002-12-23 13:12"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:layout_marginTop="5sp"
+        android:layout_marginRight="10sp"
+        android:layout_below="@id/tv_name"
+        android:minWidth="30dip"
+        android:gravity="center_vertical"
+        android:text="爱神的箭啊时间萨克来得及啊少点就阿喀琉斯贷记卡手机端时间啊的了卡机是手机端困了就睡啊骄傲收到了撒娇的了"
+        android:textColor="@color/dark_gray"
+        android:textSize="14sp" />
+
+</RelativeLayout>

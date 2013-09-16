@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<me.key.appmarket.widgets.GalleryFlow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tuijian_gallery"
+    android:layout_width="fill_parent"
+    android:layout_height="110dip"
+    android:background="@color/activity_bg_gray"
+    android:fadingEdge="none"
+    android:padding="4dip"
+    android:spacing="5sp"
+    android:unselectedAlpha="1.1" />
