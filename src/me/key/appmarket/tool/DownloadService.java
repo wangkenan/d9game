@@ -1,11 +1,12 @@
 package me.key.appmarket.tool;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -13,20 +14,30 @@ import java.util.concurrent.Executors;
 
 import me.key.appmarket.MainActivity;
 import me.key.appmarket.MarketApplication;
+import me.key.appmarket.utils.AppInfo;
+import me.key.appmarket.utils.LogUtils;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,7 +45,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.view.WindowManager;
+import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import com.market.d9game.R;
 
 public class DownloadService extends Service {
 
@@ -44,11 +59,11 @@ public class DownloadService extends Service {
 	private static MyHandler myHandler;
 	private static ExecutorService executorService = Executors
 			.newFixedThreadPool(5);
-	public static Map<Integer, Integer> download = new HashMap<Integer, Integer>();
+	public static Map<Integer, Long> download = new HashMap<Integer, Long>();
 	public static Context context;
-
+	private static RemoteViews contentView;
 	private static int sendCount = 0;
-
+	private static WindowManager wm;
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -64,21 +79,41 @@ public class DownloadService extends Service {
 		super.onCreate();
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		myHandler = new MyHandler(Looper.myLooper(), DownloadService.this);
+		wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 		context = this;
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+
 	}
 
-	public static void downNewFile(final String url, final int notificationId,
-			final String name) {
+	// inal String url, final int notificationId,final String name
+
+	public static void downNewFile( AppInfo appInfo, long startOff,
+			long endOff) {
+		int notificationId = Integer.parseInt(appInfo.getIdx());
+		String url = appInfo.getAppUrl();
+		 String name = appInfo.getAppName();
+		appInfo.setDown(true);
 		if (download.containsKey(notificationId))
 			return;
-		notification = new Notification();
-		notification.icon = android.R.drawable.stat_sys_download;
-		notification.tickerText = name + "开始下载";
+		/*
+		 * notification = new Notification(); notification.icon =
+		 * android.R.drawable.stat_sys_download; notification.when =
+		 * System.currentTimeMillis(); notification.defaults =
+		 * Notification.DEFAULT_LIGHTS; notification.flags =
+		 * Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; Intent
+		 * intent = new Intent(context, MainActivity.class);
+		 * intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); PendingIntent
+		 * contentIntent = PendingIntent.getActivity(context, notificationId,
+		 * intent, 0); notification.setLatestEventInfo(context, name, "0%",
+		 * contentIntent); download.put(notificationId, 0l);
+		 * nm.notify(notificationId, notification);
+		 */
+		notification = new Notification(R.drawable.icon, "联系人数量",
+				System.currentTimeMillis());
 		notification.when = System.currentTimeMillis();
 		notification.defaults = Notification.DEFAULT_LIGHTS;
 		notification.flags = Notification.FLAG_NO_CLEAR
@@ -87,100 +122,209 @@ public class DownloadService extends Service {
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent contentIntent = PendingIntent.getActivity(context,
 				notificationId, intent, 0);
-		notification.setLatestEventInfo(context, name, "0%", contentIntent);
-		download.put(notificationId, 0);
+		contentView = new RemoteViews(context.getPackageName(),
+				R.layout.custom_notification);
+
+		contentView.setImageViewBitmap(R.id.image,
+				getResIcon(context.getResources(), R.drawable.arrow_down));
+
+		contentView.setTextViewText(R.id.text, name);
+		contentView.setTextViewText(R.id.prog, "0%");
+		notification.contentView = contentView;
+		notification.contentIntent = contentIntent;
+		// notification.setLatestEventInfo(context, "", "", contentIntent);
+		// 使用RemoteView自定义通知视图
+
 		nm.notify(notificationId, notification);
-		downFile(url, notificationId, name);
+		downFile(appInfo, startOff, endOff);
 	}
 
-	private static void downFile(final String url, final int notificationId,
-			final String name) {
-		executorService.execute(new Runnable() {
+	private static void downFile(AppInfo appInfo, long startOff, long endOff) {
+		executorService.execute(new DownFiles(appInfo,
+				startOff, endOff));
+	}
+
+	static class DownFiles implements Runnable {
+		private String url;
+		private int notificationId;
+		private String name;
+		private long startOff;
+		private long endOff;
+		private AppInfo appInfo;
+		private boolean isPause = false;
+
+		public DownFiles(AppInfo appInfo,
+				long startOff, long endOff) {
+
+			super();
+			this.url = appInfo.getAppUrl();
+			this.appInfo = appInfo;
+			this.notificationId = Integer.parseInt(appInfo.getIdx());
+			this.name = appInfo.getAppName();
+			this.startOff = startOff;
+			this.endOff = endOff;
+		}
+
+		// 接受暂停消息的广播
+		class PauseBroadcast extends BroadcastReceiver {
+
 			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				File tempFile = new File(Environment
-						.getExternalStorageDirectory(), "/market/" + name
-						+ ".apk");
-				try {
-					HttpClient client = new DefaultHttpClient();
-					HttpGet get = new HttpGet(url);
-					HttpResponse response = client.execute(get);
-					HttpEntity entity = response.getEntity();
-					long length = entity.getContentLength();
-					InputStream is = entity.getContent();
-					if (is != null) {
-						File rootFile = new File(Environment
-								.getExternalStorageDirectory(), "/market");
-						if (!rootFile.exists() && !rootFile.isDirectory())
-							rootFile.mkdir();
-						if (tempFile.exists())
-							tempFile.delete();
-						tempFile.createNewFile();
-						BufferedInputStream bis = new BufferedInputStream(is);
-						FileOutputStream fos = new FileOutputStream(tempFile);
-						BufferedOutputStream bos = new BufferedOutputStream(fos);
-						int read;
-						long count = 0;
-						int precent = 0;
-						byte[] buffer = new byte[1024];
-						while ((read = bis.read(buffer)) != -1 && !cancelUpdate) {
-							bos.write(buffer, 0, read);
-							count += read;
-							precent = (int) (((double) count / length) * 100);
-							if (precent - download.get(notificationId) >= 1) {
-								download.put(notificationId, precent);
-								Message message = myHandler.obtainMessage(3,
-										precent);
-								Bundle bundle = new Bundle();
-								bundle.putString("name", name);
-								message.setData(bundle);
-								message.arg1 = notificationId;
-								myHandler.sendMessage(message);
+			public void onReceive(Context context, Intent intent) {
+				LogUtils.d("test", "我接收消息");
+				isPause = !isPause;
+			}
+
+		}
+
+		public void run() {
+			File tempFile = CreatFileName(name);
+			try {
+				
+				/*
+				 * HttpClient client = new DefaultHttpClient(); HttpGet get =
+				 * new HttpGet(url); HttpResponse response =
+				 * client.execute(get); HttpEntity entity =
+				 * response.getEntity(); long length =
+				 * entity.getContentLength(); InputStream is =
+				 * entity.getContent(); if (is != null) { File rootFile = new
+				 * File(Environment .getExternalStorageDirectory(), "/market");
+				 * if (!rootFile.exists() && !rootFile.isDirectory())
+				 * rootFile.mkdir(); if (tempFile.exists()) tempFile.delete();
+				 * tempFile.createNewFile(); BufferedInputStream bis = new
+				 * BufferedInputStream(is); FileOutputStream fos = new
+				 * FileOutputStream(tempFile); BufferedOutputStream bos = new
+				 * BufferedOutputStream(fos); int read; long count = 0; int
+				 * precent = 0; byte[] buffer = new byte[1024]; while ((read =
+				 * bis.read(buffer)) != -1 && !cancelUpdate) { bos.write(buffer,
+				 * 0, read); count += read; precent = (int) (((double) count /
+				 * length) * 100); if (precent - download.get(notificationId) >=
+				 * 1) { download.put(notificationId, precent); Message message =
+				 * myHandler.obtainMessage(3, precent); Bundle bundle = new
+				 * Bundle(); bundle.putString("name", name);
+				 * message.setData(bundle); message.arg1 = notificationId;
+				 * myHandler.sendMessage(message); } } bos.flush(); bos.close();
+				 * fos.flush(); fos.close(); is.close(); bis.close(); }
+				 */
+				URL urls = new URL(url);
+				// 获取http连接
+				HttpURLConnection coon = (HttpURLConnection) urls
+						.openConnection();
+				// 设置请求头信息
+				coon.setRequestMethod("GET");
+				coon.setRequestProperty("Accept-Language", "zh-CN");
+				coon.setRequestProperty("Referer", urls.toString());
+				coon.setRequestProperty("Charset", "UTF-8");
+				// 设置从哪个位置开始下载
+				coon.setRequestProperty("Range", "bytes=" + startOff + "-");
+				// 超时时间
+				coon.setConnectTimeout(5000);
+				// 获取文件大小
+				int flieLength = coon.getContentLength();
+				flieLength += startOff;
+				InputStream is = coon.getInputStream();
+				// 存储下载的文件及下载的大小
+				SharedPreferences sp = context.getSharedPreferences("down",
+						MODE_PRIVATE);
+				Editor edit = sp.edit();
+				BufferedInputStream bis = new BufferedInputStream(is);
+
+				if (is != null) {
+					File rootFile = new File(
+							Environment.getExternalStorageDirectory(),
+							"/market");
+					if (!rootFile.exists() && !rootFile.isDirectory())
+						rootFile.mkdir();
+					/*
+					 * if (tempFile.exists()) tempFile.delete();
+					 */
+					// tempFile.createNewFile();
+					int read = 0;
+					long count = startOff;
+					long precent = 0;
+					byte[] buffer = new byte[1024];
+					RandomAccessFile ranFile = new RandomAccessFile(tempFile,
+							"rwd");
+					if (startOff == 0) {
+						ranFile.setLength(coon.getContentLength());
+					}
+					// 设置从文件的哪个位置开始写入
+					ranFile.seek(startOff);
+					IntentFilter filter = new IntentFilter(
+							tempFile.getAbsolutePath());
+					PauseBroadcast receiver = new PauseBroadcast();
+					context.registerReceiver(receiver, filter);
+
+					while (read != -1 && !cancelUpdate) {
+						if (!isPause) {
+							read = bis.read(buffer);
+							if (read != -1) {
+								ranFile.write(buffer, 0, read);
+								count += read;
+								// 将文件和文件大小存储
+								edit.putLong(tempFile.getAbsolutePath(), count);
+								edit.commit();
+								precent = (int) (((double) count / flieLength) * 100);
+								if (precent - download.get(notificationId) >= 1) {
+									download.put(notificationId, precent);
+									Message message = myHandler.obtainMessage(
+											3, precent);
+									Bundle bundle = new Bundle();
+									bundle.putString("name", name);
+									message.setData(bundle);
+									message.arg1 = notificationId;
+									myHandler.sendMessage(message);
+
+								}
 							}
 						}
-						bos.flush();
-						bos.close();
-						fos.flush();
-						fos.close();
-						is.close();
-						bis.close();
+
 					}
 
-					if (!cancelUpdate) {
-						Message message = myHandler.obtainMessage(2, tempFile);
-						message.arg1 = notificationId;
-						Bundle bundle = new Bundle();
-						bundle.putString("name", name);
-						message.setData(bundle);
-						myHandler.sendMessage(message);
-					} else {
-						tempFile.delete();
-					}
-				} catch (ClientProtocolException e) {
-					if (tempFile.exists())
-						tempFile.delete();
-					Message message = myHandler.obtainMessage(4, name
-							+ "下载失败:网络异常！");
-					message.arg1 = notificationId;
-					myHandler.sendMessage(message);
-				} catch (IOException e) {
-					if (tempFile.exists())
-						tempFile.delete();
-					Message message = myHandler.obtainMessage(4, name
-							+ "下载失败:网络异常");
-					message.arg1 = notificationId;
-					myHandler.sendMessage(message);
-				} catch (Exception e) {
-					if (tempFile.exists())
-						tempFile.delete();
-					Message message = myHandler.obtainMessage(4, name
-							+ "下载失败:网络异常");
-					message.arg1 = notificationId;
-					myHandler.sendMessage(message);
+					is.close();
+					ranFile.close();
+					bis.close();
 				}
+
+				if (!cancelUpdate) {
+					Message message = myHandler.obtainMessage(2, tempFile);
+					message.arg1 = notificationId;
+					Bundle bundle = new Bundle();
+					bundle.putString("name", name);
+					message.setData(bundle);
+					myHandler.sendMessage(message);
+				} else {
+					tempFile.delete();
+				}
+			} catch (ClientProtocolException e) {
+				if (tempFile.exists())
+					tempFile.delete();
+				Message message = myHandler.obtainMessage(4, name
+						+ "下载失败:网络异常！");
+				message.arg1 = notificationId;
+				myHandler.sendMessage(message);
+			} catch (IOException e) {
+				/*
+				 * if (tempFile.exists()) tempFile.delete();
+				 */
+				Message message = myHandler
+						.obtainMessage(4, name + "下载失败:网络异常");
+				message.arg1 = notificationId;
+				myHandler.sendMessage(message);
+				e.printStackTrace();
+			} catch (Exception e) {
+				/*
+				 * if (tempFile.exists()) tempFile.delete();
+				 */
+				Message message = myHandler
+						.obtainMessage(4, name + "下载失败:网络异常");
+				message.arg1 = notificationId;
+				myHandler.sendMessage(message);
+				e.printStackTrace();
+			} finally {
+				appInfo.setDown(false);
 			}
-		});
+		}
+
 	}
 
 	private void Instanll(File file, Context context) {
@@ -225,6 +369,14 @@ public class DownloadService extends Service {
 					download.remove(msg.arg1);
 					nm.cancel(msg.arg1);
 					Instanll((File) msg.obj, context);
+					SharedPreferences sp = context.getSharedPreferences("down",
+							MODE_PRIVATE);
+					Editor edit = sp.edit();
+					File tempFile = CreatFileName(msg.getData().getString(
+							"name"));
+					edit.remove(tempFile.getAbsolutePath());
+
+					edit.commit();
 					break;
 				case 3:
 					if (msg.arg1 < 95) {
@@ -252,6 +404,9 @@ public class DownloadService extends Service {
 					notification.setLatestEventInfo(DownloadService.this, msg
 							.getData().getString("name") + "正在下载",
 							download.get(msg.arg1) + "%", contentIntent);
+					contentView.setTextViewText(R.id.prog,
+							download.get(msg.arg1) + "%");
+					notification.contentView = contentView;
 					nm.notify(msg.arg1, notification);
 					break;
 				case 4:
@@ -263,9 +418,16 @@ public class DownloadService extends Service {
 				}
 			}
 		}
+
 	}
 
-	public static int getPrecent(int idx) {
+	public static File CreatFileName(String name) {
+		File tempFile = new File(Environment.getExternalStorageDirectory(),
+				"/market/" + name + ".apk");
+		return tempFile;
+	}
+
+	public static long getPrecent(int idx) {
 		if (isDownLoading(idx)) {
 			return download.get(idx);
 		}
@@ -280,13 +442,18 @@ public class DownloadService extends Service {
 
 	public static boolean isDownLoaded(String name) {
 		boolean result = false;
+		SharedPreferences sp = context.getSharedPreferences("down",
+				MODE_PRIVATE);
 		File tempFile = new File(Environment.getExternalStorageDirectory(),
 				"/market/" + name + ".apk");
 
 		if (tempFile.exists()) {
 			result = true;
 		}
-
+		long temp = sp.getLong(tempFile.getAbsolutePath(), 0);
+		if (temp != 0) {
+			result = false;
+		}
 		return result;
 	}
 
@@ -303,4 +470,105 @@ public class DownloadService extends Service {
 			context.startActivity(intent);
 		}
 	}
+
+	// 获取图片
+	private static Bitmap getResIcon(Resources res, int resId) {
+		Drawable icon = res.getDrawable(resId);
+		if (icon instanceof BitmapDrawable) {
+			BitmapDrawable bd = (BitmapDrawable) icon;
+			return bd.getBitmap();
+		} else {
+			return null;
+		}
+	}
+
+public static void downNewFile( AppInfo appInfo, long startOff,
+			long endOff,
+			Drawable drawable) {
+		int notificationId = Integer.parseInt(appInfo.getIdx());
+		String url = appInfo.getAppUrl();
+		 String name = appInfo.getAppName();
+		if (download.containsKey(notificationId))
+			return;
+		/*
+		 * notification = new Notification(); notification.icon =
+		 * android.R.drawable.stat_sys_download; notification.when =
+		 * System.currentTimeMillis(); notification.defaults =
+		 * Notification.DEFAULT_LIGHTS; notification.flags =
+		 * Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; Intent
+		 * intent = new Intent(context, MainActivity.class);
+		 * intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); PendingIntent
+		 * contentIntent = PendingIntent.getActivity(context, notificationId,
+		 * intent, 0); notification.setLatestEventInfo(context, name, "0%",
+		 * contentIntent); download.put(notificationId, 0l);
+		 * nm.notify(notificationId, notification);
+		 */
+		download.put(notificationId, 0l);
+		notification = new Notification(R.drawable.icon, "联系人数量",
+				System.currentTimeMillis());
+		notification.when = System.currentTimeMillis();
+		notification.defaults = Notification.DEFAULT_LIGHTS;
+		notification.flags = Notification.FLAG_NO_CLEAR
+				| Notification.FLAG_ONGOING_EVENT;
+		Intent intent = new Intent(context, MainActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		PendingIntent contentIntent = PendingIntent.getActivity(context,
+				notificationId, intent, 0);
+		contentView = new RemoteViews(context.getPackageName(),
+				R.layout.custom_notification);
+		Bitmap bm  = drawable2Bitmap(drawable);
+		contentView.setImageViewBitmap(R.id.image,
+				bm);
+
+		contentView.setTextViewText(R.id.text, name);
+		contentView.setTextViewText(R.id.prog, "0%");
+		notification.contentView = contentView;
+		notification.contentIntent = contentIntent;
+		// notification.setLatestEventInfo(context, "", "", contentIntent);
+		// 使用RemoteView自定义通知视图
+
+		nm.notify(notificationId, notification);
+		downFile(appInfo, startOff, endOff);
+	}
+public static Bitmap drawable2Bitmap(Drawable drawable){  
+    if(drawable instanceof BitmapDrawable){  
+        return ((BitmapDrawable)drawable).getBitmap() ;  
+    }else if(drawable instanceof NinePatchDrawable){  
+        Bitmap bitmap = Bitmap  
+                .createBitmap(  
+                        drawable.getIntrinsicWidth(),  
+                        drawable.getIntrinsicHeight(),  
+                        drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888  
+                                : Bitmap.Config.RGB_565);  
+        Canvas canvas = new Canvas(bitmap);  
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),  
+                drawable.getIntrinsicHeight());  
+        drawable.draw(canvas);
+    	//获得屏幕高度和宽度
+		int height = wm.getDefaultDisplay().getHeight();
+		int width = wm.getDefaultDisplay().getWidth();
+		//通过Options获得图片的高宽
+		Options opts = new Options();
+		//设置 不去真正的解析位图 不把他加载到内存 只是获取这个图片的宽高信息
+		opts.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()+"/a.jpg", opts);
+		int bitmapWidth = opts.outWidth;
+		int bitmapHeight = opts.outHeight;
+		//计算缩放比例
+		int scalex = bitmapWidth/width;
+		int scaley = bitmapHeight/height;
+		//计算缩放的方式
+		if(scalex > scaley) {
+			opts.inSampleSize = scalex;
+		} else {
+			opts.inSampleSize = scaley;
+		}
+		//设置真正的解析图片
+		opts.inJustDecodeBounds = false;
+		Bitmap bp = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()+"/a.jpg", opts);
+        return bp;  
+    }else{  
+        return null ;  
+    }
+}
 }

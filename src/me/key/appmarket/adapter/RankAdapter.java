@@ -159,10 +159,7 @@ public class RankAdapter extends BaseAdapter {
 											.getIdx()));
 					Log.e("tag", "appname = "
 							+ appInfos.get(position).getAppName());
-					DownloadService.downNewFile(appInfos.get(position)
-							.getAppUrl(), Integer.parseInt(appInfos.get(
-							position).getIdx()), appInfos.get(position)
-							.getAppName());
+					DownloadService.downNewFile(appInfos.get(position),0,0);
 
 					Intent intent = new Intent();
 					intent.setAction(MarketApplication.PRECENT);

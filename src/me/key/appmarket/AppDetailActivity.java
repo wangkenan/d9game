@@ -315,8 +315,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				DownloadService.Instanll(name, AppDetailActivity.this);
 			} else {
 				if (appDownload.getTag() != null) {
-					DownloadService.downNewFile((String) appDownload.getTag(),
-							idx != null ? Integer.parseInt(idx) : 0, name);
+					/*DownloadService.downNewFile((String) appDownload.getTag(),
+							idx != null ? Integer.parseInt(idx) : 0, name,0,0);*/
 					Toast.makeText(AppDetailActivity.this, name + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
 					Log.d(TAG, "download apk name=" + name + "  idx=" + idx

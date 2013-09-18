@@ -133,7 +133,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		// });
 		mListView.addFooterView(loadMoreView);
 		mListView.setOnScrollListener(this);
-		appAdapter = new AppAdapter(appDatainfos, this, cache);
+		appAdapter = new AppAdapter(appDatainfos, this, cache,mListView);
 		mListView.setAdapter(appAdapter);
 		loadMoreButton.setVisibility(View.GONE);
 

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:id="@+id/main"  
+    android:layout_width="fill_parent"  
+    android:layout_height="fill_parent"  
+    android:inAnimation="@android:anim/slide_in_left"  
+    android:outAnimation="@android:anim/slide_out_right"
+    >  
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/welcome_d9" 
+        />
+<RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
@@ -115,3 +127,4 @@
         android:persistentDrawingCache="animation" />
 
 </RelativeLayout>
+</ViewSwitcher>

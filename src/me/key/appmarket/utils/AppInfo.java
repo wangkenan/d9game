@@ -19,6 +19,23 @@ public class AppInfo {
 	private Drawable appIcon = null;
 	private String Root;
 	private String apkName;
+	private boolean ispause;
+	private boolean isDown;
+	public boolean isDown() {
+		return isDown;
+	}
+
+	public void setDown(boolean isDown) {
+		this.isDown = isDown;
+	}
+
+	public boolean isIspause() {
+		return ispause;
+	}
+
+	public void setIspause(boolean ispause) {
+		this.ispause = ispause;
+	}
 
 	public String getApkName() {
 		return apkName;

@@ -63,10 +63,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 public class MainActivity extends Activity {
 
@@ -138,6 +140,7 @@ public class MainActivity extends Activity {
 	private static final int DELAYTIME = 5000;
 	private static final int RESETQUIT = 0;
 	private static final int SHOWNEXT = 1;
+	private static final int INMAIN = 2;
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -150,6 +153,26 @@ public class MainActivity extends Activity {
 						.getSelectedItemPosition() + 1);
 				myHandler.sendEmptyMessageDelayed(SHOWNEXT, DELAYTIME);
 				break;
+				//进入主界面
+			case INMAIN:
+				
+				InitViewPager();
+				initHomeView();
+				initGameView();
+				initRankView();
+				initManagerView();
+				initLocalGameView();
+				new Thread(runHomeData).start();
+				new Thread(runRankData).start();
+				// new Thread(runBannerData).start();
+
+				updateSelf(false);
+
+				registerInstall();
+				MarketApplication.getInstance().reflashAppList();
+				ViewSwitcher  vs = (ViewSwitcher) findViewById(R.id.main);
+				vs.showNext();
+			
 			default:
 				break;
 			}
@@ -161,21 +184,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		startService(new Intent(this, DownloadService.class));
-
-		InitViewPager();
-		initHomeView();
-		initGameView();
-		initRankView();
-		initManagerView();
-		initLocalGameView();
-		new Thread(runHomeData).start();
-		new Thread(runRankData).start();
-		// new Thread(runBannerData).start();
-
-		updateSelf(false);
-
-		registerInstall();
-		MarketApplication.getInstance().reflashAppList();
+		myHandler.sendEmptyMessageDelayed(INMAIN, 500);
 	}
 
 	@Override
@@ -444,7 +453,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		appGameAdapter = new AppAdapter(appGameInfos, MainActivity.this, cache);
+		appGameAdapter = new AppAdapter(appGameInfos, MainActivity.this, cache,mGameListView);
 		mGameListView.setAdapter(appGameAdapter);
 		mGameListView.setonRefreshListener(new OnRefreshListener() {
 			@Override
@@ -515,6 +524,7 @@ public class MainActivity extends Activity {
 				pHomeBar.setVisibility(View.VISIBLE);
 				ll_homeerror.setVisibility(View.GONE);
 				new Thread(runHomeData).start();
+				
 			}
 		});
 		cache = new File(Environment.getExternalStorageDirectory(), "cache");
@@ -541,7 +551,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		appHomeAdapter = new AppAdapter(appHomeInfos, MainActivity.this, cache);
+		appHomeAdapter = new AppAdapter(appHomeInfos, MainActivity.this, cache,mHomeListView);
 		mHomeListView.setAdapter(appHomeAdapter);
 		mHomeListView.setonRefreshListener(new OnRefreshListener() {
 			@Override
@@ -559,7 +569,7 @@ public class MainActivity extends Activity {
 					int position, long id) {
 				AppInfo mAppInfo = (AppInfo) mHomeListView.getAdapter()
 						.getItem(position);
-				Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
+				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
 				Intent intent = new Intent(MainActivity.this,
 						AppDetailActivity.class);
 				intent.putExtra("appid", mAppInfo.getIdx());
@@ -616,14 +626,14 @@ public class MainActivity extends Activity {
 		public void run() {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 					+ Global.GAME_PAGE + "?dataType=2" + "&page=" + game_page);
-			Log.e("tag", "result =" + str);
+			//Log.e("tag", "result =" + str);
 			if (str.equals("null")) {
 				gameDataHandler
 						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 			} else if (str.equals("-1")) {
 				gameDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 			} else {
-				Log.e("tag", "--------------1-------------");
+				//Log.e("tag", "--------------1-------------");
 				ParseGameJson(str);
 			}
 		}
@@ -634,14 +644,14 @@ public class MainActivity extends Activity {
 		public void run() {
 			String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 					+ Global.HOME_PAGE);
-			Log.e("tag", "result =" + str);
+			//Log.e("tag", "result =" + str);
 			if (str.equals("null")) {
 				homeDataHandler
 						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 			} else if (str.equals("-1")) {
 				homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 			} else {
-				Log.e("tag", "--------------1-------------");
+				//Log.e("tag", "--------------1-------------");
 				ParseHomeJson(str);
 			}
 		}
@@ -653,13 +663,13 @@ public class MainActivity extends Activity {
 			// TODO Auto-generated method stub
 			String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 					+ Global.RANK_PAGE);
-			Log.e("tag", "result =" + str);
+			//Log.e("tag", "result =" + str);
 			if (str.equals("null")) {
 				rankHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 			} else if (str.equals("-1")) {
 				rankHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 			} else {
-				Log.e("tag", "--------------1--------");
+				//Log.e("tag", "--------------1--------");
 				ParseRankJson(str);
 			}
 		}
@@ -671,7 +681,7 @@ public class MainActivity extends Activity {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 					+ Global.UPGRADEVERSION + "?apknamelist=" + apknamelist);
 
-			Log.e("tag", "runUpdateAppData result =" + str);
+			//Log.e("tag", "runUpdateAppData result =" + str);
 			if (str.equals("null")) {
 				homeUpdateHandler
 						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
@@ -703,11 +713,11 @@ public class MainActivity extends Activity {
 		public void handleMessage(Message msg) {
 			isLoading = false;
 			pGameBar.setVisibility(View.GONE);
-			Log.e("tag", "-------------gameDataHandler--------");
+			//Log.e("tag", "-------------gameDataHandler--------");
 			switch (msg.what) {
 			case Global.DOWN_DATA_HOME_FAILLY: {
 				if (game_page == 0) {
-					Log.e("tag", "--------------5--------" + msg.what);
+					//Log.e("tag", "--------------5--------" + msg.what);
 					ll_gameerror.setVisibility(View.VISIBLE);
 					mGameListView.setVisibility(View.GONE);
 					mGameListView.onRefreshComplete();
@@ -723,7 +733,7 @@ public class MainActivity extends Activity {
 				loadGameMoreButton.setVisibility(View.VISIBLE);
 				// loadGameMoreButton.setText("加载更多...");
 
-				Log.d("YTL", "appGameInfos_temp = " + appGameInfos_temp.size());
+				//Log.d("YTL", "appGameInfos_temp = " + appGameInfos_temp.size());
 				if (appGameInfos_temp.size() > 0) {
 					appGameInfos.addAll(appGameInfos_temp);
 					appGameInfos_temp.clear();
@@ -747,8 +757,8 @@ public class MainActivity extends Activity {
 				break;
 			case Global.DOWN_DATA_HOME_SUCCESSFULL: {
 				pro_bar.setVisibility(View.GONE);
-				Log.d("YTL", "appManagerUpdateInfos.size()  ="
-						+ appManagerUpdateInfos.size());
+				//Log.d("YTL", "appManagerUpdateInfos.size()  ="
+					//	+ appManagerUpdateInfos.size());
 				mManagerListView.setVisibility(View.VISIBLE);
 				mManagerListView.setAdapter(mManagerUpdateAdapter);
 				mManagerUpdateAdapter.notifyDataSetChanged();
@@ -778,10 +788,10 @@ public class MainActivity extends Activity {
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			pHomeBar.setVisibility(View.GONE);
-			Log.e("tag", "--------------4--------");
+			//Log.e("tag", "--------------4--------");
 			switch (msg.what) {
 			case Global.DOWN_DATA_HOME_FAILLY: {
-				Log.e("tag", "--------------5--------" + msg.what);
+				//Log.e("tag", "--------------5--------" + msg.what);
 				ll_homeerror.setVisibility(View.VISIBLE);
 				mHomeListView.setVisibility(View.GONE);
 				curpos = "0";
@@ -789,8 +799,8 @@ public class MainActivity extends Activity {
 			}
 				break;
 			case Global.DOWN_DATA_HOME_SUCCESSFULL: {
-				Log.e("tag", "--------------6--------" + msg.what);
-				Log.e("tag", "----len = " + appHomeInfos.size());
+				//Log.e("tag", "--------------6--------" + msg.what);
+				//Log.e("tag", "----len = " + appHomeInfos.size());
 				mHomeListView.setVisibility(View.VISIBLE);
 				ll_homeerror.setVisibility(View.GONE);
 				mHomeListView.onRefreshComplete();
@@ -863,14 +873,14 @@ public class MainActivity extends Activity {
 					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			Log.e("tag", "error = " + ex.getMessage());
+		//	Log.e("tag", "error = " + ex.getMessage());
 			homeUpdateHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 		}
 	}
 
 	private void ParseHomeJson(String str) {
 		try {
-			Log.e("tag", "--------2--------");
+		//	Log.e("tag", "--------2--------");
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -885,19 +895,19 @@ public class MainActivity extends Activity {
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appHomeInfos_temp.add(appInfo);
-				Log.e("tag", "info = " + appInfo.toString());
+				//Log.e("tag", "info = " + appInfo.toString());
 			}
-			Log.e("tag", "--------------2--------");
+			//Log.e("tag", "--------------2--------");
 			homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
+			//Log.e("tag", "error = " + ex.getMessage());
 			homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 		}
 	}
 
 	private void ParseGameJson(String str) {
 		try {
-			Log.e("tag", "--------2--------");
+			//Log.e("tag", "--------2--------");
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -912,12 +922,12 @@ public class MainActivity extends Activity {
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appGameInfos_temp.add(appInfo);
-				Log.e("tag", "info = " + appInfo.toString());
+				//Log.e("tag", "info = " + appInfo.toString());
 			}
-			Log.e("tag", "--------------2--------");
+		//	Log.e("tag", "--------------2--------");
 			gameDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
+			//Log.e("tag", "error = " + ex.getMessage());
 			gameDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 		}
 	}

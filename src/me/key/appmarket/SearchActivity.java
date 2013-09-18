@@ -196,7 +196,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 			}
 		});
 
-		appSearchAdapter = new AppAdapter(appSearchInfos, this, cache);
+		appSearchAdapter = new AppAdapter(appSearchInfos, this, cache,mSearchListView);
 		mSearchListView.setAdapter(appSearchAdapter);
 
 		mSearchListView.setOnItemClickListener(new OnItemClickListener() {

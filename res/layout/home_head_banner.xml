@@ -5,6 +5,6 @@
     android:layout_height="110dip"
     android:background="@color/activity_bg_gray"
     android:fadingEdge="none"
-    android:padding="4dip"
+    
     android:spacing="5sp"
     android:unselectedAlpha="1.1" />

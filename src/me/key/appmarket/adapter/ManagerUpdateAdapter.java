@@ -110,9 +110,7 @@ public class ManagerUpdateAdapter extends BaseAdapter {
 		viewHolder.tvdown.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				DownloadService.downNewFile(appInfos.get(position).getAppUrl(),
-						Integer.parseInt(appInfos.get(position).getIdx()),
-						appInfos.get(position).getAppName());
+				DownloadService.downNewFile(appInfos.get(position),0,0);
 
 				Intent intent = new Intent();
 				intent.setAction(MarketApplication.PRECENT);
