@@ -151,7 +151,7 @@ LogUtils.d("ture", appInfos.get(position).isIspause()+"");
 		} else if (appInfos.get(position).isDown()) {
 			viewHolder.progress_view.setProgress(DownloadService
 					.getPrecent(idx));
-			LogUtils.d("ture", isDownLoading+"");
+			LogUtils.d("ture", isDownLoading+"isDown");
 			viewHolder.tvdown.setText("下载中");
 			Drawable mDrawable = mContext.getResources().getDrawable(
 					R.drawable.downloading);
@@ -207,8 +207,8 @@ LogUtils.d("test", "暂停");
 					} else {
 						viewHolder.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
-						
 					}
+LogUtils.d("down", appInfos.get(position).isDown()+"");
 LogUtils.d("test", appInfos.get(position).isIspause()+"1");
 					appInfos.get(position).setIspause(!appInfos.get(position).isIspause());
 LogUtils.d("test", appInfos.get(position).isIspause()+"2");
@@ -238,6 +238,7 @@ LogUtils.d("test", appInfos.get(position).isIspause()+"2");
 							position).getIdx()), appInfos.get(position)
 							.getAppName(),length,0);*/
 					DownloadService.downNewFile(appInfos.get(position),length,0,drawable);
+					appInfos.get(position).setDown(true);
 					Intent intent = new Intent();
 					intent.setAction(MarketApplication.PRECENT);
 					mContext.sendBroadcast(intent);
