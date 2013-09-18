@@ -22,13 +22,13 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar"
-          android:screenOrientation="portrait"
+       
            >
         <activity
             android:name="me.key.appmarket.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" 
-          
+             android:screenOrientation="portrait"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,17 +40,28 @@
         <service android:name="me.key.appmarket.tool.DownloadService" >
         </service>
 
-        <activity android:name="me.key.appmarket.AppDetailActivity" >
+        <activity android:name="me.key.appmarket.AppDetailActivity" 
+               android:screenOrientation="portrait">
         </activity>
-        <activity android:name="me.key.appmarket.IndexDetaileActivity" >
+        <activity android:name="me.key.appmarket.IndexDetaileActivity"
+               android:screenOrientation="portrait" 
+            >
         </activity>
-        <activity android:name="me.key.appmarket.DetaileActivity" >
+        <activity android:name="me.key.appmarket.DetaileActivity"
+               android:screenOrientation="portrait" 
+            >
         </activity>
-        <activity android:name="me.key.appmarket.SearchActivity" >
+        <activity android:name="me.key.appmarket.SearchActivity"
+               android:screenOrientation="portrait" 
+            >
         </activity>
-        <activity android:name="me.key.appmarket.RecoTagsActivity" >
+        <activity android:name="me.key.appmarket.RecoTagsActivity"
+               android:screenOrientation="portrait" 
+            >
         </activity>
-        <activity android:name="me.key.appmarket.LocalIndexDetaileActivity" >
+        <activity android:name="me.key.appmarket.LocalIndexDetaileActivity"
+               android:screenOrientation="portrait" 
+            >
         </activity>
         
     </application>
