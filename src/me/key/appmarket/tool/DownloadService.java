@@ -524,7 +524,7 @@ public static void downNewFile( AppInfo appInfo, long startOff,
 		contentView.setTextViewText(R.id.prog, "0%");
 		notification.contentView = contentView;
 		notification.contentIntent = contentIntent;
-		// notification.setLatestEventInfo(context, "", "", contentIntent);
+		 notification.setLatestEventInfo(context, "", "", contentIntent);
 		// 使用RemoteView自定义通知视图
 
 		nm.notify(notificationId, notification);

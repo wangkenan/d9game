@@ -31,7 +31,7 @@ import android.os.Message;
  */
 public class AsyncImageLoader {
 	// 软引用
-	private HashMap<String, SoftReference<Drawable>> imageCache;
+	public HashMap<String, SoftReference<Drawable>> imageCache;
 
 	public AsyncImageLoader() {
 		imageCache = new HashMap<String, SoftReference<Drawable>>();

@@ -1,6 +1,7 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,12 +52,18 @@ public class AppAdapter extends BaseAdapter {
 	private Context mContext;
 	AsyncImageLoader asyncImageLoader;
 	private ListView mylistView;
+	// 是否暂停
 	private boolean isPause;
+	// 是否是下载状态
 	private boolean isDownLoading;
-	private Map<String,Drawable> drawMap = new HashMap<String, Drawable>();
-	//是否是暂停状态
+	// 是否异步加载图片
+	public boolean isAsyn;
+	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
 
-	public AppAdapter(LinkedList<AppInfo> appInfos, Context context, File cache, ListView mylistView) {
+	// 是否是暂停状态
+
+	public AppAdapter(LinkedList<AppInfo> appInfos, Context context,
+			File cache, ListView mylistView) {
 		super();
 		this.appInfos = appInfos;
 		this.cache = cache;
@@ -65,6 +72,7 @@ public class AppAdapter extends BaseAdapter {
 		lay = LayoutInflater.from(context);
 
 		asyncImageLoader = new AsyncImageLoader();
+
 	}
 
 	@Override
@@ -87,8 +95,8 @@ public class AppAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertvView, ViewGroup arg2) {
-		// TODO Auto-generated method stub
 		final ViewHolder viewHolder;
+		Drawable mDrawable;
 		if (convertvView == null) {
 			viewHolder = new ViewHolder();
 			convertvView = lay.inflate(R.layout.app_list_item, null);
@@ -105,24 +113,40 @@ public class AppAdapter extends BaseAdapter {
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();
 		}
-		
 
 		viewHolder.name.setText(appInfos.get(position).getAppName());
 		viewHolder.size.setText(ToolHelper.Kb2Mb(appInfos.get(position)
 				.getAppSize()));
-		//给view设置唯一tag
-				viewHolder.icon.setTag(appInfos
-						.get(position).getIconUrl());
-		final Drawable drawable = getDrawable(asyncImageLoader, appInfos
-				.get(position).getIconUrl(), viewHolder.icon);
-		drawMap.clear();
-		if (drawable != null ) {
-			viewHolder.icon.setImageBitmap(DownloadService.drawable2Bitmap(drawable));
-			//如果图片为Null,则设置默认图片
+		// 给view设置唯一tag
+		viewHolder.icon.setTag(appInfos.get(position).getIconUrl());
+		final Drawable drawable;
+		if (!isAsyn) {
+			drawable = getDrawable(asyncImageLoader, appInfos.get(position)
+					.getIconUrl(), viewHolder.icon);
 		} else {
-			viewHolder.icon.setImageResource(R.drawable.tempicon);
+			String imageUrl = appInfos.get(position).getIconUrl();
+			HashMap<String, SoftReference<Drawable>> imageCache = asyncImageLoader.imageCache;
+			if (imageCache.containsKey(imageUrl)) {
+				SoftReference<Drawable> softReference = imageCache
+						.get(imageUrl);
+				Drawable icon = softReference.get();
+				viewHolder.icon.setImageDrawable(icon);
+				drawable = icon; 
+			} else {
+				drawable = null;
+			}
 		}
+		drawMap.clear();
+		if (drawable != null) {
+			viewHolder.icon.setImageBitmap(DownloadService
+					.drawable2Bitmap(drawable));
+			// 如果图片为Null,则设置默认图片
+		} else {
 		
+				viewHolder.icon.setImageResource(R.drawable.tempicon);
+		}
+		// TODO Auto-generated method stub
+
 		// asyncloadImage(viewHolder.icon, appInfos.get(position).getIconUrl());
 
 		viewHolder.progress_view.setProgress(0);
@@ -133,59 +157,58 @@ public class AppAdapter extends BaseAdapter {
 		int idx = Integer.parseInt(appInfos.get(position).getIdx());
 		isDownLoading = DownloadService.isDownLoading(idx);
 
-		if(appInfos.get(position).isIspause()) {
-LogUtils.d("ture", appInfos.get(position).isIspause()+"");
+		if (appInfos.get(position).isIspause()) {
+			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 			viewHolder.tvdown.setText("暂停");
 		} else {
 			viewHolder.tvdown.setText("下载中");
-			
+
 		}
 		if (appInfos.get(position).isInstalled()) {
 			viewHolder.tvdown.setText("打开");
 
 			viewHolder.progress_view.setProgress(100);
-			Drawable mDrawable = mContext.getResources().getDrawable(
+			Drawable mDrawableicon = mContext.getResources().getDrawable(
 					R.drawable.action_type_software_update);
 			viewHolder.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawable, null, null);
+					mDrawableicon, null, null);
 		} else if (appInfos.get(position).isDown()) {
 			viewHolder.progress_view.setProgress(DownloadService
 					.getPrecent(idx));
-			LogUtils.d("ture", isDownLoading+"isDown");
+			LogUtils.d("ture", isDownLoading + "isDown");
 			viewHolder.tvdown.setText("下载中");
-			Drawable mDrawable = mContext.getResources().getDrawable(
+			Drawable mDrawableicon = mContext.getResources().getDrawable(
 					R.drawable.downloading);
 			viewHolder.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawable, null, null);
+					mDrawableicon, null, null);
 		} else if (isDownLoaded) {
-			Drawable mDrawable = mContext.getResources().getDrawable(
+			Drawable mDrawableicon = mContext.getResources().getDrawable(
 					R.drawable.downloaded);
 			viewHolder.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawable, null, null);
+					mDrawableicon, null, null);
 			viewHolder.tvdown.setText("安装");
 			viewHolder.progress_view.setProgress(100);
-		} else if(!isDownLoading){
+		} else if (!isDownLoading) {
 			viewHolder.tvdown.setText("下载");
-			Drawable mDrawable = mContext.getResources().getDrawable(
+			mDrawable = mContext.getResources().getDrawable(
 					R.drawable.downloading);
 			viewHolder.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 					mDrawable, null, null);
-			//获取将要下载的文件名，如果本地存在该文件，则取出该文件
-			File tempFile = new File(Environment
-					.getExternalStorageDirectory(), "/market/" + appInfos.get(position)
-					.getAppName() + ".apk");
-			SharedPreferences sp = mContext.getSharedPreferences("down", mContext.MODE_PRIVATE);
-			//LogUtils.d("sa", tempFile.getAbsolutePath());
-			
+			// 获取将要下载的文件名，如果本地存在该文件，则取出该文件
+			File tempFile = new File(Environment.getExternalStorageDirectory(),
+					"/market/" + appInfos.get(position).getAppName() + ".apk");
+			SharedPreferences sp = mContext.getSharedPreferences("down",
+					mContext.MODE_PRIVATE);
+			// LogUtils.d("sa", tempFile.getAbsolutePath());
+
 			long length = sp.getLong(tempFile.getAbsolutePath(), 0);
-			//LogUtils.d("sa", length+"");
-			if(length != 0 ){
+			// LogUtils.d("sa", length+"");
+			if (length != 0) {
 				LogUtils.d("test", "已经存在");
 				viewHolder.tvdown.setText("已下载");
-				
+
 			}
 		}
-		
 
 		viewHolder.tvdown.setOnClickListener(new OnClickListener() {
 			@Override
@@ -195,23 +218,24 @@ LogUtils.d("ture", appInfos.get(position).isIspause()+"");
 							.getAppName());
 				} else if (DownloadService.isDownLoading(Integer
 						.parseInt(appInfos.get(position).getIdx()))) {
-LogUtils.d("test", "暂停");
-					File tempFile = DownloadService.CreatFileName(appInfos.get(position)
-						.getAppName());
+					LogUtils.d("test", "暂停");
+					File tempFile = DownloadService.CreatFileName(appInfos.get(
+							position).getAppName());
 					Intent intent = new Intent();
 					intent.setAction(tempFile.getAbsolutePath());
 					mContext.sendBroadcast(intent);
-					if(!appInfos.get(position).isIspause()) {
+					if (!appInfos.get(position).isIspause()) {
 						viewHolder.tvdown.setText("暂停");
 						appInfos.get(position).setDown(false);
 					} else {
 						viewHolder.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
 					}
-LogUtils.d("down", appInfos.get(position).isDown()+"");
-LogUtils.d("test", appInfos.get(position).isIspause()+"1");
-					appInfos.get(position).setIspause(!appInfos.get(position).isIspause());
-LogUtils.d("test", appInfos.get(position).isIspause()+"2");
+					LogUtils.d("down", appInfos.get(position).isDown() + "");
+					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
+					appInfos.get(position).setIspause(
+							!appInfos.get(position).isIspause());
+					LogUtils.d("test", appInfos.get(position).isIspause() + "2");
 				} else if (DownloadService.isDownLoaded(appInfos.get(position)
 						.getAppName())) {
 					// 已经下载
@@ -225,19 +249,25 @@ LogUtils.d("test", appInfos.get(position).isIspause()+"2");
 							"appIdx = "
 									+ Integer.parseInt(appInfos.get(position)
 											.getIdx()));
-					/*Log.e("tag", "appname = "
-							+ appInfos.get(position).getAppName());*/
-					SharedPreferences sp = mContext.getSharedPreferences("down", mContext.MODE_PRIVATE);
+					/*
+					 * Log.e("tag", "appname = " +
+					 * appInfos.get(position).getAppName());
+					 */
+					SharedPreferences sp = mContext.getSharedPreferences(
+							"down", mContext.MODE_PRIVATE);
 					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/" + appInfos.get(position)
-							.getAppName() + ".apk");
-					
+							.getExternalStorageDirectory(), "/market/"
+							+ appInfos.get(position).getAppName() + ".apk");
+
 					long length = sp.getLong(tempFile.getAbsolutePath(), 0);
-					/*DownloadService.downNewFile(appInfos.get(position)
-							.getAppUrl(), Integer.parseInt(appInfos.get(
-							position).getIdx()), appInfos.get(position)
-							.getAppName(),length,0);*/
-					DownloadService.downNewFile(appInfos.get(position),length,0,drawable);
+					/*
+					 * DownloadService.downNewFile(appInfos.get(position)
+					 * .getAppUrl(), Integer.parseInt(appInfos.get(
+					 * position).getIdx()), appInfos.get(position)
+					 * .getAppName(),length,0);
+					 */
+					DownloadService.downNewFile(appInfos.get(position), length,
+							0, drawable);
 					appInfos.get(position).setDown(true);
 					Intent intent = new Intent();
 					intent.setAction(MarketApplication.PRECENT);
@@ -247,7 +277,7 @@ LogUtils.d("test", appInfos.get(position).isIspause()+"2");
 							appInfos.get(position).getAppName() + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
 				}
-				
+
 			}
 		});
 		return convertvView;
@@ -313,22 +343,24 @@ LogUtils.d("test", appInfos.get(position).isIspause()+"2");
 
 	public Drawable getDrawable(AsyncImageLoader asyncImageLoader,
 			String imageUrl, final ImageView imageView) {
-		
+
 		Drawable drawable = asyncImageLoader.loadDrawable(imageUrl,
 				new ImageCallback() {
 					@Override
 					public void imageLoaded(Drawable imageDrawable,
 							String imageUrl) {
-						//如果当前view的标记和draw的标记一致，则将图片设置
-						if (imageDrawable != null && imageView.getTag().equals(imageUrl))
-							//imageView.setImageDrawable(imageDrawable);
-							imageView.setImageBitmap(DownloadService.drawable2Bitmap(imageDrawable));
-						
-						/*else
-							imageView.setImageResource(R.drawable.tempicon);*/
+						// 如果当前view的标记和draw的标记一致，则将图片设置
+						if (imageDrawable != null
+								&& imageView.getTag().equals(imageUrl))
+							// imageView.setImageDrawable(imageDrawable);
+							imageView.setImageBitmap(DownloadService
+									.drawable2Bitmap(imageDrawable));
+						/*
+						 * else imageView.setImageResource(R.drawable.tempicon);
+						 */
 					}
 				});
-		drawMap.put(imageUrl,drawable);
+		drawMap.put(imageUrl, drawable);
 		return drawable;
 	}
 }

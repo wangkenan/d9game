@@ -33,13 +33,13 @@
             layout="@layout/error_layout"
             android:visibility="gone" />
 
-        <me.key.appmarket.MyListView
+        <ListView
             android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:fadingEdge="none"
             android:listSelector="@drawable/list_item_selector" >
-        </me.key.appmarket.MyListView>
+        </ListView>
     </RelativeLayout>
 
 </LinearLayout>

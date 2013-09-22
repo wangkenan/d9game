@@ -1,6 +1,8 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
+import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.List;
 
 import com.market.d9game.R;
@@ -35,6 +37,8 @@ public class RankAdapter extends BaseAdapter {
 	private File cache;
 	private Context mContext;
 	private AsyncImageLoader asyncImageLoader;
+	// 是否异步加载图片
+	public boolean isAsyn;
 
 	public RankAdapter(List<AppInfo> appInfos, Context context, File cache) {
 		super();
@@ -84,13 +88,33 @@ public class RankAdapter extends BaseAdapter {
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();
 		}
-
-		Drawable drawable = getDrawable(asyncImageLoader, appInfos
-				.get(position).getIconUrl(), viewHolder.icon);
-		if (drawable != null)
-			viewHolder.icon.setImageDrawable(drawable);
-
-		asyncloadImage(viewHolder.icon, appInfos.get(position).getIconUrl());
+		// 给view设置唯一tag
+		viewHolder.icon.setTag(appInfos.get(position).getIconUrl());
+		final Drawable drawable;
+		if (!isAsyn) {
+			drawable = getDrawable(asyncImageLoader, appInfos.get(position)
+					.getIconUrl(), viewHolder.icon);
+		} else {
+			String imageUrl = appInfos.get(position).getIconUrl();
+			HashMap<String, SoftReference<Drawable>> imageCache = asyncImageLoader.imageCache;
+			if (imageCache.containsKey(imageUrl)) {
+				SoftReference<Drawable> softReference = imageCache
+						.get(imageUrl);
+				Drawable icon = softReference.get();
+				viewHolder.icon.setImageDrawable(icon);
+				drawable = icon;
+			} else {
+				drawable = null;
+			}
+		}
+		if (drawable != null) {
+			viewHolder.icon.setImageBitmap(DownloadService
+					.drawable2Bitmap(drawable));
+			// 如果图片为Null,则设置默认图片
+		} else {
+			viewHolder.icon.setImageResource(R.drawable.tempicon);
+		}
+		//asyncloadImage(viewHolder.icon, appInfos.get(position).getIconUrl());
 		viewHolder.name.setText(appInfos.get(position).getAppName());
 		viewHolder.size.setText(appInfos.get(position).getAppDownCount()
 				+ "+下载        "
@@ -159,7 +183,7 @@ public class RankAdapter extends BaseAdapter {
 											.getIdx()));
 					Log.e("tag", "appname = "
 							+ appInfos.get(position).getAppName());
-					DownloadService.downNewFile(appInfos.get(position),0,0);
+					DownloadService.downNewFile(appInfos.get(position), 0, 0);
 
 					Intent intent = new Intent();
 					intent.setAction(MarketApplication.PRECENT);
@@ -220,10 +244,15 @@ public class RankAdapter extends BaseAdapter {
 					@Override
 					public void imageLoaded(Drawable imageDrawable,
 							String imageUrl) {
-						if (imageDrawable != null)
-							imageView.setImageDrawable(imageDrawable);
-						else
-							imageView.setImageResource(R.drawable.tempicon);
+						// 如果当前view的标记和draw的标记一致，则将图片设置
+						if (imageDrawable != null
+								&& imageView.getTag().equals(imageUrl))
+							// imageView.setImageDrawable(imageDrawable);
+							imageView.setImageBitmap(DownloadService
+									.drawable2Bitmap(imageDrawable));
+						/*
+						 * else imageView.setImageResource(R.drawable.tempicon);
+						 */
 					}
 				});
 		return drawable;
