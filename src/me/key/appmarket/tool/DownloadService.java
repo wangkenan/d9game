@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.concurrent.Executors;
 
 import me.key.appmarket.MainActivity;
 import me.key.appmarket.MarketApplication;
+import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.LogUtils;
 
@@ -39,17 +41,24 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView.FindListener;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class DownloadService extends Service {
 
@@ -61,9 +70,12 @@ public class DownloadService extends Service {
 			.newFixedThreadPool(5);
 	public static Map<Integer, Long> download = new HashMap<Integer, Long>();
 	public static Context context;
-	private static RemoteViews contentView;
 	private static int sendCount = 0;
 	private static WindowManager wm;
+	static Drawable image;
+	private static AsyncImageLoader asyncImageLoader = new AsyncImageLoader();
+	//存储image的集合;
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -91,7 +103,7 @@ public class DownloadService extends Service {
 
 	// inal String url, final int notificationId,final String name
 
-	public static void downNewFile( AppInfo appInfo, long startOff,
+	public static  void downNewFile( AppInfo appInfo, long startOff,
 			long endOff) {
 		int notificationId = Integer.parseInt(appInfo.getIdx());
 		String url = appInfo.getAppUrl();
@@ -122,7 +134,7 @@ public class DownloadService extends Service {
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent contentIntent = PendingIntent.getActivity(context,
 				notificationId, intent, 0);
-		contentView = new RemoteViews(context.getPackageName(),
+		RemoteViews contentView = new RemoteViews(context.getPackageName(),
 				R.layout.custom_notification);
 
 		contentView.setImageViewBitmap(R.id.image,
@@ -152,7 +164,7 @@ public class DownloadService extends Service {
 		private long endOff;
 		private AppInfo appInfo;
 		private boolean isPause = false;
-
+		private long precent;
 		public DownFiles(AppInfo appInfo,
 				long startOff, long endOff) {
 
@@ -172,6 +184,12 @@ public class DownloadService extends Service {
 			public void onReceive(Context context, Intent intent) {
 				LogUtils.d("test", "我接收消息");
 				isPause = !isPause;
+				File tempFile = CreatFileName(name);
+				SharedPreferences sp = context.getSharedPreferences("down",
+						MODE_PRIVATE);
+				Editor edit = sp.edit();
+				edit.putLong(tempFile.getAbsolutePath()+"precent", precent);
+				edit.commit();
 			}
 
 		}
@@ -240,7 +258,7 @@ public class DownloadService extends Service {
 					// tempFile.createNewFile();
 					int read = 0;
 					long count = startOff;
-					long precent = 0;
+					
 					byte[] buffer = new byte[1024];
 					RandomAccessFile ranFile = new RandomAccessFile(tempFile,
 							"rwd");
@@ -262,6 +280,7 @@ public class DownloadService extends Service {
 								count += read;
 								// 将文件和文件大小存储
 								edit.putLong(tempFile.getAbsolutePath(), count);
+								edit.putLong(tempFile.getAbsolutePath()+"precent", precent);
 								edit.commit();
 								precent = (int) (((double) count / flieLength) * 100);
 								if (precent - download.get(notificationId) >= 1) {
@@ -404,9 +423,18 @@ public class DownloadService extends Service {
 					notification.setLatestEventInfo(DownloadService.this, msg
 							.getData().getString("name") + "正在下载",
 							download.get(msg.arg1) + "%", contentIntent);
-					contentView.setTextViewText(R.id.prog,
-							download.get(msg.arg1) + "%");
-					notification.contentView = contentView;
+				/*	SoftReference<Drawable> sr = imageCache.get(msg.arg1+"");
+					LogUtils.d("sr", imageCache.size()+"");
+					if(sr != null){
+						Drawable drawable = sr.get();
+						LogUtils.d("sr", "test");
+						notification.contentView.setImageViewBitmap(R.id.image, drawable2Bitmap(drawable));
+					}*/
+				/*	
+					notification.contentView.setTextViewText(R.id.text, msg
+							.getData().getString("name"));
+					notification.contentView.setTextViewText(R.id.prog,
+							download.get(msg.arg1) + "%");*/
 					nm.notify(msg.arg1, notification);
 					break;
 				case 4:
@@ -456,7 +484,15 @@ public class DownloadService extends Service {
 		}
 		return result;
 	}
-
+	public static boolean isExist(String name){
+		boolean result = false;
+		File tempFile = new File(Environment.getExternalStorageDirectory(),
+				"/market/" + name + ".apk");
+		if (tempFile.exists()) {
+			result = true;
+		}
+		return result;
+	} 
 	public static void Instanll(String name, Context context) {
 		File tempFile = new File(Environment.getExternalStorageDirectory(),
 				"/market/" + name + ".apk");
@@ -482,29 +518,29 @@ public class DownloadService extends Service {
 		}
 	}
 
-public static void downNewFile( AppInfo appInfo, long startOff,
+public static void downNewFile( final AppInfo appInfo, long startOff,
 			long endOff,
 			Drawable drawable) {
-		int notificationId = Integer.parseInt(appInfo.getIdx());
+		final int notificationId = Integer.parseInt(appInfo.getIdx());
 		String url = appInfo.getAppUrl();
 		 String name = appInfo.getAppName();
 		if (download.containsKey(notificationId))
 			return;
-		/*
-		 * notification = new Notification(); notification.icon =
-		 * android.R.drawable.stat_sys_download; notification.when =
-		 * System.currentTimeMillis(); notification.defaults =
-		 * Notification.DEFAULT_LIGHTS; notification.flags =
-		 * Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; Intent
-		 * intent = new Intent(context, MainActivity.class);
-		 * intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); PendingIntent
-		 * contentIntent = PendingIntent.getActivity(context, notificationId,
-		 * intent, 0); notification.setLatestEventInfo(context, name, "0%",
-		 * contentIntent); download.put(notificationId, 0l);
-		 * nm.notify(notificationId, notification);
-		 */
-		download.put(notificationId, 0l);
-		notification = new Notification(R.drawable.icon, "联系人数量",
+		
+		  notification = new Notification(); notification.icon =
+		  android.R.drawable.stat_sys_download; notification.when =
+		  System.currentTimeMillis(); notification.defaults =
+		  Notification.DEFAULT_LIGHTS; notification.flags =
+		  Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT; Intent
+		  intent = new Intent(context, MainActivity.class);
+		  intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); PendingIntent
+		  contentIntent = PendingIntent.getActivity(context, notificationId,
+		  intent, 0); notification.setLatestEventInfo(context, name, "0%",
+		  contentIntent); download.put(notificationId, 0l);
+		  nm.notify(notificationId, notification);
+		 
+		/*download.put(notificationId, 0l);
+		notification = new Notification(R.drawable.icon, name+"开始",
 				System.currentTimeMillis());
 		notification.when = System.currentTimeMillis();
 		notification.defaults = Notification.DEFAULT_LIGHTS;
@@ -514,20 +550,49 @@ public static void downNewFile( AppInfo appInfo, long startOff,
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		PendingIntent contentIntent = PendingIntent.getActivity(context,
 				notificationId, intent, 0);
-		contentView = new RemoteViews(context.getPackageName(),
+		final RemoteViews contentView = new RemoteViews(context.getPackageName(),
 				R.layout.custom_notification);
-		Bitmap bm  = drawable2Bitmap(drawable);
-		contentView.setImageViewBitmap(R.id.image,
+	
+		//Bitmap bm  = drawable2Bitmap(drawable);
+		//ImageLoader.getInstance().displayImage(appInfo.getIconUrl(),imageview , options);
+		//contentView.setImageViewResource(R.id.image, R.drawable.icon);
+		notification.contentView.setImageViewBitmap(R.id.image,
 				bm);
+		//启动一个异步任务更新通知栏图片
+		new AsyncTask<Void, Void, Void> (){
 
+			@Override
+			protected Void doInBackground(Void... params) {
+				
+				String imageUrl = appInfo.getIconUrl();
+				HashMap<String, SoftReference<Drawable>> imageCache = asyncImageLoader.imageCache;
+				if (imageCache.containsKey(imageUrl)) {
+					SoftReference<Drawable> softReference = imageCache
+							.get(imageUrl);
+					Drawable icon = softReference.get();
+					image = icon; 
+				} else {
+					image = AsyncImageLoader.loadImageFromUrl(appInfo.getIconUrl());;
+				}
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				contentView.setImageViewBitmap(R.id.image, drawable2Bitmap(image));
+				imageCache.put(notificationId+"",new SoftReference<Drawable>(image) );
+			}
+		}.execute();
+		
+		
 		contentView.setTextViewText(R.id.text, name);
 		contentView.setTextViewText(R.id.prog, "0%");
-		notification.contentView = contentView;
 		notification.contentIntent = contentIntent;
 		 notification.setLatestEventInfo(context, "", "", contentIntent);
 		// 使用RemoteView自定义通知视图
-
+		notification.contentView = contentView;
 		nm.notify(notificationId, notification);
+		*/
 		downFile(appInfo, startOff, endOff);
 	}
 public static Bitmap drawable2Bitmap(Drawable drawable){  

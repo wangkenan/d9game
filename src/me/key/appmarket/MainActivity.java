@@ -216,6 +216,7 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 
 		unregisterInstall();
+		
 	}
 
 	private void initManagerView() {
@@ -1148,13 +1149,13 @@ public class MainActivity extends Activity {
 				t5.setSelected(false);
 				break;
 			case 1:
-				if (appGameInfos == null || appGameInfos.size() <= 0) {
+				/*if (appGameInfos == null || appGameInfos.size() <= 0) {
 					appGameInfos.clear();
 					appGameAdapter.notifyDataSetChanged();
 					pGameBar.setVisibility(View.VISIBLE);
 					ll_gameerror.setVisibility(View.GONE);
 					new Thread(runGameData).start();
-				}
+				}*/
 				t1.setSelected(false);
 				t2.setSelected(true);
 				t3.setSelected(false);

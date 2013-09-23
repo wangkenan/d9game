@@ -7,6 +7,12 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Application;
 
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
 public class MarketApplication extends Application {
 
 	public static final String PRECENT = "me.key.appmarket.precent";
@@ -25,6 +31,20 @@ public class MarketApplication extends Application {
 		mInstance = this;
 
 		ToastUtils.init(this);
+		 CrashHandler crashHandler = CrashHandler.getInstance();  
+	        crashHandler.init(getApplicationContext());  
+		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+        .cacheInMemory(true)
+        .cacheOnDisc(true)
+        .build();
+     ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
+      .defaultDisplayImageOptions(defaultOptions)
+        .threadPriority(Thread.NORM_PRIORITY - 2)
+        .denyCacheImageMultipleSizesInMemory()
+        .discCacheFileNameGenerator(new Md5FileNameGenerator())
+        .tasksProcessingOrder(QueueProcessingType.LIFO).discCacheSize(50 * 1024 * 1024).discCacheFileCount(100)
+        .build();
+       ImageLoader.getInstance().init(config);
 	}
 
 	public ArrayList<AppInfo> getAppList() {

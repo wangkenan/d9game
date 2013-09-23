@@ -3,6 +3,7 @@ package me.key.appmarket;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,8 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.tool.TxtReader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.ToastUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,8 +28,10 @@ import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.media.MediaRouter.VolumeCallback;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.storage.StorageManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LocalIndexDetaileActivity extends Activity {
 	private String Root = "";
@@ -54,11 +60,43 @@ public class LocalIndexDetaileActivity extends Activity {
 		ImageView btnBack = (ImageView) findViewById(R.id.back_icon);
 		pBar = (ProgressBar) findViewById(R.id.pro_bar);
 
-		Root = Environment.getExternalStorageDirectory().getAbsolutePath()
-				+ "/D9store/";
+	/*	Root = Environment.getExternalStorageDirectory().getAbsolutePath()
+		 + "/"; 
 		boolean isEx = ToolHelper.isExist(Root);
 		if (!isEx) {
-			Root = ToolHelper.getPath() + "/D9store/";
+			Root = ToolHelper.getPath() + "/";
+		}*/
+		StorageManager sm = (StorageManager) this
+				.getSystemService(this.STORAGE_SERVICE);
+		// 获取sdcard的路径：外置和内置
+		try {
+			String[] paths = (String[]) sm.getClass()
+					.getMethod("getVolumePaths", null).invoke(sm, null);
+			for(int i = 0;i<paths.length;i++){
+				LogUtils.d("path", paths[i]);
+			}
+		if(paths.length > 1) {
+			Root = paths[1]+"/";
+		} else if(paths.length == 1){
+			Root = paths[0]+"/";
+		} else {
+			Toast.makeText(this, "对不起，您没有sd卡", 1).show();
+		}
+			//Root = paths[0]+"/D9store/";
+			LogUtils.d("path", paths.length+"'");
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			Root = Environment.getExternalStorageDirectory().getAbsolutePath()
+					 + "/";
+			e.printStackTrace();
 		}
 		InitHomePager();
 		btnBack.setOnClickListener(new OnClickListener() {
@@ -68,6 +106,7 @@ public class LocalIndexDetaileActivity extends Activity {
 				LocalIndexDetaileActivity.this.finish();
 			}
 		});
+		
 	}
 
 	private void InitHomePager() {
@@ -81,6 +120,7 @@ public class LocalIndexDetaileActivity extends Activity {
 		String js = (String) TxtReader.getString(inputStream);
 		List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
 		JSONArray jsonArray;
+		LogUtils.d("id", ItemId);
 		try {
 			jsonArray = new JSONArray(js);
 			int len = jsonArray.length();
@@ -88,7 +128,13 @@ public class LocalIndexDetaileActivity extends Activity {
 				AppInfo mAppInfo = new AppInfo();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String apkName = jsonObject.getString("apkName");
+				File filee = new File(Root + apkName);
+				LogUtils.d("apkName", Root +apkName);
+				boolean exists = filee.exists();
+				if(exists) {
+					LogUtils.d("AppInfo", "sf");
 				Map list = showUninstallAPKIcon(Root + apkName);
+				
 				File file = new File(Root + apkName);
 				long size = file.length();
 				mAppInfo.setAppSize(size + "");
@@ -101,18 +147,22 @@ public class LocalIndexDetaileActivity extends Activity {
 				mAppInfo.setInstalled(isIns);
 				mAppInfos.add(mAppInfo);
 				list.clear();
+				} 
 			}
 			mListReco = (ListView) this.findViewById(R.id.mlist);
 			Log.v("nano", "nano" + mListReco);
+			LogUtils.d("mAppInfos", mAppInfos.size()+"");
 			MyAdapter adapter = new MyAdapter(LocalIndexDetaileActivity.this,
 					mAppInfos);
 			mListReco.setAdapter(adapter);
 			pBar.setVisibility(View.GONE);
-
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 	public Map showUninstallAPKIcon(String apkPath) {
@@ -148,6 +198,7 @@ public class LocalIndexDetaileActivity extends Activity {
 			Object pkgParserPkg = pkgParser_parsePackageMtd.invoke(pkgParser,
 					valueArgs);
 			// Ӧ�ó�����Ϣ��, ���������, ������Щ����, ����û����
+LogUtils.d("pkg", pkgParserPkg+"");
 			java.lang.reflect.Field appInfoFld = pkgParserPkg.getClass()
 					.getDeclaredField("applicationInfo");
 			ApplicationInfo info = (ApplicationInfo) appInfoFld
