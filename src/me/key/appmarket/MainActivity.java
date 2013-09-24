@@ -216,7 +216,8 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 
 		unregisterInstall();
-		
+	    android.os.Process.killProcess(android.os.Process.myPid());  
+        System.exit(0);  
 	}
 
 	private void initManagerView() {
@@ -1238,7 +1239,7 @@ public class MainActivity extends Activity {
 				return true;
 			}
 
-			this.finish();
+			//this.finish();
 		}
 		return super.onKeyDown(keyCode, event);
 	}

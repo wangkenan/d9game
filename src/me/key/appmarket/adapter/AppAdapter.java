@@ -236,7 +236,7 @@ public class AppAdapter extends BaseAdapter {
 			if (length != 0 && DownloadService.isExist(appInfos.get(
 				position).getAppName())) {
 				LogUtils.d("test", "已经存在");
-				viewHolder.tvdown.setText("已下载");
+				viewHolder.tvdown.setText("暂停");
 			
 				long count = sp.getLong(tempFile.getAbsolutePath()+"precent", 0);
 				viewHolder.progress_view.setProgress(count);
