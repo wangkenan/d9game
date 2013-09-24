@@ -31,12 +31,14 @@ public class MarketApplication extends Application {
 		mInstance = this;
 
 		ToastUtils.init(this);
+		//注册未捕获异常处理方式
 		 CrashHandler crashHandler = CrashHandler.getInstance();  
 	        crashHandler.init(getApplicationContext());  
 		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
         .cacheInMemory(true)
         .cacheOnDisc(true)
         .build();
+		//配置imageLoager初始化
      ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
       .defaultDisplayImageOptions(defaultOptions)
         .threadPriority(Thread.NORM_PRIORITY - 2)

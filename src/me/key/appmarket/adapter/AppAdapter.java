@@ -64,15 +64,15 @@ public class AppAdapter extends BaseAdapter {
 	// 是否异步加载图片
 	public boolean isAsyn;
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
-	
+	//设置ImageLoade初始化信息
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()  
     .showImageForEmptyUri(R.drawable.tempicon).showStubImage(R.drawable.tempicon)  
-    .resetViewBeforeLoading(false)  // default  
-    .delayBeforeLoading(1000)  
-    .cacheInMemory(true)           // default 不缓存至内存  
-    .cacheOnDisc(true)             // default 不缓存至手机SDCard  
-    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)// default  
-    .bitmapConfig(Bitmap.Config.RGB_565)              // default  
+    .resetViewBeforeLoading(false) 
+    .delayBeforeLoading(100)  
+    .cacheInMemory(true)           
+    .cacheOnDisc(true)              
+    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+    .bitmapConfig(Bitmap.Config.RGB_565)               
     .build(); 
 
 
@@ -133,6 +133,7 @@ public class AppAdapter extends BaseAdapter {
 				.getAppSize()));
 		ImageLoader.getInstance().displayImage(appInfos.get(position)
 				.getIconUrl(),  viewHolder.icon,options);
+		ImageLoader.getInstance();
 		// 给view设置唯一tag
 /*		viewHolder.icon.setTag(appInfos.get(position).getIconUrl());
 		final Drawable drawable;
@@ -185,7 +186,6 @@ public class AppAdapter extends BaseAdapter {
 				position).getAppName());
 		int idx = Integer.parseInt(appInfos.get(position).getIdx());
 		isDownLoading = DownloadService.isDownLoading(idx);
-
 		if (appInfos.get(position).isIspause()) {
 			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 			viewHolder.tvdown.setText("暂停");

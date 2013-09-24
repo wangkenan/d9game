@@ -216,8 +216,7 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 
 		unregisterInstall();
-	    android.os.Process.killProcess(android.os.Process.myPid());  
-        System.exit(0);  
+		
 	}
 
 	private void initManagerView() {
@@ -1238,8 +1237,11 @@ public class MainActivity extends Activity {
 				myHandler.sendEmptyMessageDelayed(RESETQUIT, 3000);
 				return true;
 			}
-
-			//this.finish();
+			Intent cancalNt  = new Intent();
+			cancalNt.setAction("duobaohui.cancalnotifition");
+			this.sendBroadcast(cancalNt);
+			 //this.finish();
+		
 		}
 		return super.onKeyDown(keyCode, event);
 	}

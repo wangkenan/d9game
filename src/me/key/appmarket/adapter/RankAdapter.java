@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
@@ -21,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -44,9 +48,17 @@ public class RankAdapter extends BaseAdapter {
 	// 是否异步加载图片
 	public boolean isAsyn;
 	// 是否暂停
-		private boolean isPause;
-		// 是否是下载状态
-		private boolean isDownLoading;
+	private boolean isPause;
+	// 是否是下载状态
+	private boolean isDownLoading;
+
+	// 设置ImageLoade初始化信息
+	private DisplayImageOptions options = new DisplayImageOptions.Builder()
+			.showImageForEmptyUri(R.drawable.tempicon)
+			.showStubImage(R.drawable.tempicon).resetViewBeforeLoading(false)
+			.delayBeforeLoading(100).cacheInMemory(true).cacheOnDisc(true)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+			.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 	public RankAdapter(List<AppInfo> appInfos, Context context, File cache) {
 		super();
@@ -55,7 +67,7 @@ public class RankAdapter extends BaseAdapter {
 		mContext = context;
 		lay = LayoutInflater.from(context);
 
-		asyncImageLoader = new AsyncImageLoader();
+		//asyncImageLoader = new AsyncImageLoader();
 	}
 
 	@Override
@@ -102,31 +114,32 @@ public class RankAdapter extends BaseAdapter {
 				.getAppSize()));
 		// 给view设置唯一tag
 		viewHolder.icon.setTag(appInfos.get(position).getIconUrl());
-		final Drawable drawable;
-		if (!isAsyn) {
-			drawable = getDrawable(asyncImageLoader, appInfos.get(position)
-					.getIconUrl(), viewHolder.icon);
-		} else {
-			String imageUrl = appInfos.get(position).getIconUrl();
-			HashMap<String, SoftReference<Drawable>> imageCache = asyncImageLoader.imageCache;
-			if (imageCache.containsKey(imageUrl)) {
-				SoftReference<Drawable> softReference = imageCache
-						.get(imageUrl);
-				Drawable icon = softReference.get();
-				viewHolder.icon.setImageDrawable(icon);
-				drawable = icon; 
-			} else {
-				drawable = null;
-			}
-		}
-		if (drawable != null) {
-			viewHolder.icon.setImageBitmap(DownloadService
-					.drawable2Bitmap(drawable));
-			// 如果图片为Null,则设置默认图片
-		} else {
-		
-				viewHolder.icon.setImageResource(R.drawable.tempicon);
-		}
+		ImageLoader.getInstance().displayImage(appInfos.get(position).getIconUrl(), viewHolder.icon,options);
+//		final Drawable drawable;
+//		if (!isAsyn) {
+//			drawable = getDrawable(asyncImageLoader, appInfos.get(position)
+//					.getIconUrl(), viewHolder.icon);
+//		} else {
+//			String imageUrl = appInfos.get(position).getIconUrl();
+//			HashMap<String, SoftReference<Drawable>> imageCache = asyncImageLoader.imageCache;
+//			if (imageCache.containsKey(imageUrl)) {
+//				SoftReference<Drawable> softReference = imageCache
+//						.get(imageUrl);
+//				Drawable icon = softReference.get();
+//				viewHolder.icon.setImageDrawable(icon);
+//				drawable = icon;
+//			} else {
+//				drawable = null;
+//			}
+//		}
+//		if (drawable != null) {
+//			viewHolder.icon.setImageBitmap(DownloadService
+//					.drawable2Bitmap(drawable));
+//			// 如果图片为Null,则设置默认图片
+//		} else {
+//
+//			viewHolder.icon.setImageResource(R.drawable.tempicon);
+//		}
 		// TODO Auto-generated method stub
 
 		// asyncloadImage(viewHolder.icon, appInfos.get(position).getIconUrl());
@@ -160,11 +173,11 @@ public class RankAdapter extends BaseAdapter {
 			viewHolder.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 					mDrawableicon, null, null);
 		} else if (appInfos.get(position).isDown()) {
-		
+
 			viewHolder.progress_view.setProgress(DownloadService
 					.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");
-		
+
 			viewHolder.tvdown.setText("下载中");
 			Drawable mDrawableicon = mContext.getResources().getDrawable(
 					R.drawable.downloading);
@@ -184,20 +197,23 @@ public class RankAdapter extends BaseAdapter {
 			viewHolder.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 					mDrawable, null, null);
 			// 获取将要下载的文件名，如果本地存在该文件，则取出该文件
-			
+
 			// LogUtils.d("sa", tempFile.getAbsolutePath());
 
 			long length = sp.getLong(tempFile.getAbsolutePath(), 0);
 			// LogUtils.d("sa", length+"");
-			if (length != 0 && DownloadService.isExist(appInfos.get(
-				position).getAppName())) {
+			if (length != 0
+					&& DownloadService.isExist(appInfos.get(position)
+							.getAppName())) {
 				LogUtils.d("test", "已经存在");
 				viewHolder.tvdown.setText("已下载");
-			
-				long count = sp.getLong(tempFile.getAbsolutePath()+"precent", 0);
+
+				long count = sp.getLong(tempFile.getAbsolutePath() + "precent",
+						0);
 				viewHolder.progress_view.setProgress(count);
-			} else if(length != 0 && !DownloadService.isExist(appInfos.get(
-					position).getAppName())){
+			} else if (length != 0
+					&& !DownloadService.isExist(appInfos.get(position)
+							.getAppName())) {
 				Editor edit = sp.edit();
 				edit.remove(tempFile.getAbsolutePath());
 				edit.commit();
@@ -261,7 +277,7 @@ public class RankAdapter extends BaseAdapter {
 					 * .getAppName(),length,0);
 					 */
 					DownloadService.downNewFile(appInfos.get(position), length,
-							0, drawable);
+							0, null);
 					appInfos.get(position).setDown(true);
 					Intent intent = new Intent();
 					intent.setAction(MarketApplication.PRECENT);
