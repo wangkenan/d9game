@@ -247,6 +247,7 @@ public class AppUtils {
 
 					if (serverVersions.length > 2 && appVersions.length > 2) {
 						int tempServer = Integer.parseInt(serverVersions[2]);
+						LogUtils.d("ApUtil", appVersions[2]);
 						int tempApp = Integer.parseInt(appVersions[2]);
 						if (tempServer > tempApp) {
 							tempList.add(serverApp);

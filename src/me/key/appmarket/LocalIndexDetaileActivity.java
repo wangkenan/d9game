@@ -150,6 +150,12 @@ public class LocalIndexDetaileActivity extends Activity {
 				} 
 			}
 			mListReco = (ListView) this.findViewById(R.id.mlist);
+			TextView tv = (TextView) this.findViewById(R.id.wushju);
+			if(mAppInfos.size() == 0) {
+				tv.setVisibility(View.VISIBLE);
+			} else {
+				tv.setVisibility(View.GONE);
+			}
 			Log.v("nano", "nano" + mListReco);
 			LogUtils.d("mAppInfos", mAppInfos.size()+"");
 			MyAdapter adapter = new MyAdapter(LocalIndexDetaileActivity.this,

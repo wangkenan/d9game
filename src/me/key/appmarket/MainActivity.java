@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
 	private boolean isShowingInstall = true;
 
 	private String apknamelist;
-
+	public static List<Activity> activities = new ArrayList<Activity>();
 	// app
 
 	File cache;
@@ -195,6 +195,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.main);
 		startService(new Intent(this, DownloadService.class));
 		myHandler.sendEmptyMessageDelayed(INMAIN, 500);
+		activities.add(this);
 	}
 
 	@Override

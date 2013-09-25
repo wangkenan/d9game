@@ -63,13 +63,25 @@
         android:textSize="15sp"
         android:visibility="gone"
         tools:ignore="NotSibling" />
-
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:layout_below="@id/topbar"
+        >
     <ListView
         android:id="@+id/mlist"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/topbar"
+        
         android:listSelector="@drawable/list_item_selector" >
     </ListView>
+    <TextView 
+        android:id="@+id/wushju"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="暂无数据ß"
+        android:visibility="gone"
+        />
+    </FrameLayout>
 
 </RelativeLayout>

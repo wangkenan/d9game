@@ -21,6 +21,7 @@ import me.key.appmarket.utils.LogUtils;
 
 import org.apache.http.client.ClientProtocolException;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -203,8 +204,11 @@ public class DownloadService extends Service {
 			public void onReceive(Context context, Intent intent) {
 				LogUtils.d("cacal", "我接收到了关闭通知广播");
 				 nm.cancelAll();
-				
-				 android.os.Process.killProcess(android.os.Process.myPid());  
+				for(Activity activity : MainActivity.activities) {
+					activity.finish();
+					
+				}
+				  android.os.Process.killProcess(android.os.Process.myPid());  
 		            System.exit(0);  
 			}
 
@@ -307,7 +311,16 @@ public class DownloadService extends Service {
 		}
 
 		public void run() {
+			
 			File tempFile = CreatFileName(name);
+			IntentFilter filter = new IntentFilter(
+					tempFile.getAbsolutePath());
+			PauseBroadcast receiver = new PauseBroadcast();
+			context.registerReceiver(receiver, filter);
+			IntentFilter notifitionIf = new IntentFilter(
+					"duobaohui.cancalnotifition");
+			CancalNotifiBroadcast cnb = new CancalNotifiBroadcast();
+			context.registerReceiver(cnb, notifitionIf);
 			try {
 				download.put(notificationId, 0l);
 				notification = new Notification(R.drawable.icon, name+"开始下载",
@@ -415,19 +428,16 @@ public class DownloadService extends Service {
 					byte[] buffer = new byte[1024];
 					RandomAccessFile ranFile = new RandomAccessFile(tempFile,
 							"rwd");
+					if(startOff == 0 ){
+						edit.putLong(tempFile.getAbsolutePath(), 0);
+						edit.commit();
+					}
 					if (startOff == 0) {
 						ranFile.setLength(coon.getContentLength());
 					}
 					// 设置从文件的哪个位置开始写入
 					ranFile.seek(startOff);
-					IntentFilter filter = new IntentFilter(
-							tempFile.getAbsolutePath());
-					PauseBroadcast receiver = new PauseBroadcast();
-					context.registerReceiver(receiver, filter);
-					IntentFilter notifitionIf = new IntentFilter(
-							"duobaohui.cancalnotifition");
-					CancalNotifiBroadcast cnb = new CancalNotifiBroadcast();
-					context.registerReceiver(cnb, notifitionIf);
+				
 					while (read != -1 && !cancelUpdate) {
 						if (!isPause) {
 							read = bis.read(buffer);
@@ -636,8 +646,8 @@ public class DownloadService extends Service {
 		if (tempFile.exists()) {
 			result = true;
 		}
-		long temp = sp.getLong(tempFile.getAbsolutePath(), 0);
-		if (temp > 0) {
+		long temp = sp.getLong(tempFile.getAbsolutePath(), -1);
+		if (temp != -1) {
 			result = false;
 		}
 		return result;
