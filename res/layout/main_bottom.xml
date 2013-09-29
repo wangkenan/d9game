@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/main_bottom_vs"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:inAnimation="@android:anim/slide_in_left"
+    android:outAnimation="@android:anim/slide_out_right" >
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/welcome_d9" />
+
+    <TabHost
+          android:id="@android:id/tabhost"
+         android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+        >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="60dip" >
+            </FrameLayout>
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/main_tab_widget_bg" >
+            </TabWidget>
+        </RelativeLayout>
+    </TabHost>
+    </ViewSwitcher>

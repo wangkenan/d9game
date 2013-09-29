@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"  
     android:layout_width="fill_parent"  
-    android:layout_height="fill_parent"  
-    android:inAnimation="@android:anim/slide_in_left"  
-    android:outAnimation="@android:anim/slide_out_right"
-    >  
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/welcome_d9" 
-        />
-<RelativeLayout
-    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"  
+    >  
+
 
     <RelativeLayout
         android:id="@+id/topbar"
@@ -80,17 +71,6 @@
             android:textColor="@color/default_text"
             android:textSize="15.0dip" />
 
-        <TextView
-            android:id="@+id/text3"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1.0"
-            android:background="@drawable/tab_backgound"
-            android:gravity="center"
-            android:text="@string/main_app"
-            android:textColor="@color/default_text"
-            android:textSize="15.0dip" />
 
         <TextView
             android:id="@+id/text4"
@@ -101,18 +81,6 @@
             android:background="@drawable/tab_backgound"
             android:gravity="center"
             android:text="@string/main_rank"
-            android:textColor="@color/default_text"
-            android:textSize="15.0dip" />
-
-        <TextView
-            android:id="@+id/text5"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1.0"
-            android:background="@drawable/tab_backgound"
-            android:gravity="center"
-            android:text="@string/main_manager"
             android:textColor="@color/default_text"
             android:textSize="15.0dip" />
     </LinearLayout>
@@ -126,5 +94,4 @@
         android:flipInterval="30"
         android:persistentDrawingCache="animation" />
 
-</RelativeLayout>
-</ViewSwitcher>
+</LinearLayout>

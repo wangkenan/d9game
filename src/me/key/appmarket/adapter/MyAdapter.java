@@ -133,7 +133,7 @@ public class MyAdapter extends BaseAdapter {
 	 * @param mAppInfo
 	 */
 	private void installApp(AppInfo mAppInfo) {
-		String str = "/" + mAppInfo.getAppName();
+		String str =  mAppInfo.getApkName();
 		String fileName = ROOT + str;
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		Log.v("tag", "nano ROOT" + fileName);

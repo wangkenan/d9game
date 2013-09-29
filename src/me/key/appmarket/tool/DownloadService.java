@@ -235,13 +235,13 @@ public class DownloadService extends Service {
 					case 1:
 						break;
 					case 2:
-//						contentIntent = PendingIntent.getActivity(
-//								DownloadService.class, msg.arg1, new Intent(
-//										DownloadService.this, MainActivity.class),
-//								0);
-//						notification.setLatestEventInfo(DownloadService.this, msg
-//								.getData().getString("name") + "下载完成", "100%",
-//								contentIntent);
+						contentIntent = PendingIntent.getActivity(
+								context, msg.arg1, new Intent(
+										context, MainActivity.class),
+								0);
+						notification.setLatestEventInfo(context, msg
+								.getData().getString("name") + "下载完成", "100%",
+								contentIntent);
 						notification.contentView.setTextViewText(R.id.text, msg.getData().getString("name") + "下载完成");
 						notification.contentView.setTextViewText(R.id.prog, "100%");
 					    nm.notify(msg.arg1, notification);
@@ -276,13 +276,13 @@ public class DownloadService extends Service {
 							sendCount = 0;
 						}
 
-//						contentIntent = PendingIntent.getActivity(
-//								DownloadService.this, msg.arg1, new Intent(
-//										DownloadService.this, MainActivity.class),
-//								0);
-//						notification.setLatestEventInfo(DownloadService.this, msg
-//								.getData().getString("name") + "正在下载",
-//								download.get(msg.arg1) + "%", contentIntent);
+						contentIntent = PendingIntent.getActivity(
+								context, msg.arg1, new Intent(
+										context, MainActivity.class),
+								0);
+						notification.setLatestEventInfo(context, msg
+								.getData().getString("name") + "正在下载",
+								download.get(msg.arg1) + "%", contentIntent);
 						/*
 						 * SoftReference<Drawable> sr = imageCache.get(msg.arg1+"");
 						 * LogUtils.d("sr", imageCache.size()+""); if(sr != null){
@@ -333,6 +333,7 @@ public class DownloadService extends Service {
 				intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				PendingIntent contentIntent = PendingIntent.getActivity(context,
 						notificationId, intent, 0);
+			
 				RemoteViews contentView = new RemoteViews(context.getPackageName(),
 						R.layout.custom_notification);
 				notification.contentView = contentView;
@@ -360,9 +361,8 @@ public class DownloadService extends Service {
 				contentView.setTextViewText(R.id.prog, "0%");
 				
 				notification.contentIntent = contentIntent;
-				// notification.setLatestEventInfo(context, "", "", contentIntent);
 				// 使用RemoteView自定义通知视图
-		
+				notification.setLatestEventInfo(context, name, "0%", contentIntent);
 				nm.notify(notificationId, notification);
 				/*
 				 * HttpClient client = new DefaultHttpClient(); HttpGet get =

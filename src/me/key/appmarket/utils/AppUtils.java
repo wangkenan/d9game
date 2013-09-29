@@ -208,11 +208,30 @@ public class AppUtils {
 	public static ArrayList<AppInfo> getCanUpadateApp(
 			ArrayList<AppInfo> allApp, ArrayList<AppInfo> serverApps) {
 		ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
-
 		for (AppInfo mAppInfo : allApp) {
+			String packageName = mAppInfo.getPackageName();
+			String appVersion = mAppInfo.getVersion();
+			for(AppInfo serverApp : serverApps){
+				String spackageName = mAppInfo.getPackageName();
+				String sappVersion = mAppInfo.getVersion();
+				if(spackageName.equals(packageName)) {
+					for(int i = 0;i<sappVersion.length();i++){
+						if(i<= appVersion.length()){
+							char tempchar = appVersion.charAt(i);
+							char schar = sappVersion.charAt(i);
+							if(tempchar > schar) {
+								tempList.add(serverApp);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	/*	for (AppInfo mAppInfo : allApp) {
 			String appVersion = mAppInfo.getVersion();
 			String packageName = mAppInfo.getPackageName();
-
+			LogUtils.d("appVersion", appVersion);
 			String[] appVersions = appVersion.split("\\.");
 			for (AppInfo serverApp : serverApps) {
 				if (serverApp.getPackageName() != null
@@ -225,7 +244,6 @@ public class AppUtils {
 					if (serverVersions.length > 0 && appVersions.length > 0) {
 						int tempServer = Integer.parseInt(serverVersions[0]);
 						int tempApp = Integer.parseInt(appVersions[0]);
-
 						if (tempServer > tempApp) {
 							tempList.add(serverApp);
 							break;
@@ -258,7 +276,7 @@ public class AppUtils {
 					}
 				}
 			}
-		}
+		}*/
 
 		return tempList;
 	}

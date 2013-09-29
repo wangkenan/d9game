@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="detailistview_item1_ib" type="id"/>
+    <item name="item2_detail_ib2" type="id" />
+    <item name="item2_detail_ib3" type="id" />
+    <item name="item2_detail_ib1" type="id" />
+    <item name="item3_detail_ib1" type="id" />
+    <item name="item3_detail_ib2" type="id" />
+    <item name="item3_detail_ib3" type="id" />
+    <item name="name" type="id" />
+    <item name="center" type="id" />
+    <item name="description" type="id" />
+    <item name="download" type="id" />
+    <item name="recommend_date" type="id" />
+    <item name="cover" type="id" />
+    <item name="date" type="id" />
+</resources>

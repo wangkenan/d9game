@@ -3,7 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
@@ -26,9 +25,10 @@
             android:id="@+id/game_list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:fadingEdge="none"
+            focusable ="false"
             android:listSelector="@drawable/list_item_selector" >
        </me.key.appmarket.MyListView>
     </RelativeLayout>
+  
 
 </LinearLayout>

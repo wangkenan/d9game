@@ -61,16 +61,16 @@ public class ManagerAdapter extends BaseAdapter {
 		ViewHolder viewHolder;
 		if (convertvView == null) {
 			viewHolder = new ViewHolder();
-			convertvView = lay.inflate(R.layout.app_list_item, null);
-			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon);
+			convertvView = lay.inflate(R.layout.app_list_recomm_item, null);
+			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon2);
 			viewHolder.name = (TextView) convertvView
-					.findViewById(R.id.app_name);
+					.findViewById(R.id.app_name2);
 			viewHolder.size = (TextView) convertvView
-					.findViewById(R.id.appsize);
+					.findViewById(R.id.appsize2);
 			viewHolder.tvdown = (TextView) convertvView
-					.findViewById(R.id.tv_down);
+					.findViewById(R.id.tv_down2);
 			viewHolder.progress_view = (ProgressView) convertvView
-					.findViewById(R.id.progress_view);
+					.findViewById(R.id.progress_view2);
 			convertvView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();

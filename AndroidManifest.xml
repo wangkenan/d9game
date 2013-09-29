@@ -31,11 +31,7 @@
              android:screenOrientation="portrait"
           
             >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+          
         </activity>
 
         <service android:name="me.key.appmarket.tool.DownloadService" >
@@ -64,7 +60,23 @@
                android:screenOrientation="portrait"  
             >
         </activity>
-        
+        <activity android:name="me.key.appmarket.widgets.MyTableHost"
+             android:screenOrientation="portrait"
+            >
+              <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="me.key.appmarket.LocalGameActivity"
+            android:screenOrientation="portrait"
+            ></activity>
+            <activity
+            android:name="me.key.appmarket.ManagerActivity"
+            android:screenOrientation="portrait"
+            ></activity>
     </application>
 
 </manifest>

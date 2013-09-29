@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="NotSibling">
+        <ignore path="res/layout/item_newrank.xml" />
+    </issue>
+    <issue id="Suspicious0dp">
+        <ignore path="res/layout/item_recomm_lisview.xml" />
+    </issue>
+</lint>

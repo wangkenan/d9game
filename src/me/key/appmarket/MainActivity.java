@@ -2,18 +2,27 @@ package me.key.appmarket;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import me.key.appmarket.MyListView.OnLoadMoreListener;
 import me.key.appmarket.MyListView.OnRefreshListener;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.CategoryAdapter;
+import me.key.appmarket.adapter.DetaileAdapter;
 import me.key.appmarket.adapter.LocalCategoryAdapter;
 import me.key.appmarket.adapter.ManagerAdapter;
 import me.key.appmarket.adapter.ManagerUpdateAdapter;
+import me.key.appmarket.adapter.MyAdapter;
+import me.key.appmarket.adapter.NewRankAdapter;
+import me.key.appmarket.adapter.NewRecommnAdapter;
 import me.key.appmarket.adapter.RankAdapter;
 import me.key.appmarket.adapter.TabPageAdapter;
 import me.key.appmarket.adapter.TuiJianImageAdapter;
@@ -26,9 +35,11 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.BannerInfo;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 import me.key.appmarket.widgets.GalleryFlow;
+import me.key.appmarket.widgets.MyTableHost;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +53,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -49,9 +66,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.storage.StorageManager;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -70,6 +89,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 public class MainActivity extends Activity {
@@ -95,14 +115,14 @@ public class MainActivity extends Activity {
 	private ListView mHomeListView;
 	private LinkedList<AppInfo> appHomeInfos;
 	private LinkedList<AppInfo> appHomeInfos_temp = new LinkedList<AppInfo>();
-	private AppAdapter appHomeAdapter;
+	private NewRecommnAdapter appHomeAdapter;
 	private ProgressBar pHomeBar;
 	private String curpos = "0";
 	private LinearLayout ll_homeerror;
 	private ArrayList<BannerInfo> bannerList = new ArrayList<BannerInfo>();
 	private GalleryFlow tuijian_gallery;
 	private TuiJianImageAdapter tuiJianAdapter;
-
+	
 	// game
 	private boolean isLoading = false;
 	private boolean isFirst = true;
@@ -122,6 +142,13 @@ public class MainActivity extends Activity {
 	private ArrayList<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
 	private ArrayList<CategoryInfo> categoryInfoList_temp = new ArrayList<CategoryInfo>();
 	private ListView mListGame;
+	private ArrayList<CategoryInfo> gcategoryInfoList = new ArrayList<CategoryInfo>();
+	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
+	private int type = 2;
+	private DetaileAdapter mCategoryAdapter;
+	private TextView topbar_title1;
+	private ImageView back_icon;
+	private ImageView logo_title;
 
 	// 管理
 	private ListView mManagerListView;
@@ -143,7 +170,7 @@ public class MainActivity extends Activity {
 	// Rank
 	private ListView mRankListView;
 	private List<AppInfo> appRankInfos;
-	private RankAdapter appRankAdapter;
+	private NewRankAdapter appRankAdapter;
 	private ProgressBar pRankBar;
 	private LinearLayout ll_rankerror;
 
@@ -164,27 +191,6 @@ public class MainActivity extends Activity {
 				myHandler.sendEmptyMessageDelayed(SHOWNEXT, DELAYTIME);
 				break;
 			// 进入主界面
-			case INMAIN:
-
-				InitViewPager();
-				initHomeView();
-				initGameView();
-				initRankView();
-				initManagerView();
-				initLocalGameView();
-				new Thread(runHomeData).start();
-				new Thread(runRankData).start();
-				// new Thread(runBannerData).start();
-
-				updateSelf(false);
-
-				registerInstall();
-				MarketApplication.getInstance().reflashAppList();
-				ViewSwitcher vs = (ViewSwitcher) findViewById(R.id.main);
-				vs.showNext();
-
-			default:
-				break;
 			}
 		}
 	};
@@ -194,7 +200,20 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		startService(new Intent(this, DownloadService.class));
-		myHandler.sendEmptyMessageDelayed(INMAIN, 500);
+
+		InitViewPager();
+		initHomeView();
+		initGameView();
+		initRankView();
+		//initManagerView();
+		//initLocalGameView();
+		new Thread(runHomeData).start();
+		new Thread(runRankData).start();
+		// new Thread(runBannerData).start();
+
+		updateSelf(false);
+
+		registerInstall();
 		activities.add(this);
 	}
 
@@ -295,51 +314,42 @@ public class MainActivity extends Activity {
 	}
 
 	private void initLocalGameView() {
-		InputStream inputStream = getResources().openRawResource(
-				R.raw.categorydata);
-		String js = (String) TxtReader.getString(inputStream);
-		try {
-			JSONArray jsonArray = new JSONArray(js);
-			int len = jsonArray.length();
-			for (int i = 0; i < len; i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				String id = jsonObject.getString("id");
-				String name = jsonObject.getString("name");
-				String appUrl = jsonObject.getString("appiconurl");
-				CategoryInfo mCategoryInfo = new CategoryInfo(id, name, "", "",
-						appUrl);
-				categoryInfoList_temp.add(mCategoryInfo);
-
-			}
-			if (categoryInfoList_temp.size() > 0) {
-				categoryInfoList.addAll(categoryInfoList_temp);
-				categoryInfoList_temp.clear();
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		mListGame = (ListView) logcalGmaeView.findViewById(R.id.list_app_game);
-		LocalCategoryAdapter mCategoryAdapter = new LocalCategoryAdapter(
-				categoryInfoList, MainActivity.this, cache);
-		mListGame.setAdapter(mCategoryAdapter);
+		LayoutInflater inflater = LayoutInflater.from(this);
+		gameLinearLayout = (LinearLayout) inflater.inflate(
+				R.layout.game_head_banner, null);
+		mListGame.addHeaderView(gameLinearLayout);
 
-		mListGame.setOnItemClickListener(new OnItemClickListener() {
+		game_calss = (TextView) gameLinearLayout.findViewById(R.id.game_calss);
+		game_boutique = (TextView) gameLinearLayout
+				.findViewById(R.id.game_boutique);
+		game_calss.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				CategoryInfo mCategoryInfo = categoryInfoList.get(arg2);
-				if (mCategoryInfo != null) {
-					Intent intent = new Intent(MainActivity.this,
-							LocalIndexDetaileActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putString("id", mCategoryInfo.getId());
-					bundle.putString("name", mCategoryInfo.getName());
-					intent.putExtra("value", bundle);
-					startActivity(intent);
-				}
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this,
+						DetaileActivity.class);
+				intent.putExtra("type", 2);
+				startActivity(intent);
 			}
 		});
+		game_boutique.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this,
+						RecoTagsActivity.class);
+				startActivity(intent);
+			}
+		});
+		String Root = LocalUtils.getRoot(this);
+		
+	/*	LocalCategoryAdapter mCategoryAdapter = new LocalCategoryAdapter(
+				categoryInfoList, MainActivity.this, cache);*/
+		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root);
+			LogUtils.d("mAppInfos", mAppInfos.size()+"");
+			MyAdapter adapter = new MyAdapter(MainActivity.this,
+					mAppInfos);
+			mListGame.setAdapter(adapter);
+	
 	}
 
 	private void initRankView() {
@@ -365,7 +375,7 @@ public class MainActivity extends Activity {
 		if (!cache.exists()) {
 			cache.mkdirs();
 		}
-		appRankAdapter = new RankAdapter(appRankInfos, this, cache);
+		appRankAdapter = new NewRankAdapter(appRankInfos, this, cache);
 		mRankListView.setAdapter(appRankAdapter);
 		//注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
@@ -411,7 +421,17 @@ public class MainActivity extends Activity {
 	}
 
 	private void initGameView() {
-		mGameListView = (MyListView) gameView.findViewById(R.id.game_list);
+		mListGame = (ListView) gameView.findViewById(R.id.list_app_game);
+		topbar_title1 = (TextView) findViewById(R.id.topbar_title1);
+		back_icon = (ImageView) findViewById(R.id.back_icon);
+		logo_title = (ImageView) findViewById(R.id.logo_title);
+		//type = getIntent().getIntExtra("type", 2);
+		new Thread(runCategoryData).start();
+		mCategoryAdapter = new DetaileAdapter(gcategoryInfoList, this, mListGame);
+		mListGame.setAdapter(mCategoryAdapter);
+		mListGame.setDividerHeight(0);
+		/*mGameListView = (MyListView) gameView.findViewById(R.id.game_list);
+		mGameListView.setDivider(new ColorDrawable(Color.GRAY));
 		pGameBar = (ProgressBar) gameView.findViewById(R.id.game_pro_bar);
 		ll_gameerror = (LinearLayout) gameView.findViewById(R.id.ll_error);
 
@@ -457,7 +477,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MainActivity.this,
-						RecoTagsActivity.class);
+						MyTableHost.class);
 				startActivity(intent);
 			}
 		});
@@ -552,7 +572,7 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-
+*/
 		// mListGame = (ListView) gameView.findViewById(R.id.list_game);
 		// indexs_games = getResources().getStringArray(R.array.index_games);
 		// ListAdapter gameAdapter = new ArrayAdapter<String>(MainActivity.this,
@@ -579,6 +599,68 @@ public class MainActivity extends Activity {
 		// startActivity(intent);
 		// }
 		// });
+	}
+	Runnable runCategoryData = new Runnable() {
+		@Override
+		public void run() {
+			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+					+ Global.APP_CATEGORY + "?type=" + type);
+			Log.e("tag", "runCategoryData result =" + str);
+			if (str.equals("null")) {
+				categoryDataHandler
+						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			} else if (str.equals("-1")) {
+				categoryDataHandler
+						.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
+			} else {
+				Log.e("tag", "--------------1-------------");
+				ParseCategoryJson(str);
+			}
+		} 
+	};
+	Handler categoryDataHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case Global.DOWN_DATA_HOME_FAILLY: {
+			}
+				break;
+			case Global.DOWN_DATA_HOME_SUCCESSFULL: {
+				if (gcategoryInfoList_temp.size() > 0) {
+					gcategoryInfoList.addAll(gcategoryInfoList_temp);
+					gcategoryInfoList_temp.clear();
+					LogUtils.d("asdasda", categoryInfoList.size()+"");
+				}
+				mCategoryAdapter.notifyDataSetChanged();
+			}
+			default:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+	};
+	private void ParseCategoryJson(String str) {
+		try {
+			Log.e("tag", "--------------ParseCategoryJson--------");
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String id = jsonObject.getString("id");
+				String name = jsonObject.getString("name");
+				String type1 = jsonObject.getString("type1");
+				String type2 = jsonObject.getString("type2");
+				String appUrl = jsonObject.getString("appiconurl");
+				CategoryInfo mCategoryInfo = new CategoryInfo(id, name, type1,
+						type2, Global.MAIN_URL + appUrl);
+				gcategoryInfoList_temp.add(mCategoryInfo);
+			}
+			Log.e("tag", "--------------ParseCategoryJson 2--------");
+			categoryDataHandler
+					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+		} catch (Exception ex) {
+			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
+		}
 	}
 
 	private void initHomeView() {
@@ -624,11 +706,11 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		appHomeAdapter = new AppAdapter(appHomeInfos, MainActivity.this, cache,
+		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, MainActivity.this, cache,
 				mHomeListView);
 		mHomeListView.setAdapter(appHomeAdapter);
 		appHomeAdapter.notifyDataSetChanged();
-		// 注册滑动监听事件
+	/*	// 注册滑动监听事件
 		mHomeListView.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -654,7 +736,7 @@ public class MainActivity extends Activity {
 					int visibleItemCount, int totalItemCount) {
 
 			}
-		});
+		});*/
 		/*
 		 * mHomeListView.setonRefreshListener(new OnRefreshListener() {
 		 * 
@@ -1086,31 +1168,30 @@ public class MainActivity extends Activity {
 
 		t1 = (TextView) findViewById(R.id.text1);
 		t2 = (TextView) findViewById(R.id.text2);
-		t3 = (TextView) findViewById(R.id.text3);
+		//t3 = (TextView) findViewById(R.id.text3);
 		t4 = (TextView) findViewById(R.id.text4);
-		t5 = (TextView) findViewById(R.id.text5);
+		//t5 = (TextView) findViewById(R.id.text5);
 		t1.setSelected(true);
 		t1.setOnClickListener(new MyOnClickListener(0));
 		t2.setOnClickListener(new MyOnClickListener(1));
-		t3.setOnClickListener(new MyOnClickListener(2));
+		//t3.setOnClickListener(new MyOnClickListener(2));
 		t4.setOnClickListener(new MyOnClickListener(3));
-		t5.setOnClickListener(new MyOnClickListener(4));
+		//t5.setOnClickListener(new MyOnClickListener(4));
 
 		mPager = (ViewPager) findViewById(R.id.vPager);
 		listViews = new ArrayList<View>();
-
 		LayoutInflater mInflater = getLayoutInflater();
 		homeView = mInflater.inflate(R.layout.home, null);
-		gameView = mInflater.inflate(R.layout.game, null);
+		gameView = mInflater.inflate(R.layout.applist, null);
 		rankView = mInflater.inflate(R.layout.rank, null);
 		logcalGmaeView = mInflater.inflate(R.layout.type, null);
 		managerView = mInflater.inflate(R.layout.app_managemer, null);
 		listViews.add(homeView);
 		listViews.add(gameView);
-		listViews.add(logcalGmaeView);
+		//listViews.add(logcalGmaeView);
 		listViews.add(rankView);
-		listViews.add(managerView);
-
+		//listViews.add(managerView);
+		mPager.setOffscreenPageLimit(2);
 		mPager.setAdapter(new TabPageAdapter(listViews));
 		mPager.setCurrentItem(0);
 		mPager.setOnPageChangeListener(new MyOnPageChangeListener());
@@ -1145,9 +1226,9 @@ public class MainActivity extends Activity {
 			case 0:
 				t1.setSelected(true);
 				t2.setSelected(false);
-				t3.setSelected(false);
+				//t3.setSelected(false);
 				t4.setSelected(false);
-				t5.setSelected(false);
+				//t5.setSelected(false);
 				break;
 			case 1:
 				/*if (appGameInfos == null || appGameInfos.size() <= 0) {
@@ -1159,31 +1240,17 @@ public class MainActivity extends Activity {
 				}*/
 				t1.setSelected(false);
 				t2.setSelected(true);
-				t3.setSelected(false);
+				//t3.setSelected(false);
 				t4.setSelected(false);
-				t5.setSelected(false);
+				//t5.setSelected(false);
 				break;
 			case 2:
 
 				t1.setSelected(false);
 				t2.setSelected(false);
-				t3.setSelected(true);
-				t4.setSelected(false);
-				t5.setSelected(false);
-				break;
-			case 3:
-				t1.setSelected(false);
-				t2.setSelected(false);
-				t3.setSelected(false);
+				//t3.setSelected(true);
 				t4.setSelected(true);
-				t5.setSelected(false);
-				break;
-			case 4:
-				t1.setSelected(false);
-				t2.setSelected(false);
-				t3.setSelected(false);
-				t4.setSelected(false);
-				t5.setSelected(true);
+				//t5.setSelected(false);
 				break;
 			}
 		}
@@ -1402,7 +1469,7 @@ public class MainActivity extends Activity {
 						appHomeAdapter.notifyDataSetChanged();
 						break;
 					case 1:// 游戏
-						appGameAdapter.notifyDataSetChanged();
+						//appGameAdapter.notifyDataSetChanged();
 					case 2:// 应用
 						break;
 					case 3:// 排行
@@ -1417,6 +1484,86 @@ public class MainActivity extends Activity {
 				}
 			}
 		}
+	}
+	public Map showUninstallAPKIcon(String apkPath) {
+		String PATH_PackageParser = "android.content.pm.PackageParser";
+		String PATH_AssetManager = "android.content.res.AssetManager";
+		try {
+			// apk����ļ�·��
+			// ����һ��Package ������, �����ص�
+			// ���캯��Ĳ���ֻ��һ��, apk�ļ���·��
+			// PackageParser packageParser = new PackageParser(apkPath);
+			Class pkgParserCls = Class.forName(PATH_PackageParser);
+			Class[] typeArgs = new Class[1];
+			typeArgs[0] = String.class;
+			Constructor pkgParserCt = pkgParserCls.getConstructor(typeArgs);
+			Object[] valueArgs = new Object[1];
+			valueArgs[0] = apkPath;
+			Object pkgParser = pkgParserCt.newInstance(valueArgs);
+			// ���������ʾ�йص�, �����漰��һЩ������ʾ�ȵ�, ����ʹ��Ĭ�ϵ����
+			DisplayMetrics metrics = new DisplayMetrics();
+			metrics.setToDefaults();
+			typeArgs = new Class[4];
+			typeArgs[0] = File.class;
+			typeArgs[1] = String.class;
+			typeArgs[2] = DisplayMetrics.class;
+			typeArgs[3] = Integer.TYPE;
+			Method pkgParser_parsePackageMtd = pkgParserCls.getDeclaredMethod(
+					"parsePackage", typeArgs);
+			valueArgs = new Object[4];
+			valueArgs[0] = new File(apkPath);
+			valueArgs[1] = apkPath;
+			valueArgs[2] = metrics;
+			valueArgs[3] = 0;
+			Object pkgParserPkg = pkgParser_parsePackageMtd.invoke(pkgParser,
+					valueArgs);
+			// Ӧ�ó�����Ϣ��, ���������, ������Щ����, ����û����
+LogUtils.d("pkg", pkgParserPkg+"");
+			java.lang.reflect.Field appInfoFld = pkgParserPkg.getClass()
+					.getDeclaredField("applicationInfo");
+			ApplicationInfo info = (ApplicationInfo) appInfoFld
+					.get(pkgParserPkg);
+			Class assetMagCls = Class.forName(PATH_AssetManager);
+			Constructor assetMagCt = assetMagCls.getConstructor((Class[]) null);
+			Object assetMag = assetMagCt.newInstance((Object[]) null);
+			typeArgs = new Class[1];
+			typeArgs[0] = String.class;
+			Method assetMag_addAssetPathMtd = assetMagCls.getDeclaredMethod(
+					"addAssetPath", typeArgs);
+			valueArgs = new Object[1];
+			valueArgs[0] = apkPath;
+			assetMag_addAssetPathMtd.invoke(assetMag, valueArgs);
+			Resources res = getResources();
+			typeArgs = new Class[3];
+			typeArgs[0] = assetMag.getClass();
+			typeArgs[1] = res.getDisplayMetrics().getClass();
+			typeArgs[2] = res.getConfiguration().getClass();
+			Constructor resCt = Resources.class.getConstructor(typeArgs);
+			valueArgs = new Object[3];
+			valueArgs[0] = assetMag;
+			valueArgs[1] = res.getDisplayMetrics();
+			valueArgs[2] = res.getConfiguration();
+			res = (Resources) resCt.newInstance(valueArgs);
+			CharSequence label = null;
+			Map<String, Object> list = new HashMap<String, Object>();
+			if (info.labelRes != 0) {
+				label = res.getText(info.labelRes);
+				list.put("label", label);
+			} else {
+				 PackageManager pm = this.getPackageManager();  
+				 label = info.loadLabel(pm);
+				 list.put("label", label);
+			}
+			// ������Ƕ�ȡһ��apk�����ͼ��
+			if (info.icon != 0) {
+				Drawable icon = res.getDrawable(info.icon);
+				list.put("icon", icon);
+				return list;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

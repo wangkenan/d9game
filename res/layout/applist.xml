@@ -1,54 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/top_bar"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    >
 
-    <RelativeLayout
-        android:id="@+id/app_topbar"
-        android:layout_width="fill_parent"
-        android:layout_height="50dip"
-        android:background="@drawable/section_bg" >
-
-        <!-- 返回的icon -->
-
-        <ImageView
-            android:id="@+id/back_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dip"
-            android:layout_marginRight="0dip"
-            android:contentDescription="@null"
-            android:layout_centerVertical="true"
-            android:src="@drawable/hi_setting_more_nor_left" />
-
-        <ImageView
-            android:id="@+id/logo_title"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_toRightOf="@id/back_icon"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5sp"
-            android:src="@drawable/icon" />
-
-        <TextView
-            android:id="@+id/topbar_title1"
-            style="@style/topbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="7sp"
-            android:layout_toRightOf="@+id/logo_title"
-            android:text="@string/app_name" />
-    </RelativeLayout>
-
+<ImageView
+    android:id="@+id/top_iv_applist"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:src="@drawable/all_update"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
+    android:layout_marginTop="5dip"
+    android:scaleType="fitXY"
+    />
     <ListView
         android:id="@+id/list_app_game"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/app_topbar"
-        android:listSelector="@drawable/list_item_selector" >
+        android:layout_height="fill_parent"
+        android:layout_below="@id/top_iv_applist"
+        android:listSelector="@drawable/list_item_selector" 
+        android:layout_margin="10dip"
+        >
     </ListView>
 
 
-</RelativeLayout>
+</LinearLayout>

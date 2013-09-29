@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:id="@+id/top_bar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+    <FrameLayout
+        android:id="@+id/frame_newrank"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="18dip"
+        android:layout_marginLeft="8dip"
+        android:layout_marginTop="18dip"
+        android:contentDescription="@string/app_name" >
+
+        <RelativeLayout
+            android:layout_width="48dip"
+            android:layout_height="48dip" >
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="48dip"
+                android:layout_height="48dip"
+                android:src="@drawable/tempicon" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="12sp" >
+
+        <me.key.appmarket.widgets.ProgressView
+            android:id="@+id/progress_view"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/tv_down"
+            style="@style/topbar_title"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:drawableTop="@drawable/downloading"
+            android:focusable="false"
+            android:text="@string/down"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/frame_layout"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/tab_divider" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/divider"
+        android:layout_toRightOf="@id/frame_newrank"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/app_name"
+            style="@style/topbar_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7sp"
+            android:gravity="center_vertical"
+            android:text="@string/app_name"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/appsize"
+            style="@style/topbar_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:layout_marginTop="5sp"
+            android:gravity="center_vertical"
+            android:text="2.14MB"
+            android:textColor="@color/dark_gray"
+            android:textSize="12sp" />
+    </LinearLayout>
+<FrameLayout
+       android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+          android:layout_alignParentRight="true"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_marginTop="20dip"
+          android:id="@+id/imageView1_fl"
+    >
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/top_critique" />
+    <TextView
+        android:id="@+id/item_newrank_tv"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:text="asfasgasg"
+        android:layout_marginLeft="10dip"
+        />
+</FrameLayout>
+    <ImageView
+        android:id="@+id/item_newrank_top_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/imageView1_fl"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/top1" />
+</RelativeLayout>

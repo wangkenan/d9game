@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/top_bar"
+    android:id="@+id/top_bar2"
     android:layout_width="fill_parent"
     android:layout_height="82sp" >
-
+<TextView
+    android:id="@+id/topnum_applist_item_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="1"
+      android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dip"
+    />
     <ImageView
-        android:id="@+id/icon"
-        android:layout_width="48sp"
-        android:layout_height="48sp"
+        android:id="@+id/icon2"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="18sp"
-        android:layout_marginLeft="8sp"
-        android:layout_marginTop="18sp"
+        android:layout_marginBottom="18dip"
+        android:layout_marginLeft="23dip"
+        android:layout_marginTop="18dip"
         android:contentDescription="@string/app_name"
         android:src="@drawable/tempicon" />
-
     <RelativeLayout
-        android:id="@+id/frame_layout"
+        android:id="@+id/frame_layout2"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
@@ -26,7 +33,7 @@
         android:layout_marginRight="12sp" >
 
         <me.key.appmarket.widgets.ProgressView
-            android:id="@+id/progress_view"
+            android:id="@+id/progress_view2"
             android:layout_width="30dip"
             android:layout_height="30dip"
             android:layout_centerHorizontal="true"
@@ -35,7 +42,7 @@
             />
 
         <TextView
-            android:id="@+id/tv_down"
+            android:id="@+id/tv_down2"
             style="@style/topbar_title"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -47,11 +54,11 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/divider"
+        android:id="@+id/divider2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/frame_layout"
+        android:layout_toLeftOf="@id/frame_layout2"
         android:contentDescription="@string/app_name"
         android:src="@drawable/tab_divider" />
 
@@ -59,12 +66,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/divider"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toLeftOf="@id/divider2"
+        android:layout_toRightOf="@id/icon2"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/app_name"
+            android:id="@+id/app_name2"
             style="@style/topbar_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -74,7 +81,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/appsize"
+            android:id="@+id/appsize2"
             style="@style/topbar_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

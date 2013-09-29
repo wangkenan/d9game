@@ -67,7 +67,7 @@ public class ManagerUpdateAdapter extends BaseAdapter {
 		ViewHolder viewHolder;
 		if (convertvView == null) {
 			viewHolder = new ViewHolder();
-			convertvView = lay.inflate(R.layout.app_list_item, null);
+			convertvView = lay.inflate(R.layout.app_list_recomm_item, null);
 			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon);
 			viewHolder.name = (TextView) convertvView
 					.findViewById(R.id.app_name);

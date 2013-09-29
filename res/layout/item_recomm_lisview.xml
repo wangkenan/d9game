@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+     >
+<FrameLayout
+    android:layout_width="fill_parent" 
+     android:layout_height="150dip"
+     android:paddingLeft="5dip"
+     android:paddingRight="5dip"
+    >
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        >
+    <ImageView
+        android:id="@+id/recomm_bigiv"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/test" />
+
+ <LinearLayout
+     android:layout_width="fill_parent"
+     android:layout_height="50dip" 
+     android:layout_alignParentBottom="true"
+     android:background="@drawable/account_logout"
+     >
+     <LinearLayout
+         android:layout_width="0dip"
+         android:layout_height="fill_parent"
+         android:layout_weight="9"
+         android:orientation="vertical" 
+           android:layout_gravity="center"
+         >
+         <TextView
+             android:id="@+id/recomm_name"
+             android:layout_width="wrap_content"
+             android:layout_height="20dip"
+             android:gravity="center"
+               android:layout_gravity="center_vertical"
+             android:text="test" 
+             android:textSize="11sp"
+             
+             />
+
+         <TextView
+              android:id="@+id/recomm_descr"
+             android:layout_width="wrap_content"
+             android:layout_height="20dip"
+             android:gravity="center"
+             android:text="test"
+             android:textSize="11sp"
+              />
+
+     </LinearLayout>
+        <RelativeLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="7sp"
+         >
+
+        <me.key.appmarket.widgets.ProgressView
+            android:id="@+id/recomm_progress_view"
+         android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:focusable="false" 
+            />
+
+        <TextView
+            android:id="@+id/recomm_tv_down"
+            style="@style/topbar_title"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:drawableTop="@drawable/downloading"
+            android:focusable="false"
+            android:text="@string/down"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+ </LinearLayout>
+</RelativeLayout>
+</FrameLayout>
+
+</LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">D9市场游戏中心</string>
+    <string name="app_name">游戏盒子</string>
     <string name="main_home">首页</string>
     <string name="main_index">分类</string>
     <string name="main_game">游戏</string>

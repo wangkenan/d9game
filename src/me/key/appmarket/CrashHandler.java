@@ -35,15 +35,15 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 	public void init(Context context) {
 		mContext = context;
-		// 获取系统默认的UncaughtException处理器
+	/*	// 获取系统默认的UncaughtException处理器
 		mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();
 		// 设置该CrashHandler为程序的默认处理器
-		Thread.setDefaultUncaughtExceptionHandler(this);
+		Thread.setDefaultUncaughtExceptionHandler(this);*/
 	}
 
 	@Override
 	public void uncaughtException(Thread thread, Throwable ex) {
-		 if (!handleException(ex) && mDefaultHandler != null) {  
+		/* if (!handleException(ex) && mDefaultHandler != null) {  
 	            //如果用户没有处理则让系统默认的异常处理器来处理  
 	            mDefaultHandler.uncaughtException(thread, ex); 
 	            LogUtils.d("mDefaultHandler", "被我处理了");
@@ -55,9 +55,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	            }  
 	            android.os.Process.killProcess(android.os.Process.myPid());  
 	            System.exit(1);  
-	        }  
+	        } */ 
 	}
-	 private boolean handleException(Throwable ex) {  
+/*	 private boolean handleException(final Throwable ex) {  
 	        if (ex == null) {  
 	            return false;  
 	        }  
@@ -66,11 +66,12 @@ public class CrashHandler implements UncaughtExceptionHandler {
 	            @Override  
 	            public void run() {  
 	                Looper.prepare();  
-	                Toast.makeText(mContext, "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_LONG).show();  
+	                Toast.makeText(mContext, "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_LONG).show();
 	                Looper.loop();  
+	                ex.printStackTrace();
 	            }  
 	        }.start();  
 	        return true;  
-	    }  
+	    }  */
 
 }

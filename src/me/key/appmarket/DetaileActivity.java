@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 import me.key.appmarket.adapter.CategoryAdapter;
+import me.key.appmarket.adapter.DetaileAdapter;
+import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LogUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,10 +43,10 @@ import android.widget.Toast;
  * 分类Activity
  * test
  */
-public class DetaileActivity extends Activity {
+public class DetaileActivity extends Activity implements OnClickListener{
 	private ArrayList<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
 	private ArrayList<CategoryInfo> categoryInfoList_temp = new ArrayList<CategoryInfo>();
-	private CategoryAdapter mCategoryAdapter;
+	private DetaileAdapter mCategoryAdapter;
 
 	File cache;
 
@@ -54,13 +57,94 @@ public class DetaileActivity extends Activity {
 	private ImageView logo_title;
 
 	private int type = 1;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.applist);
+		init();
+	}
+	//初始化
+	private void init() {
+	
+		
+	}
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.logo_title:
+			DetaileActivity.this.finish();
+			break;
+		case R.id.back_icon:
+			DetaileActivity.this.finish();
+			break;
+		}
+	}
+	Runnable runCategoryData = new Runnable() {
+		@Override
+		public void run() {
+			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+					+ Global.APP_CATEGORY + "?type=" + type);
+			Log.e("tag", "runCategoryData result =" + str);
+			if (str.equals("null")) {
+				categoryDataHandler
+						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			} else if (str.equals("-1")) {
+				categoryDataHandler
+						.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
+			} else {
+				Log.e("tag", "--------------1-------------");
+				ParseCategoryJson(str);
+			}
+		} 
+	};
+	Handler categoryDataHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case Global.DOWN_DATA_HOME_FAILLY: {
+			}
+				break;
+			case Global.DOWN_DATA_HOME_SUCCESSFULL: {
+				if (categoryInfoList_temp.size() > 0) {
+					categoryInfoList.addAll(categoryInfoList_temp);
+					categoryInfoList_temp.clear();
+					LogUtils.d("asdasda", categoryInfoList.size()+"");
+				}
+				mCategoryAdapter.notifyDataSetChanged();
+			}
+			default:
+				break;
+			}
+			super.handleMessage(msg);
+		}
+	};
+	private void ParseCategoryJson(String str) {
+		try {
+			Log.e("tag", "--------------ParseCategoryJson--------");
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String id = jsonObject.getString("id");
+				String name = jsonObject.getString("name");
+				String type1 = jsonObject.getString("type1");
+				String type2 = jsonObject.getString("type2");
+				String appUrl = jsonObject.getString("appiconurl");
+				CategoryInfo mCategoryInfo = new CategoryInfo(id, name, type1,
+						type2, Global.MAIN_URL + appUrl);
+				categoryInfoList_temp.add(mCategoryInfo);
+			}
+			Log.e("tag", "--------------ParseCategoryJson 2--------");
+			categoryDataHandler
+					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+		} catch (Exception ex) {
+			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
+		}
+	}
 
-		cache = new File(Environment.getExternalStorageDirectory(), "cache");
+	/*	cache = new File(Environment.getExternalStorageDirectory(), "cache");
 		if (!cache.exists()) {
 			cache.mkdirs();
 		}
@@ -103,7 +187,23 @@ public class DetaileActivity extends Activity {
 		mCategoryAdapter = new CategoryAdapter(categoryInfoList,
 				DetaileActivity.this, cache);
 		mListGame.setAdapter(mCategoryAdapter);
-
+		mListGame.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				CategoryInfo mCategoryInfo = categoryInfoList.get(arg2);
+				if (mCategoryInfo != null) {
+					Intent intent = new Intent(DetaileActivity.this,
+							LocalIndexDetaileActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putString("id", arg2+"");
+					bundle.putString("name", mCategoryInfo.getName());
+					intent.putExtra("value", bundle);
+					startActivity(intent);
+				}
+			}
+			
+		});
 		mListGame.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -206,5 +306,5 @@ public class DetaileActivity extends Activity {
 		} catch (Exception ex) {
 			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
 		}
-	}
+	}*/
 }

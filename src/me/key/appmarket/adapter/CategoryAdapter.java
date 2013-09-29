@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.CategoryInfo;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,7 +31,15 @@ public class CategoryAdapter extends BaseAdapter {
 	private LayoutInflater lay;
 	private File cache;
 	private Context mContext;
-
+	private DisplayImageOptions options = new DisplayImageOptions.Builder()  
+    .showImageForEmptyUri(R.drawable.tempicon).showStubImage(R.drawable.tempicon)  
+    .resetViewBeforeLoading(false) 
+    .delayBeforeLoading(100)  
+    .cacheInMemory(true)           
+    .cacheOnDisc(true)              
+    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+    .bitmapConfig(Bitmap.Config.RGB_565)               
+    .build(); 
 	AsyncImageLoader asyncImageLoader;
 
 	public CategoryAdapter(ArrayList<CategoryInfo> mCategoryInfos,
@@ -70,14 +82,7 @@ public class CategoryAdapter extends BaseAdapter {
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();
 		}
-
-		Drawable drawable = getDrawable(asyncImageLoader,
-				mCategoryInfos.get(position).getAppIcon(), viewHolder.icon);
-		if (drawable != null) {
-			viewHolder.icon.setImageDrawable(drawable);
-		}
-		asyncloadImage(viewHolder.icon, mCategoryInfos.get(position)
-				.getAppIcon());
+		ImageLoader.getInstance().displayImage(mCategoryInfos.get(position).getAppIcon(), viewHolder.icon, options);
 
 		viewHolder.name.setText(mCategoryInfos.get(position).getName());
 		return convertvView;

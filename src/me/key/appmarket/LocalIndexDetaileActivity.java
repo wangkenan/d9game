@@ -15,6 +15,7 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.tool.TxtReader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 
@@ -26,6 +27,7 @@ import com.market.d9game.R;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.MediaRouter.VolumeCallback;
@@ -66,39 +68,22 @@ public class LocalIndexDetaileActivity extends Activity {
 		if (!isEx) {
 			Root = ToolHelper.getPath() + "/";
 		}*/
-		StorageManager sm = (StorageManager) this
-				.getSystemService(this.STORAGE_SERVICE);
-		// 获取sdcard的路径：外置和内置
-		try {
-			String[] paths = (String[]) sm.getClass()
-					.getMethod("getVolumePaths", null).invoke(sm, null);
-			for(int i = 0;i<paths.length;i++){
-				LogUtils.d("path", paths[i]);
-			}
-		if(paths.length > 1) {
-			Root = paths[1]+"/";
-		} else if(paths.length == 1){
-			Root = paths[0]+"/";
+		Root = LocalUtils.getRoot(this);
+//		InitHomePager();
+		List<AppInfo> mAppInfos = LocalUtils.InitHomePager(ItemId, this, Root);
+		mListReco = (ListView) this.findViewById(R.id.mlist);
+		TextView tv = (TextView) this.findViewById(R.id.wushju);
+		if(mAppInfos.size() == 0) {
+			tv.setVisibility(View.VISIBLE);
 		} else {
-			Toast.makeText(this, "对不起，您没有sd卡", 1).show();
+			tv.setVisibility(View.GONE);
 		}
-			//Root = paths[0]+"/D9store/";
-			LogUtils.d("path", paths.length+"'");
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			Root = Environment.getExternalStorageDirectory().getAbsolutePath()
-					 + "/";
-			e.printStackTrace();
-		}
-		InitHomePager();
+		Log.v("nano", "nano" + mListReco);
+		LogUtils.d("mAppInfos", mAppInfos.size()+"");
+		MyAdapter adapter = new MyAdapter(LocalIndexDetaileActivity.this,
+				mAppInfos);
+		mListReco.setAdapter(adapter);
+		pBar.setVisibility(View.GONE);
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -109,12 +94,14 @@ public class LocalIndexDetaileActivity extends Activity {
 		
 	}
 
-	private void InitHomePager() {
+
+
+	/*private void InitHomePager() {
 		InputStream inputStream;
 		inputStream = getResources().openRawResource(R.raw.category_1);
-		if (ItemId.equals("1")) {
+		if (ItemId.equals("0")) {
 			inputStream = getResources().openRawResource(R.raw.category_1);
-		} else if (ItemId.equals("2")) {
+		} else if (ItemId.equals("1")) {
 			inputStream = getResources().openRawResource(R.raw.category_2);
 		}
 		String js = (String) TxtReader.getString(inputStream);
@@ -134,7 +121,7 @@ public class LocalIndexDetaileActivity extends Activity {
 				if(exists) {
 					LogUtils.d("AppInfo", "sf");
 				Map list = showUninstallAPKIcon(Root + apkName);
-				
+				LogUtils.d("apkName", ""+list.size());
 				File file = new File(Root + apkName);
 				long size = file.length();
 				mAppInfo.setAppSize(size + "");
@@ -235,6 +222,10 @@ LogUtils.d("pkg", pkgParserPkg+"");
 			if (info.labelRes != 0) {
 				label = res.getText(info.labelRes);
 				list.put("label", label);
+			} else {
+				 PackageManager pm = this.getPackageManager();  
+				 label = info.loadLabel(pm);
+				 list.put("label", label);
 			}
 			// ������Ƕ�ȡһ��apk�����ͼ��
 			if (info.icon != 0) {
@@ -246,5 +237,5 @@ LogUtils.d("pkg", pkgParserPkg+"");
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 }
