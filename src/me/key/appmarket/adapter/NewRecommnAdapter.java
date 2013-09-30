@@ -21,6 +21,10 @@ import me.key.appmarket.MyListView;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
 import me.key.appmarket.adapter.NewRankAdapter.ViewHolder;
+import me.key.appmarket.network.AppDetailRequest;
+import me.key.appmarket.network.AppDetailResponse;
+import me.key.appmarket.network.HttpResponse;
+import me.key.appmarket.network.HttpRequest.OnResponseListener;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
@@ -33,10 +37,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,21 +72,18 @@ public class NewRecommnAdapter extends BaseAdapter {
 	// 是否异步加载图片
 	public boolean isAsyn;
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
-	//设置ImageLoade初始化信息
-	private DisplayImageOptions options = new DisplayImageOptions.Builder()  
-    .showImageForEmptyUri(R.drawable.tempicon).showStubImage(R.drawable.tempicon)  
-    .resetViewBeforeLoading(false) 
-    .delayBeforeLoading(100)  
-    .cacheInMemory(true)           
-    .cacheOnDisc(true)              
-    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-    .bitmapConfig(Bitmap.Config.RGB_565)               
-    .build(); 
+	// 设置ImageLoade初始化信息
+	private DisplayImageOptions options = new DisplayImageOptions.Builder()
+			.showImageForEmptyUri(R.drawable.tempicon)
+			.showStubImage(R.drawable.tempicon).resetViewBeforeLoading(false)
+			.delayBeforeLoading(200).cacheInMemory(true).cacheOnDisc(true)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+			.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 	private static final int TYPE_1 = 0;
 	private static final int TYPE_2 = 1;
-	
-
+	private static final int SETIMAGE = 2;
+	private Map<Integer,String> bigImageMap = new HashMap<Integer, String>();
 	public NewRecommnAdapter(LinkedList<AppInfo> appInfos, Context context,
 			File cache, ListView mylistView) {
 		super();
@@ -92,6 +96,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 		asyncImageLoader = new AsyncImageLoader();
 
 	}
+
 
 	@Override
 	public int getCount() {
@@ -110,15 +115,17 @@ public class NewRecommnAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		return arg0;
 	}
+
 	@Override
 	public int getItemViewType(int position) {
 		int type = position % 3;
-		if(type == 0) {
+		if (type == 0) {
 			return TYPE_1;
 		} else {
 			return TYPE_2;
 		}
 	}
+
 	@Override
 	public int getViewTypeCount() {
 		return 2;
@@ -129,41 +136,63 @@ public class NewRecommnAdapter extends BaseAdapter {
 		final ViewHolder viewHolder;
 		final ViewHolder2 viewHolder2;
 		Drawable mDrawable;
-		
+
 		int type = getItemViewType(position);
+	
 		if (convertvView == null) {
-		switch (type) {
-		case TYPE_1:
-			viewHolder2 = new ViewHolder2();
-			convertvView = lay.inflate(R.layout.item_recomm_lisview, null);
+			switch (type) {
+			case TYPE_1:
+				viewHolder2 = new ViewHolder2();
+				convertvView = lay.inflate(R.layout.item_recomm_lisview, null);
+
+				viewHolder2.progress_view = (ProgressView) convertvView
+						.findViewById(R.id.recomm_progress_view);
+				viewHolder2.recomm_bigiv = (ImageView) convertvView
+						.findViewById(R.id.recomm_bigiv);
+				viewHolder2.descr = (TextView) convertvView
+						.findViewById(R.id.recomm_descr);
+				viewHolder2.name = (TextView) convertvView
+						.findViewById(R.id.recomm_name);
+				viewHolder2.tvdown = (TextView) convertvView
+						.findViewById(R.id.recomm_tv_down);
+				convertvView.setTag(viewHolder2);
+				if(position < 6) {
+					new AppDetailRequest(appInfos.get(position).getIdx())
+					.execute(new OnResponseListener() {
+
+						@Override
+						public void onGetResponse(HttpResponse resp) {
+							final AppDetailResponse response = (AppDetailResponse) resp;
+							String appDes = response.getAppDes();
+							String bigUrl = response.getAppImgUrl()[0];
+							bigImageMap.put(position, bigUrl);
+							String bigurl = bigImageMap.get(position);
+							
+							ImageLoader.getInstance().displayImage(bigurl, viewHolder2.recomm_bigiv, options);
+						}
+					});
+					}
+				break;
+			case TYPE_2:
+				viewHolder = new ViewHolder();
+				convertvView = lay.inflate(R.layout.app_list_recomm_item, null);
+
+				viewHolder.icon = (ImageView) convertvView
+						.findViewById(R.id.icon2);
+				viewHolder.name = (TextView) convertvView
+						.findViewById(R.id.app_name2);
+				viewHolder.size = (TextView) convertvView
+						.findViewById(R.id.appsize2);
+				viewHolder.tvdown = (TextView) convertvView
+						.findViewById(R.id.tv_down2);
+				viewHolder.progress_view = (ProgressView) convertvView
+						.findViewById(R.id.progress_view2);
+				convertvView.setTag(viewHolder);
+				break;
+				
+			}
 		
-			viewHolder2.progress_view = (ProgressView) convertvView
-					.findViewById(R.id.recomm_progress_view);
-			viewHolder2.recomm_bigiv = (ImageView) convertvView.findViewById(R.id.recomm_bigiv);
-			viewHolder2.descr = (TextView) convertvView.findViewById(R.id.recomm_descr);
-			viewHolder2.name = (TextView) convertvView.findViewById(R.id.recomm_name);
-			viewHolder2.tvdown = (TextView) convertvView
-					.findViewById(R.id.recomm_tv_down);
-			convertvView.setTag(viewHolder2);
-			break;
-		case TYPE_2:
-			viewHolder = new ViewHolder();
-			convertvView = lay.inflate(R.layout.app_list_recomm_item, null);
-			
-			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon2);
-			viewHolder.name = (TextView) convertvView
-					.findViewById(R.id.app_name2);
-			viewHolder.size = (TextView) convertvView
-					.findViewById(R.id.appsize2);
-			viewHolder.tvdown = (TextView) convertvView
-					.findViewById(R.id.tv_down2);
-			viewHolder.progress_view = (ProgressView) convertvView
-					.findViewById(R.id.progress_view2);
-			convertvView.setTag(viewHolder);
-			break;
-		}
-		
-		
+
 		} else {
 			switch (type) {
 			case TYPE_1:
@@ -174,26 +203,41 @@ public class NewRecommnAdapter extends BaseAdapter {
 				viewHolder = (ViewHolder) convertvView.getTag();
 				break;
 			}
-		}switch (type) {
+		}
+		switch (type) {
 		case TYPE_1:
 			final ViewHolder2 v2 = ((ViewHolder2) convertvView.getTag());
 			setDownState(position, v2);
+			v2.name.setText(appInfos.get(position).getAppName());
+			new AppDetailRequest(appInfos.get(position).getIdx())
+					.execute(new OnResponseListener() {
+
+						@Override
+						public void onGetResponse(HttpResponse resp) {
+							final AppDetailResponse response = (AppDetailResponse) resp;
+							String appDes = response.getAppDes();
+							v2.descr.setText(appDes);
+							String bigUrl = response.getAppImgUrl()[0];
+							bigImageMap.put(position, bigUrl);
+						}
+					});
+			String bigurl = bigImageMap.get(position);
+				ImageLoader.getInstance().displayImage(bigurl, v2.recomm_bigiv, options);
 			break;
 
 		case TYPE_2:
 			final ViewHolder v1 = ((ViewHolder) convertvView.getTag());
-			LogUtils.d("NewRecommn", appInfos.size()+"");
-			
+			LogUtils.d("NewRecommn", appInfos.size() + "");
+
 			v1.name.setText(appInfos.get(position).getAppName());
 			v1.size.setText(ToolHelper.Kb2Mb(appInfos.get(position)
 					.getAppSize()));
-			ImageLoader.getInstance().displayImage(appInfos.get(position)
-					.getIconUrl(),  v1.icon,options);
+			ImageLoader.getInstance().displayImage(
+					appInfos.get(position).getIconUrl(), v1.icon, options);
 			ImageLoader.getInstance();
 			setDownState(position, v1);
 			break;
 		}
-
 
 		return convertvView;
 	}
@@ -213,8 +257,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 		if (appInfos.get(position).isIspause()) {
 			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 			v1.tvdown.setText("暂停");
-			v1.progress_view.setProgress(DownloadService
-					.getPrecent(idx));
+			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 		} else {
 			v1.tvdown.setText("下载中");
 
@@ -228,11 +271,10 @@ public class NewRecommnAdapter extends BaseAdapter {
 			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 					mDrawableicon, null, null);
 		} else if (appInfos.get(position).isDown()) {
-		
-			v1.progress_view.setProgress(DownloadService
-					.getPrecent(idx));
+
+			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");
-		
+
 			v1.tvdown.setText("下载中");
 			Drawable mDrawableicon = mContext.getResources().getDrawable(
 					R.drawable.downloading);
@@ -249,23 +291,26 @@ public class NewRecommnAdapter extends BaseAdapter {
 			v1.tvdown.setText("下载");
 			mDrawable = mContext.getResources().getDrawable(
 					R.drawable.downloading);
-			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawable, null, null);
+			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null, mDrawable,
+					null, null);
 			// 获取将要下载的文件名，如果本地存在该文件，则取出该文件
-			
+
 			// LogUtils.d("sa", tempFile.getAbsolutePath());
 
 			long length = sp.getLong(tempFile.getAbsolutePath(), 0);
 			// LogUtils.d("sa", length+"");
-			if (length != 0 && DownloadService.isExist(appInfos.get(
-				position).getAppName())) {
+			if (length != 0
+					&& DownloadService.isExist(appInfos.get(position)
+							.getAppName())) {
 				LogUtils.d("test", "已经存在");
 				v1.tvdown.setText("暂停");
-			
-				long count = sp.getLong(tempFile.getAbsolutePath()+"precent", 0);
+
+				long count = sp.getLong(tempFile.getAbsolutePath() + "precent",
+						0);
 				v1.progress_view.setProgress(count);
-			} else if(length != 0 && !DownloadService.isExist(appInfos.get(
-					position).getAppName())){
+			} else if (length != 0
+					&& !DownloadService.isExist(appInfos.get(position)
+							.getAppName())) {
 				Editor edit = sp.edit();
 				edit.remove(tempFile.getAbsolutePath());
 				edit.commit();
@@ -344,20 +389,21 @@ public class NewRecommnAdapter extends BaseAdapter {
 		});
 	}
 
-	private static class ViewHolder extends BaseHolder{
+	private static class ViewHolder extends BaseHolder {
 	}
-	private static class ViewHolder2 extends BaseHolder{
+
+	private static class ViewHolder2 extends BaseHolder {
 	}
-	
+
 	static class BaseHolder {
-		 ImageView recomm_bigiv;
-		 TextView descr;
-		 ImageView icon;
-		 TextView name;
-		 TextView size;
-		 TextView tvdown;
-		 ImageView recommTvdown;
-		 ProgressView progress_view;
+		ImageView recomm_bigiv;
+		TextView descr;
+		ImageView icon;
+		TextView name;
+		TextView size;
+		TextView tvdown;
+		ImageView recommTvdown;
+		ProgressView progress_view;
 	}
 
 	private void asyncloadImage(ImageView iv_header, String path) {

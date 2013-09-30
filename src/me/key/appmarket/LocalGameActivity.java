@@ -1,9 +1,13 @@
 package me.key.appmarket;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import me.key.appmarket.adapter.DetaileAdapter;
+import me.key.appmarket.adapter.LocalDetailAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.utils.AppInfo;
+import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 
@@ -54,18 +58,19 @@ public class LocalGameActivity extends Activity {
 		 * categoryInfoList, MainActivity.this, cache);
 		 */
 		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root);
-		LogUtils.d("mAppInfos", mAppInfos.size() + "");
-		MyAdapter adapter = new MyAdapter(this, mAppInfos);
-		mListGame.setAdapter(adapter);
-		new AsyncTask<Void, Void, Void>(){
-
-			@Override
-			protected Void doInBackground(Void... params) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-		};
+		LogUtils.d("mAppInfos", mAppInfos.size() + ""); 
+		ArrayList<CategoryInfo> categoryInfo = new ArrayList<CategoryInfo>();
+		categoryInfo.add(new CategoryInfo("0", "休闲益智", null, null, null));
+		categoryInfo.add(new CategoryInfo("1", "角色冒险", null, null, null));
+		categoryInfo.add(new CategoryInfo("2", "动作格斗", null, null, null));
+		categoryInfo.add(new CategoryInfo("3", "策略游戏", null, null, null));
+		categoryInfo.add(new CategoryInfo("4", "飞行射击", null, null, null));
+		categoryInfo.add(new CategoryInfo("5", "体育竞技", null, null, null));
+		categoryInfo.add(new CategoryInfo("6", "卡牌棋牌", null, null, null));
+		categoryInfo.add(new CategoryInfo("7", "经营养成", null, null, null));
+		categoryInfo.add(new CategoryInfo("8", "其他游戏", null, null, null));
+		LocalDetailAdapter mCategoryAdapter = new LocalDetailAdapter(categoryInfo, this, mListGame);
+		mListGame.setAdapter(mCategoryAdapter);
 
 	}
 }

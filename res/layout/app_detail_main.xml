@@ -31,7 +31,7 @@
                 android:layout_marginLeft="0dip"
                 android:layout_marginRight="0dip"
                 android:contentDescription="@null"
-                android:src="@drawable/hi_setting_more_nor_left" />
+                android:src="@drawable/btn_back_p" />
             <!-- 应用icon -->
 
             <ImageView

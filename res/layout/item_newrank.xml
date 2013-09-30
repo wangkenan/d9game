@@ -109,9 +109,10 @@
         android:src="@drawable/top_critique" />
     <TextView
         android:id="@+id/item_newrank_tv"
-        android:layout_width="fill_parent"
+        android:layout_width="150dip"
         android:layout_height="wrap_content" 
-        android:text="asfasgasg"
+        android:text="aaaaaaaaaa"
+        android:singleLine="true"
         android:layout_marginLeft="10dip"
         />
 </FrameLayout>

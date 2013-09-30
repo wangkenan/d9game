@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -118,6 +119,8 @@ public class DetaileAdapter extends BaseAdapter {
 			final CategoryInfo cif = categoryInfo.get(position);
 		//两张小图之间的间隙
 		int gapPx = convertDipOrPx(mContext, 5);
+		int gapPy = convertDipOrPx(mContext, 20);
+		int bigImHeight = (int)((width/2-gapPy)/1.3f);
 	if (position % 2 == 0) {
 			convertView = lay.inflate(R.layout.item_2_detailelistview, null);
 			ImageView ib1 = (ImageView) convertView
@@ -126,18 +129,63 @@ public class DetaileAdapter extends BaseAdapter {
 					.findViewById(R.id.item2_detail_ib2);
 			ImageView ib3 = (ImageView) convertView
 					.findViewById(R.id.item2_detail_ib3);
-	        Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category3);
-            Bitmap newbitmap = Bitmap.createBitmap(width/2-20, (int)(width/2.6f), bm.getConfig());
+			TextView item3_detail_name1 = (TextView) convertView.findViewById(R.id.item3_detail_name1);
+			TextView item3_detail_name2 = (TextView) convertView.findViewById(R.id.item3_detail_name2);
+			TextView item3_detail_name3 = (TextView) convertView.findViewById(R.id.item3_detail_name3);
+			switch (position) {
+			case 0:
+				 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category3);
+		            Bitmap newbitmap = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm.getConfig());
+			        getNewBitMap(bm, newbitmap);
+			        ib1.setImageBitmap(newbitmap);
+			        item3_detail_name1.setText(categoryInfo.get(2).getName());
+			        item3_detail_name3.setText(categoryInfo.get(0).getName());
+			        item3_detail_name2.setText(categoryInfo.get(1).getName());
+			    	Bitmap bm2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category2);
+		            Bitmap newbitmap2 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm2.getConfig());
+			        getNewBitMap(bm2, newbitmap2);
+			        ib2.setImageBitmap(newbitmap2);
+			        Bitmap bm3 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.m_127976003046);
+		            Bitmap newbitmap3 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm3.getConfig());
+			        getNewBitMap(bm3, newbitmap3);
+			        ib3.setImageBitmap(newbitmap3);
+				break;
+
+			case 1:
+			
+				break;
+
+			case 2:
+				 Bitmap bm4 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.kapai);
+		            Bitmap newbitmap4 = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm4.getConfig());
+			        getNewBitMap(bm4, newbitmap4);
+			        ib1.setImageBitmap(newbitmap4);
+			    	Bitmap bm5 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category1);
+		            Bitmap newbitmap5 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm5.getConfig());
+			        getNewBitMap(bm5, newbitmap5);
+			        ib2.setImageBitmap(newbitmap5);
+			        Bitmap bm6 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_4);
+		            Bitmap newbitmap6 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm6.getConfig());
+			        getNewBitMap(bm6, newbitmap6);
+			        ib3.setImageBitmap(newbitmap6);
+			        item3_detail_name1.setText(categoryInfo.get(6).getName());
+			        item3_detail_name3.setText(categoryInfo.get(8).getName());
+			        item3_detail_name2.setText(categoryInfo.get(7).getName());
+				break;
+			}
+			    
+/*	        Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category3);
+            Bitmap newbitmap = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm.getConfig());
 	        getNewBitMap(bm, newbitmap);
 	        ib1.setImageBitmap(newbitmap);
-			bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category1);
-			newbitmap = Bitmap.createBitmap(width/2-20, (int)(width/5.2f)-gapPx/2, bm.getConfig());
+			bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_3);
+			newbitmap = Bitmap.createBitmap(width/2-gapPy, bigImHeight/2-gapPx/2, bm.getConfig());
 			 getNewBitMap(bm, newbitmap);
 			ib2.setImageBitmap(newbitmap);
 			bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_2);
-			newbitmap = Bitmap.createBitmap(width/2-20, (int)(width/5.2f)-gapPx/2, bm.getConfig());
+			newbitmap = Bitmap.createBitmap(width/2-gapPy, bigImHeight/2-gapPx/2, bm.getConfig());
 			 getNewBitMap(bm, newbitmap);
-			ib3.setImageBitmap(newbitmap);
+			ib3.setImageBitmap(newbitmap);*/
 			
 			 /* ImageLoader.getInstance().displayImage(cif.getAppIcon(), ib1,
 			  options);*/
@@ -156,7 +204,7 @@ public class DetaileAdapter extends BaseAdapter {
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
 					if(position ==0 ) {
-						cif = categoryInfo.get(position);
+						cif = categoryInfo.get(position+2);
 					}else
 						cif   = categoryInfo.get(position*3);
 					bundle.putString("name", cif.getName());
@@ -194,7 +242,7 @@ public class DetaileAdapter extends BaseAdapter {
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
 					if(position ==0 ) {
-						cif = categoryInfo.get(position+2);
+						cif = categoryInfo.get(position);
 					}else
 						cif   = categoryInfo.get(position*3+2);
 					bundle.putString("name", cif.getName());
@@ -212,19 +260,30 @@ public class DetaileAdapter extends BaseAdapter {
 					.findViewById(R.id.item3_detail_ib2);
 			ImageView ib3 = (ImageView) convertView
 					.findViewById(R.id.item3_detail_ib3);
-			int bigImHeight = (int)((width/2-20)/1.3f);
-		    Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_1);
-            Bitmap newbitmap = Bitmap.createBitmap(width/2-20,bigImHeight/2-gapPx/2, bm.getConfig());
-	        getNewBitMap(bm, newbitmap);
-	        ib1.setImageBitmap(newbitmap);
-			bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_2);
-			newbitmap = Bitmap.createBitmap(width/2-20,bigImHeight/2-gapPx/2, bm.getConfig());
-			 getNewBitMap(bm, newbitmap);
-			ib2.setImageBitmap(newbitmap);
-			bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category3);
-			newbitmap = Bitmap.createBitmap(width/2-20, bigImHeight, bm.getConfig());
-			 getNewBitMap(bm, newbitmap);
-			ib3.setImageBitmap(newbitmap);
+			TextView item3_detail_name1 = (TextView) convertView.findViewById(R.id.item3_detail_name1);
+			TextView item3_detail_name2 = (TextView) convertView.findViewById(R.id.item3_detail_name2);
+			TextView item3_detail_name3 = (TextView) convertView.findViewById(R.id.item3_detail_name3);
+			switch (position) {
+			case 1:
+				 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_2);
+		            Bitmap newbitmap = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm.getConfig());
+			        getNewBitMap(bm, newbitmap);
+			        item3_detail_name1.setText(categoryInfo.get(3).getName());
+			        item3_detail_name2.setText(categoryInfo.get(4).getName());
+			        item3_detail_name3.setText(categoryInfo.get(5).getName());
+			        ib1.setImageBitmap(newbitmap);
+			    	Bitmap bm2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_5);
+		            Bitmap newbitmap2 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm2.getConfig());
+			        getNewBitMap(bm2, newbitmap2);
+			        ib2.setImageBitmap(newbitmap2);
+			        Bitmap bm3 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.xiuxian);
+		            Bitmap newbitmap3 = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm3.getConfig());
+			        getNewBitMap(bm3, newbitmap3);
+			        ib3.setImageBitmap(newbitmap3);
+			    	break;
+			}
+			
+
 			ib1.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -290,7 +349,7 @@ public class DetaileAdapter extends BaseAdapter {
 		double newWidth = 1.00;
 		double newHeight = 2.6;
       // matrix.setRotate(30, bm.getWidth()/2, bm.getHeight()/2);
-		float scaleWidth =(float) (newWidth/2.0);
+		float scaleWidth =(float) (width/2-20)/width;
 		LogUtils.d("scaleWidth+scaleWidth", scaleWidth+":"+scaleWidth+"++"+width+"PPP"+2/3);
 		matrix.postScale(scaleWidth, scaleWidth);
 //使用画布将原图片，矩阵，画笔进行新图片的绘画

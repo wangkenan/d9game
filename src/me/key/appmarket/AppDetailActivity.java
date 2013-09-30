@@ -212,9 +212,11 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						appSize.setText(getString(R.string.app_detail_size,
 								formetFileSize(Long.parseLong(response
 										.getAppSize()))));
+						
 					}
 					if (response.getAppUrl() != null) {
 						appDownload.setTag(response.getAppUrl());
+						
 					}
 					if (response.getAppDes() != null) {
 						appDes.setText(response.getAppDes());
@@ -233,7 +235,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					} else {
 						appDownload.setText("下载");
 					}
-
+					appDownload.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.btn_icon_download_disable), null, null, null);
+					appDownload.setText("下载("+	formetFileSize(Long.parseLong(response
+							.getAppSize()))+")");
 					if (response.getAppImgUrl() != null) {
 						for (int i = 0; i < response.getAppImgUrl().length; i++) {
 							ImageView iv = new ImageView(AppDetailActivity.this);

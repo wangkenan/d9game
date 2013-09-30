@@ -13,6 +13,10 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
+import me.key.appmarket.network.AppDetailRequest;
+import me.key.appmarket.network.AppDetailResponse;
+import me.key.appmarket.network.HttpRequest.OnResponseListener;
+import me.key.appmarket.network.HttpResponse;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
@@ -153,6 +157,7 @@ public class NewRankAdapter extends BaseAdapter {
 						.findViewById(R.id.tv_down);
 				viewHolder2.progress_view = (ProgressView) convertvView
 						.findViewById(R.id.progress_view);
+				viewHolder2.descri = (TextView) convertvView.findViewById(R.id.item_newrank_tv);
 				viewHolder2.top = (ImageView) convertvView.findViewById(R.id.item_newrank_top_iv);
 				convertvView.setTag(viewHolder2);
 				break;
@@ -182,20 +187,40 @@ public class NewRankAdapter extends BaseAdapter {
 			switch (position) {
 			case 0:
 				v2.top.setImageResource(R.drawable.top1);
+				getDesc(0, v2);
 				break;
 
 			case 1:
 				v2.top.setImageResource(R.drawable.top2);
+				getDesc(1, v2);
 				break;
 			case 2:
 				v2.top.setImageResource(R.drawable.top3);
+				getDesc(2, v2);
 				break;
 			}
 			
+			
+			
+			LogUtils.d("NewRank", appInfos.get(position).getAppDescri()+"");
 			break;
 		}
 	
 		return convertvView;
+	}
+
+	public void getDesc(final int position, final ViewHolder2 v2) {
+		new AppDetailRequest(appInfos.get(position).getIdx()).execute(new OnResponseListener(){
+
+			@Override
+			public void onGetResponse(HttpResponse resp) {
+				final AppDetailResponse response = (AppDetailResponse) resp;
+				if (response != null) {
+					v2.descri.setText(response.getAppDes());
+				}
+			}
+			
+		});
 	}
 
 	public void fillData(final int position, final BaseHolder v1) {

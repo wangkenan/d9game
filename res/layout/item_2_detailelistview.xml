@@ -2,45 +2,90 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal" 
-    >
-    <ImageView
-        android:id="@id/item2_detail_ib1"
+    android:orientation="horizontal" >
+
+    <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="5dip"
-        android:scaleType="centerCrop"
-             android:paddingBottom="5dip"
-               android:focusable="true"
-              android:clickable="true" 
-              
-        />
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@id/item2_detail_ib1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:scaleType="fitCenter"
+                android:src="@drawable/action_type_apk_remove" />
+
+            <TextView
+                 android:id="@+id/item3_detail_name1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dip"
+                android:text="休闲益智"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dip"
-        
         android:orientation="vertical" 
         >
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@id/item2_detail_ib2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/action_type_apk_remove" />
+
+                <TextView
+                     android:id="@+id/item3_detail_name2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dip"
+                    android:text="休闲益智"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
         <ImageView
-             android:id="@id/item2_detail_ib2"
+            android:id="@id/item2_detail_ib3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-              android:paddingTop="5dip"
-              android:scaleType="centerCrop"
-              android:focusable="true"
-              android:clickable="true"
-              android:src="@drawable/action_type_apk_remove"
-            />
-          <ImageView
-               android:id="@id/item2_detail_ib3"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1" 
-          android:paddingTop="5dip"
-          android:scaleType="centerCrop"
-          android:paddingBottom="5dip"
-            />
+            android:layout_marginTop="5dip"
+            android:scaleType="fitCenter"
+            android:src="@drawable/action_type_apk_remove" />
+              <TextView
+                   android:id="@+id/item3_detail_name3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dip"
+                    android:text="休闲益智"
+                    android:textColor="@color/white" />
+            </RelativeLayout>
+        </FrameLayout>
     </LinearLayout>
 
 </LinearLayout>

@@ -42,7 +42,7 @@
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dip"
         android:layout_below="@id/topbar"
         android:background="@drawable/tab_background_light"
         android:orientation="horizontal" >
@@ -57,7 +57,7 @@
             android:gravity="center"
             android:text="@string/main_rec"
             android:textColor="@color/default_text"
-            android:textSize="15.0dip" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/text2"
@@ -69,7 +69,7 @@
             android:gravity="center"
             android:text="@string/main_game"
             android:textColor="@color/default_text"
-            android:textSize="15.0dip" />
+            android:textSize="15sp" />
 
 
         <TextView
@@ -82,7 +82,7 @@
             android:gravity="center"
             android:text="@string/main_rank"
             android:textColor="@color/default_text"
-            android:textSize="15.0dip" />
+            android:textSize="15sp" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
