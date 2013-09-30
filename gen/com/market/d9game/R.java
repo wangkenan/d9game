@@ -550,18 +550,19 @@ containing a value of this type.
         public static final int item_recomm_lisview=0x7f03001c;
         public static final int list_item=0x7f03001d;
         public static final int loadmore=0x7f03001e;
-        public static final int main=0x7f03001f;
-        public static final int main_bottom=0x7f030020;
-        public static final int rank=0x7f030021;
-        public static final int recotags_layout=0x7f030022;
-        public static final int recotags_title=0x7f030023;
-        public static final int search=0x7f030024;
-        public static final int search_history_banner=0x7f030025;
-        public static final int search_hot_item=0x7f030026;
-        public static final int setting=0x7f030027;
-        public static final int simple_item=0x7f030028;
-        public static final int type=0x7f030029;
-        public static final int update_remote_view=0x7f03002a;
+        public static final int locat_applist=0x7f03001f;
+        public static final int main=0x7f030020;
+        public static final int main_bottom=0x7f030021;
+        public static final int rank=0x7f030022;
+        public static final int recotags_layout=0x7f030023;
+        public static final int recotags_title=0x7f030024;
+        public static final int search=0x7f030025;
+        public static final int search_history_banner=0x7f030026;
+        public static final int search_hot_item=0x7f030027;
+        public static final int setting=0x7f030028;
+        public static final int simple_item=0x7f030029;
+        public static final int type=0x7f03002a;
+        public static final int update_remote_view=0x7f03002b;
     }
     public static final class raw {
         public static final int category_1=0x7f040000;

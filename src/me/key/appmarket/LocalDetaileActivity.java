@@ -58,7 +58,7 @@ public class LocalDetaileActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.applist);
+		this.setContentView(R.layout.locat_applist);
 
 		cache = new File(Environment.getExternalStorageDirectory(), "cache");
 		if (!cache.exists()) {

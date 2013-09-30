@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,9 +36,19 @@ public class LocalGameActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.applist);
+		setContentView(R.layout.locat_applist);
 		mListGame = (ListView) this.findViewById(R.id.list_app_game);
 		LayoutInflater inflater = LayoutInflater.from(this);
+		ImageButton search_btn = (ImageButton) findViewById(R.id.search_btn);
+		search_btn = (ImageButton) findViewById(R.id.search_btn);
+		search_btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(LocalGameActivity.this,
+						SearchActivity.class);
+				startActivity(intent);
+			}
+		});
 		
 		/*
 		 * game_calss.setOnClickListener(new OnClickListener() {
