@@ -399,7 +399,7 @@ public class LocalDetailAdapter extends BaseAdapter {
 					 * intent.putExtra("value", bundle);
 					 * mContext.startActivity(intent);
 					 */
-					CategoryInfo cif = categoryInfo.get(position * 3 + 1);
+					CategoryInfo cif = categoryInfo.get(position * 3 + 2);
 					Intent intent = new Intent();
 					intent.setClass(mContext, LocalIndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
