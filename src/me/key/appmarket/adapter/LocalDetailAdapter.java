@@ -213,7 +213,7 @@ public class LocalDetailAdapter extends BaseAdapter {
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
 					if (position == 0) {
-						cif = categoryInfo.get(position);
+						cif = categoryInfo.get(position+2);
 					}/*
 					 * else cif = categoryInfo.get(position*3); String Root =
 					 * LocalUtils.getRoot(mContext); List<AppInfo> mAppInfos =
@@ -275,7 +275,7 @@ public class LocalDetailAdapter extends BaseAdapter {
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
 					if (position == 0) {
-						cif = categoryInfo.get(position + 2);
+						cif = categoryInfo.get(position );
 					} else {
 						cif = categoryInfo.get(position * 3 + 2);
 					}
