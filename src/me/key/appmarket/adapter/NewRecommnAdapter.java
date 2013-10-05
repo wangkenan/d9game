@@ -157,20 +157,31 @@ public class NewRecommnAdapter extends BaseAdapter {
 						.findViewById(R.id.recomm_tv_down);
 				convertvView.setTag(viewHolder2);
 				if(position < 6) {
-					new AppDetailRequest(appInfos.get(position).getIdx())
-					.execute(new OnResponseListener() {
-
+					new AsyncTask<Void, Void, String>() {
+						String bigurl = null;
 						@Override
-						public void onGetResponse(HttpResponse resp) {
-							final AppDetailResponse response = (AppDetailResponse) resp;
-							String appDes = response.getAppDes();
-							String bigUrl = response.getAppImgUrl()[0];
-							bigImageMap.put(position, bigUrl);
-							String bigurl = bigImageMap.get(position);
+						protected String doInBackground(Void... params) {
+							new AppDetailRequest(appInfos.get(position).getIdx())
+							.execute(new OnResponseListener() {
 							
-							ImageLoader.getInstance().displayImage(bigurl, viewHolder2.recomm_bigiv, options);
+								@Override
+								public void onGetResponse(HttpResponse resp) {
+									final AppDetailResponse response = (AppDetailResponse) resp;
+									String appDes = response.getAppDes();
+									String bigUrl = response.getAppImgUrl()[0];
+									bigImageMap.put(position, bigUrl);
+									bigurl = bigImageMap.get(position);
+								}
+							});
+							return bigurl;
 						}
-					});
+						@Override
+						protected void onPostExecute(String result) {
+							ImageLoader.getInstance().displayImage(bigurl, viewHolder2.recomm_bigiv, options);
+							super.onPostExecute(result);
+						}
+						
+					}.execute();
 					}
 				break;
 			case TYPE_2:

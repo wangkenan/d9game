@@ -673,7 +673,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.market.d9game:horizontalSpacing
+          @attr name android:horizontalSpacing
         */
         public static final int FlowLayout_horizontalSpacing = 0;
         /**
@@ -689,7 +689,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.market.d9game:verticalSpacing
+          @attr name android:verticalSpacing
         */
         public static final int FlowLayout_verticalSpacing = 1;
         /** Attributes that can be used with a FlowLayout_LayoutParams.
@@ -718,7 +718,7 @@ containing a value of this type.
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.market.d9game:layout_breakLine
+          @attr name android:layout_breakLine
         */
         public static final int FlowLayout_LayoutParams_layout_breakLine = 0;
         /**
@@ -734,7 +734,7 @@ in (inches), mm (millimeters).
 theme attribute (in the form
 "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
 containing a value of this type.
-          @attr name com.market.d9game:layout_horizontalSpacing
+          @attr name android:layout_horizontalSpacing
         */
         public static final int FlowLayout_LayoutParams_layout_horizontalSpacing = 1;
         /** Attributes that can be used with a Gallery.
@@ -743,7 +743,7 @@ containing a value of this type.
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #Gallery_android_galleryItemBackground android:galleryItemBackground}</code></td><td></td></tr>
+           <tr><td><code>{@link #Gallery_android_galleryItemBackground com.market.d9game:android_galleryItemBackground}</code></td><td></td></tr>
            </table>
            @see #Gallery_android_galleryItemBackground
          */
@@ -751,9 +751,9 @@ containing a value of this type.
             0x0101004c
         };
         /**
-          <p>This symbol is the offset where the {@link android.R.attr#galleryItemBackground}
+          <p>This symbol is the offset where the {@link com.market.d9game.R.attr#android_galleryItemBackground}
           attribute's value can be found in the {@link #Gallery} array.
-          @attr name android:galleryItemBackground
+          @attr name android:android_galleryItemBackground
         */
         public static final int Gallery_android_galleryItemBackground = 0;
     };

@@ -44,6 +44,8 @@ public class LocalUtils {
 			inputStream = context.getResources().openRawResource(R.raw.category_1);
 		} else if (ItemId.equals("1")) {
 			inputStream = context.getResources().openRawResource(R.raw.category_2);
+		} else {
+			inputStream = context.getResources().openRawResource(R.raw.category_1);
 		}
 		String js = (String) TxtReader.getString(inputStream);
 		List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
