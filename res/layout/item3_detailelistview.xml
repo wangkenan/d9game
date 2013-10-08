@@ -35,7 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
-                    android:text="休闲益智"
+                    android:text="动作格斗"
                     android:textColor="@color/white" />
             </RelativeLayout>
         </FrameLayout>

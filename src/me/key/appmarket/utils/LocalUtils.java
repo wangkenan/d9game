@@ -39,11 +39,24 @@ public class LocalUtils {
 	
 	public static List<AppInfo> InitHomePager(String ItemId,Context context,String Root) {
 		InputStream inputStream;
-		inputStream = context.getResources().openRawResource(R.raw.category_1);
 		if (ItemId.equals("0")) {
 			inputStream = context.getResources().openRawResource(R.raw.category_1);
 		} else if (ItemId.equals("1")) {
 			inputStream = context.getResources().openRawResource(R.raw.category_2);
+		} else if(ItemId.equals("2")){
+			inputStream = context.getResources().openRawResource(R.raw.category_3);
+		} else if(ItemId.equals("3")){
+			inputStream = context.getResources().openRawResource(R.raw.category_4);
+		} else if(ItemId.equals("4")){
+			inputStream = context.getResources().openRawResource(R.raw.category_5);
+		} else if(ItemId.equals("5")){
+			inputStream = context.getResources().openRawResource(R.raw.category_6);
+		} else if(ItemId.equals("6")){
+			inputStream = context.getResources().openRawResource(R.raw.category_7);
+		} else if(ItemId.equals("7")){
+			inputStream = context.getResources().openRawResource(R.raw.category_8);
+		} else if(ItemId.equals("8")){
+			inputStream = context.getResources().openRawResource(R.raw.category_9);
 		} else {
 			inputStream = context.getResources().openRawResource(R.raw.category_1);
 		}
