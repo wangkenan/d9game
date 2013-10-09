@@ -2,39 +2,49 @@ package me.key.appmarket;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.ManagerAdapter;
 import me.key.appmarket.adapter.ManagerUpdateAdapter;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LogUtils;
 
 import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 /**
  * 管理界面
  * @author Administrator
  *
  */
-public class ManagerActivity extends Activity {
+public class ManagerActivity extends Activity implements OnScrollListener{
 	// 管理
 		private ListView mManagerListView;
 		private ProgressBar pro_bar;
@@ -42,22 +52,78 @@ public class ManagerActivity extends Activity {
 		private ManagerUpdateAdapter mManagerUpdateAdapter;
 		private ArrayList<AppInfo> appManagerInfos = new ArrayList<AppInfo>();
 		private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
-
+		private boolean isLoading = false;
+		private boolean isFirst = false;
 		private Button install_app;
 		private Button update_app;
 		private boolean isShowingInstall = true;
-
+		private ProgressBar pBar;
+		private LinkedList<AppInfo> appDatainfos;
+		private View loadMoreView;
+		private Button loadMoreButton;
 		private String apknamelist;
+		private TextView tv_empty;
+		private int page = 1; // 最后的可视项索引
 		public static List<Activity> activities = new ArrayList<Activity>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_managemer);
-		appManagerInfos = AppUtils.getUserApps(this);
+		final File cache = new File(Environment.getExternalStorageDirectory(), "cache");
+		if (!cache.exists()) {
+			cache.mkdirs();
+		}
+		// TODO Auto-generated method stub
+		mManagerListView = (ListView) findViewById(R.id.manalist);
+		pBar = (ProgressBar) findViewById(R.id.pro_bar);
+		appDatainfos = new LinkedList<AppInfo>();
+	
+		pBar.setVisibility(View.VISIBLE);
+		tv_empty = (TextView) findViewById(R.id.empty);
+		tv_empty.setVisibility(View.GONE);
+		ImageView btnBack = (ImageView) findViewById(R.id.back_icon);
+		loadMoreView = getLayoutInflater().inflate(R.layout.loadmore, null);
+		loadMoreButton = (Button) loadMoreView
+				.findViewById(R.id.loadMoreButton);
+		// loadMoreButton.setOnClickListener(new View.OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// loadMoreButton.setText("正在加载中...");
+		// handler.postDelayed(new Runnable() {
+		// @Override
+		// public void run() {
+		// loadMoreData();
+		// appAdapter.notifyDataSetChanged();
+		// loadMoreButton.setText("加载更多...");
+		// }
+		// },2000);
+		// }
+		// });
+		mManagerListView.addFooterView(loadMoreView);
+		//mManagerListView.setOnScrollListener(this);
+		
+		loadMoreButton.setVisibility(View.GONE);
+		new AsyncTask<Void, Void, Void>(){
 
-		install_app = (Button) this.findViewById(R.id.install_app);
-		update_app = (Button) this.findViewById(R.id.update_app);
-		install_app.setPadding(40, 0, 40, 0);
+			@Override
+			protected Void doInBackground(Void... params) {
+				appManagerInfos = AppUtils.getUserApps(ManagerActivity.this,4000);
+				return null;
+			}
+			protected void onPostExecute(Void result) {
+				mManagerAdapter = new ManagerAdapter(appManagerInfos,
+						ManagerActivity.this, cache);
+				mManagerUpdateAdapter = new ManagerUpdateAdapter(appManagerUpdateInfos,
+						ManagerActivity.this, cache);
+				mManagerListView.setAdapter(mManagerAdapter);
+			};
+			
+		}.execute();
+		//appManagerInfos =(ArrayList<AppInfo>) getIntent().getExtras().getSerializable("manager");
+	
+		//install_app = (Button) this.findViewById(R.id.install_app);
+		//update_app = (Button) this.findViewById(R.id.update_app);
+		/*install_app.setPadding(40, 0, 40, 0);
 		update_app.setPadding(40, 0, 40, 0);
 
 		install_app.setOnClickListener(new OnClickListener() {
@@ -105,20 +171,11 @@ public class ManagerActivity extends Activity {
 					
 				}
 			}
-		});
-		File cache = new File(Environment.getExternalStorageDirectory(), "cache");
-		if (!cache.exists()) {
-			cache.mkdirs();
-		}
+		});*/
+		
 		pro_bar = (ProgressBar) this.findViewById(R.id.pro_bar);
 		pro_bar.setVisibility(View.GONE);
-		mManagerListView = (ListView) this
-				.findViewById(R.id.manager_list);
-		mManagerAdapter = new ManagerAdapter(appManagerInfos,
-				ManagerActivity.this, cache);
-		mManagerUpdateAdapter = new ManagerUpdateAdapter(appManagerUpdateInfos,
-				ManagerActivity.this, cache);
-		mManagerListView.setAdapter(mManagerAdapter);
+		
 		mManagerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -216,5 +273,56 @@ public class ManagerActivity extends Activity {
 			// Log.e("tag", "error = " + ex.getMessage());
 			homeUpdateHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 		}
+	}
+	@Override
+	public void onScroll(AbsListView arg0, int firstVisibleItem,
+			int visibleItemCount, int totalItemCount) {
+		// TODO Auto-generated method stub
+		if ((firstVisibleItem + visibleItemCount == totalItemCount)
+				&& (totalItemCount != 0)) {
+			if (!isLoading && !isFirst) {
+				isLoading = true;
+					loadMoreButton.setText("正在加载中...");
+					loadMoreButton.setVisibility(View.VISIBLE);
+					page = page + 1;
+					//new Thread(runnable).start();
+					new AsyncTask<Void, Void, Void>(){
+
+						@Override
+						protected Void doInBackground(Void... params) {
+							ArrayList<AppInfo> appManagerInfos_temp = new ArrayList<AppInfo>();
+							appManagerInfos_temp = AppUtils.getUserApps(ManagerActivity.this,10 *page);
+							appManagerInfos.clear();
+							appManagerInfos.addAll(appManagerInfos_temp);
+							LogUtils.d("page", page+""+"aaaaaa"+appManagerInfos.size());
+							return null;
+						}
+						protected void onPostExecute(Void result) {
+							loadMoreButton.setVisibility(View.GONE);
+							LogUtils.d("post", "我运行了");
+							mManagerAdapter.notifyDataSetChanged();
+							pBar.setVisibility(View.GONE);
+							isLoading = false;
+						};
+					}.execute();
+			}
+
+			isFirst = false;
+		}
+	}
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 }

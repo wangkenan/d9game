@@ -2,7 +2,9 @@
 <RelativeLayout android:id="@+id/top_bar" 
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+ android:background="@color/gray_hint"
+  >
 	 <ProgressBar 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" 
@@ -16,8 +18,11 @@
 	     android:visibility="gone"
 	     layout="@layout/error_layout"/>
 	<ListView 
+	     android:background="#FFFFFF"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
+	    android:layout_marginLeft="5dip"
+	    android:layout_marginRight="5dip"
 	    android:listSelector="@drawable/list_item_selector"
 	    android:id="@+id/list"></ListView>
 </RelativeLayout>

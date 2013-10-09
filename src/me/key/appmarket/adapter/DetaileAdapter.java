@@ -1,5 +1,7 @@
 package me.key.appmarket.adapter;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +10,6 @@ import me.key.appmarket.IndexDetaileActivity;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.widgets.MyImageView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -30,11 +32,9 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 分类信息adapter
@@ -60,6 +60,14 @@ public class DetaileAdapter extends BaseAdapter {
 	//屏幕的宽高
 	private int width;
 	private int height;
+	private int[] imageResIds = new int[]{
+			R.drawable.a20131008173440,R.drawable.a20131008173628,R.drawable.a20131008173532,
+			R.drawable.a20131008174008,R.drawable.a20131008174001,R.drawable.a20131008211144,
+			R.drawable.a20131008174149,R.drawable.a20131008174138,
+			R.drawable.a20131008211149,R.drawable.a20131008211149,R.drawable.a20131008174138,
+			R.drawable.a20131008174149
+	};
+	
 	WindowManager wm;
 	private static final String DetaileAdapter = "DetaileAdapter";
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
@@ -70,6 +78,9 @@ public class DetaileAdapter extends BaseAdapter {
 			.delayBeforeLoading(100).cacheInMemory(true).cacheOnDisc(true)
 //			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 			.bitmapConfig(Bitmap.Config.RGB_565).build();
+	private int gapPy;
+	private int bigImHeight;
+	private int gapPx ;
 
 	public DetaileAdapter(ArrayList<CategoryInfo> categoryInfo,
 			Context context, ListView mylistView) {
@@ -84,11 +95,14 @@ public class DetaileAdapter extends BaseAdapter {
 		((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);   
 		width=dm.widthPixels;   
 		height=dm.heightPixels;   
+		gapPx= convertDipOrPx(mContext, 5);
+		gapPy = convertDipOrPx(mContext, 10);
+		bigImHeight = (int)((width-gapPy)/2/1.27f);
 	}
 
 	@Override
 	public int getCount() {
-		return categoryInfo.size()/3;
+		return categoryInfo.size()/3+1;
 	}
 
 	@Override
@@ -116,12 +130,33 @@ public class DetaileAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup arg2) {
-			final CategoryInfo cif = categoryInfo.get(position);
+		
+			
 		//两张小图之间的间隙
-		int gapPx = convertDipOrPx(mContext, 5);
-		int gapPy = convertDipOrPx(mContext, 20);
-		int bigImHeight = (int)((width/2-gapPy)/1.3f);
-	if (position % 2 == 0) {
+			if(position == 0) {
+				convertView = lay.inflate(R.layout.item_banner, null);
+				ImageView banner = (ImageView) convertView.findViewById(R.id.banner);
+				setImagePosition(R.drawable.a20131008173322, banner);
+				banner.setOnClickListener(new OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent(mContext,
+								IndexDetaileActivity.class);
+						Bundle bundle = new Bundle();
+						CategoryInfo cif;
+							cif   = categoryInfo.get(1);
+						bundle.putString("name", "每周热门盘点");
+						bundle.putInt("type1", Integer.parseInt(cif.getType1()));
+						bundle.putInt("type2", Integer.parseInt(cif.getType2()));
+						intent.putExtra("value", bundle);
+						mContext.startActivity(intent);
+					}
+				});
+			} else {
+				final int newPosition = position -1;
+	if (newPosition % 2 == 0) {
+		//final CategoryInfo cif = categoryInfo.get(newPosition);
 			convertView = lay.inflate(R.layout.item_2_detailelistview, null);
 			ImageView ib1 = (ImageView) convertView
 					.findViewById(R.id.item2_detail_ib1);
@@ -129,50 +164,39 @@ public class DetaileAdapter extends BaseAdapter {
 					.findViewById(R.id.item2_detail_ib2);
 			ImageView ib3 = (ImageView) convertView
 					.findViewById(R.id.item2_detail_ib3);
-			TextView item3_detail_name1 = (TextView) convertView.findViewById(R.id.item3_detail_name1);
+		LayoutParams par1 = ib1.getLayoutParams();
+		par1.height = bigImHeight;
+		par1.width = (width-gapPy)/2;
+		ib1.setLayoutParams(par1);
+		LayoutParams par2 = ib2.getLayoutParams();
+		par2.height = (bigImHeight-gapPx)/2;
+		par2.width = (width-gapPy)/2;
+		ib2.setLayoutParams(par2);
+		LayoutParams par3 = ib3.getLayoutParams();
+		par3.height = (bigImHeight-gapPx)/2;
+		par3.width = (width-gapPy)/2;
+		ib3.setLayoutParams(par3);
+		/*	TextView item3_detail_name1 = (TextView) convertView.findViewById(R.id.item3_detail_name1);
 			TextView item3_detail_name2 = (TextView) convertView.findViewById(R.id.item3_detail_name2);
 			TextView item3_detail_name3 = (TextView) convertView.findViewById(R.id.item3_detail_name3);
-			switch (position) {
-			case 0:
-				 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category3);
-		            Bitmap newbitmap = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm.getConfig());
-			        getNewBitMap(bm, newbitmap);
-			        ib1.setImageBitmap(newbitmap);
-			        item3_detail_name1.setText(categoryInfo.get(2).getName());
+		*/
+			
+			setImage(imageResIds[newPosition*3], ib1);
+			setImage(imageResIds[newPosition*3+1], ib2);
+			setImage(imageResIds[newPosition*3+2], ib3);
+				
+			       /* item3_detail_name1.setText(categoryInfo.get(2).getName());
 			        item3_detail_name3.setText(categoryInfo.get(0).getName());
-			        item3_detail_name2.setText(categoryInfo.get(1).getName());
-			    	Bitmap bm2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category2);
-		            Bitmap newbitmap2 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm2.getConfig());
+			        item3_detail_name2.setText(categoryInfo.get(1).getName());*/
+			    /*	Bitmap bm2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category2);
+		            Bitmap newbitmap2 = Bitmap.createBitmap((width-gapPy)/2,(bigImHeight-gapPx)/2, bm2.getConfig());
 			        getNewBitMap(bm2, newbitmap2);
 			        ib2.setImageBitmap(newbitmap2);
 			        Bitmap bm3 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.m_127976003046);
-		            Bitmap newbitmap3 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm3.getConfig());
+		            Bitmap newbitmap3 = Bitmap.createBitmap((width-gapPy)/2,(bigImHeight-gapPx)/2, bm3.getConfig());
 			        getNewBitMap(bm3, newbitmap3);
-			        ib3.setImageBitmap(newbitmap3);
-				break;
-
-			case 1:
-			
-				break;
-
-			case 2:
-				 Bitmap bm4 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.kapai);
-		            Bitmap newbitmap4 = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm4.getConfig());
-			        getNewBitMap(bm4, newbitmap4);
-			        ib1.setImageBitmap(newbitmap4);
-			    	Bitmap bm5 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category1);
-		            Bitmap newbitmap5 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm5.getConfig());
-			        getNewBitMap(bm5, newbitmap5);
-			        ib2.setImageBitmap(newbitmap5);
-			        Bitmap bm6 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_4);
-		            Bitmap newbitmap6 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm6.getConfig());
-			        getNewBitMap(bm6, newbitmap6);
-			        ib3.setImageBitmap(newbitmap6);
-			        item3_detail_name1.setText(categoryInfo.get(6).getName());
-			        item3_detail_name3.setText(categoryInfo.get(8).getName());
-			        item3_detail_name2.setText(categoryInfo.get(7).getName());
-				break;
-			}
+			        ib3.setImageBitmap(newbitmap3);*/
+				
 			    
 /*	        Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.category3);
             Bitmap newbitmap = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm.getConfig());
@@ -199,57 +223,63 @@ public class DetaileAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View v) {
+					if(categoryInfo.size() != 0) {
 					Intent intent = new Intent(mContext,
 							IndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
-					if(position ==0 ) {
-						cif = categoryInfo.get(position+2);
+					if(newPosition ==0 ) {
+						cif = categoryInfo.get(newPosition+2);
 					}else
-						cif   = categoryInfo.get(position*3);
+						cif   = categoryInfo.get(5);
 					bundle.putString("name", cif.getName());
 					bundle.putInt("type1", Integer.parseInt(cif.getType1()));
 					bundle.putInt("type2", Integer.parseInt(cif.getType2()));
 					intent.putExtra("value", bundle);
 					mContext.startActivity(intent);
+				}
 				}
 			});
 			ib2.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					if(categoryInfo.size() != 0) {
 					Intent intent = new Intent(mContext,
 							IndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
 					if(position ==0 ) {
-						cif = categoryInfo.get(position+1);
+						cif = categoryInfo.get(newPosition+1);
 					}else
-						cif   = categoryInfo.get(position*3+1);
+						cif   = categoryInfo.get(newPosition*3+1);
 					bundle.putString("name", cif.getName());
 					bundle.putInt("type1", Integer.parseInt(cif.getType1()));
 					bundle.putInt("type2", Integer.parseInt(cif.getType2()));
 					intent.putExtra("value", bundle);
 					mContext.startActivity(intent);
 				}
+				}
 			});
 			ib3.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					if(categoryInfo.size() != 0) {
 					Intent intent = new Intent(mContext,
 							IndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
 					CategoryInfo cif;
-					if(position ==0 ) {
-						cif = categoryInfo.get(position);
+					if(newPosition ==0 ) {
+						cif = categoryInfo.get(newPosition);
 					}else
-						cif   = categoryInfo.get(position*3+2);
+						cif   = categoryInfo.get(newPosition*3);
 					bundle.putString("name", cif.getName());
 					bundle.putInt("type1", Integer.parseInt(cif.getType1()));
 					bundle.putInt("type2", Integer.parseInt(cif.getType2()));
 					intent.putExtra("value", bundle);
 					mContext.startActivity(intent);
+					}
 				}
 			});
 		} else {
@@ -260,73 +290,118 @@ public class DetaileAdapter extends BaseAdapter {
 					.findViewById(R.id.item3_detail_ib2);
 			ImageView ib3 = (ImageView) convertView
 					.findViewById(R.id.item3_detail_ib3);
-			TextView item3_detail_name1 = (TextView) convertView.findViewById(R.id.item3_detail_name1);
+			LayoutParams par1 = ib1.getLayoutParams();
+			par1.height = (bigImHeight-gapPx)/2;
+			par1.width = (width-gapPy)/2;
+			ib1.setLayoutParams(par1);
+			LayoutParams par2 = ib2.getLayoutParams();
+			par2.height = (bigImHeight-gapPx)/2;
+			par2.width = (width-gapPy)/2;
+			ib2.setLayoutParams(par2);
+			LayoutParams par3 = ib3.getLayoutParams();
+			par3.height = bigImHeight;
+			par3.width = (width-gapPy)/2;
+			ib3.setLayoutParams(par3);
+		/*	TextView item3_detail_name1 = (TextView) convertView.findViewById(R.id.item3_detail_name1);
 			TextView item3_detail_name2 = (TextView) convertView.findViewById(R.id.item3_detail_name2);
-			TextView item3_detail_name3 = (TextView) convertView.findViewById(R.id.item3_detail_name3);
-			switch (position) {
+			TextView item3_detail_name3 = (TextView) convertView.findViewById(R.id.item3_detail_name3);*/
+		/*	switch (position) {
 			case 1:
 				 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_2);
-		            Bitmap newbitmap = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm.getConfig());
+		            Bitmap newbitmap = Bitmap.createBitmap((width-gapPy)/2,bigImHeight/2-gapPx/2, bm.getConfig());
 			        getNewBitMap(bm, newbitmap);
-			        item3_detail_name1.setText(categoryInfo.get(3).getName());
-			        item3_detail_name2.setText(categoryInfo.get(4).getName());
-			        item3_detail_name3.setText(categoryInfo.get(5).getName());
 			        ib1.setImageBitmap(newbitmap);
 			    	Bitmap bm2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.cata_game_5);
-		            Bitmap newbitmap2 = Bitmap.createBitmap(width/2-gapPy,bigImHeight/2-gapPx/2, bm2.getConfig());
+		            Bitmap newbitmap2 = Bitmap.createBitmap((width-gapPy)/2,bigImHeight/2-gapPx/2, bm2.getConfig());
 			        getNewBitMap(bm2, newbitmap2);
 			        ib2.setImageBitmap(newbitmap2);
 			        Bitmap bm3 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.xiuxian);
-		            Bitmap newbitmap3 = Bitmap.createBitmap(width/2-gapPy,bigImHeight, bm3.getConfig());
+		            Bitmap newbitmap3 = Bitmap.createBitmap((width-gapPy)/2,bigImHeight, bm3.getConfig());
 			        getNewBitMap(bm3, newbitmap3);
 			        ib3.setImageBitmap(newbitmap3);
 			    	break;
-			}
+			}*/
+			setImage(imageResIds[newPosition*3], ib1);
+			setImage(imageResIds[newPosition*3+1], ib2);
+			setImage(imageResIds[newPosition*3+2], ib3);
 			
 
 			ib1.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					if(categoryInfo.size() != 0) {
 					Intent intent = new Intent(mContext,
 							IndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
-					CategoryInfo cif = categoryInfo.get(position*3);
+					if(newPosition == 3) {
+						CategoryInfo cif = categoryInfo.get(newPosition*2);
+						bundle.putString("name", cif.getName());
+						bundle.putInt("type1", Integer.parseInt(cif.getType1()));
+						bundle.putInt("type2", Integer.parseInt(cif.getType2()));
+						intent.putExtra("value", bundle);
+						mContext.startActivity(intent);
+					} else {
+					CategoryInfo cif = categoryInfo.get(newPosition*3);
 					bundle.putString("name", cif.getName());
 					bundle.putInt("type1", Integer.parseInt(cif.getType1()));
 					bundle.putInt("type2", Integer.parseInt(cif.getType2()));
 					intent.putExtra("value", bundle);
 					mContext.startActivity(intent);
+					}
+				}
 				}
 			});
 			ib2.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					if(categoryInfo.size() != 0) {
 					Intent intent = new Intent(mContext,
 							IndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
-					CategoryInfo cif = categoryInfo.get(position*3+1);
-					bundle.putString("name", cif.getName());
+					if(newPosition == 3) {
+						CategoryInfo cif = categoryInfo.get(newPosition*2);
+						bundle.putString("name", cif.getName());
+						bundle.putInt("type1", Integer.parseInt(cif.getType1()));
+						bundle.putInt("type2", Integer.parseInt(cif.getType2()));
+						intent.putExtra("value", bundle);
+						mContext.startActivity(intent);
+					} else {
+					CategoryInfo cif = categoryInfo.get(8);
+					bundle.putString("name", "必玩大作");
 					bundle.putInt("type1", Integer.parseInt(cif.getType1()));
 					bundle.putInt("type2", Integer.parseInt(cif.getType2()));
 					intent.putExtra("value", bundle);
 					mContext.startActivity(intent);
+					}
+				}
 				}
 			});
 			ib3.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					if(categoryInfo.size() != 0) {
 					Intent intent = new Intent(mContext,
 							IndexDetaileActivity.class);
 					Bundle bundle = new Bundle();
-					CategoryInfo cif = categoryInfo.get(position*3+2);
+					if(newPosition == 3) {
+						CategoryInfo cif = categoryInfo.get(newPosition*2);
+						bundle.putString("name", cif.getName());
+						bundle.putInt("type1", Integer.parseInt(cif.getType1()));
+						bundle.putInt("type2", Integer.parseInt(cif.getType2()));
+						intent.putExtra("value", bundle);
+						mContext.startActivity(intent);
+					} else {
+					CategoryInfo cif = categoryInfo.get(newPosition*3+1);
 					bundle.putString("name", cif.getName());
 					bundle.putInt("type1", Integer.parseInt(cif.getType1()));
 					bundle.putInt("type2", Integer.parseInt(cif.getType2()));
 					intent.putExtra("value", bundle);
 					mContext.startActivity(intent);
+					}
+					}
 				}
 			});
 		/*	ib1.setImageResource(R.drawable.f738bd4b31c870120211571277f9e2f0608ff96);
@@ -338,8 +413,32 @@ public class DetaileAdapter extends BaseAdapter {
 		/*	ImageLoader.getInstance().displayImage(cif.getAppIcon(), ib3,
 					options);*/
 		}
+	}
 
 		return convertView;
+	}
+
+	private void setImagePosition(int resId, ImageView banner) {
+		 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), resId);
+         Bitmap newbitmap = Bitmap.createBitmap((width-gapPy),(int)((width-gapPy)/5.34), bm.getConfig());
+	        getNewBitMapPos(bm, newbitmap);
+	        banner.setImageBitmap(newbitmap);
+	}
+
+	private void getNewBitMapPos(Bitmap bm, Bitmap newbitmap) {
+		Paint paint = new Paint();
+		Canvas canvas = new Canvas(newbitmap);
+		Matrix matrix = new Matrix();
+		double newWidth = 1.00;
+		double newHeight = 2.6;
+		int gapPx = convertDipOrPx(mContext, 5);
+      // matrix.setRotate(30, bm.getWidth()/2, bm.getHeight()/2);
+		float scaleWidth =(float) ((width-gapPx))/bm.getWidth();
+		float scaleHeight =(float) (newbitmap.getHeight())/bm.getHeight();
+		LogUtils.d("scaleWidth+scaleWidth", scaleWidth+":"+scaleWidth+"++"+width+"PPP"+2/3);
+		matrix.postScale(scaleWidth, scaleHeight);
+//使用画布将原图片，矩阵，画笔进行新图片的绘画
+		canvas.drawBitmap(bm, matrix, paint);
 	}
 
 	public void getNewBitMap(Bitmap bm, Bitmap newbitmap) {
@@ -348,12 +447,29 @@ public class DetaileAdapter extends BaseAdapter {
 		Matrix matrix = new Matrix();
 		double newWidth = 1.00;
 		double newHeight = 2.6;
+		int gapPx = convertDipOrPx(mContext, 5);
       // matrix.setRotate(30, bm.getWidth()/2, bm.getHeight()/2);
-		float scaleWidth =(float) (width/2-20)/width;
+		float scaleWidth =(float) ((width-gapPx)/2)/bm.getWidth();
+		float scaleHeight =(float) (newbitmap.getHeight())/bm.getHeight();
 		LogUtils.d("scaleWidth+scaleWidth", scaleWidth+":"+scaleWidth+"++"+width+"PPP"+2/3);
-		matrix.postScale(scaleWidth, scaleWidth);
+		matrix.postScale(scaleWidth, scaleHeight);
 //使用画布将原图片，矩阵，画笔进行新图片的绘画
 		canvas.drawBitmap(bm, matrix, paint);
+		   //保存全部图层  
+        canvas.save(Canvas.ALL_SAVE_FLAG);  
+        canvas.restore();  
+        //存储路径  
+        File file = new File(Environment.getExternalStorageDirectory()+"/d9catch/");  
+        if(!file.exists())  
+            file.mkdirs();  
+            try {  
+                FileOutputStream fileOutputStream = new FileOutputStream(file.getPath() + ""+"/.jpg");  
+                newbitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);  
+                fileOutputStream.close();  
+                System.out.println("saveBmp is here");  
+            } catch (Exception e) {  
+                        e.printStackTrace();  
+    }  
 	}
 
 	static class ViewHolder1 {
@@ -373,4 +489,12 @@ public class DetaileAdapter extends BaseAdapter {
 	    return (int)(dip*scale + 0.5f*(dip>=0?1:-1)); 
 	} 
 
+	public void setImage(int resId,ImageView iv){
+		 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), resId);
+         Bitmap newbitmap = Bitmap.createBitmap((width-gapPy)/2,bigImHeight, bm.getConfig());
+	        getNewBitMap(bm, newbitmap);
+	       iv.setImageBitmap(newbitmap);
+	       
+	        
+	}
 }

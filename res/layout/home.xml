@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@color/gray_hint" 
+    >
 
 <!-- 	<me.key.appmarket.widgets.GalleryFlow
         android:id="@+id/tuijian_gallery"
@@ -17,7 +19,9 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+           android:background="@color/gray_hint" 
+        >
 
         <ProgressBar
             android:id="@+id/pro_bar"
@@ -34,10 +38,14 @@
             android:visibility="gone" />
 
         <ListView
+               android:background="@color/gray_hint"
             android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:fadingEdge="none"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+         
             android:listSelector="@drawable/list_item_selector" >
         </ListView>
     </RelativeLayout>

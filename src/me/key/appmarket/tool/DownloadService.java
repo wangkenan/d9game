@@ -18,6 +18,7 @@ import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.widgets.MyTableHost;
 
 import org.apache.http.client.ClientProtocolException;
 
@@ -237,7 +238,7 @@ public class DownloadService extends Service {
 					case 2:
 						contentIntent = PendingIntent.getActivity(
 								context, msg.arg1, new Intent(
-										context, MainActivity.class),
+										context, MyTableHost.class),
 								0);
 						notification.setLatestEventInfo(context, msg
 								.getData().getString("name") + "下载完成", "100%",
@@ -278,7 +279,7 @@ public class DownloadService extends Service {
 
 						contentIntent = PendingIntent.getActivity(
 								context, msg.arg1, new Intent(
-										context, MainActivity.class),
+										context, MyTableHost.class),
 								0);
 						notification.setLatestEventInfo(context, msg
 								.getData().getString("name") + "正在下载",
@@ -329,7 +330,7 @@ public class DownloadService extends Service {
 				notification.defaults = Notification.DEFAULT_LIGHTS;
 				notification.flags = Notification.FLAG_NO_CLEAR
 						| Notification.FLAG_ONGOING_EVENT;
-				Intent intent = new Intent(context, MainActivity.class);
+				Intent intent = new Intent(context, MyTableHost.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				PendingIntent contentIntent = PendingIntent.getActivity(context,
 						notificationId, intent, 0);

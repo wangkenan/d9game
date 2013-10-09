@@ -8,14 +8,13 @@
 <FrameLayout
     android:layout_width="fill_parent" 
      android:layout_height="150dip"
-     android:paddingLeft="5dip"
-     android:paddingRight="5dip"
     >
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
         >
     <ImageView
+        android:layout_marginTop="10dip"
         android:id="@+id/recomm_bigiv"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

@@ -22,6 +22,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -29,6 +33,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -87,6 +92,13 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	private ListView commentListView;
 	private CommentAdapter mCommentAdapter;
 
+	// 设置ImageLoade初始化信息
+	private DisplayImageOptions options = new DisplayImageOptions.Builder()
+			.showImageForEmptyUri(R.drawable.tempicon)
+			.showStubImage(R.drawable.tempicon).resetViewBeforeLoading(false)
+			.delayBeforeLoading(50).cacheInMemory(false).cacheOnDisc(true)
+			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+			.bitmapConfig(Bitmap.Config.RGB_565).build();
 	File cache = new File(Environment.getExternalStorageDirectory(),
 			"detail_cache");
 
@@ -241,7 +253,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					if (response.getAppImgUrl() != null) {
 						for (int i = 0; i < response.getAppImgUrl().length; i++) {
 							ImageView iv = new ImageView(AppDetailActivity.this);
-							asyncloadImage(iv, response.getAppImgUrl()[i]);
+							//asyncloadImage(iv, response.getAppImgUrl()[i]);
+							ImageLoader.getInstance().displayImage(response.getAppImgUrl()[i], iv, options);
 							// LayoutParams params = new LayoutParams(200,
 							// LayoutParams.MATCH_PARENT);
 							MarginLayoutParams params = new MarginLayoutParams(
@@ -293,7 +306,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		protected void onPostExecute(Uri result) {
 			super.onPostExecute(result);
 			if (iv_header != null && result != null) {
-				iv_header.setImageURI(result);
+				//iv_header.setImageURI(result);
+				ImageLoader.getInstance().displayImage(result.toString(), iv_header, options);
 			}
 		}
 	}
@@ -414,6 +428,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		registerPrecent();
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
@@ -421,6 +436,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onPause();
 		unregisterPrecent();
+		MobclickAgent.onPause(this);
 	}
 
 	PrecentReceiver mPrecentReceiver;

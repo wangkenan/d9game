@@ -46,6 +46,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -53,6 +54,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -62,6 +64,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -122,7 +125,7 @@ public class MainActivity extends Activity {
 	private ArrayList<BannerInfo> bannerList = new ArrayList<BannerInfo>();
 	private GalleryFlow tuijian_gallery;
 	private TuiJianImageAdapter tuiJianAdapter;
-	
+
 	// game
 	private boolean isLoading = false;
 	private boolean isFirst = true;
@@ -149,7 +152,7 @@ public class MainActivity extends Activity {
 	private TextView topbar_title1;
 	private ImageView back_icon;
 	private ImageView logo_title;
-
+	private ImageView banner;
 	// 管理
 	private ListView mManagerListView;
 	private ProgressBar pro_bar;
@@ -205,13 +208,12 @@ public class MainActivity extends Activity {
 		initHomeView();
 		initGameView();
 		initRankView();
-		//initManagerView();
-		//initLocalGameView();
+		// initManagerView();
+		// initLocalGameView();
 		new Thread(runHomeData).start();
 		new Thread(runRankData).start();
 		// new Thread(runBannerData).start();
-
-		updateSelf(false);
+	
 
 		registerInstall();
 		activities.add(this);
@@ -222,6 +224,7 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		registerPrecent();
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
@@ -229,6 +232,7 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 		unregisterPrecent();
+		MobclickAgent.onPause(this);
 	}
 
 	@Override
@@ -236,14 +240,14 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 
 		unregisterInstall();
-		
+
 	}
 
 	private void initManagerView() {
-		appManagerInfos = AppUtils.getUserApps(this);
+		appManagerInfos = AppUtils.getUserApps(this,0);
 
-		install_app = (Button) managerView.findViewById(R.id.install_app);
-		update_app = (Button) managerView.findViewById(R.id.update_app);
+		// install_app = (Button) managerView.findViewById(R.id.install_app);
+		// update_app = (Button) managerView.findViewById(R.id.update_app);
 		install_app.setPadding(40, 0, 40, 0);
 		update_app.setPadding(40, 0, 40, 0);
 
@@ -259,7 +263,7 @@ public class MainActivity extends Activity {
 					update_app.setBackgroundResource(0);
 
 					mManagerListView.setVisibility(View.VISIBLE);
-					appManagerInfos = AppUtils.getUserApps(MainActivity.this);
+					appManagerInfos = AppUtils.getUserApps(MainActivity.this,0);
 					mManagerListView.setAdapter(mManagerAdapter);
 					mManagerListView
 							.setOnItemClickListener(new OnItemClickListener() {
@@ -297,7 +301,7 @@ public class MainActivity extends Activity {
 		pro_bar = (ProgressBar) managerView.findViewById(R.id.pro_bar);
 		pro_bar.setVisibility(View.GONE);
 		mManagerListView = (ListView) managerView
-				.findViewById(R.id.manager_list);
+				.findViewById(R.id.mlist);
 		mManagerAdapter = new ManagerAdapter(appManagerInfos,
 				MainActivity.this, cache);
 		mManagerUpdateAdapter = new ManagerUpdateAdapter(appManagerUpdateInfos,
@@ -341,15 +345,16 @@ public class MainActivity extends Activity {
 			}
 		});
 		String Root = LocalUtils.getRoot(this);
-		
-	/*	LocalCategoryAdapter mCategoryAdapter = new LocalCategoryAdapter(
-				categoryInfoList, MainActivity.this, cache);*/
+
+		/*
+		 * LocalCategoryAdapter mCategoryAdapter = new LocalCategoryAdapter(
+		 * categoryInfoList, MainActivity.this, cache);
+		 */
 		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root);
-			LogUtils.d("mAppInfos", mAppInfos.size()+"");
-			MyAdapter adapter = new MyAdapter(MainActivity.this,
-					mAppInfos);
-			mListGame.setAdapter(adapter);
-	
+		LogUtils.d("mAppInfos", mAppInfos.size() + "");
+		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos);
+		mListGame.setAdapter(adapter);
+
 	}
 
 	private void initRankView() {
@@ -377,7 +382,7 @@ public class MainActivity extends Activity {
 		}
 		appRankAdapter = new NewRankAdapter(appRankInfos, this, cache);
 		mRankListView.setAdapter(appRankAdapter);
-		//注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
+		// 注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
 
 			@Override
@@ -395,6 +400,7 @@ public class MainActivity extends Activity {
 					break;
 				}
 			}
+
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
@@ -425,154 +431,136 @@ public class MainActivity extends Activity {
 		topbar_title1 = (TextView) findViewById(R.id.topbar_title1);
 		back_icon = (ImageView) findViewById(R.id.back_icon);
 		logo_title = (ImageView) findViewById(R.id.logo_title);
-		//type = getIntent().getIntExtra("type", 2);
-		new Thread(runCategoryData).start();
-		mCategoryAdapter = new DetaileAdapter(gcategoryInfoList, this, mListGame);
-		mListGame.setAdapter(mCategoryAdapter);
-		mListGame.setDividerHeight(0);
-		/*mGameListView = (MyListView) gameView.findViewById(R.id.game_list);
-		mGameListView.setDivider(new ColorDrawable(Color.GRAY));
-		pGameBar = (ProgressBar) gameView.findViewById(R.id.game_pro_bar);
-		ll_gameerror = (LinearLayout) gameView.findViewById(R.id.ll_error);
-
-		appGameInfos = new LinkedList<AppInfo>();
-
-		Button btn_refresh = (Button) ll_homeerror.findViewById(R.id.btn_Refsh);
-		// tuijian_gallery = (GalleryFlow)
-		// homeView.findViewById(R.id.tuijian_gallery);
-		btn_refresh.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				appGameInfos.clear();
-				appGameInfos_temp.clear();
-				pGameBar.setVisibility(View.VISIBLE);
-				ll_gameerror.setVisibility(View.GONE);
-				new Thread(runGameData).start();
-			}
-		});
-		cache = new File(Environment.getExternalStorageDirectory(), "cache");
-		if (!cache.exists()) {
-			cache.mkdirs();
-		}
-
-		LayoutInflater inflater = LayoutInflater.from(this);
-		gameLinearLayout = (LinearLayout) inflater.inflate(
-				R.layout.game_head_banner, null);
-		mGameListView.addHeaderView(gameLinearLayout);
-
-		game_calss = (TextView) gameLinearLayout.findViewById(R.id.game_calss);
-		game_boutique = (TextView) gameLinearLayout
-				.findViewById(R.id.game_boutique);
-		game_calss.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this,
-						DetaileActivity.class);
-				intent.putExtra("type", 2);
-				startActivity(intent);
-			}
-		});
-		game_boutique.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this,
-						MyTableHost.class);
-				startActivity(intent);
-			}
-		});
-
-		// 加载更多
-		loadGameMoreView = getLayoutInflater().inflate(R.layout.loadmore, null);
-		loadGameMoreButton = (Button) loadGameMoreView
-				.findViewById(R.id.loadMoreButton);
-		// loadGameMoreButton.setOnClickListener(new View.OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		// loadGameMoreButton.setText("正在加载中...");
-		// game_page = game_page + 1;
-		// new Thread(runGameData).start();
-		// }
-		// });
-		mGameListView.addFooterView(loadGameMoreView);
-		loadGameMoreButton.setVisibility(View.GONE);
-
-		this.setonLoadMoreListener(new OnLoadMoreListener() {
-			@Override
-			public void onLoadMore() {
-				if (!isLoading && !isFirst) {
-					isLoading = true;
-
-					loadGameMoreButton.setText("正在加载中...");
-					game_page = game_page + 1;
-					new Thread(runGameData).start();
-				}
-
-				isFirst = false;
-			}
-		});
-
-		appGameAdapter = new AppAdapter(appGameInfos, MainActivity.this, cache,
-				mGameListView);
-		mGameListView.setAdapter(appGameAdapter);
-		mGameListView.setOnScrollListener(new OnScrollListener() {
+		// type = getIntent().getIntExtra("type", 2);
+		//new Thread(runCategoryData).start();
+		
+		new AsyncTask<Void, Void, Void>() {
 
 			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				switch (scrollState) {
-				case SCROLL_STATE_FLING:
-					appGameAdapter.isAsyn = true;
-					break;
-				case SCROLL_STATE_IDLE:
-					appGameAdapter.isAsyn = false;
-					appGameAdapter.notifyDataSetChanged();
-					break;
-				case SCROLL_STATE_TOUCH_SCROLL:
-					appGameAdapter.isAsyn = false;
-					break;
-
-				}
-
-			}
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				firstItemIndex = firstVisibleItem;
-				if ((firstVisibleItem + visibleItemCount == totalItemCount)
-						&& (totalItemCount != 0)) {
-					if (loadMoreListener != null) {
-						loadMoreListener.onLoadMore();
+			protected Void doInBackground(Void... params) {
+					String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+							+ Global.APP_CATEGORY + "?type=" + type);
+					Log.e("tag", "runCategoryData result =" + str);
+					if (str.equals("null")) {
+						categoryDataHandler
+								.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+					} else if (str.equals("-1")) {
+						categoryDataHandler
+								.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
+					} else {
+						Log.e("tag", "--------------1-------------");
+						ParseCategoryJson(str);
 					}
-				}
+				return null;
 			}
-		});
-
-		mGameListView.setonRefreshListener(new OnRefreshListener() {
 			@Override
-			public void onRefresh() {
-				isFirst = true;
-				appGameInfos.clear();
-				appGameInfos_temp.clear();
-				new Thread(runGameData).start();
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				gcategoryInfoList.addAll(gcategoryInfoList_temp);
+				gcategoryInfoList_temp.clear();
+				mCategoryAdapter = new DetaileAdapter(gcategoryInfoList, MainActivity.this,
+						mListGame);
+				mListGame.setAdapter(mCategoryAdapter);
 			}
-		});
-
-		mGameListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				AppInfo mAppInfo = (AppInfo) mGameListView.getAdapter()
-						.getItem(position);
-				if (mAppInfo != null) {
-					Intent intent = new Intent(MainActivity.this,
-							AppDetailActivity.class);
-					intent.putExtra("appid", mAppInfo.getIdx());
-					startActivity(intent);
-				}
-			}
-		});
-*/
+		}.execute();
+		
+		mListGame.setDividerHeight(0);
+		/*
+		 * mGameListView = (MyListView) gameView.findViewById(R.id.game_list);
+		 * mGameListView.setDivider(new ColorDrawable(Color.GRAY)); pGameBar =
+		 * (ProgressBar) gameView.findViewById(R.id.game_pro_bar); ll_gameerror
+		 * = (LinearLayout) gameView.findViewById(R.id.ll_error);
+		 * 
+		 * appGameInfos = new LinkedList<AppInfo>();
+		 * 
+		 * Button btn_refresh = (Button)
+		 * ll_homeerror.findViewById(R.id.btn_Refsh); // tuijian_gallery =
+		 * (GalleryFlow) // homeView.findViewById(R.id.tuijian_gallery);
+		 * btn_refresh.setOnClickListener(new OnClickListener() {
+		 * 
+		 * @Override public void onClick(View arg0) { // TODO Auto-generated
+		 * method stub appGameInfos.clear(); appGameInfos_temp.clear();
+		 * pGameBar.setVisibility(View.VISIBLE);
+		 * ll_gameerror.setVisibility(View.GONE); new
+		 * Thread(runGameData).start(); } }); cache = new
+		 * File(Environment.getExternalStorageDirectory(), "cache"); if
+		 * (!cache.exists()) { cache.mkdirs(); }
+		 * 
+		 * LayoutInflater inflater = LayoutInflater.from(this); gameLinearLayout
+		 * = (LinearLayout) inflater.inflate( R.layout.game_head_banner, null);
+		 * mGameListView.addHeaderView(gameLinearLayout);
+		 * 
+		 * game_calss = (TextView)
+		 * gameLinearLayout.findViewById(R.id.game_calss); game_boutique =
+		 * (TextView) gameLinearLayout .findViewById(R.id.game_boutique);
+		 * game_calss.setOnClickListener(new OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { Intent intent = new
+		 * Intent(MainActivity.this, DetaileActivity.class);
+		 * intent.putExtra("type", 2); startActivity(intent); } });
+		 * game_boutique.setOnClickListener(new OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { Intent intent = new
+		 * Intent(MainActivity.this, MyTableHost.class); startActivity(intent);
+		 * } });
+		 * 
+		 * // 加载更多 loadGameMoreView =
+		 * getLayoutInflater().inflate(R.layout.loadmore, null);
+		 * loadGameMoreButton = (Button) loadGameMoreView
+		 * .findViewById(R.id.loadMoreButton); //
+		 * loadGameMoreButton.setOnClickListener(new View.OnClickListener() { //
+		 * @Override // public void onClick(View v) { //
+		 * loadGameMoreButton.setText("正在加载中..."); // game_page = game_page + 1;
+		 * // new Thread(runGameData).start(); // } // });
+		 * mGameListView.addFooterView(loadGameMoreView);
+		 * loadGameMoreButton.setVisibility(View.GONE);
+		 * 
+		 * this.setonLoadMoreListener(new OnLoadMoreListener() {
+		 * 
+		 * @Override public void onLoadMore() { if (!isLoading && !isFirst) {
+		 * isLoading = true;
+		 * 
+		 * loadGameMoreButton.setText("正在加载中..."); game_page = game_page + 1;
+		 * new Thread(runGameData).start(); }
+		 * 
+		 * isFirst = false; } });
+		 * 
+		 * appGameAdapter = new AppAdapter(appGameInfos, MainActivity.this,
+		 * cache, mGameListView); mGameListView.setAdapter(appGameAdapter);
+		 * mGameListView.setOnScrollListener(new OnScrollListener() {
+		 * 
+		 * @Override public void onScrollStateChanged(AbsListView view, int
+		 * scrollState) { switch (scrollState) { case SCROLL_STATE_FLING:
+		 * appGameAdapter.isAsyn = true; break; case SCROLL_STATE_IDLE:
+		 * appGameAdapter.isAsyn = false; appGameAdapter.notifyDataSetChanged();
+		 * break; case SCROLL_STATE_TOUCH_SCROLL: appGameAdapter.isAsyn = false;
+		 * break;
+		 * 
+		 * }
+		 * 
+		 * }
+		 * 
+		 * @Override public void onScroll(AbsListView view, int
+		 * firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		 * firstItemIndex = firstVisibleItem; if ((firstVisibleItem +
+		 * visibleItemCount == totalItemCount) && (totalItemCount != 0)) { if
+		 * (loadMoreListener != null) { loadMoreListener.onLoadMore(); } } } });
+		 * 
+		 * mGameListView.setonRefreshListener(new OnRefreshListener() {
+		 * 
+		 * @Override public void onRefresh() { isFirst = true;
+		 * appGameInfos.clear(); appGameInfos_temp.clear(); new
+		 * Thread(runGameData).start(); } });
+		 * 
+		 * mGameListView.setOnItemClickListener(new OnItemClickListener() {
+		 * 
+		 * @Override public void onItemClick(AdapterView<?> parent, View view,
+		 * int position, long id) { AppInfo mAppInfo = (AppInfo)
+		 * mGameListView.getAdapter() .getItem(position); if (mAppInfo != null)
+		 * { Intent intent = new Intent(MainActivity.this,
+		 * AppDetailActivity.class); intent.putExtra("appid",
+		 * mAppInfo.getIdx()); startActivity(intent); } } });
+		 */
 		// mListGame = (ListView) gameView.findViewById(R.id.list_game);
 		// indexs_games = getResources().getStringArray(R.array.index_games);
 		// ListAdapter gameAdapter = new ArrayAdapter<String>(MainActivity.this,
@@ -600,7 +588,8 @@ public class MainActivity extends Activity {
 		// }
 		// });
 	}
-	Runnable runCategoryData = new Runnable() {
+
+	/*Runnable runCategoryData = new Runnable() {
 		@Override
 		public void run() {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
@@ -616,8 +605,8 @@ public class MainActivity extends Activity {
 				Log.e("tag", "--------------1-------------");
 				ParseCategoryJson(str);
 			}
-		} 
-	};
+		}
+	};*/
 	Handler categoryDataHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -629,7 +618,7 @@ public class MainActivity extends Activity {
 				if (gcategoryInfoList_temp.size() > 0) {
 					gcategoryInfoList.addAll(gcategoryInfoList_temp);
 					gcategoryInfoList_temp.clear();
-					LogUtils.d("asdasda", categoryInfoList.size()+"");
+					LogUtils.d("asdasda", categoryInfoList.size() + "");
 				}
 				mCategoryAdapter.notifyDataSetChanged();
 			}
@@ -639,6 +628,7 @@ public class MainActivity extends Activity {
 			super.handleMessage(msg);
 		}
 	};
+
 	private void ParseCategoryJson(String str) {
 		try {
 			Log.e("tag", "--------------ParseCategoryJson--------");
@@ -656,8 +646,8 @@ public class MainActivity extends Activity {
 				gcategoryInfoList_temp.add(mCategoryInfo);
 			}
 			Log.e("tag", "--------------ParseCategoryJson 2--------");
-			categoryDataHandler
-					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			/*categoryDataHandler
+					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);*/
 		} catch (Exception ex) {
 			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
 		}
@@ -665,6 +655,7 @@ public class MainActivity extends Activity {
 
 	private void initHomeView() {
 		mHomeListView = (ListView) homeView.findViewById(R.id.list);
+		//mHomeListView.setDividerHeight(20);
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar);
 		ll_homeerror = (LinearLayout) homeView.findViewById(R.id.ll_error);
 		appHomeInfos = new LinkedList<AppInfo>();
@@ -706,37 +697,30 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, MainActivity.this, cache,
-				mHomeListView);
+		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, MainActivity.this,
+				cache, mHomeListView);
 		mHomeListView.setAdapter(appHomeAdapter);
 		appHomeAdapter.notifyDataSetChanged();
-	/*	// 注册滑动监听事件
-		mHomeListView.setOnScrollListener(new OnScrollListener() {
-
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				switch (scrollState) {
-				case SCROLL_STATE_FLING:
-					appHomeAdapter.isAsyn = true;
-					break;
-				case SCROLL_STATE_IDLE:
-					appHomeAdapter.isAsyn = false;
-					appHomeAdapter.notifyDataSetChanged();
-					break;
-				case SCROLL_STATE_TOUCH_SCROLL:
-					appHomeAdapter.isAsyn = false;
-					break;
-
-				}
-
-			}
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-
-			}
-		});*/
+		/*
+		 * // 注册滑动监听事件 mHomeListView.setOnScrollListener(new OnScrollListener()
+		 * {
+		 * 
+		 * @Override public void onScrollStateChanged(AbsListView view, int
+		 * scrollState) { switch (scrollState) { case SCROLL_STATE_FLING:
+		 * appHomeAdapter.isAsyn = true; break; case SCROLL_STATE_IDLE:
+		 * appHomeAdapter.isAsyn = false; appHomeAdapter.notifyDataSetChanged();
+		 * break; case SCROLL_STATE_TOUCH_SCROLL: appHomeAdapter.isAsyn = false;
+		 * break;
+		 * 
+		 * }
+		 * 
+		 * }
+		 * 
+		 * @Override public void onScroll(AbsListView view, int
+		 * firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		 * 
+		 * } });
+		 */
 		/*
 		 * mHomeListView.setonRefreshListener(new OnRefreshListener() {
 		 * 
@@ -922,7 +906,7 @@ public class MainActivity extends Activity {
 					appGameInfos.addAll(appGameInfos_temp);
 					appGameInfos_temp.clear();
 				}
-				appGameAdapter.notifyDataSetChanged();
+				// appGameAdapter.notifyDataSetChanged();
 			}
 			default:
 				break;
@@ -1010,12 +994,13 @@ public class MainActivity extends Activity {
 			switch (msg.what) {
 			case Global.DOWN_DATA_RANK_FAILLY: {
 				ll_rankerror.setVisibility(View.VISIBLE);
-				mRankListView.setVisibility(View.GONE);
+				// mRankListView.setVisibility(View.GONE);
 			}
 				break;
 			case Global.DOWN_DATA_RANK_SUCCESSFUL: {
 				mRankListView.setVisibility(View.VISIBLE);
-				ll_rankerror.setVisibility(View.GONE);
+				// ll_rankerror.setVisibility(View.GONE);
+				appRankInfos.addAll((List<AppInfo>) msg.obj);
 				appRankAdapter.notifyDataSetChanged();
 			}
 			default:
@@ -1055,10 +1040,12 @@ public class MainActivity extends Activity {
 			appManagerUpdateInfos.addAll(appManagerUpdateInfos_1);
 			homeUpdateHandler
 					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			appGameAdapter.notifyDataSetChanged();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			// Log.e("tag", "error = " + ex.getMessage());
 			homeUpdateHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
+
 		}
 	}
 
@@ -1136,6 +1123,7 @@ public class MainActivity extends Activity {
 	 */
 
 	private void ParseRankJson(String str) {
+		List<AppInfo> appInfos = new ArrayList<AppInfo>();
 		try {
 			Log.e("tag", "--------------2--------");
 			JSONArray jsonArray = new JSONArray(str);
@@ -1152,11 +1140,16 @@ public class MainActivity extends Activity {
 						Global.MAIN_URL + appiconurl, appurl, appDownCount);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
-				appRankInfos.add(appInfo);
+				appInfos.add(appInfo);
+				// appRankInfos.add(appInfo);
 				Log.e("tag", "info = " + appInfo.toString());
 			}
 			Log.e("tag", "--------------2--------");
-			rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+			Message message = rankHandler.obtainMessage();
+			message.obj = appInfos;
+			message.what = Global.DOWN_DATA_RANK_SUCCESSFUL;
+			rankHandler.sendMessage(message);
+			// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
 		} catch (Exception ex) {
 			Log.e("tag", "error = " + ex.getMessage());
 			rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_FAILLY);
@@ -1168,15 +1161,15 @@ public class MainActivity extends Activity {
 
 		t1 = (TextView) findViewById(R.id.text1);
 		t2 = (TextView) findViewById(R.id.text2);
-		//t3 = (TextView) findViewById(R.id.text3);
+		// t3 = (TextView) findViewById(R.id.text3);
 		t4 = (TextView) findViewById(R.id.text4);
-		//t5 = (TextView) findViewById(R.id.text5);
+		// t5 = (TextView) findViewById(R.id.text5);
 		t1.setSelected(true);
 		t1.setOnClickListener(new MyOnClickListener(0));
 		t2.setOnClickListener(new MyOnClickListener(1));
-		//t3.setOnClickListener(new MyOnClickListener(2));
+		// t3.setOnClickListener(new MyOnClickListener(2));
 		t4.setOnClickListener(new MyOnClickListener(3));
-		//t5.setOnClickListener(new MyOnClickListener(4));
+		// t5.setOnClickListener(new MyOnClickListener(4));
 
 		mPager = (ViewPager) findViewById(R.id.vPager);
 		listViews = new ArrayList<View>();
@@ -1188,9 +1181,9 @@ public class MainActivity extends Activity {
 		managerView = mInflater.inflate(R.layout.app_managemer, null);
 		listViews.add(homeView);
 		listViews.add(gameView);
-		//listViews.add(logcalGmaeView);
+		// listViews.add(logcalGmaeView);
 		listViews.add(rankView);
-		//listViews.add(managerView);
+		// listViews.add(managerView);
 		mPager.setOffscreenPageLimit(2);
 		mPager.setAdapter(new TabPageAdapter(listViews));
 		mPager.setCurrentItem(0);
@@ -1226,31 +1219,31 @@ public class MainActivity extends Activity {
 			case 0:
 				t1.setSelected(true);
 				t2.setSelected(false);
-				//t3.setSelected(false);
+				// t3.setSelected(false);
 				t4.setSelected(false);
-				//t5.setSelected(false);
+				// t5.setSelected(false);
 				break;
 			case 1:
-				/*if (appGameInfos == null || appGameInfos.size() <= 0) {
-					appGameInfos.clear();
-					appGameAdapter.notifyDataSetChanged();
-					pGameBar.setVisibility(View.VISIBLE);
-					ll_gameerror.setVisibility(View.GONE);
-					new Thread(runGameData).start();
-				}*/
+				/*
+				 * if (appGameInfos == null || appGameInfos.size() <= 0) {
+				 * appGameInfos.clear(); appGameAdapter.notifyDataSetChanged();
+				 * pGameBar.setVisibility(View.VISIBLE);
+				 * ll_gameerror.setVisibility(View.GONE); new
+				 * Thread(runGameData).start(); }
+				 */
 				t1.setSelected(false);
 				t2.setSelected(true);
-				//t3.setSelected(false);
+				// t3.setSelected(false);
 				t4.setSelected(false);
-				//t5.setSelected(false);
+				// t5.setSelected(false);
 				break;
 			case 2:
 
 				t1.setSelected(false);
 				t2.setSelected(false);
-				//t3.setSelected(true);
+				// t3.setSelected(true);
 				t4.setSelected(true);
-				//t5.setSelected(false);
+				// t5.setSelected(false);
 				break;
 			}
 		}
@@ -1305,11 +1298,11 @@ public class MainActivity extends Activity {
 				myHandler.sendEmptyMessageDelayed(RESETQUIT, 3000);
 				return true;
 			}
-			Intent cancalNt  = new Intent();
+			Intent cancalNt = new Intent();
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			this.sendBroadcast(cancalNt);
-			 //this.finish();
-		
+			// this.finish();
+
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -1349,7 +1342,7 @@ public class MainActivity extends Activity {
 				// 刷新管理界面
 				appManagerInfos.clear();
 				ArrayList<AppInfo> appManagerInfos1 = AppUtils
-						.getUserApps(MainActivity.this);
+						.getUserApps(MainActivity.this,0);
 				appManagerInfos.addAll(appManagerInfos1);
 				appManagerInfos1.clear();
 				if (mManagerAdapter != null) {
@@ -1372,28 +1365,31 @@ public class MainActivity extends Activity {
 						appHomeAdapter.notifyDataSetChanged();
 						break;
 					case 1:// 游戏
-						for (AppInfo mAppInfo : appGameInfos) {
-							if (installAppName != null
-									&& installAppName.equals(mAppInfo
-											.getAppName())) {
-								mAppInfo.setInstalled(true);
-								break;
+						if (appGameInfos != null) {
+							for (AppInfo mAppInfo : appGameInfos) {
+								if (installAppName != null
+										&& installAppName.equals(mAppInfo
+												.getAppName())) {
+									mAppInfo.setInstalled(true);
+									break;
+								}
 							}
 						}
-
 						appGameAdapter.notifyDataSetChanged();
 					case 2:// 应用
 						break;
 					case 3:// 排行
-						for (AppInfo mAppInfo : appRankInfos) {
-							if (installAppName != null
-									&& installAppName.equals(mAppInfo
-											.getAppName())) {
-								mAppInfo.setInstalled(true);
-								break;
+						if (appRankInfos != null) {
+							for (AppInfo mAppInfo : appRankInfos) {
+								if (installAppName != null
+										&& installAppName.equals(mAppInfo
+												.getAppName())) {
+									mAppInfo.setInstalled(true);
+									break;
+								}
 							}
+							appRankAdapter.notifyDataSetChanged();
 						}
-						appRankAdapter.notifyDataSetChanged();
 						break;
 					case 4:// 管理
 						if (!isShowingInstall) {
@@ -1469,7 +1465,7 @@ public class MainActivity extends Activity {
 						appHomeAdapter.notifyDataSetChanged();
 						break;
 					case 1:// 游戏
-						//appGameAdapter.notifyDataSetChanged();
+							// appGameAdapter.notifyDataSetChanged();
 					case 2:// 应用
 						break;
 					case 3:// 排行
@@ -1485,6 +1481,7 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
+
 	public Map showUninstallAPKIcon(String apkPath) {
 		String PATH_PackageParser = "android.content.pm.PackageParser";
 		String PATH_AssetManager = "android.content.res.AssetManager";
@@ -1518,7 +1515,7 @@ public class MainActivity extends Activity {
 			Object pkgParserPkg = pkgParser_parsePackageMtd.invoke(pkgParser,
 					valueArgs);
 			// Ӧ�ó�����Ϣ��, ���������, ������Щ����, ����û����
-LogUtils.d("pkg", pkgParserPkg+"");
+			LogUtils.d("pkg", pkgParserPkg + "");
 			java.lang.reflect.Field appInfoFld = pkgParserPkg.getClass()
 					.getDeclaredField("applicationInfo");
 			ApplicationInfo info = (ApplicationInfo) appInfoFld
@@ -1550,9 +1547,9 @@ LogUtils.d("pkg", pkgParserPkg+"");
 				label = res.getText(info.labelRes);
 				list.put("label", label);
 			} else {
-				 PackageManager pm = this.getPackageManager();  
-				 label = info.loadLabel(pm);
-				 list.put("label", label);
+				PackageManager pm = this.getPackageManager();
+				label = info.loadLabel(pm);
+				list.put("label", label);
 			}
 			// ������Ƕ�ȡһ��apk�����ͼ��
 			if (info.icon != 0) {

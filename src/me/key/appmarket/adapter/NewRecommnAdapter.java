@@ -37,6 +37,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -49,6 +51,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
@@ -71,6 +74,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 	private boolean isDownLoading;
 	// 是否异步加载图片
 	public boolean isAsyn;
+	private WindowManager wm;
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
 	// 设置ImageLoade初始化信息
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -83,7 +87,9 @@ public class NewRecommnAdapter extends BaseAdapter {
 	private static final int TYPE_1 = 0;
 	private static final int TYPE_2 = 1;
 	private static final int SETIMAGE = 2;
+	private static final int SETTEXT = 3;
 	private Map<Integer,String> bigImageMap = new HashMap<Integer, String>();
+	
 	public NewRecommnAdapter(LinkedList<AppInfo> appInfos, Context context,
 			File cache, ListView mylistView) {
 		super();
@@ -94,9 +100,21 @@ public class NewRecommnAdapter extends BaseAdapter {
 		lay = LayoutInflater.from(context);
 
 		asyncImageLoader = new AsyncImageLoader();
-
+		wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
 	}
-
+	private Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			if(msg.what == SETTEXT) {
+				ArrayList<Object> al = (ArrayList<Object>) msg.obj;
+				TextView tv = (TextView) al.get(0);
+				String desc = (String) al.get(1);
+				tv.setText(desc);
+			}
+			
+		}
+	};
 
 	@Override
 	public int getCount() {
@@ -138,7 +156,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 		Drawable mDrawable;
 
 		int type = getItemViewType(position);
-	
+		
 		if (convertvView == null) {
 			switch (type) {
 			case TYPE_1:
@@ -156,33 +174,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 				viewHolder2.tvdown = (TextView) convertvView
 						.findViewById(R.id.recomm_tv_down);
 				convertvView.setTag(viewHolder2);
-				if(position < 6) {
-					new AsyncTask<Void, Void, String>() {
-						String bigurl = null;
-						@Override
-						protected String doInBackground(Void... params) {
-							new AppDetailRequest(appInfos.get(position).getIdx())
-							.execute(new OnResponseListener() {
-							
-								@Override
-								public void onGetResponse(HttpResponse resp) {
-									final AppDetailResponse response = (AppDetailResponse) resp;
-									String appDes = response.getAppDes();
-									String bigUrl = response.getAppImgUrl()[0];
-									bigImageMap.put(position, bigUrl);
-									bigurl = bigImageMap.get(position);
-								}
-							});
-							return bigurl;
-						}
-						@Override
-						protected void onPostExecute(String result) {
-							ImageLoader.getInstance().displayImage(bigurl, viewHolder2.recomm_bigiv, options);
-							super.onPostExecute(result);
-						}
-						
-					}.execute();
-					}
 				break;
 			case TYPE_2:
 				viewHolder = new ViewHolder();
@@ -225,15 +216,43 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 						@Override
 						public void onGetResponse(HttpResponse resp) {
+							if(resp != null){
 							final AppDetailResponse response = (AppDetailResponse) resp;
 							String appDes = response.getAppDes();
-							v2.descr.setText(appDes);
+							Message message = handler.obtainMessage();
+							message.what = SETTEXT;
+							ArrayList<Object> al = new ArrayList<Object>();
+							al.add(v2.descr);
+							al.add(appDes);
+							message.obj = al;
+							handler.sendMessage(message);
 							String bigUrl = response.getAppImgUrl()[0];
 							bigImageMap.put(position, bigUrl);
 						}
+					}
 					});
 			String bigurl = bigImageMap.get(position);
-				ImageLoader.getInstance().displayImage(bigurl, v2.recomm_bigiv, options);
+				//ImageLoader.getInstance().displayImage(bigurl, v2.recomm_bigiv, options);
+			switch (position) {
+			case 0:
+				v2.recomm_bigiv.setImageResource(R.drawable.reco_1);
+				//setImage(v2.recomm_bigiv, R.drawable.reco_1);
+				break;
+
+			case 3:
+				v2.recomm_bigiv.setImageResource(R.drawable.reco_4);
+				//setImage(v2.recomm_bigiv, R.drawable.reco_4);
+				break;
+			case 6:
+				v2.recomm_bigiv.setImageResource(R.drawable.reco_7);
+				//setImage(v2.recomm_bigiv, R.drawable.reco_7);
+				break;
+			case 9:
+				v2.recomm_bigiv.setImageResource(R.drawable.reco_10);
+				//setImage(v2.recomm_bigiv, R.drawable.reco_10);
+				break;
+			}
+		
 			break;
 
 		case TYPE_2:
@@ -488,5 +507,30 @@ public class NewRecommnAdapter extends BaseAdapter {
 				});
 		drawMap.put(imageUrl, drawable);
 		return drawable;
+	}
+	
+	private void setImage(ImageView iv,int imageId){
+		int height = wm.getDefaultDisplay().getHeight();
+		int width = wm.getDefaultDisplay().getWidth();
+		//通过Options获得图片的高宽
+		Options opts = new Options();
+		//设置 不去真正的解析位图 不把他加载到内存 只是获取这个图片的宽高信息
+		opts.inJustDecodeBounds = true;
+		BitmapFactory.decodeResource(mContext.getResources(),imageId);
+		int bitmapWidth = opts.outWidth;
+		int bitmapHeight = opts.outHeight;
+		//计算缩放比例
+		int scalex = bitmapWidth/width;
+		int scaley = bitmapHeight/height;
+		//计算缩放的方式
+		if(scalex > scaley) {
+			opts.inSampleSize = scalex;
+		} else {
+			opts.inSampleSize = scaley;
+		}
+		//设置真正的解析图片
+		opts.inJustDecodeBounds = false;
+		Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),imageId,opts);
+		iv.setImageBitmap(bitmap);
 	}
 }

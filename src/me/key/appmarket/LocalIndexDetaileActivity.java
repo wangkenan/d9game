@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
@@ -238,4 +239,15 @@ LogUtils.d("pkg", pkgParserPkg+"");
 		}
 		return null;
 	}*/
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

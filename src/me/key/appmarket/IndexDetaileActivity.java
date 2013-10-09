@@ -3,8 +3,6 @@ package me.key.appmarket;
 import java.io.File;
 import java.util.LinkedList;
 
-import me.key.appmarket.MyListView.OnLoadMoreListener;
-import me.key.appmarket.SearchActivity.PrecentReceiver;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
@@ -15,14 +13,13 @@ import me.key.appmarket.utils.LogUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.market.d9game.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -41,6 +38,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
+
 @SuppressLint("HandlerLeak")
 public class IndexDetaileActivity extends Activity implements OnScrollListener {
 
@@ -55,7 +55,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 	private TextView tv_empty;
 
 	private boolean isLoading = false;
-	private boolean isFirst = true;
+	private boolean isFirst = false;
 
 	// loadmore
 	private View loadMoreView;
@@ -83,7 +83,33 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 			type1 = bundle.getInt("type1");
 			type2 = bundle.getInt("type2");
 
-			new Thread(runnable).start();
+			new AsyncTask<Void, Void, Void>(){
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+							+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2=" + type2
+							+ "&page=" + page);
+					Log.e("tag", "indexDetaile result = " + str);
+					if (str.equals("null")) {
+						mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
+					} else if (str.equals("-1")) {
+						mHandler.sendEmptyMessage(Global.DOWN_DATA_FAILLY);
+					} else {
+						ParseJson(str);
+					}
+					return null;
+				}
+				protected void onPostExecute(Void result) {
+					File cache = new File(Environment.getExternalStorageDirectory(),
+							"cache");
+					if (!cache.exists()) {
+						cache.mkdirs();
+					}
+					appAdapter = new AppAdapter(appDatainfos, IndexDetaileActivity.this, cache,mListView);
+					mListView.setAdapter(appAdapter);
+				};
+			}.execute();
 		} else {
 			tagid = bundle.getInt("tagid");
 			new Thread(recoTagRunnable).start();
@@ -98,11 +124,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		pBar = (ProgressBar) findViewById(R.id.pro_bar);
 		appDatainfos = new LinkedList<AppInfo>();
 		appDatainfos_temp = new LinkedList<AppInfo>();
-		File cache = new File(Environment.getExternalStorageDirectory(),
-				"cache");
-		if (!cache.exists()) {
-			cache.mkdirs();
-		}
+	
 		pBar.setVisibility(View.VISIBLE);
 		tv_empty = (TextView) findViewById(R.id.empty);
 		tv_empty.setVisibility(View.GONE);
@@ -133,8 +155,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		// });
 		mListView.addFooterView(loadMoreView);
 		mListView.setOnScrollListener(this);
-		appAdapter = new AppAdapter(appDatainfos, this, cache,mListView);
-		mListView.setAdapter(appAdapter);
+		
 		loadMoreButton.setVisibility(View.GONE);
 
 		// 为列表添加监听
@@ -184,9 +205,10 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 						Global.MAIN_URL + appiconurl, appurl, "");
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
-				appDatainfos_temp.add(appInfo);
+				appDatainfos.add(appInfo);
+				//appDatainfos_temp.add(appInfo);
 			}
-			mHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
+			//mHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
 		} catch (Exception ex) {
 			mHandler.sendEmptyMessage(Global.DOWN_DATA_FAILLY);
 		}
@@ -209,10 +231,10 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 			case Global.DOWN_DATA_SUCCESSFULL: {
 				loadMoreButton.setVisibility(View.GONE);
 				if (appDatainfos_temp != null && appDatainfos_temp.size() > 0) {
-					appDatainfos.addAll(appDatainfos_temp);
-					appDatainfos_temp.clear();
+					/*appDatainfos.addAll(appDatainfos_temp);
+					appDatainfos_temp.clear();*/
 				}
-				appAdapter.notifyDataSetChanged();
+				//appAdapter.notifyDataSetChanged();
 			}
 				break;
 			case Global.DOWN_DATA_EMPTY: {
@@ -239,7 +261,31 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 					loadMoreButton.setText("正在加载中...");
 					loadMoreButton.setVisibility(View.VISIBLE);
 					page = page + 1;
-					new Thread(runnable).start();
+					//new Thread(runnable).start();
+					new AsyncTask<Void, Void, Void>(){
+
+						@Override
+						protected Void doInBackground(Void... params) {
+							String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+									+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2=" + type2
+									+ "&page=" + page);
+							Log.e("tag", "indexDetaile result = " + str);
+							if (str.equals("null")) {
+								mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
+							} else if (str.equals("-1")) {
+								mHandler.sendEmptyMessage(Global.DOWN_DATA_FAILLY);
+							} else {
+								ParseJson(str);
+							}
+							return null;
+						}
+						protected void onPostExecute(Void result) {
+							loadMoreButton.setVisibility(View.GONE);
+							appAdapter.notifyDataSetChanged();
+							pBar.setVisibility(View.GONE);
+							isLoading = false;
+						};
+					}.execute();
 				}
 			}
 
@@ -319,7 +365,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 			isLoading = false;
 			switch (msg.what) {
 			case Global.DOWN_DATA_FAILLY: {
-				// mListView.setVisibility(View.GONE);
+				 mListView.setVisibility(View.GONE);
 				Toast.makeText(IndexDetaileActivity.this, "网络异常",
 						Toast.LENGTH_SHORT).show();
 				IndexDetaileActivity.this.finish();
@@ -388,12 +434,14 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 	protected void onResume() {
 		super.onResume();
 		registerPrecent();
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		unregisterPrecent();
+		MobclickAgent.onPause(this);
 	}
 
 	PrecentReceiver mPrecentReceiver;

@@ -29,7 +29,7 @@ public class MarketApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		mInstance = this;
-
+		
 		ToastUtils.init(this);
 		//注册未捕获异常处理方式
 		 CrashHandler crashHandler = CrashHandler.getInstance();  

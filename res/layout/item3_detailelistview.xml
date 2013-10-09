@@ -28,14 +28,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dip"
-                    android:scaleType="centerInside" />
+                    android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/item3_detail_name1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
-                    android:text="动作格斗"
                     android:textColor="@color/white" />
             </RelativeLayout>
         </FrameLayout>
@@ -53,14 +52,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dip"
-                    android:scaleType="centerInside" />
+                    android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/item3_detail_name2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
-                    android:text="休闲益智"
                     android:textColor="@color/white" />
             </RelativeLayout>
         </FrameLayout>
@@ -80,14 +78,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dip"
                 android:layout_marginTop="5dip"
-                android:scaleType="centerInside" />
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/item3_detail_name3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
-                android:text="休闲益智"
                 android:textColor="@color/white" />
         </RelativeLayout>
     </FrameLayout>

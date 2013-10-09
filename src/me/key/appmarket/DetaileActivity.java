@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -307,4 +308,14 @@ public class DetaileActivity extends Activity implements OnClickListener{
 			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
 		}
 	}*/
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

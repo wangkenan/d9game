@@ -5,7 +5,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.key.appmarket.MarketApplication;
+import me.key.appmarket.tool.ToolHelper;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -17,7 +22,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 public class AppUtils {
-
+	private static int gameSize = 0; 
 	private static final String SCHEME = "package";
 	/**
 	 * 调用系统InstalledAppDetails界面所需的Extra名称(用于Android 2.1及之前版本)
@@ -36,12 +41,14 @@ public class AppUtils {
 	 */
 	private static final String APP_DETAILS_CLASS_NAME = "com.android.settings.InstalledAppDetails";
 
-	public static ArrayList<AppInfo> getUserApps(Context mContext) {
+	public static ArrayList<AppInfo> getUserApps(Context mContext,int mysize) {
 		ArrayList<AppInfo> appList = new ArrayList<AppInfo>(); // 用来存储获取的应用信息数据
 		List<PackageInfo> packages = mContext.getPackageManager()
 				.getInstalledPackages(0);
-
-		for (int i = 0; i < packages.size(); i++) {
+		if(mysize > packages.size()) {
+			mysize = packages.size();
+		}
+		for (int i = 0; i < mysize; i++) {
 			PackageInfo packageInfo = packages.get(i);
 			AppInfo tmpInfo = new AppInfo();
 			tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
@@ -51,7 +58,7 @@ public class AppUtils {
 			String dir = packageInfo.applicationInfo.publicSourceDir;
 			int size = Integer.valueOf((int) new File(dir).length());
 			tmpInfo.setAppSize(size + "");
-
+			
 			tmpInfo.setVersion(packageInfo.versionName);
 			tmpInfo.setAppIcon(packageInfo.applicationInfo.loadIcon(mContext
 					.getPackageManager()));
@@ -59,8 +66,40 @@ public class AppUtils {
 				appList.add(tmpInfo);// 如果非系统应用，则添加至appList
 			}
 		}
-
-		return appList;
+		// TODO Auto-generated method stub
+		StringBuilder sb = new StringBuilder();
+		for(AppInfo ai : appList) {
+			sb.append(ai.getPackageName()+",");
+		}
+		String uris = sb.toString();
+		String str = null;
+		if(uris.length() >0) {
+			String newString=uris.substring(0,uris.length()-1);
+			str = ToolHelper.donwLoadToString(Global.FILTERGAME+"?apknamelist="+newString);
+		}
+		ArrayList<AppInfo> gameList = new ArrayList<AppInfo>();
+		JSONArray jsonArray;
+		for(int ii = 0;ii<appList.size();ii++) {
+			AppInfo appInfo = appList.get(ii);
+		try {
+			jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String pkgname = jsonObject.getString("apppkgname");
+				if(appInfo.getPackageName().equals(pkgname)) {
+					gameList.add(appInfo);
+				}
+			
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		LogUtils.d("applist", str+"");
+		return gameList;
 	}
 
 	public static ArrayList<AppInfo> getInstallApps(Context mContext) {
@@ -191,7 +230,7 @@ public class AppUtils {
 	public static String getInstallAppPackage(Context mContext) {
 		String result = "";// com.baidu.input,a5game.fruit.port10086
 
-		ArrayList<AppInfo> tempList = getUserApps(mContext);
+		ArrayList<AppInfo> tempList = getUserApps(mContext,0);
 
 		for (AppInfo mAppInfo : tempList) {
 			if (result.equals("")) {

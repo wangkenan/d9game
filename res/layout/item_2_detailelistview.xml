@@ -17,7 +17,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
-                android:scaleType="fitCenter"
+                android:scaleType="fitXY"
                 android:src="@drawable/action_type_apk_remove" />
 
             <TextView
@@ -25,16 +25,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"
-                android:text="休闲益智"
                 android:textColor="@color/white" />
         </RelativeLayout>
     </FrameLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_marginLeft="5dip"
         android:orientation="vertical" 
+          android:layout_marginTop="5dip"
         >
 
         <FrameLayout
@@ -49,8 +49,8 @@
                     android:id="@id/item2_detail_ib2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dip"
-                    android:scaleType="fitCenter"
+                  
+                     android:scaleType="fitXY"
                     android:src="@drawable/action_type_apk_remove" />
 
                 <TextView
@@ -58,12 +58,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
-                    android:text="休闲益智"
                     android:textColor="@color/white" />
             </RelativeLayout>
         </FrameLayout>
 
         <FrameLayout
+             android:layout_marginTop="5dip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
@@ -74,15 +74,13 @@
             android:id="@id/item2_detail_ib3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:scaleType="fitCenter"
+             android:scaleType="fitXY"
             android:src="@drawable/action_type_apk_remove" />
               <TextView
                    android:id="@+id/item3_detail_name3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dip"
-                    android:text="休闲益智"
                     android:textColor="@color/white" />
             </RelativeLayout>
         </FrameLayout>

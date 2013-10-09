@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.market.d9game"
-    android:versionCode="2"
-    android:versionName="1.1" >
+    android:versionCode="3"
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="7"
@@ -15,55 +15,61 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+   <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/> 
+<uses-permission 
+android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" /> 
     <application
         android:name="me.key.appmarket.MarketApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Light.NoTitleBar"
-       
-          android:screenOrientation="portrait"
-           >
+        android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
         <activity
             android:name="me.key.appmarket.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop" 
-             android:screenOrientation="portrait"
-          
-            >
-          
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
 
         <service android:name="me.key.appmarket.tool.DownloadService" >
         </service>
 
-        <activity android:name="me.key.appmarket.AppDetailActivity" 
-               android:screenOrientation="portrait">
+        <activity
+            android:name="me.key.appmarket.AppDetailActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.IndexDetaileActivity"
-               android:screenOrientation="portrait" 
-            >
+        <activity
+            android:name="me.key.appmarket.IndexDetaileActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.DetaileActivity"
-               android:screenOrientation="portrait" 
-            >
+        <activity
+            android:name="me.key.appmarket.DetaileActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.SearchActivity"
-               android:screenOrientation="portrait" 
-            >
+        <activity
+            android:name="me.key.appmarket.SearchActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.RecoTagsActivity"
-               android:screenOrientation="portrait" 
-            >
+        <activity
+            android:name="me.key.appmarket.RecoTagsActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.LocalIndexDetaileActivity"
-               android:screenOrientation="portrait"  
-            >
+        <activity
+            android:name="me.key.appmarket.LocalIndexDetaileActivity"
+            android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.widgets.MyTableHost"
-             android:screenOrientation="portrait"
-            >
-              <intent-filter>
+        <activity
+            android:name="me.key.appmarket.widgets.MyTableHost"
+            android:screenOrientation="portrait" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -71,12 +77,81 @@
         </activity>
         <activity
             android:name="me.key.appmarket.LocalGameActivity"
-            android:screenOrientation="portrait"
-            ></activity>
-            <activity
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="me.key.appmarket.ManagerActivity"
-            android:screenOrientation="portrait"
-            ></activity>
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="52540adc56240bc56426fecf" >
+        </meta-data>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="no" />
+        <!-- push service client -->
+        <receiver android:name="me.key.appmarket.widgets.PushMessageReceiver" >
+            <intent-filter>
+                <!-- 接收 push消息 -->
+                <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
+                <!-- 接收 bind、setTags等method 的返回结果 -->
+                <action android:name="com.baidu.android.pushservice.action.RECEIVE" />
+                <!-- 可选。接受通知点击事件，和通知自定义内容 -->
+                <action android:name="com.baidu.android.pushservice.action.notification.CLICK" />
+            </intent-filter>
+        </receiver>
+        <!-- push service start -->
+        <!-- 用于接收系统消息以保证PushService正常运行 -->
+        <receiver
+            android:name="com.baidu.android.pushservice.PushServiceReceiver"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="com.baidu.android.pushservice.action.notification.SHOW" />
+                <action android:name="com.baidu.android.pushservice.action.media.CLICK" />
+            </intent-filter>
+        </receiver>
+        <!-- Push服务接收客户端发送的各种请求 -->
+        <!--
+注意：RegistrationReceiver 在 2.1.1及之前版本有拼写失误，为RegistratonReceiver ，用新
+版本SDK时请更改为如下代码
+        -->
+        <receiver
+            android:name="com.baidu.android.pushservice.RegistrationReceiver"
+            android:process=":bdservice_v1" >
+            <intent-filter>
+                <action android:name="com.baidu.android.pushservice.action.METHOD" />
+                <action android:name="com.baidu.android.pushservice.action.BIND_SYNC" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.baidu.android.pushservice.PushService"
+            android:exported="true"
+            android:process=":bdservice_v1" />
+        <!-- push service rich media display --> 
+  
+ 
+ 
+<activity             
+android:name="com.baidu.android.pushservice.richmedia.MediaViewActivity" 
+android:configChanges="orientation|keyboardHidden" 
+android:label="MediaViewActivity" > 
+</activity> 
+<activity   
+android:name="com.baidu.android.pushservice.richmedia.MediaListActivity" 
+android:configChanges="orientation|keyboardHidden" 
+android:label="MediaListActivity" 
+android:launchMode="singleTask" > 
+</activity>
     </application>
 
 </manifest>

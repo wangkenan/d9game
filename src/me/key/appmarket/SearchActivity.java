@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -550,12 +551,14 @@ public class SearchActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		super.onResume();
 		registerPrecent();
+		MobclickAgent.onResume(this);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		unregisterPrecent();
+		MobclickAgent.onPause(this);
 	}
 
 	PrecentReceiver mPrecentReceiver;
@@ -584,4 +587,5 @@ public class SearchActivity extends Activity implements OnClickListener {
 			}
 		}
 	}
+	
 }

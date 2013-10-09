@@ -2,6 +2,7 @@ package me.key.appmarket.adapter;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +64,20 @@ public class NewRankAdapter extends BaseAdapter {
 	private boolean isDownLoading;
 	private static final int TYPE_1 = 0;
 	private static final int TYPE_2 = 1;
-	
+	private static final int SETTEXT = 2;
+	private Handler handler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			if(msg.what == SETTEXT) {
+				ArrayList<Object> al = (ArrayList<Object>) msg.obj;
+				TextView tv = (TextView) al.get(0);
+				String desc = (String) al.get(1);
+				tv.setText(desc);
+			}
+			
+		}
+	};
 
 	// 设置ImageLoade初始化信息
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -216,7 +232,13 @@ public class NewRankAdapter extends BaseAdapter {
 			public void onGetResponse(HttpResponse resp) {
 				final AppDetailResponse response = (AppDetailResponse) resp;
 				if (response != null) {
-					v2.descri.setText(response.getAppDes());
+					Message message = handler.obtainMessage();
+					message.what = SETTEXT;
+					ArrayList<Object> al = new ArrayList<Object>();
+					al.add(v2.descri);
+					al.add(response.getAppDes());
+					message.obj = al;
+					handler.sendMessage(message);
 				}
 			}
 			
