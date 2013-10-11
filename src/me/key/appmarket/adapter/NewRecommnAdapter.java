@@ -2,6 +2,8 @@ package me.key.appmarket.adapter;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,12 +34,15 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
@@ -46,10 +51,13 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -75,6 +83,13 @@ public class NewRecommnAdapter extends BaseAdapter {
 	// 是否异步加载图片
 	public boolean isAsyn;
 	private WindowManager wm;
+	private int gapPy;
+	private int bigImHeight;
+	private int gapPx ;
+	private int width;
+	private int height;
+	private String desc;
+
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
 	// 设置ImageLoade初始化信息
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -86,10 +101,11 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	private static final int TYPE_1 = 0;
 	private static final int TYPE_2 = 1;
-	private static final int SETIMAGE = 2;
-	private static final int SETTEXT = 3;
-	private Map<Integer,String> bigImageMap = new HashMap<Integer, String>();
-	
+	private static final int SETIMAGE = 3;
+	private static final int SETTEXT = 4;
+	private static final int TYPE_3 = 2;
+	private Map<Integer, String> bigImageMap = new HashMap<Integer, String>();
+
 	public NewRecommnAdapter(LinkedList<AppInfo> appInfos, Context context,
 			File cache, ListView mylistView) {
 		super();
@@ -101,31 +117,44 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 		asyncImageLoader = new AsyncImageLoader();
 		wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
+		Display defaultDisplay = wm.getDefaultDisplay();
+		DisplayMetrics dm=new DisplayMetrics();  
+		((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);   
+		width=dm.widthPixels;   
+		height=dm.heightPixels;   
+		gapPx= convertDipOrPx(mContext, 5);
+		gapPy = convertDipOrPx(mContext, 10);
+		bigImHeight = (int)((width-gapPy)/2/1.27f);
 	}
-	private Handler handler = new Handler(){
+
+	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
-			if(msg.what == SETTEXT) {
+			if (msg.what == SETTEXT) {
 				ArrayList<Object> al = (ArrayList<Object>) msg.obj;
 				TextView tv = (TextView) al.get(0);
 				String desc = (String) al.get(1);
 				tv.setText(desc);
 			}
-			
+
 		}
 	};
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return appInfos.size();
+		return appInfos.size()+1;
 	}
 
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return appInfos.get(arg0);
+		if(arg0 != 0) {
+			return appInfos.get(arg0-1);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -136,27 +165,34 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	@Override
 	public int getItemViewType(int position) {
-		int type = position % 3;
-		if (type == 0) {
-			return TYPE_1;
+		
+		if (position == 0) {
+			return TYPE_3;
 		} else {
-			return TYPE_2;
+			int type = (position-1) % 3;
+			if(type == 0){
+				return TYPE_1;
+			}
+				else {
+				return TYPE_2;
+			}
 		}
 	}
 
 	@Override
 	public int getViewTypeCount() {
-		return 2;
+		return 3;
 	}
 
 	@Override
 	public View getView(final int position, View convertvView, ViewGroup arg2) {
 		final ViewHolder viewHolder;
 		final ViewHolder2 viewHolder2;
+		final ViewHolder3 viewHolder3;
 		Drawable mDrawable;
 
 		int type = getItemViewType(position);
-		
+
 		if (convertvView == null) {
 			switch (type) {
 			case TYPE_1:
@@ -191,7 +227,16 @@ public class NewRecommnAdapter extends BaseAdapter {
 						.findViewById(R.id.progress_view2);
 				convertvView.setTag(viewHolder);
 				break;
-				
+			case TYPE_3 :
+				viewHolder3 = new ViewHolder3();
+				convertvView = lay.inflate(R.layout.item_banner, null);
+				viewHolder3.banner = (ImageView) convertvView.findViewById(R.id.banner);
+				LayoutParams par11 = viewHolder3.banner.getLayoutParams();
+				par11.height = ( width-gapPy)/4;
+				par11.width = width-gapPy;
+				viewHolder3.banner.setLayoutParams(par11);
+				convertvView.setTag(viewHolder3);
+				break;
 			}
 		
 
@@ -204,68 +249,65 @@ public class NewRecommnAdapter extends BaseAdapter {
 			case TYPE_2:
 				viewHolder = (ViewHolder) convertvView.getTag();
 				break;
+			case TYPE_3 :
+				viewHolder3  = (ViewHolder3) convertvView.getTag();
+				break;
 			}
 		}
 		switch (type) {
 		case TYPE_1:
+			final int newposition = position-1;
 			final ViewHolder2 v2 = ((ViewHolder2) convertvView.getTag());
-			setDownState(position, v2);
-			v2.name.setText(appInfos.get(position).getAppName());
-			new AppDetailRequest(appInfos.get(position).getIdx())
-					.execute(new OnResponseListener() {
-
-						@Override
-						public void onGetResponse(HttpResponse resp) {
-							if(resp != null){
-							final AppDetailResponse response = (AppDetailResponse) resp;
-							String appDes = response.getAppDes();
-							Message message = handler.obtainMessage();
-							message.what = SETTEXT;
-							ArrayList<Object> al = new ArrayList<Object>();
-							al.add(v2.descr);
-							al.add(appDes);
-							message.obj = al;
-							handler.sendMessage(message);
-							String bigUrl = response.getAppImgUrl()[0];
-							bigImageMap.put(position, bigUrl);
-						}
-					}
-					});
-			String bigurl = bigImageMap.get(position);
-				//ImageLoader.getInstance().displayImage(bigurl, v2.recomm_bigiv, options);
-			switch (position) {
+			setDownState(newposition, v2);
+			v2.name.setText(appInfos.get(newposition).getAppName());
+			v2.descr.setText(appInfos.get(newposition).getAppDescri());
+			
+			if(appInfos.get(newposition).getRecoPic() != null) {
+				ImageLoader.getInstance().displayImage(appInfos.get(newposition).getRecoPic(), v2.recomm_bigiv, options);
+			} else {
+				ImageLoader.getInstance().displayImage(appInfos.get(newposition).getAppimgurl()[0], v2.recomm_bigiv, options);
+			}
+			//String bigurl = bigImageMap.get(newposition);
+			// ImageLoader.getInstance().displayImage(bigurl, v2.recomm_bigiv,
+			// options);
+			switch (newposition) {
 			case 0:
-				v2.recomm_bigiv.setImageResource(R.drawable.reco_1);
-				//setImage(v2.recomm_bigiv, R.drawable.reco_1);
+				//v2.recomm_bigiv.setImageResource(R.drawable.reco_1);
+				// setImage(v2.recomm_bigiv, R.drawable.reco_1);
 				break;
 
 			case 3:
-				v2.recomm_bigiv.setImageResource(R.drawable.reco_4);
-				//setImage(v2.recomm_bigiv, R.drawable.reco_4);
+				//v2.recomm_bigiv.setImageResource(R.drawable.reco_4);
+				// setImage(v2.recomm_bigiv, R.drawable.reco_4);
 				break;
 			case 6:
-				v2.recomm_bigiv.setImageResource(R.drawable.reco_7);
-				//setImage(v2.recomm_bigiv, R.drawable.reco_7);
+				//v2.recomm_bigiv.setImageResource(R.drawable.reco_7);
+				// setImage(v2.recomm_bigiv, R.drawable.reco_7);
 				break;
 			case 9:
-				v2.recomm_bigiv.setImageResource(R.drawable.reco_10);
-				//setImage(v2.recomm_bigiv, R.drawable.reco_10);
+				//v2.recomm_bigiv.setImageResource(R.drawable.reco_10);
+				// setImage(v2.recomm_bigiv, R.drawable.reco_10);
 				break;
 			}
-		
+
 			break;
 
 		case TYPE_2:
+			final int newposition2 = position -1;
 			final ViewHolder v1 = ((ViewHolder) convertvView.getTag());
 			LogUtils.d("NewRecommn", appInfos.size() + "");
 
-			v1.name.setText(appInfos.get(position).getAppName());
-			v1.size.setText(ToolHelper.Kb2Mb(appInfos.get(position)
+			v1.name.setText(appInfos.get(newposition2).getAppName());
+			v1.size.setText(ToolHelper.Kb2Mb(appInfos.get(newposition2)
 					.getAppSize()));
 			ImageLoader.getInstance().displayImage(
-					appInfos.get(position).getIconUrl(), v1.icon, options);
+					appInfos.get(newposition2).getIconUrl(), v1.icon, options);
 			ImageLoader.getInstance();
-			setDownState(position, v1);
+			setDownState(newposition2, v1);
+			break;
+		case TYPE_3 :
+			final ViewHolder3 v3 = ((ViewHolder3) convertvView.getTag());
+			setImagePosition(R.drawable.banner, v3.banner);
 			break;
 		}
 
@@ -424,6 +466,9 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	private static class ViewHolder2 extends BaseHolder {
 	}
+	private static class ViewHolder3 extends BaseHolder {
+		
+	}
 
 	static class BaseHolder {
 		ImageView recomm_bigiv;
@@ -434,6 +479,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 		TextView tvdown;
 		ImageView recommTvdown;
 		ProgressView progress_view;
+		ImageView banner;
 	}
 
 	private void asyncloadImage(ImageView iv_header, String path) {
@@ -508,29 +554,57 @@ public class NewRecommnAdapter extends BaseAdapter {
 		drawMap.put(imageUrl, drawable);
 		return drawable;
 	}
-	
-	private void setImage(ImageView iv,int imageId){
+
+	private void setImage(ImageView iv, int imageId) {
 		int height = wm.getDefaultDisplay().getHeight();
 		int width = wm.getDefaultDisplay().getWidth();
-		//通过Options获得图片的高宽
+		// 通过Options获得图片的高宽
 		Options opts = new Options();
-		//设置 不去真正的解析位图 不把他加载到内存 只是获取这个图片的宽高信息
+		// 设置 不去真正的解析位图 不把他加载到内存 只是获取这个图片的宽高信息
 		opts.inJustDecodeBounds = true;
-		BitmapFactory.decodeResource(mContext.getResources(),imageId);
+		BitmapFactory.decodeResource(mContext.getResources(), imageId);
 		int bitmapWidth = opts.outWidth;
 		int bitmapHeight = opts.outHeight;
-		//计算缩放比例
-		int scalex = bitmapWidth/width;
-		int scaley = bitmapHeight/height;
-		//计算缩放的方式
-		if(scalex > scaley) {
+		// 计算缩放比例
+		int scalex = bitmapWidth / width;
+		int scaley = bitmapHeight / height;
+		// 计算缩放的方式
+		if (scalex > scaley) {
 			opts.inSampleSize = scalex;
 		} else {
 			opts.inSampleSize = scaley;
 		}
-		//设置真正的解析图片
+		// 设置真正的解析图片
 		opts.inJustDecodeBounds = false;
-		Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),imageId,opts);
+		Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(),
+				imageId, opts);
 		iv.setImageBitmap(bitmap);
 	}
+	private void setImagePosition(int resId, ImageView banner) {
+		 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), resId);
+       // Bitmap newbitmap = Bitmap.createBitmap((width-gapPy),(int)((width-gapPy)/5.34), bm.getConfig());
+	       // getNewBitMapPos(bm, newbitmap);
+	        //banner.setImageBitmap(newbitmap);
+		 banner.setImageResource(resId);
+	}
+
+	private void getNewBitMapPos(Bitmap bm, Bitmap newbitmap) {
+		Paint paint = new Paint();
+		Canvas canvas = new Canvas(newbitmap);
+		Matrix matrix = new Matrix();
+		double newWidth = 1.00;
+		double newHeight = 2.6;
+		int gapPx = convertDipOrPx(mContext, 5);
+     // matrix.setRotate(30, bm.getWidth()/2, bm.getHeight()/2);
+		float scaleWidth =(float) ((width-gapPx))/bm.getWidth();
+		float scaleHeight =(float) (newbitmap.getHeight())/bm.getHeight();
+		LogUtils.d("scaleWidth+scaleWidth", scaleWidth+":"+scaleWidth+"++"+width+"PPP"+2/3);
+		matrix.postScale(scaleWidth, scaleHeight);
+//使用画布将原图片，矩阵，画笔进行新图片的绘画
+		canvas.drawBitmap(bm, matrix, paint);
+	}
+	public static int convertDipOrPx(Context context, int dip) { 
+	    float scale = context.getResources().getDisplayMetrics().density; 
+	    return (int)(dip*scale + 0.5f*(dip>=0?1:-1)); 
+	} 
 }

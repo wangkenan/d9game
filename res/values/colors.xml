@@ -157,7 +157,7 @@
     <color name="text_black">#222222</color>
     <color name="text_white">#ffffff</color>
     <color name="progress_color">#dfdedd</color>
-    <color name="myblack">#22000000</color>
+    <color name="myblack">#99000000</color>
     
     
 </resources>

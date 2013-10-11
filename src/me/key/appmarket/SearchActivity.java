@@ -301,7 +301,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				String appurl = jsonObject.getString("appurl");
 
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "");
+						Global.MAIN_URL + appiconurl, appurl, "","");
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appSearchInfos_temp.add(appInfo);
 				Log.e("tag", "info = " + appInfo.toString());

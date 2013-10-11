@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class Global {
 	
 	public static final String GAME_MAIN_URL = "http://appmarket.dqchic.com/d9game";
-	public static final String FILTERGAME = GAME_MAIN_URL +"/getLocalGameList.php";
+	public static final String FILTERGAME = GAME_MAIN_URL +"/getLocalGameList.php"; 
+	public static final String BANNER = GAME_MAIN_URL +"/mobileBanner.php";
 	public static final String MAIN_URL = "http://appmarket.dqchic.com/appstore";
 	public static final String HOME_PAGE = "/reco.php";
 	public static final String RANK_PAGE = "/rank.php";

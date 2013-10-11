@@ -42,7 +42,7 @@ import com.market.d9game.R;
 import com.umeng.analytics.MobclickAgent;
 
 @SuppressLint("HandlerLeak")
-public class IndexDetaileActivity extends Activity implements OnScrollListener {
+public class BannerActivity extends Activity implements OnScrollListener {
 
 	private ListView mListView;
 	private ProgressBar pBar;
@@ -50,8 +50,6 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 	private LinkedList<AppInfo> appDatainfos;
 	private LinkedList<AppInfo> appDatainfos_temp;
 
-	private int type1 = 1;
-	private int type2 = 1;
 	private TextView tv_empty;
 
 	private boolean isLoading = false;
@@ -73,23 +71,16 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.indexdetail);
 		initActivity();
-		Bundle bundle = getIntent().getBundleExtra("value");
 		TextView tv_tiltle = (TextView) findViewById(R.id.topbar_title);
-		tv_tiltle.setText(bundle.getString("name"));
+		tv_tiltle.setText("黑龙江移动专区");
 
-		isRecoTag = bundle.getBoolean("isRecoTag", false);
-
-		if (!isRecoTag) {
-			type1 = bundle.getInt("type1");
-			type2 = bundle.getInt("type2");
 
 			new AsyncTask<Void, Void, Void>(){
 
 				@Override
 				protected Void doInBackground(Void... params) {
-					String str = ToolHelper.donwLoadToString(Global.MAIN_URL
-							+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2=" + type2
-							+ "&page=" + page);
+					String str = ToolHelper.donwLoadToString(Global.BANNER
+							);
 					Log.e("tag", "indexDetaile result = " + str);
 					if (str.equals("null")) {
 						mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
@@ -106,16 +97,11 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 					if (!cache.exists()) {
 						cache.mkdirs();
 					}
-					appAdapter = new AppAdapter(appDatainfos, IndexDetaileActivity.this, cache,mListView);
+					appAdapter = new AppAdapter(appDatainfos, BannerActivity.this, cache,mListView);
 					mListView.setAdapter(appAdapter);
 				};
 			}.execute();
-		} else {
-			tagid = bundle.getInt("tagid");
-			new Thread(recoTagRunnable).start();
-		}
 
-		registerInstall();
 	}
 
 	private void initActivity() {
@@ -133,7 +119,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				IndexDetaileActivity.this.finish();
+				BannerActivity.this.finish();
 			}
 		});
 		loadMoreView = getLayoutInflater().inflate(R.layout.loadmore, null);
@@ -154,7 +140,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		// }
 		// });
 		mListView.addFooterView(loadMoreView);
-		mListView.setOnScrollListener(this);
+		//mListView.setOnScrollListener(this);
 		
 		loadMoreButton.setVisibility(View.GONE);
 
@@ -165,7 +151,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 					int position, long id) {
 				AppInfo mAppInfo = (AppInfo) mListView.getAdapter().getItem(
 						position);
-				Intent intent = new Intent(IndexDetaileActivity.this,
+				Intent intent = new Intent(BannerActivity.this,
 						AppDetailActivity.class);
 				intent.putExtra("appid", mAppInfo.getIdx());
 				startActivity(intent);
@@ -173,22 +159,6 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		});
 	}
 
-	Runnable runnable = new Runnable() {
-		@Override
-		public void run() {
-			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
-					+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2=" + type2
-					+ "&page=" + page);
-			Log.e("tag", "indexDetaile result = " + str);
-			if (str.equals("null")) {
-				mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
-			} else if (str.equals("-1")) {
-				mHandler.sendEmptyMessage(Global.DOWN_DATA_FAILLY);
-			} else {
-				ParseJson(str);
-			}
-		}
-	};
 
 	private void ParseJson(String str) {
 		try {
@@ -223,9 +193,9 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 			switch (msg.what) {
 			case Global.DOWN_DATA_FAILLY: {
 				// mListView.setVisibility(View.GONE);
-				Toast.makeText(IndexDetaileActivity.this, "网络异常",
+				Toast.makeText(BannerActivity.this, "网络异常",
 						Toast.LENGTH_SHORT).show();
-				IndexDetaileActivity.this.finish();
+				BannerActivity.this.finish();
 			}
 				break;
 			case Global.DOWN_DATA_SUCCESSFULL: {
@@ -266,9 +236,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 
 						@Override
 						protected Void doInBackground(Void... params) {
-							String str = ToolHelper.donwLoadToString(Global.MAIN_URL
-									+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2=" + type2
-									+ "&page=" + page);
+							String str = ToolHelper.donwLoadToString(Global.BANNER);
 							Log.e("tag", "indexDetaile result = " + str);
 							if (str.equals("null")) {
 								mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
@@ -366,9 +334,9 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 			switch (msg.what) {
 			case Global.DOWN_DATA_FAILLY: {
 				 mListView.setVisibility(View.GONE);
-				Toast.makeText(IndexDetaileActivity.this, "网络异常",
+				Toast.makeText(BannerActivity.this, "网络异常",
 						Toast.LENGTH_SHORT).show();
-				IndexDetaileActivity.this.finish();
+				BannerActivity.this.finish();
 			}
 				break;
 			case Global.DOWN_DATA_SUCCESSFULL: {

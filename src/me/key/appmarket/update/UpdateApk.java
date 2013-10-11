@@ -12,6 +12,7 @@ import me.key.appmarket.network.CheckVersionRequest;
 import me.key.appmarket.network.CheckVersionResponse;
 import me.key.appmarket.network.HttpRequest.OnResponseListener;
 import me.key.appmarket.network.HttpResponse;
+import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 import me.key.appmarket.widgets.AppDialog;
 
@@ -149,8 +150,9 @@ public class UpdateApk {
 					public void onGetResponse(HttpResponse resp) {
 						sChecking = false;
 						final CheckVersionResponse r = (CheckVersionResponse) resp;
-
+LogUtils.d("version", r+"");
 						if (r.version != null && !r.version.equals("null")) {
+							
 							if (showDialog) {
 								showUpdateDialog(cx, r);
 							}

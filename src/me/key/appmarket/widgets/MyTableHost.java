@@ -106,7 +106,6 @@ public class MyTableHost extends TabActivity {
 			break;
 		}
 		PushManager.startWork(this, PushConstants.LOGIN_TYPE_API_KEY, "RYganXncxIQeKDe8tsOzUdZp");
-		
 	}
 	private void init() {
 		MobclickAgent.setDebugMode( true );
@@ -141,7 +140,7 @@ public class MyTableHost extends TabActivity {
 		} else {
 			tabHost.setCurrentTab(1);
 		}
-		myHandler.sendEmptyMessageDelayed(INMAIN, 2500);
+		myHandler.sendEmptyMessageDelayed(INMAIN, 3500);
 		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
 			@Override
 			public void onTabChanged(String tabId) {

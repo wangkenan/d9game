@@ -21,7 +21,10 @@ import com.market.d9game.R;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +50,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class ManagerActivity extends Activity implements OnScrollListener{
 	// 管理
 		private ListView mManagerListView;
+		private ManagerInstalledReceiver receiver;
 		private ProgressBar pro_bar;
 		private ManagerAdapter mManagerAdapter;
 		private ManagerUpdateAdapter mManagerUpdateAdapter;
@@ -85,6 +89,13 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 		loadMoreView = getLayoutInflater().inflate(R.layout.loadmore, null);
 		loadMoreButton = (Button) loadMoreView
 				.findViewById(R.id.loadMoreButton);
+		IntentFilter filter = new IntentFilter();
+
+		filter.addAction("android.intent.action.PACKAGE_ADDED");
+		filter.addAction("android.intent.action.PACKAGE_REMOVED");
+		filter.addDataScheme("package");
+		receiver = new ManagerInstalledReceiver();
+		registerReceiver(receiver, filter);
 		// loadMoreButton.setOnClickListener(new View.OnClickListener() {
 		// @Override
 		// public void onClick(View v) {
@@ -116,6 +127,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 				mManagerUpdateAdapter = new ManagerUpdateAdapter(appManagerUpdateInfos,
 						ManagerActivity.this, cache);
 				mManagerListView.setAdapter(mManagerAdapter);
+				pBar.setVisibility(View.GONE);
 			};
 			
 		}.execute();
@@ -173,8 +185,6 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 			}
 		});*/
 		
-		pro_bar = (ProgressBar) this.findViewById(R.id.pro_bar);
-		pro_bar.setVisibility(View.GONE);
 		
 		mManagerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -238,6 +248,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 			super.handleMessage(msg);
 		}
 	};
+	
 	private void ParseUpdateJson(String str) {
 		try {
 
@@ -253,7 +264,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "");
+						Global.MAIN_URL + appiconurl, appurl, "","");
 
 				appInfo.setPackageName(jsonObject.getString("apppkgname"));
 				appInfo.setVersion(jsonObject.getString("version"));
@@ -324,5 +335,84 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	class ManagerInstalledReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 接收安装广播
+			if (intent.getAction()
+					.equals("android.intent.action.PACKAGE_ADDED")) {
+				String packageName = intent.getDataString().substring(8);
+				LogUtils.d("Manager", "安装了:" + packageName + "包名的程序");
+
+				MarketApplication.getInstance().reflashAppList();
+				/*String installAppName = AppUtils.getAppName(context,
+						packageName);*/
+
+				// 刷新管理界面
+				new AsyncTask<Void, Void, Void>(){
+
+					private ArrayList<AppInfo> appManagerInfos1;
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						appManagerInfos1 = AppUtils
+								.getUserApps(ManagerActivity.this,4000);
+						return null;
+					}
+					protected void onPostExecute(Void result) {
+						appManagerInfos.clear();
+						appManagerInfos.addAll(appManagerInfos1);
+						if (mManagerAdapter != null) {
+							LogUtils.d("Manager", "我被刷新了"+appManagerInfos1.size());
+							mManagerAdapter.notifyDataSetChanged();
+						}
+					};
+					
+				}.execute();
+			
+			
+
+						/*if (!isShowingInstall) {
+							update_app
+									.setBackgroundResource(R.drawable.btn_bar_2);
+							update_app.setPadding(40, 0, 40, 0);
+							install_app.setBackgroundResource(0);
+
+							apknamelist = AppUtils
+									.getInstallAppPackage(ManagerActivity.this);
+							mManagerListView.setVisibility(View.GONE);
+
+							pro_bar.setVisibility(View.VISIBLE);
+							new Thread(runUpdateAppData).start();
+						}*/
+					}
+			// 接收卸载广播
+			if (intent.getAction().equals(
+					"android.intent.action.PACKAGE_REMOVED")) {
+				MarketApplication.getInstance().reflashAppList();
+				String packageName = intent.getDataString().substring(8);
+				LogUtils.d("YTL", "卸载了:" + packageName + "包名的程序");
+
+						LogUtils.d("YTL", "当前显示的是推荐界面");
+						for (AppInfo mAppInfo : appManagerInfos) {
+							if (packageName != null
+									&& packageName.equals(mAppInfo
+											.getPackageName())) {
+								appManagerInfos.remove(mAppInfo);
+								break;
+							}
+						}
+
+						mManagerAdapter.notifyDataSetChanged();
+				}
+		}
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+			if (receiver != null) {
+				this.unregisterReceiver(receiver);
+			}
 	}
 }

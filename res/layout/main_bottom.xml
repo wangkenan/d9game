@@ -9,7 +9,8 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/welcome_d9" />
+        android:background="@drawable/welcome_d9"
+        />
 
     <TabHost
           android:id="@android:id/tabhost"

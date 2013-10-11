@@ -85,6 +85,7 @@ public class LocalUtils {
 				mAppInfo.setAppIcon((Drawable) list.get("icon"));
 				mAppInfo.setApkName(apkName);
 				mAppInfo.setRoot(Root);
+				mAppInfo.setPackageName((String)list.get("pkgname"));
 				boolean isIns = AppUtils.isInstalled(list.get("label")
 						.toString());
 				mAppInfo.setInstalled(isIns);
@@ -175,8 +176,11 @@ LogUtils.d("pkg", pkgParserPkg+"");
 			if (info.icon != 0) {
 				Drawable icon = res.getDrawable(info.icon);
 				list.put("icon", icon);
+				if(info.packageName != null) {
+					list.put("pkgname", info.packageName);
+				}
 				return list;
-			}
+			} 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

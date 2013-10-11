@@ -19,6 +19,24 @@ public class AppInfo {
 	private Drawable appIcon = null;
 	private String Root;
 	private String apkName;
+	private String [] appimgurl;
+	private String recoPic;
+	public String getRecoPic() {
+		return recoPic;
+	}
+
+	public void setRecoPic(String recoPic) {
+		this.recoPic = recoPic;
+	}
+
+	public String[] getAppimgurl() {
+		return appimgurl;
+	}
+
+	public void setAppimgurl(String[] appimgurl) {
+		this.appimgurl = appimgurl;
+	}
+
 	private boolean ispause;
 	private boolean isDown;
 	public boolean isDown() {
@@ -118,7 +136,7 @@ public class AppInfo {
 	}
 
 	public AppInfo(String idx, String appName, String appSize, String iconUrl,
-			String appUrl, String appDownCount) {
+			String appUrl, String appDownCount,String appdes) {
 		super();
 		this.appName = appName;
 		this.appSize = appSize;
@@ -126,6 +144,7 @@ public class AppInfo {
 		this.appUrl = appUrl;
 		this.idx = idx;
 		this.appDownCount = appDownCount;
+		this.appDescri = appdes;
 	}
 
 	public String getAppDescri() {

@@ -42,7 +42,7 @@
                android:layout_gravity="center_vertical"
              android:text="test" 
              android:textColor="@color/white"
-             android:textSize="11sp"
+             android:textSize="13sp"
              
              />
 
@@ -53,7 +53,7 @@
              android:gravity="center"
              android:text="test"
                android:textColor="@color/white"
-             android:textSize="11sp"
+             android:textSize="13sp"
              android:singleLine="true"
               />
 

@@ -42,17 +42,18 @@ public class AppUtils {
 	private static final String APP_DETAILS_CLASS_NAME = "com.android.settings.InstalledAppDetails";
 
 	public static ArrayList<AppInfo> getUserApps(Context mContext,int mysize) {
-		ArrayList<AppInfo> appList = new ArrayList<AppInfo>(); // 用来存储获取的应用信息数据
+		ArrayList<PackageInfo> appList = new ArrayList<PackageInfo>(); // 用来存储获取的应用信息数据
 		List<PackageInfo> packages = mContext.getPackageManager()
 				.getInstalledPackages(0);
+		LogUtils.d("AppUtil", "packagessize"+packages.size());
 		if(mysize > packages.size()) {
 			mysize = packages.size();
 		}
 		for (int i = 0; i < mysize; i++) {
 			PackageInfo packageInfo = packages.get(i);
-			AppInfo tmpInfo = new AppInfo();
+		/*	AppInfo tmpInfo = new AppInfo();
 			tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
-					mContext.getPackageManager()).toString());
+					mContext.getPackageManager()).toString());	
 			tmpInfo.setPackageName(packageInfo.packageName);
 
 			String dir = packageInfo.applicationInfo.publicSourceDir;
@@ -61,15 +62,15 @@ public class AppUtils {
 			
 			tmpInfo.setVersion(packageInfo.versionName);
 			tmpInfo.setAppIcon(packageInfo.applicationInfo.loadIcon(mContext
-					.getPackageManager()));
+					.getPackageManager()));*/
 			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-				appList.add(tmpInfo);// 如果非系统应用，则添加至appList
+				appList.add(packageInfo);// 如果非系统应用，则添加至appList
 			}
 		}
 		// TODO Auto-generated method stub
 		StringBuilder sb = new StringBuilder();
-		for(AppInfo ai : appList) {
-			sb.append(ai.getPackageName()+",");
+		for(PackageInfo ai : appList) {
+			sb.append(ai.packageName+",");
 		}
 		String uris = sb.toString();
 		String str = null;
@@ -77,18 +78,31 @@ public class AppUtils {
 			String newString=uris.substring(0,uris.length()-1);
 			str = ToolHelper.donwLoadToString(Global.FILTERGAME+"?apknamelist="+newString);
 		}
+		LogUtils.d("AppUtil", "刷新的str"+str);
 		ArrayList<AppInfo> gameList = new ArrayList<AppInfo>();
 		JSONArray jsonArray;
 		for(int ii = 0;ii<appList.size();ii++) {
-			AppInfo appInfo = appList.get(ii);
+			PackageInfo appInfo = appList.get(ii);
 		try {
 			jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String pkgname = jsonObject.getString("apppkgname");
-				if(appInfo.getPackageName().equals(pkgname)) {
-					gameList.add(appInfo);
+				if(appInfo.packageName.equals(pkgname)) {
+					AppInfo tmpInfo = new AppInfo();
+					tmpInfo.setAppName(appInfo.applicationInfo.loadLabel(
+							mContext.getPackageManager()).toString());	
+					tmpInfo.setPackageName(appInfo.packageName);
+
+					String dir = appInfo.applicationInfo.publicSourceDir;
+					int size = Integer.valueOf((int) new File(dir).length());
+					tmpInfo.setAppSize(size + "");
+					
+					tmpInfo.setVersion(appInfo.versionName);
+					tmpInfo.setAppIcon(appInfo.applicationInfo.loadIcon(mContext
+							.getPackageManager()));
+					gameList.add(tmpInfo);
 				}
 			
 			}
