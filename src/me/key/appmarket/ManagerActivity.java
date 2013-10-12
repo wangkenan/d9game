@@ -8,6 +8,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import me.key.appmarket.MainActivity.PrecentReceiver;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.ManagerAdapter;
 import me.key.appmarket.adapter.ManagerUpdateAdapter;
@@ -51,11 +52,11 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 	// 管理
 		private ListView mManagerListView;
 		private ManagerInstalledReceiver receiver;
-		private ProgressBar pro_bar;
 		private ManagerAdapter mManagerAdapter;
 		private ManagerUpdateAdapter mManagerUpdateAdapter;
 		private ArrayList<AppInfo> appManagerInfos = new ArrayList<AppInfo>();
 		private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
+		private ArrayList<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
 		private boolean isLoading = false;
 		private boolean isFirst = false;
 		private Button install_app;
@@ -69,10 +70,12 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 		private TextView tv_empty;
 		private int page = 1; // 最后的可视项索引
 		public static List<Activity> activities = new ArrayList<Activity>();
+		private PrecentReceiver mPrecentReceiver;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_managemer);
+		registerPrecent();
 		final File cache = new File(Environment.getExternalStorageDirectory(), "cache");
 		if (!cache.exists()) {
 			cache.mkdirs();
@@ -114,43 +117,61 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 		//mManagerListView.setOnScrollListener(this);
 		
 		loadMoreButton.setVisibility(View.GONE);
+		mManagerAdapter = new ManagerAdapter(appManagerInfos,
+				ManagerActivity.this, cache);
+		mManagerListView.setAdapter(mManagerAdapter);
 		new AsyncTask<Void, Void, Void>(){
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				appManagerInfos = AppUtils.getUserApps(ManagerActivity.this,4000);
+				ArrayList<AppInfo> appManaInfos_temp = new ArrayList<AppInfo>();
+				appManaInfos_temp = AppUtils.getUserApps(ManagerActivity.this,4000);
+				appManagerInfos.clear();
+				appManagerInfos.addAll(appManaInfos_temp);
 				return null;
 			}
 			protected void onPostExecute(Void result) {
-				mManagerAdapter = new ManagerAdapter(appManagerInfos,
-						ManagerActivity.this, cache);
-				mManagerUpdateAdapter = new ManagerUpdateAdapter(appManagerUpdateInfos,
-						ManagerActivity.this, cache);
-				mManagerListView.setAdapter(mManagerAdapter);
+				mManagerAdapter.notifyDataSetChanged();
 				pBar.setVisibility(View.GONE);
+			};
+			
+		}.execute();
+		mManagerUpdateAdapter = new ManagerUpdateAdapter(appManagerUpdateInfos, this, cache);
+		new AsyncTask<Void, Void, Void>(){
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				ArrayList<AppInfo> userApps = AppUtils.getUserApps(ManagerActivity.this, 4000);
+				apknamelist = AppUtils
+						.getInstallAppPackage(ManagerActivity.this);
+				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.UPGRADEVERSION + "?apknamelist=" + apknamelist);
+				ParseUpdateJson(str);
+				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(userApps, appManagerUpdateInfos_t);
+				appManagerUpdateInfos.clear();
+				appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+				LogUtils.d("Mana", "appUpdate"+appManagerUpdateInfos.size());
+				return null;
+			}
+			protected void onPostExecute(Void result) {
+				mManagerUpdateAdapter.notifyDataSetChanged();
 			};
 			
 		}.execute();
 		//appManagerInfos =(ArrayList<AppInfo>) getIntent().getExtras().getSerializable("manager");
 	
-		//install_app = (Button) this.findViewById(R.id.install_app);
-		//update_app = (Button) this.findViewById(R.id.update_app);
-		/*install_app.setPadding(40, 0, 40, 0);
+		install_app = (Button) this.findViewById(R.id.install_app);
+		update_app = (Button) this.findViewById(R.id.update_app);
+		install_app.setPadding(40, 0, 40, 0);
 		update_app.setPadding(40, 0, 40, 0);
 
 		install_app.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (!isShowingInstall) {
-					isShowingInstall = true;
-					pro_bar.setVisibility(View.GONE);
 
 					install_app.setBackgroundResource(R.drawable.btn_bar_2);
 					install_app.setPadding(40, 0, 40, 0);
 					update_app.setBackgroundResource(0);
-
-					mManagerListView.setVisibility(View.VISIBLE);
-					appManagerInfos = AppUtils.getUserApps(ManagerActivity.this);
 					mManagerListView.setAdapter(mManagerAdapter);
 					mManagerListView
 							.setOnItemClickListener(new OnItemClickListener() {
@@ -163,29 +184,19 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 													.getPackageName());
 								}
 							});
-				}
 			}
 		});
 		update_app.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (isShowingInstall) {
-					isShowingInstall = false;
 					update_app.setBackgroundResource(R.drawable.btn_bar_2);
 					update_app.setPadding(40, 0, 40, 0);
 					install_app.setBackgroundResource(0);
-
-					apknamelist = AppUtils
-							.getInstallAppPackage(ManagerActivity.this);
-					mManagerListView.setVisibility(View.GONE);
-
-					pro_bar.setVisibility(View.VISIBLE);
-					
-				}
+					mManagerListView.setAdapter(mManagerUpdateAdapter);
 			}
-		});*/
+		});
 		
-		
+/*		
 		mManagerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -193,7 +204,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 				AppUtils.showInstalledAppDetails(ManagerActivity.this,
 						appManagerInfos.get(position).getPackageName());
 			}
-		});
+		});*/
 	}
 	Runnable runUpdateAppData = new Runnable() {
 		@Override
@@ -222,7 +233,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 			}
 				break;
 			case Global.DOWN_DATA_HOME_SUCCESSFULL: {
-				pro_bar.setVisibility(View.GONE);
+				pBar.setVisibility(View.GONE);
 				// Log.d("YTL", "appManagerUpdateInfos.size()  ="
 				// + appManagerUpdateInfos.size());
 				mManagerListView.setVisibility(View.VISIBLE);
@@ -272,13 +283,11 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				tempList.add(appInfo);
 			}
-
-			ArrayList<AppInfo> appManagerUpdateInfos_1 = AppUtils
-					.getCanUpadateApp(appManagerInfos, tempList);
-			appManagerUpdateInfos.clear();
-			appManagerUpdateInfos.addAll(appManagerUpdateInfos_1);
-			homeUpdateHandler
-					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			LogUtils.d("Mana", "temp:"+tempList.size());
+			appManagerUpdateInfos_t.clear();
+			appManagerUpdateInfos_t.addAll(tempList);
+			/*homeUpdateHandler
+					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);*/
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			// Log.e("tag", "error = " + ex.getMessage());
@@ -370,6 +379,31 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 					};
 					
 				}.execute();
+				new AsyncTask<Void, Void, Void>(){
+
+					private ArrayList<AppInfo> appManagerupdatainfo_t;
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						ArrayList<AppInfo> userApps = AppUtils.getUserApps(ManagerActivity.this, 4000);
+						apknamelist = AppUtils
+								.getInstallAppPackage(ManagerActivity.this);
+						String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+								+ Global.UPGRADEVERSION + "?apknamelist=" + apknamelist);
+						ParseUpdateJson(str);
+						appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(userApps, appManagerUpdateInfos_t);
+						appManagerUpdateInfos.clear();
+						appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+						return null;
+					}
+					protected void onPostExecute(Void result) {
+						if (mManagerUpdateAdapter != null) {
+							LogUtils.d("Manager", "我被刷新了"+appManagerUpdateInfos.size());
+							mManagerUpdateAdapter.notifyDataSetChanged();
+						}
+					};
+					
+				}.execute();
 			
 			
 
@@ -403,8 +437,17 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 								break;
 							}
 						}
-
+						for (AppInfo mAppInfo : appManagerUpdateInfos) {
+							if (packageName != null
+									&& packageName.equals(mAppInfo
+											.getPackageName())) {
+								appManagerUpdateInfos.remove(mAppInfo);
+								break;
+							}
+						}
+						
 						mManagerAdapter.notifyDataSetChanged();
+						mManagerUpdateAdapter.notifyDataSetChanged();
 				}
 		}
 	}
@@ -414,5 +457,29 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 			if (receiver != null) {
 				this.unregisterReceiver(receiver);
 			}
+			unregisterPrecent();
+	}
+	class PrecentReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(MarketApplication.PRECENT)) {
+				// 下载中刷新界面进度
+				if (mManagerUpdateAdapter != null) {
+					mManagerUpdateAdapter.notifyDataSetChanged();
+				}
+			}
+		}
+	}
+	private void registerPrecent() {
+		mPrecentReceiver = new PrecentReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(MarketApplication.PRECENT);
+		this.registerReceiver(mPrecentReceiver, filter);
+	}
+
+	private void unregisterPrecent() {
+		if (mPrecentReceiver != null) {
+			this.unregisterReceiver(mPrecentReceiver);
+		}
 	}
 }

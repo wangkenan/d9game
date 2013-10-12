@@ -36,6 +36,32 @@
             android:background="@null"
             android:src="@drawable/search_selector" /> 
     </RelativeLayout>
+      <LinearLayout
+        android:id="@+id/tab_linear"
+        android:layout_width="wrap_content"
+        android:layout_height="30dip"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="5dip"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:background="@drawable/btn_bar_1" >
+        <Button 
+            android:id="@+id/install_app"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@drawable/btn_bar_2"
+            android:text="已安装"
+            />
+        <Button
+            android:id="@+id/update_app" 
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:text="可升级"
+            />
+    </LinearLayout>
 <FrameLayout 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"

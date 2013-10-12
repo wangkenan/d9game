@@ -112,7 +112,7 @@ public class AppUtils {
 			e.printStackTrace();
 		}
 		}
-		LogUtils.d("applist", str+"");
+		LogUtils.d("applist", gameList.size()+"");
 		return gameList;
 	}
 
@@ -242,37 +242,74 @@ public class AppUtils {
 	}
 
 	public static String getInstallAppPackage(Context mContext) {
-		String result = "";// com.baidu.input,a5game.fruit.port10086
+		ArrayList<PackageInfo> appList = new ArrayList<PackageInfo>(); // 用来存储获取的应用信息数据
+		List<PackageInfo> packages = mContext.getPackageManager()
+				.getInstalledPackages(0);
+		LogUtils.d("AppUtil", "packagessize"+packages.size());
+		for (int i = 0; i < packages.size(); i++) {
+			PackageInfo packageInfo = packages.get(i);
+		/*	AppInfo tmpInfo = new AppInfo();
+			tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
+					mContext.getPackageManager()).toString());	
+			tmpInfo.setPackageName(packageInfo.packageName);
 
-		ArrayList<AppInfo> tempList = getUserApps(mContext,0);
-
-		for (AppInfo mAppInfo : tempList) {
-			if (result.equals("")) {
-				result = mAppInfo.getPackageName();
-			} else {
-				result = result + "," + mAppInfo.getPackageName();
+			String dir = packageInfo.applicationInfo.publicSourceDir;
+			int size = Integer.valueOf((int) new File(dir).length());
+			tmpInfo.setAppSize(size + "");
+			
+			tmpInfo.setVersion(packageInfo.versionName);
+			tmpInfo.setAppIcon(packageInfo.applicationInfo.loadIcon(mContext
+					.getPackageManager()));*/
+			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+				appList.add(packageInfo);// 如果非系统应用，则添加至appList
 			}
-
 		}
-
+		// TODO Auto-generated method stub
+		StringBuilder sb = new StringBuilder();
+		for(PackageInfo ai : appList) {
+			sb.append(ai.packageName+",");
+		}
+		String uris = sb.toString();
+		String str = null;
+		String result = "";
+		if(uris.length() >0) {
+			String newString=uris.substring(0,uris.length()-1);
+			str = ToolHelper.donwLoadToString(Global.FILTERGAME+"?apknamelist="+newString);
+		}
+	try {
+		JSONArray jsonArray = new JSONArray(str);
+		int len = jsonArray.length();
+		for (int i = 0; i < len; i++) {
+			LogUtils.d("APPuTIL", "len:"+len);
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+			String pkgname = jsonObject.getString("apppkgname");
+			result = result + "," + pkgname;
+		}
+	} catch (JSONException e) {
+		e.printStackTrace();
+	}
 		return result;
 	}
 
 	public static ArrayList<AppInfo> getCanUpadateApp(
 			ArrayList<AppInfo> allApp, ArrayList<AppInfo> serverApps) {
 		ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
+		LogUtils.d("AppUtil", "allapplist:"+allApp.size());
+		int testCount = 0;
 		for (AppInfo mAppInfo : allApp) {
 			String packageName = mAppInfo.getPackageName();
 			String appVersion = mAppInfo.getVersion();
 			for(AppInfo serverApp : serverApps){
-				String spackageName = mAppInfo.getPackageName();
-				String sappVersion = mAppInfo.getVersion();
+				String spackageName = serverApp.getPackageName();
+				String sappVersion = serverApp.getVersion();
 				if(spackageName.equals(packageName)) {
 					for(int i = 0;i<sappVersion.length();i++){
 						if(i<= appVersion.length()){
 							char tempchar = appVersion.charAt(i);
 							char schar = sappVersion.charAt(i);
-							if(tempchar > schar) {
+							schar = '3';
+							if(schar > tempchar) {
+								testCount++;
 								tempList.add(serverApp);
 								break;
 							}
@@ -281,6 +318,7 @@ public class AppUtils {
 				}
 			}
 		}
+		LogUtils.d("count", testCount+"testcount");
 	/*	for (AppInfo mAppInfo : allApp) {
 			String appVersion = mAppInfo.getVersion();
 			String packageName = mAppInfo.getPackageName();
@@ -330,7 +368,7 @@ public class AppUtils {
 				}
 			}
 		}*/
-
+		LogUtils.d("APPuTil", "temp.size"+tempList.size());
 		return tempList;
 	}
 }

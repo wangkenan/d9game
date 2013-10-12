@@ -1,12 +1,22 @@
 package me.key.appmarket.widgets;
 
 import me.key.appmarket.utils.LogUtils;
-
-import com.baidu.android.pushservice.PushConstants;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.baidu.android.pushservice.PushConstants;
+import com.market.d9game.R;
 
 public class PushMessageReceiver extends BroadcastReceiver {
 
@@ -17,6 +27,22 @@ public class PushMessageReceiver extends BroadcastReceiver {
 			String message = intent.getExtras().getString(
 					PushConstants.EXTRA_PUSH_MESSAGE_STRING);
 			if (message != null) {
+				LogUtils.d("tuisong", message);
+				LayoutInflater inflater = LayoutInflater.from(context);
+	            View view = inflater.inflate(R.layout.my_toast, null);
+	            
+	            TextView textView = (TextView) view.findViewById(R.id.mytoast_tx);
+	            
+	            SpannableString ss = new SpannableString("今天天气好吗？挺好的");
+	 ss.setSpan(new ForegroundColorSpan(Color.RED), 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+	 ss.setSpan(new ForegroundColorSpan(Color.GREEN), 7, 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+	            textView.setText(message);
+	            
+	            Toast toast = new Toast(context);
+	            toast.setDuration(Toast.LENGTH_LONG);
+	            toast.setView(view);
+	            toast.setGravity(Gravity.CENTER, 0, 0);
+	            toast.show();
 				// ...
 			}
 			// PushConstants.EXTRA_EXTRA 保存服务端推送下来的附加字段。这是个 JSON
@@ -48,9 +74,9 @@ public class PushMessageReceiver extends BroadcastReceiver {
 			// String content =
 			// intent.getExtras().getString(PushConstants.EXTRA_EXTRA);
 
-			LogUtils.d("tuisong", content);
+		
 		}
-
+		
 	}
 
 }

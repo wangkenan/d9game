@@ -84,7 +84,10 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
             android:name="me.key.appmarket.ManagerActivity"
             android:screenOrientation="portrait" >
         </activity>
-
+	<activity
+	    android:name="me.key.appmarket.NotifyActivity" 
+	    android:theme="@android:style/Theme.Dialog"
+	    ></activity>
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="52540adc56240bc56426fecf" >
