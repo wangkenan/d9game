@@ -8,26 +8,41 @@ import java.io.RandomAccessFile;
 import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import me.key.appmarket.MainActivity;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
+import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.utils.AppInfo;
+import me.key.appmarket.utils.LocalAppInfo;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.Test;
 import me.key.appmarket.widgets.MyTableHost;
+import net.tsz.afinal.FinalDb;
+import net.tsz.afinal.FinalHttp;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.RetryHandler;
 
 import org.apache.http.client.ClientProtocolException;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -74,7 +89,9 @@ public class DownloadService extends Service {
 	public static Context context;
 	private static int sendCount = 0;
 	private static WindowManager wm;
+	private static Set<String> downs = new HashSet<String>();
 	static Drawable image;
+	private static FinalDb db ;
 	private static AsyncImageLoader asyncImageLoader = new AsyncImageLoader();
 
 	// 存储image的集合;
@@ -96,6 +113,9 @@ public class DownloadService extends Service {
 		//myHandler = new MyHandler(Looper.myLooper(), DownloadService.this);
 		wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 		context = this;
+		db = FinalDb.create(context);
+		
+		
 	}
 
 	@Override
@@ -155,10 +175,33 @@ public class DownloadService extends Service {
 
 	private static void downFile(AppInfo appInfo, long startOff, long endOff) {
 		executorService.execute(new DownFiles(appInfo, startOff, endOff));
+	/*	ArrayList<AppInfo> downApplist = MarketApplication.getInstance().getDownApplist();
+		downApplist.add(appInfo);*/
+		
+		String id = appInfo.getId();
+		List<AppInfo> findAll = db.findAll(AppInfo.class);
+		Intent intent = new Intent();
+		intent.setAction("startanim");
+		context.sendBroadcast(intent);
+		if(findAll.size() ==0) {
+			db.save(appInfo);
+		} else {
+		int j = 0;
+		for(int i = 0;i< findAll.size();i++) {
+			if(!id.equals(findAll.get(i).getId())) {
+				j++;
+			} else {
+				break;
+			}
+		}
+		if(j == findAll.size()) {
+			db.save(appInfo);
+		}
+		}
 	}
 
 	static class DownFiles implements Runnable {
-		private String url;
+		private static String url;
 		private int notificationId;
 		private String name;
 		private long startOff;
@@ -171,7 +214,7 @@ public class DownloadService extends Service {
 		private Drawable loadImageFromUrl;
 
 		public DownFiles(AppInfo appInfo, long startOff, long endOff) {
-
+			
 			super();
 			this.url = appInfo.getAppUrl();
 			this.appInfo = appInfo;
@@ -245,6 +288,7 @@ public class DownloadService extends Service {
 								contentIntent);
 						notification.contentView.setTextViewText(R.id.text, msg.getData().getString("name") + "下载完成");
 						notification.contentView.setTextViewText(R.id.prog, "100%");
+						
 					    nm.notify(msg.arg1, notification);
 						download.remove(msg.arg1);
 						nm.cancel(msg.arg1);
@@ -304,6 +348,9 @@ public class DownloadService extends Service {
 								Toast.LENGTH_SHORT).show();
 						download.remove(msg.arg1);
 						nm.cancel(msg.arg1);
+						Intent intent = new Intent();
+						intent.setAction(MarketApplication.PRECENT);
+						context.sendBroadcast(intent);
 						break;
 					}
 				}
@@ -313,7 +360,7 @@ public class DownloadService extends Service {
 
 		public void run() {
 			
-			File tempFile = CreatFileName(name);
+			final File tempFile = CreatFileName(name);
 			IntentFilter filter = new IntentFilter(
 					tempFile.getAbsolutePath());
 			PauseBroadcast receiver = new PauseBroadcast();
@@ -419,9 +466,9 @@ public class DownloadService extends Service {
 							"/market");
 					if (!rootFile.exists() && !rootFile.isDirectory())
 						rootFile.mkdir();
-					/*
-					 * if (tempFile.exists()) tempFile.delete();
-					 */
+					
+					 if (tempFile.exists()) tempFile.delete();
+					 
 					// tempFile.createNewFile();
 					int read = 0;
 					long count = startOff;
@@ -438,7 +485,48 @@ public class DownloadService extends Service {
 					}
 					// 设置从文件的哪个位置开始写入
 					ranFile.seek(startOff);
-				
+			/*	SharedPreferences sp = context.getSharedPreferences("down",
+						MODE_PRIVATE);
+				final Editor edit = sp.edit();
+					FinalHttp fh = new FinalHttp();  
+				    //调用download方法开始下载
+				   fh.download(url, tempFile.getAbsolutePath(),
+				    new AjaxCallBack<File>() {  
+				                @Override   
+				                public void onLoading(long count, long current) {  
+				                    // textView.setText("下载进度："+current+"/"+count);  
+				                	// 将文件和文件大小存储
+									edit.putLong(tempFile.getAbsolutePath(), count);
+									edit.putLong(tempFile.getAbsolutePath()
+											+ "precent", current);
+									edit.commit();
+									if (precent - download.get(notificationId) >= 1) {
+										download.put(notificationId, current);
+										Message message = handler.obtainMessage(
+												3, current);
+										Bundle bundle = new Bundle();
+										bundle.putString("name", name);
+										message.setData(bundle);
+										message.arg1 = notificationId;
+										handler.sendMessage(message);
+
+									}
+				                }  
+
+				                @Override  
+				                public void onSuccess(File t) {  
+				                   // textView.setText(t==null?"null":t.getAbsoluteFile().toString());  
+				                	Message message = handler.obtainMessage(2, tempFile);
+									message.arg1 = notificationId;
+									Bundle bundle = new Bundle();
+									bundle.putString("name", name);
+									message.setData(bundle);
+									handler.sendMessage(message);
+				                }  
+
+				            });  */
+
+
 					while (read != -1 && !cancelUpdate) {
 						if (!isPause) {
 							read = bis.read(buffer);
@@ -490,18 +578,18 @@ public class DownloadService extends Service {
 				message.arg1 = notificationId;
 				handler.sendMessage(message);
 			} catch (IOException e) {
-				/*
-				 * if (tempFile.exists()) tempFile.delete();
-				 */
+				
+				 if (tempFile.exists()) tempFile.delete();
+				 
 				Message message = handler
 						.obtainMessage(4, name + "下载失败:网络异常");
 				message.arg1 = notificationId;
 				handler.sendMessage(message);
 				e.printStackTrace();
 			} catch (Exception e) {
-				/*
-				 * if (tempFile.exists()) tempFile.delete();
-				 */
+				
+				  if (tempFile.exists()) tempFile.delete();
+				 
 				Message message = handler
 						.obtainMessage(4, name + "下载失败:网络异常");
 				message.arg1 = notificationId;
@@ -798,6 +886,104 @@ public class DownloadService extends Service {
 			return bp;
 		} else {
 			return null;
+		}
+	}
+	
+	public static void quiesceDownFile(String url,String name) {
+		File tempFile = new File(Environment.getExternalStorageDirectory(),
+				"/market/" + name + ".apk");
+		URL urls;
+		try {
+			urls = new URL(url);
+			HttpURLConnection coon = (HttpURLConnection) urls
+					.openConnection();
+			// 设置请求头信息
+			coon.setRequestMethod("GET");
+			coon.setRequestProperty("Accept-Language", "zh-CN");
+			coon.setRequestProperty("Referer", urls.toString());
+			coon.setRequestProperty("Charset", "UTF-8");
+			// 设置从哪个位置开始下载
+			// 超时时间
+			coon.setConnectTimeout(5000);
+			// 获取文件大小
+			int flieLength = coon.getContentLength();
+			InputStream is = coon.getInputStream();
+			BufferedInputStream bis = new BufferedInputStream(is);
+
+			if (is != null) {
+				File rootFile = new File(
+						Environment.getExternalStorageDirectory(),
+						"/market");
+				if (!rootFile.exists() && !rootFile.isDirectory())
+					rootFile.mkdir();
+				/*
+				 * if (tempFile.exists()) tempFile.delete();
+				 */
+				// tempFile.createNewFile();
+				int read = 0;
+				long count = 0;
+
+				byte[] buffer = new byte[1024];
+				RandomAccessFile ranFile = new RandomAccessFile(tempFile,
+						"rwd");
+					ranFile.setLength(flieLength);
+			
+				while (read != -1) {
+						read = bis.read(buffer);
+						if (read != -1) {
+							ranFile.write(buffer, 0, read);
+							count += read;
+							LogUtils.d("testdown", count+"");
+					}
+
+				}
+				is.close();
+				ranFile.close();
+				bis.close();
+		}
+			} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// 获取http连接
+	
+		// 存储下载的文件及下载的大小
+
+		}
+	//获取当前打开应用
+	public static void watchDog(List<AppInfo> list,ActivityManager am) {
+		LogUtils.d("Down", context+"");
+		ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+		String packageName = cn.getPackageName();
+		LogUtils.d("down", packageName);
+		if(list.size() >0) {
+		for(AppInfo ai : list) {
+			//LogUtils.d("down", ai.getAppName()+"");
+			if(ai.getPackageName().equals(packageName)) {
+				long currentTimeMillis = System.currentTimeMillis();
+		           ai.setLastTime(currentTimeMillis);
+		          // LogUtils.d("timelast", ai.getAppName()+ai.getLastTime());
+		           AppInfo findById = db.findById(ai.getId(),AppInfo.class);
+		           if(findById != null) {
+		        	   findById.setLastTime(ai.getLastTime());
+		        	   db.update(findById);
+		           } else {
+		        	   LocalAppInfo findById2 = db.findById(ai.getId(), LocalAppInfo.class);
+		        	   if(findById2 == null) {
+		        	   LocalAppInfo localApp =  new LocalAppInfo();
+		        	   localApp.setIconUrl(ai.getIconUrl());
+		        	   localApp.setAppName(ai.getAppName());
+		        	   localApp.setId(ai.getAppName());
+		        	   Long lastTime = ai.getLastTime();
+		        		   localApp.setLastTime(lastTime);
+		        	   db.save(localApp);
+		        	   } else {
+		        		   findById2.setLastTime(ai.getLastTime());
+		        		   db.update(findById2);
+		        	   }
+		           }
+			}
+		}
 		}
 	}
 }

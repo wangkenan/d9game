@@ -6,4 +6,10 @@
     <dimen name="btn_minWidth_back">78.0dip</dimen>
      <dimen name="btn_minWidth_topbar">70.0dip</dimen>
       <dimen name="textsize_item_big">15.0sp</dimen>
+         <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="slidingmenu_offset">60dp</dimen>
+    <dimen name="list_padding">10dp</dimen>
+    <dimen name="shadow_width">15dp</dimen>
 </resources>

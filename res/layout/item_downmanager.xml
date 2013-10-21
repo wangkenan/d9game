@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/icon_dm"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="18sp"
+        android:layout_marginLeft="8sp"
+        android:layout_marginTop="18sp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/tempicon" />
+
+    <RelativeLayout
+        android:id="@+id/frame_layout_dm"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="12sp" >
+
+        <me.key.appmarket.widgets.ProgressView
+            android:id="@+id/progress_view_local_dm"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/install_dm"
+            android:layout_width="50dip"
+             android:layout_height="27dip"
+             android:layout_alignParentLeft="true"
+             android:layout_centerVertical="true"
+             android:background="@drawable/mybutton_shape"
+             android:clickable="true"
+             android:focusable="false"
+             android:gravity="center"
+             android:text="下载"
+             android:textColor="#0066FF"
+             android:textSize="13sp" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/divider_dm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/frame_layout_dm"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/tab_divider" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dip"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/icon_dm"
+        android:layout_toLeftOf="@id/frame_layout_dm"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/name_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dip"
+            android:textSize="12sp"
+            android:text="sdg" />
+	<RelativeLayout
+	    android:layout_width="180dp"
+	    android:layout_height="wrap_content"
+	     android:layout_marginLeft="5dip"
+	     android:layout_marginTop="2dip"
+	  >
+	    <TextView
+	        android:id="@+id/size_pro_downmanager"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="大小" 
+	        android:textSize="10sp"
+	        />
+
+	    <TextView
+	        android:id="@+id/press_pro_downmanager"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="百分比"
+	        android:textSize="10sp"
+	        android:layout_alignParentRight="true"
+	        />
+
+	</RelativeLayout>
+        <ProgressBar
+            android:id="@+id/progressbar_updown"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="10dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="5dip"
+            android:progressDrawable="@drawable/progressbg"
+            android:max="100"
+            android:progress="0" />
+        
+    </LinearLayout>
+
+</RelativeLayout>

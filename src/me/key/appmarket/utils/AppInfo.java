@@ -1,8 +1,9 @@
 package me.key.appmarket.utils;
 
-import android.graphics.drawable.Drawable;
+import java.io.Serializable;
 
-public class AppInfo {
+import android.graphics.drawable.Drawable;
+public class AppInfo implements Serializable{
 
 	private String idx;
 	private String appName;
@@ -11,6 +12,20 @@ public class AppInfo {
 	private String appDescri;
 	private String appUrl;
 	private String appDownCount;
+	private String id;
+	private Long lastTime;
+	public Long getLastTime() {
+		return lastTime;
+	}
+	public void setLastTime(Long lastTime) {
+		this.lastTime = lastTime;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	private boolean isInstalled;
 
@@ -24,7 +39,6 @@ public class AppInfo {
 	public String getRecoPic() {
 		return recoPic;
 	}
-
 	public void setRecoPic(String recoPic) {
 		this.recoPic = recoPic;
 	}
@@ -136,7 +150,7 @@ public class AppInfo {
 	}
 
 	public AppInfo(String idx, String appName, String appSize, String iconUrl,
-			String appUrl, String appDownCount,String appdes) {
+			String appUrl, String appDownCount,String appdes,String id) {
 		super();
 		this.appName = appName;
 		this.appSize = appSize;
@@ -145,6 +159,7 @@ public class AppInfo {
 		this.idx = idx;
 		this.appDownCount = appDownCount;
 		this.appDescri = appdes;
+		this.id = id;
 	}
 
 	public String getAppDescri() {

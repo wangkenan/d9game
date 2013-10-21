@@ -275,7 +275,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "","");
+						Global.MAIN_URL + appiconurl, appurl, "","",appName);
 
 				appInfo.setPackageName(jsonObject.getString("apppkgname"));
 				appInfo.setVersion(jsonObject.getString("version"));

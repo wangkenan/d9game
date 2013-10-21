@@ -202,7 +202,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "","");
+						Global.MAIN_URL + appiconurl, appurl, "","",appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appDatainfos.add(appInfo);
@@ -419,7 +419,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "","");
+						Global.MAIN_URL + appiconurl, appurl, "","",appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appDatainfos_temp.add(appInfo);

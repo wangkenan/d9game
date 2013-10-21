@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -86,10 +87,21 @@ public class LocalUtils {
 				mAppInfo.setApkName(apkName);
 				mAppInfo.setRoot(Root);
 				mAppInfo.setPackageName((String)list.get("pkgname"));
+				mAppInfo.setLastTime(Long.MAX_VALUE);
+				mAppInfo.setId(list.get("label").toString());
 				boolean isIns = AppUtils.isInstalled(list.get("label")
 						.toString());
 				mAppInfo.setInstalled(isIns);
 				mAppInfos.add(mAppInfo);
+				List<PackageInfo> packages = context.getPackageManager()
+						.getInstalledPackages(0);
+				for(PackageInfo pi : packages) {
+					if(pi.packageName.equals((String)list.get("pkgname"))) {
+						mAppInfos.remove(mAppInfos.get(mAppInfos.size()-1));
+						break;
+					}
+				}
+		
 				list.clear();
 				} 
 			}

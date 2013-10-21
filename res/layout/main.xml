@@ -39,7 +39,7 @@
             android:src="@drawable/search_selector" /> 
     </RelativeLayout>
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="30dip"
@@ -83,7 +83,7 @@
             android:text="@string/main_rank"
             android:textColor="@color/default_text"
             android:textSize="15sp" />
-    </LinearLayout>
+    </LinearLayout> -->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/vPager"

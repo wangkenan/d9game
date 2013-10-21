@@ -156,8 +156,9 @@
     
     <color name="text_black">#222222</color>
     <color name="text_white">#ffffff</color>
-    <color name="progress_color">#dfdedd</color>
+    <color name="progress_color">#2A9AFF</color>
     <color name="myblack">#99000000</color>
-    
+    <color name="myprobar">#0066FF</color>
+    <color name="classiv_cloor">#F1F0ED</color>
     
 </resources>

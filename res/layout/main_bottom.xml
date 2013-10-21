@@ -5,12 +5,11 @@
     android:layout_height="fill_parent"
     android:inAnimation="@android:anim/slide_in_left"
     android:outAnimation="@android:anim/slide_out_right" >
-
-    <ImageView
+ <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/welcome_d9"
-        />
+        android:background="@drawable/welcome_d9" />
+    
 
     <TabHost
           android:id="@android:id/tabhost"
@@ -21,14 +20,29 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginBottom="60dip" >
+                android:layout_marginBottom="60dip" 
+                >
+            
             </FrameLayout>
-
+    	<RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_above="@android:id/tabs"
+                    >
+                    <ImageView
+                        android:id="@+id/down_anim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/down_draw" 
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:visibility="invisible"
+                        />
+                </RelativeLayout>
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="fill_parent"

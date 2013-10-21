@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:drawableTop="@drawable/main_tab_play_normal"
-        android:text="本地游戏"
+        android:text="玩游戏"
         android:textColor="@color/white"
         android:textSize="8sp" />
 

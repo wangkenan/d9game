@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.tsz.afinal.FinalDb;
+
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -85,11 +87,11 @@ public class NewRecommnAdapter extends BaseAdapter {
 	private WindowManager wm;
 	private int gapPy;
 	private int bigImHeight;
-	private int gapPx ;
+	private int gapPx;
 	private int width;
 	private int height;
 	private String desc;
-
+	private FinalDb db;
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
 	// 设置ImageLoade初始化信息
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -114,17 +116,18 @@ public class NewRecommnAdapter extends BaseAdapter {
 		this.mylistView = mylistView;
 		mContext = context;
 		lay = LayoutInflater.from(context);
-
+		db = FinalDb.create(context);
 		asyncImageLoader = new AsyncImageLoader();
 		wm = (WindowManager) context.getSystemService(context.WINDOW_SERVICE);
 		Display defaultDisplay = wm.getDefaultDisplay();
-		DisplayMetrics dm=new DisplayMetrics();  
-		((Activity) mContext).getWindowManager().getDefaultDisplay().getMetrics(dm);   
-		width=dm.widthPixels;   
-		height=dm.heightPixels;   
-		gapPx= convertDipOrPx(mContext, 5);
+		DisplayMetrics dm = new DisplayMetrics();
+		((Activity) mContext).getWindowManager().getDefaultDisplay()
+				.getMetrics(dm);
+		width = dm.widthPixels;
+		height = dm.heightPixels;
+		gapPx = convertDipOrPx(mContext, 5);
 		gapPy = convertDipOrPx(mContext, 10);
-		bigImHeight = (int)((width-gapPy)/2/1.27f);
+		bigImHeight = (int) ((width - gapPy) / 2 / 1.27f);
 	}
 
 	private Handler handler = new Handler() {
@@ -144,14 +147,14 @@ public class NewRecommnAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return appInfos.size()+1;
+		return appInfos.size() + 1;
 	}
 
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		if(arg0 != 0) {
-			return appInfos.get(arg0-1);
+		if (arg0 != 0) {
+			return appInfos.get(arg0 - 1);
 		} else {
 			return null;
 		}
@@ -165,15 +168,14 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	@Override
 	public int getItemViewType(int position) {
-		
+
 		if (position == 0) {
 			return TYPE_3;
 		} else {
-			int type = (position-1) % 3;
-			if(type == 0){
+			int type = (position - 1) % 3;
+			if (type == 0) {
 				return TYPE_1;
-			}
-				else {
+			} else {
 				return TYPE_2;
 			}
 		}
@@ -190,7 +192,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 		final ViewHolder2 viewHolder2;
 		final ViewHolder3 viewHolder3;
 		Drawable mDrawable;
-
+		AppInfo sdappInfo;
 		int type = getItemViewType(position);
 
 		if (convertvView == null) {
@@ -198,7 +200,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 			case TYPE_1:
 				viewHolder2 = new ViewHolder2();
 				convertvView = lay.inflate(R.layout.item_recomm_lisview, null);
-
 				viewHolder2.progress_view = (ProgressView) convertvView
 						.findViewById(R.id.recomm_progress_view);
 				viewHolder2.recomm_bigiv = (ImageView) convertvView
@@ -227,18 +228,18 @@ public class NewRecommnAdapter extends BaseAdapter {
 						.findViewById(R.id.progress_view2);
 				convertvView.setTag(viewHolder);
 				break;
-			case TYPE_3 :
+			case TYPE_3:
 				viewHolder3 = new ViewHolder3();
 				convertvView = lay.inflate(R.layout.item_banner, null);
-				viewHolder3.banner = (ImageView) convertvView.findViewById(R.id.banner);
+				viewHolder3.banner = (ImageView) convertvView
+						.findViewById(R.id.banner);
 				LayoutParams par11 = viewHolder3.banner.getLayoutParams();
-				par11.height = ( width-gapPy)/4;
-				par11.width = width-gapPy;
+				par11.height = (width - gapPy) / 4;
+				par11.width = width - gapPy;
 				viewHolder3.banner.setLayoutParams(par11);
 				convertvView.setTag(viewHolder3);
 				break;
 			}
-		
 
 		} else {
 			switch (type) {
@@ -249,43 +250,52 @@ public class NewRecommnAdapter extends BaseAdapter {
 			case TYPE_2:
 				viewHolder = (ViewHolder) convertvView.getTag();
 				break;
-			case TYPE_3 :
-				viewHolder3  = (ViewHolder3) convertvView.getTag();
+			case TYPE_3:
+				viewHolder3 = (ViewHolder3) convertvView.getTag();
 				break;
 			}
 		}
 		switch (type) {
 		case TYPE_1:
-			final int newposition = position-1;
+			final int newposition = position - 1;
+			sdappInfo = appInfos.get(newposition);
+			AppInfo findApp = db
+					.findById(sdappInfo.getAppName(), AppInfo.class);
+			if (findApp != null) {
+				sdappInfo = findApp;
+				LogUtils.d("NEWRECOMM", sdappInfo.getAppName());
+			}
 			final ViewHolder2 v2 = ((ViewHolder2) convertvView.getTag());
 			setDownState(newposition, v2);
-			v2.name.setText(appInfos.get(newposition).getAppName());
-			v2.descr.setText(appInfos.get(newposition).getAppDescri());
-			
-			if(appInfos.get(newposition).getRecoPic() != null) {
-				ImageLoader.getInstance().displayImage(appInfos.get(newposition).getRecoPic(), v2.recomm_bigiv, options);
+			v2.name.setText(sdappInfo.getAppName());
+			v2.descr.setText(sdappInfo.getAppDescri());
+
+			if (sdappInfo.getRecoPic() != null) {
+				ImageLoader.getInstance().displayImage(sdappInfo.getRecoPic(),
+						v2.recomm_bigiv, options);
 			} else {
-				ImageLoader.getInstance().displayImage(appInfos.get(newposition).getAppimgurl()[0], v2.recomm_bigiv, options);
+				ImageLoader.getInstance().displayImage(
+						sdappInfo.getAppimgurl()[0], v2.recomm_bigiv, options);
 			}
-			//String bigurl = bigImageMap.get(newposition);
+			// String bigurl = bigImageMap.get(newposition);
 			// ImageLoader.getInstance().displayImage(bigurl, v2.recomm_bigiv,
 			// options);
 			switch (newposition) {
 			case 0:
-				//v2.recomm_bigiv.setImageResource(R.drawable.reco_1);
+				// v2.recomm_bigiv.setImageResource(R.drawable.reco_1);
 				// setImage(v2.recomm_bigiv, R.drawable.reco_1);
 				break;
 
 			case 3:
-				//v2.recomm_bigiv.setImageResource(R.drawable.reco_4);
+				// v2.recomm_bigiv.setImageResource(R.drawable.reco_4);
 				// setImage(v2.recomm_bigiv, R.drawable.reco_4);
 				break;
 			case 6:
-				//v2.recomm_bigiv.setImageResource(R.drawable.reco_7);
+				// v2.recomm_bigiv.setImageResource(R.drawable.reco_7);
 				// setImage(v2.recomm_bigiv, R.drawable.reco_7);
 				break;
 			case 9:
-				//v2.recomm_bigiv.setImageResource(R.drawable.reco_10);
+				// v2.recomm_bigiv.setImageResource(R.drawable.reco_10);
 				// setImage(v2.recomm_bigiv, R.drawable.reco_10);
 				break;
 			}
@@ -293,19 +303,24 @@ public class NewRecommnAdapter extends BaseAdapter {
 			break;
 
 		case TYPE_2:
-			final int newposition2 = position -1;
+			final int newposition2 = position - 1;
+			sdappInfo = appInfos.get(newposition2);
+			AppInfo findApp1 = db.findById(sdappInfo.getAppName(),
+					AppInfo.class);
+			if (findApp1 != null) {
+				sdappInfo = findApp1;
+				LogUtils.d("NEWRECOMM", sdappInfo.getAppName());
+			}
 			final ViewHolder v1 = ((ViewHolder) convertvView.getTag());
 			LogUtils.d("NewRecommn", appInfos.size() + "");
 
-			v1.name.setText(appInfos.get(newposition2).getAppName());
-			v1.size.setText(ToolHelper.Kb2Mb(appInfos.get(newposition2)
-					.getAppSize()));
-			ImageLoader.getInstance().displayImage(
-					appInfos.get(newposition2).getIconUrl(), v1.icon, options);
-			ImageLoader.getInstance();
+			v1.name.setText(sdappInfo.getAppName());
+			v1.size.setText(ToolHelper.Kb2Mb(sdappInfo.getAppSize()));
+			ImageLoader.getInstance().displayImage(sdappInfo.getIconUrl(),
+					v1.icon, options);
 			setDownState(newposition2, v1);
 			break;
-		case TYPE_3 :
+		case TYPE_3:
 			final ViewHolder3 v3 = ((ViewHolder3) convertvView.getTag());
 			setImagePosition(R.drawable.banner, v3.banner);
 			break;
@@ -316,8 +331,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	public void setDownState(final int position, final BaseHolder v1) {
 		Drawable mDrawable;
-		v1.progress_view.setProgress(0);
-		v1.progress_view.setVisibility(View.VISIBLE);
+		//v1.progress_view.setProgress(0);
+		// v1.progress_view.setVisibility(View.VISIBLE);
 		File tempFile = new File(Environment.getExternalStorageDirectory(),
 				"/market/" + appInfos.get(position).getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
@@ -330,45 +345,70 @@ public class NewRecommnAdapter extends BaseAdapter {
 			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 			v1.tvdown.setText("暂停");
 			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
+			LogUtils.d("new", "我是下载中暂停"+appInfos.get(position).getAppName());
+			if (!isDownLoaded) {
+				LogUtils.d("new", "我执行了下载中暂停"+appInfos.get(position).getAppName());
+				v1.progress_view.setVisibility(View.INVISIBLE);
+				v1.tvdown.setVisibility(View.VISIBLE);
+			}
 		} else {
 			v1.tvdown.setText("下载中");
-
+			LogUtils.d("new", "我是暂停中下载"+appInfos.get(position).getAppName());
+			if (!isDownLoaded) {
+				LogUtils.d("new", "我执行了暂停中下载"+appInfos.get(position).getAppName());
+				v1.progress_view.setVisibility(View.VISIBLE);
+				v1.tvdown.setVisibility(View.INVISIBLE);
+				v1.progress_view.setProgress(DownloadService.getPrecent(idx));
+				LogUtils.d("ture", isDownLoading + "isDown");
+				LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());
+			}
 		}
 		if (appInfos.get(position).isInstalled()) {
 			v1.tvdown.setText("打开");
-
+			v1.progress_view.setVisibility(View.INVISIBLE);
+			v1.tvdown.setVisibility(View.VISIBLE);
 			v1.progress_view.setProgress(100);
-			Drawable mDrawableicon = mContext.getResources().getDrawable(
-					R.drawable.action_type_software_update);
-			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawableicon, null, null);
+			/*
+			 * Drawable mDrawableicon = mContext.getResources().getDrawable(
+			 * R.drawable.action_type_software_update);
+			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+			 * mDrawableicon, null, null);
+			 */
 		} else if (appInfos.get(position).isDown()) {
-
 			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");
-
-			v1.tvdown.setText("下载中");
-			Drawable mDrawableicon = mContext.getResources().getDrawable(
-					R.drawable.downloading);
-			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawableicon, null, null);
+			LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());
+		/*	//v1.tvdown.setText("下载中");
+			v1.progress_view.setVisibility(View.VISIBLE);
+			v1.tvdown.setVisibility(View.INVISIBLE);
+			
+			  Drawable mDrawableicon = mContext.getResources().getDrawable(
+			  R.drawable.downloading);
+			  v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+			  mDrawableicon, null, null);*/
+			 
 		} else if (isDownLoaded) {
-			Drawable mDrawableicon = mContext.getResources().getDrawable(
-					R.drawable.downloaded);
-			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-					mDrawableicon, null, null);
+			/*
+			 * Drawable mDrawableicon = mContext.getResources().getDrawable(
+			 * R.drawable.downloaded);
+			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+			 * mDrawableicon, null, null);
+			 */
 			v1.tvdown.setText("安装");
 			v1.progress_view.setProgress(100);
 		} else if (!isDownLoading) {
 			v1.tvdown.setText("下载");
-			mDrawable = mContext.getResources().getDrawable(
-					R.drawable.downloading);
-			v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null, mDrawable,
-					null, null);
+			/*
+			 * mDrawable = mContext.getResources().getDrawable(
+			 * R.layout.mydown_buton);
+			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+			 * mDrawable, null, null);
+			 */
 			// 获取将要下载的文件名，如果本地存在该文件，则取出该文件
 
 			// LogUtils.d("sa", tempFile.getAbsolutePath());
-
+			v1.progress_view.setVisibility(View.INVISIBLE);
+			v1.tvdown.setVisibility(View.VISIBLE);
 			long length = sp.getLong(tempFile.getAbsolutePath(), 0);
 			// LogUtils.d("sa", length+"");
 			if (length != 0
@@ -388,7 +428,30 @@ public class NewRecommnAdapter extends BaseAdapter {
 				edit.commit();
 			}
 		}
+		v1.progress_view.setOnClickListener(new OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				v1.tvdown.setVisibility(View.VISIBLE);
+				v1.progress_view.setVisibility(View.INVISIBLE);
+				v1.tvdown.setText("暂停");
+				appInfos.get(position).setDown(false);
+				LogUtils.d("test", "暂停");
+				File tempFile = DownloadService.CreatFileName(appInfos.get(
+						position).getAppName());
+				Intent intent = new Intent();
+				intent.setAction(tempFile.getAbsolutePath());
+				mContext.sendBroadcast(intent);
+				Intent downState = new Intent();
+				downState.setAction(tempFile.getAbsolutePath() + "down");
+				downState.putExtra("isPause", !appInfos.get(position)
+						.isIspause());
+				mContext.sendBroadcast(downState);
+				LogUtils.d("pro", "我发出了下载中暂停广播");
+				appInfos.get(position).setIspause(
+						!appInfos.get(position).isIspause());
+			}
+		});
 		v1.tvdown.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -403,12 +466,20 @@ public class NewRecommnAdapter extends BaseAdapter {
 					Intent intent = new Intent();
 					intent.setAction(tempFile.getAbsolutePath());
 					mContext.sendBroadcast(intent);
+					Intent downState = new Intent();
+					downState.setAction(tempFile.getAbsolutePath() + "down");
+					downState.putExtra("isPause", !appInfos.get(position)
+							.isIspause());
+					mContext.sendBroadcast(downState);
+					LogUtils.d("pro", "我发出了暂停中下载广播");
 					if (!appInfos.get(position).isIspause()) {
 						v1.tvdown.setText("暂停");
 						appInfos.get(position).setDown(false);
 					} else {
 						v1.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
+						v1.progress_view.setVisibility(View.VISIBLE);
+						v1.tvdown.setVisibility(View.INVISIBLE);
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
@@ -437,7 +508,12 @@ public class NewRecommnAdapter extends BaseAdapter {
 					File tempFile = new File(Environment
 							.getExternalStorageDirectory(), "/market/"
 							+ appInfos.get(position).getAppName() + ".apk");
-
+					Intent downState = new Intent();
+					downState.setAction(tempFile.getAbsolutePath() + "down");
+					downState.putExtra("isPause", appInfos.get(position)
+							.isIspause());
+					mContext.sendBroadcast(downState);
+					LogUtils.d("pro", "我发出了暂停中下载广播safdasfasf");
 					long length = sp.getLong(tempFile.getAbsolutePath(), 0);
 					/*
 					 * DownloadService.downNewFile(appInfos.get(position)
@@ -451,10 +527,12 @@ public class NewRecommnAdapter extends BaseAdapter {
 					Intent intent = new Intent();
 					intent.setAction(MarketApplication.PRECENT);
 					mContext.sendBroadcast(intent);
-
+					LogUtils.d("pro", "我发出了暂停中下载广播but");
 					Toast.makeText(mContext,
 							appInfos.get(position).getAppName() + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
+					v1.progress_view.setVisibility(View.VISIBLE);
+					v1.tvdown.setVisibility(View.INVISIBLE);
 				}
 
 			}
@@ -466,8 +544,9 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	private static class ViewHolder2 extends BaseHolder {
 	}
+
 	private static class ViewHolder3 extends BaseHolder {
-		
+
 	}
 
 	static class BaseHolder {
@@ -580,12 +659,16 @@ public class NewRecommnAdapter extends BaseAdapter {
 				imageId, opts);
 		iv.setImageBitmap(bitmap);
 	}
+
 	private void setImagePosition(int resId, ImageView banner) {
-		 Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), resId);
-       // Bitmap newbitmap = Bitmap.createBitmap((width-gapPy),(int)((width-gapPy)/5.34), bm.getConfig());
-	       // getNewBitMapPos(bm, newbitmap);
-	        //banner.setImageBitmap(newbitmap);
-		 banner.setImageResource(resId);
+		Bitmap bm = BitmapFactory
+				.decodeResource(mContext.getResources(), resId);
+		// Bitmap newbitmap =
+		// Bitmap.createBitmap((width-gapPy),(int)((width-gapPy)/5.34),
+		// bm.getConfig());
+		// getNewBitMapPos(bm, newbitmap);
+		// banner.setImageBitmap(newbitmap);
+		banner.setImageResource(resId);
 	}
 
 	private void getNewBitMapPos(Bitmap bm, Bitmap newbitmap) {
@@ -595,16 +678,18 @@ public class NewRecommnAdapter extends BaseAdapter {
 		double newWidth = 1.00;
 		double newHeight = 2.6;
 		int gapPx = convertDipOrPx(mContext, 5);
-     // matrix.setRotate(30, bm.getWidth()/2, bm.getHeight()/2);
-		float scaleWidth =(float) ((width-gapPx))/bm.getWidth();
-		float scaleHeight =(float) (newbitmap.getHeight())/bm.getHeight();
-		LogUtils.d("scaleWidth+scaleWidth", scaleWidth+":"+scaleWidth+"++"+width+"PPP"+2/3);
+		// matrix.setRotate(30, bm.getWidth()/2, bm.getHeight()/2);
+		float scaleWidth = (float) ((width - gapPx)) / bm.getWidth();
+		float scaleHeight = (float) (newbitmap.getHeight()) / bm.getHeight();
+		LogUtils.d("scaleWidth+scaleWidth", scaleWidth + ":" + scaleWidth
+				+ "++" + width + "PPP" + 2 / 3);
 		matrix.postScale(scaleWidth, scaleHeight);
-//使用画布将原图片，矩阵，画笔进行新图片的绘画
+		// 使用画布将原图片，矩阵，画笔进行新图片的绘画
 		canvas.drawBitmap(bm, matrix, paint);
 	}
-	public static int convertDipOrPx(Context context, int dip) { 
-	    float scale = context.getResources().getDisplayMetrics().density; 
-	    return (int)(dip*scale + 0.5f*(dip>=0?1:-1)); 
-	} 
+
+	public static int convertDipOrPx(Context context, int dip) {
+		float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (dip * scale + 0.5f * (dip >= 0 ? 1 : -1));
+	}
 }

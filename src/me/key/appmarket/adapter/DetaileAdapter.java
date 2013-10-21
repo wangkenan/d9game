@@ -88,6 +88,7 @@ public class DetaileAdapter extends BaseAdapter {
 		this.categoryInfo = categoryInfo;
 		this.mylistView = mylistView;
 		mContext = context;
+	
 		lay = LayoutInflater.from(context);
 		wm = (WindowManager) mContext.getSystemService(mContext.WINDOW_SERVICE);
 		Display defaultDisplay = wm.getDefaultDisplay();

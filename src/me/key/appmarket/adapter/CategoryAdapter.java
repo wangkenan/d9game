@@ -49,7 +49,6 @@ public class CategoryAdapter extends BaseAdapter {
 		this.cache = cache;
 		mContext = context;
 		lay = LayoutInflater.from(context);
-
 		asyncImageLoader = new AsyncImageLoader();
 	}
 

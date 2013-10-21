@@ -49,14 +49,26 @@ public class ProgressView extends View {
 				* density / 2, paint);
 		// }
 
-		paint.setColor(context.getResources().getColor(R.color.yellow_light));
+		
 		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		RectF rect = new RectF(0, 0, size * density, size * density);
+		paint.setColor(Color.WHITE);
+		canvas.drawCircle(size * density / 2, size * density / 2, size
+				* density / 2 -2, paint);
+		paint.setColor(context.getResources().getColor(R.color.progress_color));
+		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
+		RectF rect = new RectF(0+2* density, 0+2* density, size * density-2, size * density-2);
 		canvas.drawArc(rect, -90, fArcNum, true, paint);
 		paint.setColor(Color.WHITE);
-		paint.setFlags(Paint.ANTI_ALIAS_FLAG);
 		canvas.drawCircle(size * density / 2, size * density / 2, size
-				* density / 2 - 5, paint);
+				* density / 2 -7, paint);
+		 paint.setStyle(Paint.Style.FILL);
+		   // 消除锯齿
+		   paint.setAntiAlias(true);
+		   // 设置画笔的颜色
+		   
+		   paint.setColor(getResources().getColor(R.color.progress_color));
+		   canvas.drawRect(this.getWidth()/2-7, this.getHeight()/2-7, this.getHeight()/2+10, this.getHeight()/2+10, paint);
+	
 	}
 
 	public void setProgress(float num) {

@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout android:id="@+id/top_bar" 
+<LinearLayout android:id="@+id/top_bar" 
     android:layout_width="fill_parent" 
     android:layout_height="fill_parent"
   xmlns:android="http://schemas.android.com/apk/res/android"
  android:background="@color/gray_hint"
+ android:orientation="vertical"
   >
-	 <ProgressBar 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" 
-                android:id="@+id/pro_bar" 
-                android:layout_centerInParent="true"
-                style="@style/circle_progress" />
+ 
+   <RelativeLayout
+        android:id="@+id/topbar"
+        style="@style/topbar" >
+	  <ImageView
+            android:id="@+id/logo_title"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="6sp"
+            android:src="@drawable/icon" />
+
+        <TextView
+            android:id="@+id/topbar_title"
+            style="@style/topbar_title"
+            android:layout_toRightOf="@+id/logo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5sp"
+            android:text="@string/app_name" />
+        
+       	  <ImageButton
+            android:id="@+id/search_btn"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:background="@null"
+            android:src="@drawable/search_selector" /> 
+    </RelativeLayout>
+     <FrameLayout
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent" 
+      >
+    
 	  <include 
 	     android:layout_width="wrap_content"
 	     android:layout_height="wrap_content"
@@ -24,5 +56,18 @@
 	    android:layout_marginLeft="5dip"
 	    android:layout_marginRight="5dip"
 	    android:listSelector="@drawable/list_item_selector"
-	    android:id="@+id/list"></ListView>
-</RelativeLayout>
+	    android:id="@+id/list_rank"></ListView>
+	   	  <RelativeLayout
+       	      android:layout_width="fill_parent"
+       	      android:layout_height="fill_parent" 
+       	      >
+       	  <ProgressBar
+       	      android:id="@+id/rank_pb"
+       	      android:layout_width="wrap_content"
+       	       android:layout_centerInParent="true"
+       	       style="@style/circle_progress"
+       	      android:layout_height="wrap_content" 
+       	      />
+       	  </RelativeLayout>
+	</FrameLayout>
+</LinearLayout>

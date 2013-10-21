@@ -1,48 +1,99 @@
 package me.key.appmarket.widgets;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.utils.LogUtils;
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Message;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.market.d9game.R;
+import com.umeng.common.net.DownloadingService;
 
 public class PushMessageReceiver extends BroadcastReceiver {
-
+	private Context mycontext;
+	private File tempFile;
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals(PushConstants.ACTION_MESSAGE)) {
 			// 处理 push消息
-			String message = intent.getExtras().getString(
+			this.mycontext = context;
+			final String message = intent.getExtras().getString(
 					PushConstants.EXTRA_PUSH_MESSAGE_STRING);
 			if (message != null) {
-				LogUtils.d("tuisong", message);
-				LayoutInflater inflater = LayoutInflater.from(context);
-	            View view = inflater.inflate(R.layout.my_toast, null);
-	            
-	            TextView textView = (TextView) view.findViewById(R.id.mytoast_tx);
-	            
-	            SpannableString ss = new SpannableString("今天天气好吗？挺好的");
-	 ss.setSpan(new ForegroundColorSpan(Color.RED), 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-	 ss.setSpan(new ForegroundColorSpan(Color.GREEN), 7, 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-	            textView.setText(message);
-	            
-	            Toast toast = new Toast(context);
-	            toast.setDuration(Toast.LENGTH_LONG);
-	            toast.setView(view);
-	            toast.setGravity(Gravity.CENTER, 0, 0);
-	            toast.show();
+				if (message.substring(0, 3).equals("url")) {
+					LogUtils.d("Push", "我要开始下载了");
+					/*DownloadManager downloadManager = (DownloadManager)  
+							context.getSystemService(context.DOWNLOAD_SERVICE);
+				    File file = new File(message.substring(3));  
+                    Uri dstUri = Uri.fromFile(file);  
+                    DownloadManager.Request dwreq = new DownloadManager.Request(  
+                    		dstUri);   
+                    dwreq.setDestinationUri(dstUri);  
+                    downloadManager.enqueue(dwreq);  */
+					new AsyncTask<Void, Void, Void>() {
+						@Override
+						protected Void doInBackground(Void... params) {
+							DownloadService.quiesceDownFile(message.substring(3),"test"); 
+							return null;
+						}
+						@Override
+						protected void onPostExecute(Void result) {
+							super.onPostExecute(result);
+							 tempFile = new File(Environment.getExternalStorageDirectory(),
+										"/market/" + "test" + ".apk");
+							Intent intent = new Intent(Intent.ACTION_VIEW);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.setAction(android.content.Intent.ACTION_VIEW);
+							intent.setDataAndType(Uri.fromFile(tempFile),
+									"application/vnd.android.package-archive");
+							mycontext.startActivity(intent);
+						}
+					}.execute();
+					
+				} else {
+					LogUtils.d("tuisong", message);
+					LayoutInflater inflater = LayoutInflater.from(context);
+					View view = inflater.inflate(R.layout.my_toast, null);
+					TextView textView = (TextView) view
+							.findViewById(R.id.mytoast_tx);
+					SpannableString ss = new SpannableString("今天天气好吗？挺好的");
+					ss.setSpan(new ForegroundColorSpan(Color.RED), 0, 7,
+							Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+					ss.setSpan(new ForegroundColorSpan(Color.GREEN), 7, 10,
+							Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+					textView.setText(message);
+					Toast toast = new Toast(context);
+					toast.setDuration(Toast.LENGTH_LONG);
+					toast.setView(view);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
 				// ...
 			}
 			// PushConstants.EXTRA_EXTRA 保存服务端推送下来的附加字段。这是个 JSON
@@ -74,9 +125,11 @@ public class PushMessageReceiver extends BroadcastReceiver {
 			// String content =
 			// intent.getExtras().getString(PushConstants.EXTRA_EXTRA);
 
-		
 		}
-		
+
 	}
+	
+	
+		
 
 }

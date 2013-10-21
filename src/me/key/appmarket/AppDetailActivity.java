@@ -12,6 +12,7 @@ import me.key.appmarket.network.HttpRequest.OnResponseListener;
 import me.key.appmarket.network.HttpResponse;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
+import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CommentInfo;
 import me.key.appmarket.utils.Global;
@@ -86,7 +87,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	private boolean isDowning = false;
 	private ProgressDialog myDialog;
 	private TextView t1, t2;
-
+	private AppInfo appInfo;
 	private String appid;
 	private ArrayList<CommentInfo> commentList = new ArrayList<CommentInfo>();
 	private ListView commentListView;
@@ -140,6 +141,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		appIcon.setOnClickListener(this);
 
 		appid = getIntent().getStringExtra("appid");
+		appInfo = (AppInfo) getIntent().getSerializableExtra("appinfo");
 		if (appid != null) {
 			myDialog = ProgressDialog.show(this, "正在连接服务器..", "连接中,请稍后..",
 					true, true);
@@ -339,6 +341,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 							Toast.LENGTH_SHORT).show();
 					Log.d(TAG, "download apk name=" + name + "  idx=" + idx
 							+ " url=" + appDownload.getTag());
+					DownloadService.downNewFile(appInfo, 0, 0, null);
 				}
 			}
 			break;
@@ -462,6 +465,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				// 是否已经下载完
 				isDowned = DownloadService.isDownLoaded(name);
 				// 是否正在下载
+				if(idx != null) {
 				isDowning = DownloadService
 						.isDownLoading(Integer.parseInt(idx));
 
@@ -474,6 +478,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				} else {
 					appDownload.setText("下载");
 				}
+			}
 			}
 		}
 	}

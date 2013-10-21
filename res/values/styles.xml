@@ -56,5 +56,13 @@
     <style name="camera_dialog" parent="@android:style/Theme.Translucent.NoTitleBar">
         <item name="android:backgroundDimEnabled">true</item>
     </style>
-
+    <style name="MyTheme">
+    <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+</style>    
+<style name="AnimationActivity" parent="@android:style/Animation.Activity"  > 
+    <item name="@android:activityOpenEnterAnimation">@anim/left_anim</item> 
+        <item name="@android:activityOpenExitAnimation">@anim/left_anim</item>
+        <item name="@android:activityCloseEnterAnimation">@anim/right_anim</item>
+        <item name="@android:activityCloseExitAnimation">@anim/right_anim</item>
+</style> 
 </resources>

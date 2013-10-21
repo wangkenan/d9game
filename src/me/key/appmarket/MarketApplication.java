@@ -20,9 +20,17 @@ public class MarketApplication extends Application {
 	private static MarketApplication mInstance;
 
 	private ArrayList<AppInfo> appList;
-
+	private ArrayList<AppInfo> downApplist = new ArrayList<AppInfo>();
 	public static MarketApplication getInstance() {
 		return mInstance;
+	}
+
+	public ArrayList<AppInfo> getDownApplist() {
+		return downApplist;
+	}
+
+	public void setDownApplist(ArrayList<AppInfo> downApplist) {
+		this.downApplist = downApplist;
 	}
 
 	@Override

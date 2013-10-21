@@ -12,14 +12,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import me.key.appmarket.LocalGameActivity.DownStateBroadcast;
 import me.key.appmarket.MyListView.OnLoadMoreListener;
 import me.key.appmarket.MyListView.OnRefreshListener;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.CategoryAdapter;
+import me.key.appmarket.adapter.ClassifyAdapter;
 import me.key.appmarket.adapter.DetaileAdapter;
 import me.key.appmarket.adapter.LocalCategoryAdapter;
 import me.key.appmarket.adapter.ManagerAdapter;
 import me.key.appmarket.adapter.ManagerUpdateAdapter;
+import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.adapter.NewRankAdapter;
 import me.key.appmarket.adapter.NewRecommnAdapter;
@@ -37,17 +40,22 @@ import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.Test;
 import me.key.appmarket.utils.ToastUtils;
 import me.key.appmarket.widgets.GalleryFlow;
 import me.key.appmarket.widgets.MyTableHost;
+import net.tsz.afinal.FinalDb;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.market.d9game.R;
+import com.slidingmenu.lib.app2.SlidingFragmentActivity;
+import com.slidingmenu.lib2.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
 
+import android.R.anim;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -71,6 +79,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.storage.StorageManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
@@ -86,6 +97,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -95,7 +107,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-public class MainActivity extends Activity {
+public class MainActivity extends SlidingFragmentActivity {
 
 	private ViewPager mPager;
 	private List<View> listViews;
@@ -129,6 +141,7 @@ public class MainActivity extends Activity {
 	private boolean isLoading = false;
 	private boolean isFirst = true;
 
+	private SlidingMenu menu;
 	private MyListView mGameListView;
 	private ProgressBar pGameBar;
 	private LinearLayout ll_gameerror;
@@ -166,6 +179,7 @@ public class MainActivity extends Activity {
 
 	private String apknamelist;
 	public static List<Activity> activities = new ArrayList<Activity>();
+	private ListView lv;
 	// app
 
 	File cache;
@@ -175,7 +189,7 @@ public class MainActivity extends Activity {
 	private NewRankAdapter appRankAdapter;
 	private ProgressBar pRankBar;
 	private LinearLayout ll_rankerror;
-
+	private MenuCategoryAdapter menuCategoryAdapter;
 	private static final int DELAYTIME = 5000;
 	private static final int RESETQUIT = 0;
 	private static final int SHOWNEXT = 1;
@@ -201,22 +215,99 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		setBehindContentView(R.layout.slide_menu);
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		final MenuFragment menuFragment = new MenuFragment();
+		fragmentTransaction.replace(R.id.slide_content, menuFragment);
+		//fragmentTransaction.replace(R.id.content, new ContentFragment());
+		fragmentTransaction.commit();
 		startService(new Intent(this, DownloadService.class));
 		LogUtils.d("Main", "我已经被加载了哟");
+		lv = (ListView) findViewById(R.id.category_lv);
+		LogUtils.d("Main", lv+"");
+		
+		
+		LogUtils.d("Main1", menuCategoryAdapter+"");
+		new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.APP_CATEGORY + "?type=" + type);
+				Log.e("tag", "runCategoryData result =" + str);
+				ParseCategoryJson(str);
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				menuCategoryAdapter = new MenuCategoryAdapter(MainActivity.this, gcategoryInfoList_temp);
+				LogUtils.d("Main", categoryInfoList_temp.size()+"ggg");
+				LogUtils.d("Main", categoryInfoList_temp.size()+"");
+				lv.setAdapter(menuCategoryAdapter);
+				//lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+				//lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+				LogUtils.d("Main", lv.getChildCount()+"");
+				lv.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						menuFragment.updata(position);
+						view.setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+						view.findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+						TextView title = (TextView) view.findViewById(R.id.category_menu);
+						title.setTextColor(getResources().getColor(R.color.myprobar));
+						for(int i = 0;i<lv.getChildCount();i++) {
+							if(i == position) {
+								continue;
+							}
+							LogUtils.d("Main", i+"");
+							lv.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.white));
+							lv.getChildAt(i).findViewById(R.id.click_menu).setVisibility(View.INVISIBLE);
+							TextView tv = (TextView) lv.getChildAt(i).findViewById(R.id.category_menu);
+							tv.setTextColor(getResources().getColor(R.color.black));
+						}
+					}
+				});
+			}
+		}.execute();
+		
+		LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
+		etSeacher.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(MainActivity.this, SearchActivity.class);
+				startActivity(intent);
+				LogUtils.d("MAIN", "动画前");
+				MainActivity.this.overridePendingTransition(R.anim.left_anim, R.anim.right_anim);
+				LogUtils.d("MAIN", "动画后");
+			}
+		});
 		// 自动升级，不能删
 		updateSelf(true);
 		InitViewPager();
 		initHomeView();
-		initGameView();
-		initRankView();
+		//initGameView();
+		//initRankView();
 		// initManagerView();
 		// initLocalGameView();
 		new Thread(runHomeData).start();
-		new Thread(runRankData).start();
+		//new Thread(runRankData).start();
 		// new Thread(runBannerData).start();
-
 		registerInstall();
 		activities.add(this);
+		menu =getSlidingMenu();
+		menu.setMode(SlidingMenu.RIGHT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+       /* menu.setShadowWidthRes(R.dimen.shadow_width);
+        menu.setShadowDrawable(R.drawable.shadow);*/
+        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setFadeDegree(0.35f);
+        
 	}
 
 	@Override
@@ -225,6 +316,7 @@ public class MainActivity extends Activity {
 		super.onResume();
 		registerPrecent();
 		MobclickAgent.onResume(this);
+		
 	}
 
 	@Override
@@ -352,7 +444,7 @@ public class MainActivity extends Activity {
 		 */
 		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root);
 		LogUtils.d("mAppInfos", mAppInfos.size() + "");
-		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos);
+		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos,null,null);
 		mListGame.setAdapter(adapter);
 
 	}
@@ -416,6 +508,7 @@ public class MainActivity extends Activity {
 				Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
 				Intent intent = new Intent(MainActivity.this,
 						AppDetailActivity.class);
+				intent.putExtra("appinfo", mAppInfo);
 				intent.putExtra("appid", mAppInfo.getIdx());
 				startActivity(intent);
 			}
@@ -652,7 +745,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void initHomeView() {
-		mHomeListView = (ListView) homeView.findViewById(R.id.list);
+		mHomeListView = (ListView) homeView.findViewById(R.id.list_home);
 		// mHomeListView.setDividerHeight(20);
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar_home);
 		pHomeBar.setVisibility(View.VISIBLE);
@@ -745,6 +838,7 @@ public class MainActivity extends Activity {
 							AppDetailActivity.class);
 					//LogUtils.d("error", position+"");
 					intent.putExtra("appid", mAppInfo.getIdx());
+					intent.putExtra("appinfo", mAppInfo);
 					startActivity(intent);
 				}
 				// if(appHomeInfos != null && appHomeInfos.size() > position){
@@ -983,6 +1077,13 @@ public class MainActivity extends Activity {
 					appHomeInfos_temp.clear();
 				}
 				appHomeAdapter.notifyDataSetChanged();
+				for(AppInfo ai : appHomeInfos) {
+					DownStateBroadcast dsb = new DownStateBroadcast();
+					IntentFilter filter = new IntentFilter();
+					String fileName =  DownloadService.CreatFileName(ai.getAppName()).getAbsolutePath();
+					filter.addAction(fileName+"down");
+					registerReceiver(dsb, filter);
+				}
 			}
 			default:
 				break;
@@ -995,7 +1096,6 @@ public class MainActivity extends Activity {
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
-			pRankBar.setVisibility(View.GONE);
 			switch (msg.what) {
 			case Global.DOWN_DATA_RANK_FAILLY: {
 				ll_rankerror.setVisibility(View.VISIBLE);
@@ -1030,7 +1130,7 @@ public class MainActivity extends Activity {
 
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "");
+						Global.MAIN_URL + appiconurl, appurl, "", "",appName);
 
 				appInfo.setPackageName(jsonObject.getString("apppkgname"));
 				appInfo.setVersion(jsonObject.getString("version"));
@@ -1069,10 +1169,12 @@ public class MainActivity extends Activity {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				String appdes = jsonObject.getString("appdes");
-				
 				String recoPic = jsonObject.getString("recoPic");
+				String apppkgname = jsonObject.getString("apppkgname");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", appdes);
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,appName);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setLastTime(Long.MAX_VALUE);
 				if(recoPic == null) {
 					String appimgurl =  jsonObject.getString("appimgurl");
 				String[] appImgurls = appimgurl.split(",");
@@ -1109,7 +1211,7 @@ public class MainActivity extends Activity {
 				String appurl = jsonObject.getString("appurl");
 				String appdes = jsonObject.getString("appdes");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", appdes);
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				bannerList.add(appInfo);
@@ -1136,7 +1238,7 @@ public class MainActivity extends Activity {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "");
+						Global.MAIN_URL + appiconurl, appurl, "", "",appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appGameInfos_temp.add(appInfo);
@@ -1182,7 +1284,7 @@ public class MainActivity extends Activity {
 				String appurl = jsonObject.getString("appurl");
 				String appDownCount = jsonObject.getString("appdowncount");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, appDownCount, "");
+						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appInfos.add(appInfo);
@@ -1204,16 +1306,16 @@ public class MainActivity extends Activity {
 	private void InitViewPager() {
 		// TODO Auto-generated method stub\
 
-		t1 = (TextView) findViewById(R.id.text1);
-		t2 = (TextView) findViewById(R.id.text2);
+		//t1 = (TextView) findViewById(R.id.text1);
+		//t2 = (TextView) findViewById(R.id.text2);
 		// t3 = (TextView) findViewById(R.id.text3);
-		t4 = (TextView) findViewById(R.id.text4);
+		//t4 = (TextView) findViewById(R.id.text4);
 		// t5 = (TextView) findViewById(R.id.text5);
-		t1.setSelected(true);
-		t1.setOnClickListener(new MyOnClickListener(0));
-		t2.setOnClickListener(new MyOnClickListener(1));
+		//t1.setSelected(true);
+		//t1.setOnClickListener(new MyOnClickListener(0));
+		//t2.setOnClickListener(new MyOnClickListener(1));
 		// t3.setOnClickListener(new MyOnClickListener(2));
-		t4.setOnClickListener(new MyOnClickListener(3));
+		//t4.setOnClickListener(new MyOnClickListener(3));
 		// t5.setOnClickListener(new MyOnClickListener(4));
 
 		mPager = (ViewPager) findViewById(R.id.vPager);
@@ -1225,9 +1327,9 @@ public class MainActivity extends Activity {
 		logcalGmaeView = mInflater.inflate(R.layout.type, null);
 		managerView = mInflater.inflate(R.layout.app_managemer, null);
 		listViews.add(homeView);
-		listViews.add(gameView);
+		//listViews.add(gameView);
 		// listViews.add(logcalGmaeView);
-		listViews.add(rankView);
+		//listViews.add(rankView);
 		// listViews.add(managerView);
 		mPager.setOffscreenPageLimit(2);
 		mPager.setAdapter(new TabPageAdapter(listViews));
@@ -1239,9 +1341,7 @@ public class MainActivity extends Activity {
 		search_btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this,
-						SearchActivity.class);
-				startActivity(intent);
+				menu.toggle();
 			}
 		});
 	}
@@ -1263,9 +1363,9 @@ public class MainActivity extends Activity {
 			switch (arg0) {
 			case 0:
 				t1.setSelected(true);
-				t2.setSelected(false);
+				//t2.setSelected(false);
 				// t3.setSelected(false);
-				t4.setSelected(false);
+				//t4.setSelected(false);
 				// t5.setSelected(false);
 				break;
 			case 1:
@@ -1277,17 +1377,17 @@ public class MainActivity extends Activity {
 				 * Thread(runGameData).start(); }
 				 */
 				t1.setSelected(false);
-				t2.setSelected(true);
+				//t2.setSelected(true);
 				// t3.setSelected(false);
-				t4.setSelected(false);
+				//t4.setSelected(false);
 				// t5.setSelected(false);
 				break;
 			case 2:
 
 				t1.setSelected(false);
-				t2.setSelected(false);
+				//t2.setSelected(false);
 				// t3.setSelected(true);
-				t4.setSelected(true);
+				//t4.setSelected(true);
 				// t5.setSelected(false);
 				break;
 			}
@@ -1607,5 +1707,23 @@ public class MainActivity extends Activity {
 		}
 		return null;
 	}
+	class DownStateBroadcast extends BroadcastReceiver {
 
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("MAINActivity", "我接受到了暂停广播");
+			for(AppInfo ai : appHomeInfos) {
+				fileName =  DownloadService.CreatFileName(ai.getAppName()).getAbsolutePath()+"down";
+				if(fileName.equals(intent.getAction())) {
+					boolean downState = intent.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					appHomeAdapter.notifyDataSetChanged();
+					LogUtils.d("Mainctivity", "我更新了ui"+ai.getAppName()+ai.isIspause());
+					break;
+				}
+			}
+		}
+		
+	}
 }

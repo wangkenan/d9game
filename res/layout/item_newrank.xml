@@ -39,20 +39,24 @@
             android:id="@+id/progress_view"
             android:layout_width="30dip"
             android:layout_height="30dip"
-            android:layout_centerHorizontal="true"
             android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
             android:focusable="false" />
 
         <TextView
             android:id="@+id/tv_down"
-            style="@style/topbar_title"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:clickable="true"
-            android:drawableTop="@drawable/downloading"
-            android:focusable="false"
-            android:text="@string/down"
-            android:textSize="14sp" />
+           android:layout_width="50dip"
+             android:layout_height="27dip"
+             android:layout_alignParentLeft="true"
+             android:layout_centerVertical="true"
+             android:background="@drawable/mybutton_shape"
+             android:clickable="true"
+             android:focusable="false"
+             android:gravity="center"
+             android:text="下载"
+             android:textColor="#0066FF"
+             android:textSize="13sp"  />
     </RelativeLayout>
 
     <ImageView

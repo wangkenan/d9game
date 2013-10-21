@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF" 
+    android:background="#FFFFFF"
     android:orientation="vertical" >
-   
+
     <RelativeLayout
         android:id="@+id/topbar"
         style="@style/topbar" >
-	  <ImageView
+
+        <ImageView
             android:id="@+id/logo_title"
             android:layout_width="35dip"
             android:layout_height="35dip"
@@ -19,62 +20,68 @@
         <TextView
             android:id="@+id/topbar_title"
             style="@style/topbar_title"
-            android:layout_toRightOf="@+id/logo_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5sp"
+            android:layout_toRightOf="@+id/logo_title"
             android:text="@string/app_name" />
-        
-       	  <ImageButton
+
+        <ImageButton
             android:id="@+id/search_btn"
             android:layout_width="35dip"
             android:layout_height="35dip"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="10dip"
             android:background="@null"
-            android:src="@drawable/search_selector" /> 
+            android:src="@drawable/search_selector" />
     </RelativeLayout>
-     <ProgressBar
-        android:id="@+id/pro_bar"
-        style="@style/circle_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-    <TextView
-        android:id="@+id/empty"
-        style="@style/topbar_title"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/topbar_title"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:text="@string/none"
-        android:textSize="15sp"
-        android:visibility="gone"
-       />
+    	<ImageView
+    	    android:layout_marginTop="5dip"
+    	    android:layout_marginBottom="5dip"
+	    android:id="@+id/banner_local"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" 
+	    />
+	<ListView
+	    android:id="@+id/downmanager_lv"
+		    android:layout_width="fill_parent"
+		    android:layout_height="100dip"
+		    android:visibility="gone"
+		    ></ListView>
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" 
-        android:layout_below="@id/topbar"
-        >
-    <ListView
-        android:id="@+id/mlist"
-        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        
-        android:listSelector="@drawable/list_item_selector" >
-    </ListView>
-    <TextView 
-        android:id="@+id/wushju"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="暂无数据ß"
-        android:visibility="visible"
-        android:layout_gravity="center"
-        />
+        android:layout_below="@id/topbar" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+
+            <ProgressBar
+                android:id="@+id/pro_bar_loacl"
+                style="@style/circle_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+	
+        <ListView
+            android:id="@+id/mlist"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:listSelector="@drawable/list_item_selector" >
+        </ListView>
+
+        <TextView
+            android:id="@+id/wushju"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="暂无数据ß"
+            android:visibility="gone" />
     </FrameLayout>
 
 </LinearLayout>

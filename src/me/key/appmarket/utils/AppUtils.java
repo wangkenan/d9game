@@ -94,14 +94,19 @@ public class AppUtils {
 					tmpInfo.setAppName(appInfo.applicationInfo.loadLabel(
 							mContext.getPackageManager()).toString());	
 					tmpInfo.setPackageName(appInfo.packageName);
-
 					String dir = appInfo.applicationInfo.publicSourceDir;
 					int size = Integer.valueOf((int) new File(dir).length());
 					tmpInfo.setAppSize(size + "");
-					
+					tmpInfo.setId(appInfo.applicationInfo.loadLabel(
+							mContext.getPackageManager()).toString());
 					tmpInfo.setVersion(appInfo.versionName);
 					tmpInfo.setAppIcon(appInfo.applicationInfo.loadIcon(mContext
 							.getPackageManager()));
+					Long max = Long.MAX_VALUE;
+					if(max < 0) {
+						max *= -1;
+					}
+					tmpInfo.setLastTime(max);
 					gameList.add(tmpInfo);
 				}
 			
