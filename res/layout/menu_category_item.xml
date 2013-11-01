@@ -7,24 +7,24 @@
     >
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
+        android:layout_height="fill_parent" 
         >
         <ImageView
             android:id="@+id/click_menu"
             android:layout_width="wrap_content"
-            android:layout_height="40dip"
+            android:layout_height="fill_parent"
             android:background="@drawable/chose_user_divider"
             android:visibility="invisible"
             />
     <ImageView
         android:layout_width="20dip"
-        android:layout_height="40dip"
+        android:layout_height="fill_parent"
         android:background="@drawable/shadowright" 
         />
 </FrameLayout>
 <LinearLayout
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:id="@+id/background_menu" 
     >
     <TextView
@@ -36,7 +36,7 @@
   <ImageView
       android:id="@+id/shadow_category"
         android:layout_width="10dip"
-        android:layout_height="40dip"
+        android:layout_height="fill_parent"
         android:background="@drawable/shadowright" 
         />
   </LinearLayout>

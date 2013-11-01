@@ -73,6 +73,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.indexdetail);
 		initActivity();
+		MarketApplication.getInstance().getAppLication().add(this);
 		Bundle bundle = getIntent().getBundleExtra("value");
 		TextView tv_tiltle = (TextView) findViewById(R.id.topbar_title);
 		tv_tiltle.setText(bundle.getString("name"));

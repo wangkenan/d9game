@@ -65,6 +65,7 @@ public class DetaileActivity extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.applist);
 		init();
+		MarketApplication.getInstance().getAppLication().add(this);
 	}
 	//初始化
 	private void init() {

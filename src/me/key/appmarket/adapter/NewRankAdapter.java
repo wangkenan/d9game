@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.tsz.afinal.FinalDb;
+
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,6 +43,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +59,7 @@ public class NewRankAdapter extends BaseAdapter {
 	private File cache;
 	private Context mContext;
 	private AsyncImageLoader asyncImageLoader;
+	private FinalDb db;
 	// 是否异步加载图片
 	public boolean isAsyn;
 	// 是否暂停
@@ -93,7 +97,7 @@ public class NewRankAdapter extends BaseAdapter {
 		this.cache = cache;
 		mContext = context;
 		lay = LayoutInflater.from(context);
-
+		db = FinalDb.create(context);
 		// asyncImageLoader = new AsyncImageLoader();
 	}
 
@@ -345,6 +349,8 @@ public class NewRankAdapter extends BaseAdapter {
 					mDrawableicon, null, null);*/
 			v1.tvdown.setText("安装");
 			v1.progress_view.setProgress(100);
+			v1.progress_view.setVisibility(View.INVISIBLE);
+			v1.tvdown.setVisibility(View.VISIBLE);
 		} else if (!isDownLoading) {
 			v1.tvdown.setText("下载");
 			v1.progress_view.setVisibility(View.INVISIBLE);

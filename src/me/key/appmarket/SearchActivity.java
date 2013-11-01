@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import me.key.appmarket.MainActivity.MyInstalledReceiver;
 import me.key.appmarket.MainActivity.PrecentReceiver;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.HotSearchAdapter;
@@ -13,6 +14,7 @@ import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.HotSearchInfo;
+import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 
 import org.json.JSONArray;
@@ -102,14 +104,20 @@ public class SearchActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 
 		this.setContentView(R.layout.search);
-
+		MarketApplication.getInstance().getAppLication().add(this);
 		cache = new File(Environment.getExternalStorageDirectory(), "cache");
 		if (!cache.exists()) {
 			cache.mkdirs();
 		}
 
 		initSearchView();
+		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+		IntentFilter filter = new IntentFilter();
 
+		filter.addAction("android.intent.action.PACKAGE_ADDED");
+		filter.addDataScheme("package");
+
+		this.registerReceiver(installedReceiver, filter);
 		new Thread(runHotData).start();
 	}
 
@@ -197,7 +205,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 			}
 		});
 
-		appSearchAdapter = new AppAdapter(appSearchInfos, this, cache,mSearchListView);
+		appSearchAdapter = new AppAdapter(appSearchInfos, this, cache,
+				mSearchListView);
 		mSearchListView.setAdapter(appSearchAdapter);
 
 		mSearchListView.setOnItemClickListener(new OnItemClickListener() {
@@ -221,7 +230,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.SEARCH + "?searchKey="
 						+ URLEncoder.encode(search_text) + "&page=" + page);
-				Log.e("tag", "search result =" + str);
+				Log.e("SearchActivity", "search result =" + str);
 				System.out.println("search result =" + str);
 				if (str.equals("null")) {
 					searchHandler
@@ -250,6 +259,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				loadMoreButton.setVisibility(View.GONE);
 				ll_searcherror.setVisibility(View.VISIBLE);
 				mSearchListView.setVisibility(View.GONE);
+				LogUtils.d("SearchActivity", "网络出错了吗？");
 			}
 				break;
 
@@ -299,12 +309,16 @@ public class SearchActivity extends Activity implements OnClickListener {
 				String appSize = jsonObject.getString("appsize");
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
-
+				String apppkgname = jsonObject.getString("apppkgname");
+				Log.e("SearchActivity", "pkg=" + apppkgname);
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "","",appName);
-				appInfo.setInstalled(AppUtils.isInstalled(appName));
+						Global.MAIN_URL + appiconurl, appurl, "", "", apppkgname);
+				appInfo.setId(apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setLastTime(Long.MAX_VALUE);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appSearchInfos_temp.add(appInfo);
-				Log.e("tag", "info = " + appInfo.toString());
+				Log.e("SearchActivity", "info = " + appInfo.toString());
 			}
 			Log.e("tag", "--------------2--------");
 			if (totalCount == 0 || len == 0) {
@@ -314,7 +328,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 						.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
 			}
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
+			Log.e("SearchActivity", "error = " + ex.getMessage());
 			searchHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_FAILLY);
 		}
 	}
@@ -552,15 +566,19 @@ public class SearchActivity extends Activity implements OnClickListener {
 		super.onResume();
 		registerPrecent();
 		MobclickAgent.onResume(this);
+		appSearchAdapter.notifyDataSetChanged();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		unregisterPrecent();
 		MobclickAgent.onPause(this);
 	}
-
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterPrecent();
+	};
 	PrecentReceiver mPrecentReceiver;
 
 	private void registerPrecent() {
@@ -587,5 +605,32 @@ public class SearchActivity extends Activity implements OnClickListener {
 			}
 		}
 	}
-	
+
+	class MyInstalledReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 接收安装广播
+			if (intent.getAction()
+					.equals("android.intent.action.PACKAGE_ADDED")) {
+				String packageName = intent.getDataString().substring(8);
+				LogUtils.d("Search", "安装了:" + packageName + "包名的程序");
+
+				MarketApplication.getInstance().reflashAppList();
+				String installAppName = AppUtils.getAppName(context,
+						packageName);
+
+				for (AppInfo mAppInfo : appSearchInfos) {
+					if (packageName != null
+							&& packageName.equals(mAppInfo.getPackageName())) {
+						mAppInfo.setInstalled(true);
+						LogUtils.d("Search", "我接收到了安装"+packageName);
+						break;
+					}
+				}
+
+				appSearchAdapter.notifyDataSetChanged();
+			}
+		}
+	}
+
 }

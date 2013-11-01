@@ -50,7 +50,7 @@ public class RecoTagsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		lay = LayoutInflater.from(this);
-
+		MarketApplication.getInstance().getAppLication().add(this);
 		this.setContentView(R.layout.recotags_layout);
 
 		recotags_all = (LinearLayout) findViewById(R.id.recotags_all);

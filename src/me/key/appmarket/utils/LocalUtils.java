@@ -88,9 +88,8 @@ public class LocalUtils {
 				mAppInfo.setRoot(Root);
 				mAppInfo.setPackageName((String)list.get("pkgname"));
 				mAppInfo.setLastTime(Long.MAX_VALUE);
-				mAppInfo.setId(list.get("label").toString());
-				boolean isIns = AppUtils.isInstalled(list.get("label")
-						.toString());
+				mAppInfo.setId((String)list.get("pkgname"));
+				boolean isIns = AppUtils.isInstalled((String)list.get("pkgname"));
 				mAppInfo.setInstalled(isIns);
 				mAppInfos.add(mAppInfo);
 				List<PackageInfo> packages = context.getPackageManager()

@@ -53,6 +53,9 @@ import org.json.JSONObject;
 import com.market.d9game.R;
 import com.slidingmenu.lib.app2.SlidingFragmentActivity;
 import com.slidingmenu.lib2.SlidingMenu;
+import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
+import com.slidingmenu.lib2.SlidingMenu.OnOpenListener;
+import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
 import com.umeng.analytics.MobclickAgent;
 
 import android.R.anim;
@@ -92,6 +95,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
@@ -101,13 +105,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-public class MainActivity extends SlidingFragmentActivity {
+public class MainActivity extends SlidingFragmentActivity { 
 
 	private ViewPager mPager;
 	private List<View> listViews;
@@ -129,7 +134,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	// home
 	private ListView mHomeListView;
 	private LinkedList<AppInfo> appHomeInfos;
-	private LinkedList<AppInfo> appHomeInfos_temp = new LinkedList<AppInfo>();
+	private List<AppInfo> appHomeInfos_temp = new LinkedList<AppInfo>();
 	private NewRecommnAdapter appHomeAdapter;
 	private ProgressBar pHomeBar;
 	private String curpos = "0";
@@ -215,19 +220,21 @@ public class MainActivity extends SlidingFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		MarketApplication.getInstance().getAppLication().add(this);
+		//侧滑菜单
 		setBehindContentView(R.layout.slide_menu);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+				.beginTransaction();
 		final MenuFragment menuFragment = new MenuFragment();
 		fragmentTransaction.replace(R.id.slide_content, menuFragment);
-		//fragmentTransaction.replace(R.id.content, new ContentFragment());
+		// fragmentTransaction.replace(R.id.content, new ContentFragment());
 		fragmentTransaction.commit();
 		startService(new Intent(this, DownloadService.class));
 		LogUtils.d("Main", "我已经被加载了哟");
 		lv = (ListView) findViewById(R.id.category_lv);
-		LogUtils.d("Main", lv+"");
-		
-		
-		LogUtils.d("Main1", menuCategoryAdapter+"");
+		LogUtils.d("Main", lv + "");
+
+		LogUtils.d("Main1", menuCategoryAdapter + "");
 		new AsyncTask<Void, Void, Void>() {
 
 			@Override
@@ -242,48 +249,60 @@ public class MainActivity extends SlidingFragmentActivity {
 			@Override
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
-				menuCategoryAdapter = new MenuCategoryAdapter(MainActivity.this, gcategoryInfoList_temp);
-				LogUtils.d("Main", categoryInfoList_temp.size()+"ggg");
-				LogUtils.d("Main", categoryInfoList_temp.size()+"");
+				menuCategoryAdapter = new MenuCategoryAdapter(
+						MainActivity.this, gcategoryInfoList_temp,lv);
+				LogUtils.d("Main", categoryInfoList_temp.size() + "ggg");
+				LogUtils.d("Main", categoryInfoList_temp.size() + "");
 				lv.setAdapter(menuCategoryAdapter);
-				//lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
-				//lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
-				LogUtils.d("Main", lv.getChildCount()+"");
+				// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+				// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+				LogUtils.d("Main", lv.getChildCount() + "");
+
 				lv.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
+
 						menuFragment.updata(position);
-						view.setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
-						view.findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
-						TextView title = (TextView) view.findViewById(R.id.category_menu);
-						title.setTextColor(getResources().getColor(R.color.myprobar));
-						for(int i = 0;i<lv.getChildCount();i++) {
-							if(i == position) {
+						view.setBackgroundColor(getResources().getColor(
+								R.color.classiv_cloor));
+						view.findViewById(R.id.click_menu).setVisibility(
+								View.VISIBLE);
+						TextView title = (TextView) view
+								.findViewById(R.id.category_menu);
+						title.setTextColor(getResources().getColor(
+								R.color.myprobar));
+						for (int i = 0; i < lv.getChildCount(); i++) {
+							if (i == position) {
 								continue;
 							}
-							LogUtils.d("Main", i+"");
-							lv.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.white));
-							lv.getChildAt(i).findViewById(R.id.click_menu).setVisibility(View.INVISIBLE);
-							TextView tv = (TextView) lv.getChildAt(i).findViewById(R.id.category_menu);
-							tv.setTextColor(getResources().getColor(R.color.black));
+							LogUtils.d("Main", i + "");
+							lv.getChildAt(i).setBackgroundColor(
+									getResources().getColor(R.color.white));
+							lv.getChildAt(i).findViewById(R.id.click_menu)
+									.setVisibility(View.INVISIBLE);
+							TextView tv = (TextView) lv.getChildAt(i)
+									.findViewById(R.id.category_menu);
+							tv.setTextColor(getResources().getColor(
+									R.color.black));
 						}
 					}
 				});
 			}
 		}.execute();
-		
+
 		LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
 		etSeacher.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent();
 				intent.setClass(MainActivity.this, SearchActivity.class);
 				startActivity(intent);
 				LogUtils.d("MAIN", "动画前");
-				MainActivity.this.overridePendingTransition(R.anim.left_anim, R.anim.right_anim);
+				MainActivity.this.overridePendingTransition(R.anim.left_anim,
+						R.anim.right_anim);
 				LogUtils.d("MAIN", "动画后");
 			}
 		});
@@ -291,23 +310,41 @@ public class MainActivity extends SlidingFragmentActivity {
 		updateSelf(true);
 		InitViewPager();
 		initHomeView();
-		//initGameView();
-		//initRankView();
+		// initGameView();
+		// initRankView();
 		// initManagerView();
 		// initLocalGameView();
 		new Thread(runHomeData).start();
-		//new Thread(runRankData).start();
+		// new Thread(runRankData).start();
 		// new Thread(runBannerData).start();
 		registerInstall();
 		activities.add(this);
-		menu =getSlidingMenu();
+		menu = getSlidingMenu();
 		menu.setMode(SlidingMenu.RIGHT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-       /* menu.setShadowWidthRes(R.dimen.shadow_width);
-        menu.setShadowDrawable(R.drawable.shadow);*/
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        menu.setFadeDegree(0.35f);
-        
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		/*
+		 * menu.setShadowWidthRes(R.dimen.shadow_width);
+		 * menu.setShadowDrawable(R.drawable.shadow);
+		 */
+		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+		menu.setFadeDegree(0.35f);
+		menu.setOnCloseListener(new OnCloseListener() {
+
+			@Override
+			public void onClose() {
+				LogUtils.d("Main", "close");
+			}
+		});
+		menu.setOnOpenedListener(new OnOpenedListener() {
+
+			@Override
+			public void onOpened() {
+				LogUtils.d("Main", "open");
+			/*	Intent intent = new Intent();
+				intent.setAction("open.menu");
+				sendBroadcast(intent);*/
+			}
+		});
 	}
 
 	@Override
@@ -316,7 +353,7 @@ public class MainActivity extends SlidingFragmentActivity {
 		super.onResume();
 		registerPrecent();
 		MobclickAgent.onResume(this);
-		
+		appHomeAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -325,12 +362,15 @@ public class MainActivity extends SlidingFragmentActivity {
 		super.onPause();
 		unregisterPrecent();
 		MobclickAgent.onPause(this);
+		if(menu.isMenuShowing()) {
+			menu.toggle();
+		}
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
+		 stopService(new Intent(this, DownloadService.class));
 		unregisterInstall();
 
 	}
@@ -444,7 +484,8 @@ public class MainActivity extends SlidingFragmentActivity {
 		 */
 		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root);
 		LogUtils.d("mAppInfos", mAppInfos.size() + "");
-		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos,null,null);
+		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos, null,
+				null,null);
 		mListGame.setAdapter(adapter);
 
 	}
@@ -827,16 +868,17 @@ public class MainActivity extends SlidingFragmentActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				if (position == 1) {
-					Intent intent = new Intent(MainActivity.this, BannerActivity.class);
+					Intent intent = new Intent(MainActivity.this,
+							BannerActivity.class);
 					startActivity(intent);
-			
+
 				} else {
 					AppInfo mAppInfo = (AppInfo) mHomeListView.getAdapter()
 							.getItem(position);
 					// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
 					Intent intent = new Intent(MainActivity.this,
 							AppDetailActivity.class);
-					//LogUtils.d("error", position+"");
+					// LogUtils.d("error", position+"");
 					intent.putExtra("appid", mAppInfo.getIdx());
 					intent.putExtra("appinfo", mAppInfo);
 					startActivity(intent);
@@ -908,7 +950,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	Runnable runHomeData = new Runnable() {
 		@Override
 		public void run() {
-			String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+		/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 					+ Global.HOME_PAGE);
 			// Log.e("tag", "result =" + str);
 			if (str.equals("null")) {
@@ -919,6 +961,19 @@ public class MainActivity extends SlidingFragmentActivity {
 			} else {
 				// Log.e("tag", "--------------1-------------");
 				ParseHomeJson(str);
+			}*/
+			appHomeInfos.clear();
+			List<AppInfo> appHome = new ArrayList<AppInfo>();
+			appHome = MarketApplication.getInstance().getHomeAppInfos();
+			appHomeInfos.addAll(appHome);
+			pHomeBar.setVisibility(View.INVISIBLE);
+			for (AppInfo ai : appHomeInfos) {
+				DownStateBroadcast dsb = new DownStateBroadcast();
+				IntentFilter filter = new IntentFilter();
+				String fileName = DownloadService.CreatFileName(
+						ai.getAppName()).getAbsolutePath();
+				filter.addAction(fileName + "down");
+				registerReceiver(dsb, filter);
 			}
 		}
 	};
@@ -1060,7 +1115,7 @@ public class MainActivity extends SlidingFragmentActivity {
 			case Global.DOWN_DATA_HOME_FAILLY: {
 				// Log.e("tag", "--------------5--------" + msg.what);
 				ll_homeerror.setVisibility(View.VISIBLE);
-				//mHomeListView.setVisibility(View.GONE);
+				// mHomeListView.setVisibility(View.GONE);
 				curpos = "0";
 				// mHomeListView.onRefreshComplete();
 			}
@@ -1077,11 +1132,12 @@ public class MainActivity extends SlidingFragmentActivity {
 					appHomeInfos_temp.clear();
 				}
 				appHomeAdapter.notifyDataSetChanged();
-				for(AppInfo ai : appHomeInfos) {
+				for (AppInfo ai : appHomeInfos) {
 					DownStateBroadcast dsb = new DownStateBroadcast();
 					IntentFilter filter = new IntentFilter();
-					String fileName =  DownloadService.CreatFileName(ai.getAppName()).getAbsolutePath();
-					filter.addAction(fileName+"down");
+					String fileName = DownloadService.CreatFileName(
+							ai.getAppName()).getAbsolutePath();
+					filter.addAction(fileName + "down");
 					registerReceiver(dsb, filter);
 				}
 			}
@@ -1130,7 +1186,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "",appName);
+						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
 
 				appInfo.setPackageName(jsonObject.getString("apppkgname"));
 				appInfo.setVersion(jsonObject.getString("version"));
@@ -1172,18 +1228,18 @@ public class MainActivity extends SlidingFragmentActivity {
 				String recoPic = jsonObject.getString("recoPic");
 				String apppkgname = jsonObject.getString("apppkgname");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", appdes,appName);
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,
+						appName);
 				appInfo.setPackageName(apppkgname);
 				appInfo.setLastTime(Long.MAX_VALUE);
-				if(recoPic == null) {
-					String appimgurl =  jsonObject.getString("appimgurl");
-				String[] appImgurls = appimgurl.split(",");
-				appInfo.setAppimgurl(appImgurls);
+				if (recoPic == null) {
+					String appimgurl = jsonObject.getString("appimgurl");
+					String[] appImgurls = appimgurl.split(",");
+					appInfo.setAppimgurl(appImgurls);
 				}
-			
-				
+
 				appInfo.setRecoPic(recoPic);
-				appInfo.setInstalled(AppUtils.isInstalled(appName));
+				appInfo.setInstalled(AppUtils.isInstalled(jsonObject.getString("apppkgname")));
 				appHomeInfos_temp.add(appInfo);
 
 				// Log.e("tag", "info = " + appInfo.toString());
@@ -1195,6 +1251,7 @@ public class MainActivity extends SlidingFragmentActivity {
 			homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 		}
 	}
+
 	private void ParseBannerJson(String str) {
 		try {
 			// Log.e("tag", "--------2--------");
@@ -1211,7 +1268,8 @@ public class MainActivity extends SlidingFragmentActivity {
 				String appurl = jsonObject.getString("appurl");
 				String appdes = jsonObject.getString("appdes");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", appdes,appName);
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,
+						appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				bannerList.add(appInfo);
@@ -1238,7 +1296,7 @@ public class MainActivity extends SlidingFragmentActivity {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "",appName);
+						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appGameInfos_temp.add(appInfo);
@@ -1284,7 +1342,8 @@ public class MainActivity extends SlidingFragmentActivity {
 				String appurl = jsonObject.getString("appurl");
 				String appDownCount = jsonObject.getString("appdowncount");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",appName);
+						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",
+						appName);
 
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				appInfos.add(appInfo);
@@ -1306,16 +1365,16 @@ public class MainActivity extends SlidingFragmentActivity {
 	private void InitViewPager() {
 		// TODO Auto-generated method stub\
 
-		//t1 = (TextView) findViewById(R.id.text1);
-		//t2 = (TextView) findViewById(R.id.text2);
+		// t1 = (TextView) findViewById(R.id.text1);
+		// t2 = (TextView) findViewById(R.id.text2);
 		// t3 = (TextView) findViewById(R.id.text3);
-		//t4 = (TextView) findViewById(R.id.text4);
+		// t4 = (TextView) findViewById(R.id.text4);
 		// t5 = (TextView) findViewById(R.id.text5);
-		//t1.setSelected(true);
-		//t1.setOnClickListener(new MyOnClickListener(0));
-		//t2.setOnClickListener(new MyOnClickListener(1));
+		// t1.setSelected(true);
+		// t1.setOnClickListener(new MyOnClickListener(0));
+		// t2.setOnClickListener(new MyOnClickListener(1));
 		// t3.setOnClickListener(new MyOnClickListener(2));
-		//t4.setOnClickListener(new MyOnClickListener(3));
+		// t4.setOnClickListener(new MyOnClickListener(3));
 		// t5.setOnClickListener(new MyOnClickListener(4));
 
 		mPager = (ViewPager) findViewById(R.id.vPager);
@@ -1327,9 +1386,9 @@ public class MainActivity extends SlidingFragmentActivity {
 		logcalGmaeView = mInflater.inflate(R.layout.type, null);
 		managerView = mInflater.inflate(R.layout.app_managemer, null);
 		listViews.add(homeView);
-		//listViews.add(gameView);
+		// listViews.add(gameView);
 		// listViews.add(logcalGmaeView);
-		//listViews.add(rankView);
+		// listViews.add(rankView);
 		// listViews.add(managerView);
 		mPager.setOffscreenPageLimit(2);
 		mPager.setAdapter(new TabPageAdapter(listViews));
@@ -1363,9 +1422,9 @@ public class MainActivity extends SlidingFragmentActivity {
 			switch (arg0) {
 			case 0:
 				t1.setSelected(true);
-				//t2.setSelected(false);
+				// t2.setSelected(false);
 				// t3.setSelected(false);
-				//t4.setSelected(false);
+				// t4.setSelected(false);
 				// t5.setSelected(false);
 				break;
 			case 1:
@@ -1377,17 +1436,17 @@ public class MainActivity extends SlidingFragmentActivity {
 				 * Thread(runGameData).start(); }
 				 */
 				t1.setSelected(false);
-				//t2.setSelected(true);
+				// t2.setSelected(true);
 				// t3.setSelected(false);
-				//t4.setSelected(false);
+				// t4.setSelected(false);
 				// t5.setSelected(false);
 				break;
 			case 2:
 
 				t1.setSelected(false);
-				//t2.setSelected(false);
+				// t2.setSelected(false);
 				// t3.setSelected(true);
-				//t4.setSelected(true);
+				// t4.setSelected(true);
 				// t5.setSelected(false);
 				break;
 			}
@@ -1446,6 +1505,12 @@ public class MainActivity extends SlidingFragmentActivity {
 			Intent cancalNt = new Intent();
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			this.sendBroadcast(cancalNt);
+	/*		 ArrayList<Activity> appLication = MarketApplication.getInstance().getAppLication();
+			 for(Activity at : appLication) {
+				 at.finish();
+			 }
+			 System.exit(0);
+			 android.os.Process.killProcess(android.os.Process.myPid());*/
 			// this.finish();
 
 		}
@@ -1487,7 +1552,7 @@ public class MainActivity extends SlidingFragmentActivity {
 				// 刷新管理界面
 				appManagerInfos.clear();
 				ArrayList<AppInfo> appManagerInfos1 = AppUtils.getUserApps(
-						MainActivity.this, 0);
+						MainActivity.this, 4000);
 				appManagerInfos.addAll(appManagerInfos1);
 				appManagerInfos1.clear();
 				if (mManagerAdapter != null) {
@@ -1499,9 +1564,9 @@ public class MainActivity extends SlidingFragmentActivity {
 					switch (selectItem) {
 					case 0:// 当前显示的是推荐界面
 						for (AppInfo mAppInfo : appHomeInfos) {
-							if (installAppName != null
-									&& installAppName.equals(mAppInfo
-											.getAppName())) {
+							if (packageName != null
+									&& packageName.equals(mAppInfo
+											.getPackageName())) {
 								mAppInfo.setInstalled(true);
 								break;
 							}
@@ -1520,7 +1585,7 @@ public class MainActivity extends SlidingFragmentActivity {
 								}
 							}
 						}
-					//	appGameAdapter.notifyDataSetChanged();
+						// appGameAdapter.notifyDataSetChanged();
 					case 2:// 应用
 						break;
 					case 3:// 排行
@@ -1707,23 +1772,28 @@ public class MainActivity extends SlidingFragmentActivity {
 		}
 		return null;
 	}
+
 	class DownStateBroadcast extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String fileName = null;
 			LogUtils.d("MAINActivity", "我接受到了暂停广播");
-			for(AppInfo ai : appHomeInfos) {
-				fileName =  DownloadService.CreatFileName(ai.getAppName()).getAbsolutePath()+"down";
-				if(fileName.equals(intent.getAction())) {
-					boolean downState = intent.getBooleanExtra("isPause", false);
+			for (AppInfo ai : appHomeInfos) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
 					ai.setIspause(downState);
 					appHomeAdapter.notifyDataSetChanged();
-					LogUtils.d("Mainctivity", "我更新了ui"+ai.getAppName()+ai.isIspause());
+					LogUtils.d("Mainctivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
 					break;
 				}
 			}
 		}
-		
+
 	}
+
 }

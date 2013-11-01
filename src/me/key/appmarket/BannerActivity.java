@@ -71,6 +71,7 @@ public class BannerActivity extends Activity implements OnScrollListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.indexdetail);
 		initActivity();
+		MarketApplication.getInstance().getAppLication().add(this);
 		TextView tv_tiltle = (TextView) findViewById(R.id.topbar_title);
 		tv_tiltle.setText("黑龙江移动专区");
 
@@ -101,7 +102,7 @@ public class BannerActivity extends Activity implements OnScrollListener {
 					mListView.setAdapter(appAdapter);
 				};
 			}.execute();
-
+			registerInstall();
 	}
 
 	private void initActivity() {
@@ -171,10 +172,11 @@ public class BannerActivity extends Activity implements OnScrollListener {
 				String appSize = jsonObject.getString("appsize");
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
+				String apppkgname = jsonObject.getString("apppkgname");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "","",appName);
-
-				appInfo.setInstalled(AppUtils.isInstalled(appName));
+						Global.MAIN_URL + appiconurl, appurl, "","",apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appDatainfos.add(appInfo);
 				//appDatainfos_temp.add(appInfo);
 			}
@@ -300,19 +302,19 @@ public class BannerActivity extends Activity implements OnScrollListener {
 			if (intent.getAction()
 					.equals("android.intent.action.PACKAGE_ADDED")) {
 				String packageName = intent.getDataString().substring(8);
-				LogUtils.d("YTL", "安装了:" + packageName + "包名的程序");
+				LogUtils.d("Banner", "安装了:" + packageName + "包名的程序");
 
 				MarketApplication.getInstance().reflashAppList();
 				String installAppName = AppUtils.getAppName(context,
 						packageName);
 				for (AppInfo mAppInfo : appDatainfos) {
-					if (installAppName != null
-							&& installAppName.equals(mAppInfo.getAppName())) {
+					if (packageName != null
+							&& packageName.equals(mAppInfo.getPackageName())) {
 						mAppInfo.setInstalled(true);
+						LogUtils.d("Banner", "安装了:" + packageName);
 						break;
 					}
 				}
-
 				appAdapter.notifyDataSetChanged();
 			}
 			// 接收卸载广播
@@ -386,10 +388,11 @@ public class BannerActivity extends Activity implements OnScrollListener {
 				String appSize = jsonObject.getString("appsize");
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
+				String apppkgname = jsonObject.getString("apppkgname");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "","",appName);
-
-				appInfo.setInstalled(AppUtils.isInstalled(appName));
+						Global.MAIN_URL + appiconurl, appurl, "","",apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appDatainfos_temp.add(appInfo);
 			}
 			recomHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
@@ -438,4 +441,5 @@ public class BannerActivity extends Activity implements OnScrollListener {
 			}
 		}
 	}
+	
 }

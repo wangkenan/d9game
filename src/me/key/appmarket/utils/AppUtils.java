@@ -88,20 +88,32 @@ public class AppUtils {
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				//String appDownCount = jsonObject.getString("appdowncount");
+				String apppkgname = jsonObject.getString("apppkgname");
 				String pkgname = jsonObject.getString("apppkgname");
+				
 				if(appInfo.packageName.equals(pkgname)) {
-					AppInfo tmpInfo = new AppInfo();
+					AppInfo tmpInfo = new AppInfo(idx, appName, appSize,
+							Global.MAIN_URL + appiconurl, appurl, null, "",apppkgname);
+					tmpInfo.setPackageName(apppkgname);
+					tmpInfo.setInstalled(AppUtils.isInstalled(apppkgname));
+					tmpInfo.setLastTime(Long.MAX_VALUE);
 					tmpInfo.setAppName(appInfo.applicationInfo.loadLabel(
 							mContext.getPackageManager()).toString());	
 					tmpInfo.setPackageName(appInfo.packageName);
 					String dir = appInfo.applicationInfo.publicSourceDir;
 					int size = Integer.valueOf((int) new File(dir).length());
 					tmpInfo.setAppSize(size + "");
-					tmpInfo.setId(appInfo.applicationInfo.loadLabel(
-							mContext.getPackageManager()).toString());
+					tmpInfo.setId(pkgname);
 					tmpInfo.setVersion(appInfo.versionName);
 					tmpInfo.setAppIcon(appInfo.applicationInfo.loadIcon(mContext
 							.getPackageManager()));
+					tmpInfo.setIdx(idx);
 					Long max = Long.MAX_VALUE;
 					if(max < 0) {
 						max *= -1;
@@ -128,21 +140,20 @@ public class AppUtils {
 		for (int i = 0; i < packages.size(); i++) {
 			PackageInfo packageInfo = packages.get(i);
 			AppInfo tmpInfo = new AppInfo();
-			tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
-					mContext.getPackageManager()).toString());
+			tmpInfo.setPackageName(packageInfo.packageName);
 			appList.add(tmpInfo);
 		}
 
 		return appList;
 	}
 
-	public static boolean isInstalled(String appName) {
+	public static boolean isInstalled(String packName) {
 		boolean result = false;
 		ArrayList<AppInfo> appList = MarketApplication.getInstance()
 				.getAppList();
 		for (AppInfo mAppInfo : appList) {
-			if (mAppInfo.getAppName() != null && appName != null
-					&& mAppInfo.getAppName().equals(appName)) {
+			if (mAppInfo.getPackageName() != null && packName != null
+					&& mAppInfo.getPackageName() .equals(packName)) {
 				result = true;
 				break;
 			}

@@ -10,5 +10,6 @@ public class NotifyActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.app_comment_item);
+		MarketApplication.getInstance().getAppLication().add(this);
 	}
 }

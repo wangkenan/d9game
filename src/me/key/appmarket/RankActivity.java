@@ -8,16 +8,23 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import me.key.appmarket.IndexDetaileActivity.PrecentReceiver;
+import me.key.appmarket.MainActivity.MyInstalledReceiver;
+import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.NewRankAdapter;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 
 import com.market.d9game.R;
+import com.slidingmenu.lib.app2.SlidingFragmentActivity;
+import com.slidingmenu.lib2.SlidingMenu;
+import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
+import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
@@ -30,6 +37,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,9 +45,11 @@ import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
@@ -50,8 +60,9 @@ import android.widget.AdapterView.OnItemClickListener;
  * @author Administrator
  * 
  */
-public class RankActivity extends Activity {
+public class RankActivity extends SlidingFragmentActivity {
 	private ListView mRankListView;
+	private MenuCategoryAdapter menuCategoryAdapter;
 	private List<AppInfo> appRankInfos;
 	private NewRankAdapter appRankAdapter;
 	private ProgressBar rank_pb;
@@ -62,6 +73,9 @@ public class RankActivity extends Activity {
 	private static final int SHOWNEXT = 1;
 	private static final int INMAIN = 2;
 	private PrecentReceiver mPrecentReceiver;
+	private ListView lv;
+	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
+	private SlidingMenu menu;
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -75,14 +89,134 @@ public class RankActivity extends Activity {
 		}
 	};
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		MarketApplication.getInstance().getAppLication().add(this);
 		setContentView(R.layout.rank);
+		setBehindContentView(R.layout.slide_menu);
 		mRankListView = (ListView) findViewById(R.id.list_rank);
 		rank_pb = (ProgressBar) findViewById(R.id.rank_pb);
 		appRankInfos = new ArrayList<AppInfo>();
 		ll_rankerror = (LinearLayout) findViewById(R.id.ll_error);
 		Button btn_refresh = (Button) ll_rankerror.findViewById(R.id.btn_Refsh);
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+				.beginTransaction();
+		final MenuFragment menuFragment = new MenuFragment();
+		fragmentTransaction.replace(R.id.slide_content, menuFragment);
+		// fragmentTransaction.replace(R.id.content, new ContentFragment());
+		fragmentTransaction.commit();
+		startService(new Intent(this, DownloadService.class));
+		LogUtils.d("Main", "我已经被加载了哟");
+		lv = (ListView) findViewById(R.id.category_lv);
+		LogUtils.d("Main", lv + "");
+		ImageButton search_btn = (ImageButton) findViewById(R.id.search_btn);
+		search_btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				menu.toggle();
+			}
+		});
+		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+		IntentFilter filter = new IntentFilter();
+
+		filter.addAction("android.intent.action.PACKAGE_ADDED");
+		filter.addDataScheme("package");
+		this.registerReceiver(installedReceiver, filter);
+		LogUtils.d("Main1", menuCategoryAdapter + "");
+		new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.APP_CATEGORY + "?type=" + 2);
+				Log.e("tag", "runCategoryData result =" + str);
+				ParseCategoryJson(str);
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				menuCategoryAdapter = new MenuCategoryAdapter(
+						RankActivity.this, gcategoryInfoList_temp,lv);
+				lv.setAdapter(menuCategoryAdapter);
+				// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+				// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+				LogUtils.d("Main", lv.getChildCount() + "");
+
+				lv.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+
+						menuFragment.updata(position);
+						view.setBackgroundColor(getResources().getColor(
+								R.color.classiv_cloor));
+						view.findViewById(R.id.click_menu).setVisibility(
+								View.VISIBLE);
+						TextView title = (TextView) view
+								.findViewById(R.id.category_menu);
+						title.setTextColor(getResources().getColor(
+								R.color.myprobar));
+						for (int i = 0; i < lv.getChildCount(); i++) {
+							if (i == position) {
+								continue;
+							}
+							LogUtils.d("Main", i + "");
+							lv.getChildAt(i).setBackgroundColor(
+									getResources().getColor(R.color.white));
+							lv.getChildAt(i).findViewById(R.id.click_menu)
+									.setVisibility(View.INVISIBLE);
+							TextView tv = (TextView) lv.getChildAt(i)
+									.findViewById(R.id.category_menu);
+							tv.setTextColor(getResources().getColor(
+									R.color.black));
+						}
+					}
+				});
+			}
+		}.execute();
+		menu = getSlidingMenu();
+		menu.setMode(SlidingMenu.RIGHT);
+		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		/*
+		 * menu.setShadowWidthRes(R.dimen.shadow_width);
+		 * menu.setShadowDrawable(R.drawable.shadow);
+		 */
+		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+		menu.setFadeDegree(0.35f);
+		menu.setOnCloseListener(new OnCloseListener() {
+
+			@Override
+			public void onClose() {
+				LogUtils.d("Main", "close");
+			}
+		});
+		menu.setOnOpenedListener(new OnOpenedListener() {
+
+			@Override
+			public void onOpened() {
+				LogUtils.d("Main", "open");
+			/*	Intent intent = new Intent();
+				intent.setAction("open.menu");
+				sendBroadcast(intent);*/
+			}
+		});
+		LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
+		etSeacher.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(RankActivity.this, SearchActivity.class);
+				startActivity(intent);
+				LogUtils.d("MAIN", "动画前");
+				RankActivity.this.overridePendingTransition(R.anim.left_anim,
+						R.anim.right_anim);
+				LogUtils.d("MAIN", "动画后");
+			}
+		});
 		File cache = new File(Environment.getExternalStorageDirectory(),
 				"cache");
 		if (!cache.exists()) {
@@ -94,9 +228,13 @@ public class RankActivity extends Activity {
 				rank_pb.setVisibility(View.VISIBLE);
 			};
 			protected Void doInBackground(Void... params) {
-				String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+			/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.RANK_PAGE);
-					ParseRankJson(str);
+					ParseRankJson(str);*/
+				appRankInfos.clear();
+				List<AppInfo> appRankInfos_temp = new ArrayList<AppInfo>();
+				appRankInfos_temp = MarketApplication.getInstance().getRankappinfos();
+				appRankInfos.addAll(appRankInfos_temp);
 					for(AppInfo ai : appRankInfos) {
 						DownStateBroadcast dsb = new DownStateBroadcast();
 						IntentFilter filter = new IntentFilter();
@@ -170,7 +308,7 @@ public class RankActivity extends Activity {
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
 						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",appName);
 				appInfo.setPackageName(apppkgname);
-				appInfo.setInstalled(AppUtils.isInstalled(appName));
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appInfo.setLastTime(Long.MAX_VALUE);
 				appRankInfos.add(appInfo);
 				// appRankInfos.add(appInfo);
@@ -198,6 +336,7 @@ public class RankActivity extends Activity {
 		super.onResume();
 		registerPrecent();
 		MobclickAgent.onResume(this);
+		appRankAdapter.notifyDataSetChanged();
 	}
 
 	@Override
@@ -205,6 +344,9 @@ public class RankActivity extends Activity {
 		super.onPause();
 		unregisterPrecent();
 		MobclickAgent.onPause(this);
+		if(menu.isMenuShowing()) {
+			menu.toggle();
+		}
 	}
 	private void registerPrecent() {
 		mPrecentReceiver = new PrecentReceiver();
@@ -229,6 +371,12 @@ public class RankActivity extends Activity {
 			Intent cancalNt = new Intent();
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			this.sendBroadcast(cancalNt);
+		/*	 ArrayList<Activity> appLication = MarketApplication.getInstance().getAppLication();
+			 for(Activity at : appLication) {
+				 at.finish();
+			 }
+			 System.exit(0);
+			 android.os.Process.killProcess(android.os.Process.myPid());*/
 			// this.finish();
 
 		}
@@ -253,5 +401,61 @@ public class RankActivity extends Activity {
 			}
 		}
 		
+	}
+	private void ParseCategoryJson(String str) {
+		try {
+			Log.e("tag", "--------------ParseCategoryJson--------");
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String id = jsonObject.getString("id");
+				String name = jsonObject.getString("name");
+				String type1 = jsonObject.getString("type1");
+				String type2 = jsonObject.getString("type2");
+				String appUrl = jsonObject.getString("appiconurl");
+				CategoryInfo mCategoryInfo = new CategoryInfo(id, name, type1,
+						type2, Global.MAIN_URL + appUrl);
+				gcategoryInfoList_temp.add(mCategoryInfo);
+			}
+			Log.e("tag", "--------------ParseCategoryJson 2--------");
+			/*
+			 * categoryDataHandler
+			 * .sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			 */
+		} catch (Exception ex) {
+			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
+		}
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		 stopService(new Intent(this, DownloadService.class));
+	}
+	class MyInstalledReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 接收安装广播
+			if (intent.getAction()
+					.equals("android.intent.action.PACKAGE_ADDED")) {
+				String packageName = intent.getDataString().substring(8);
+				LogUtils.d("Search", "安装了:" + packageName + "包名的程序");
+
+				MarketApplication.getInstance().reflashAppList();
+				String installAppName = AppUtils.getAppName(context,
+						packageName);
+
+				for (AppInfo mAppInfo : appRankInfos) {
+					if (packageName != null
+							&& packageName.equals(mAppInfo.getPackageName())) {
+						mAppInfo.setInstalled(true);
+						LogUtils.d("Search", "我接收到了安装"+packageName);
+						break;
+					}
+				}
+
+				appRankAdapter.notifyDataSetChanged();
+			}
+		}
 	}
 }

@@ -59,7 +59,7 @@ public class LocalIndexDetaileActivity extends Activity {
 		TextView tv_tiltle = (TextView) findViewById(R.id.topbar_title);
 		tv_tiltle.setText(bundle.getString("name"));
 		ItemId = bundle.getString("id");
-
+		MarketApplication.getInstance().getAppLication().add(this);
 		ImageView btnBack = (ImageView) findViewById(R.id.back_icon);
 		pBar = (ProgressBar) findViewById(R.id.pro_bar);
 
@@ -82,7 +82,7 @@ public class LocalIndexDetaileActivity extends Activity {
 		Log.v("nano", "nano" + mListReco);
 		LogUtils.d("mAppInfos", mAppInfos.size()+"");
 		MyAdapter adapter = new MyAdapter(LocalIndexDetaileActivity.this,
-				mAppInfos,null,null);
+				mAppInfos,null,null,null);
 		mListReco.setAdapter(adapter);
 		pBar.setVisibility(View.GONE);
 		btnBack.setOnClickListener(new OnClickListener() {

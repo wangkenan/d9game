@@ -2,16 +2,25 @@ package me.key.appmarket.widgets;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import me.key.appmarket.LocalGameActivity;
 import me.key.appmarket.MainActivity;
 import me.key.appmarket.ManagerActivity;
+import me.key.appmarket.MarketApplication;
 import me.key.appmarket.RankActivity;
 import me.key.appmarket.network.NetworkUtils;
+import me.key.appmarket.tool.DownloadService;
+import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
+import android.app.Activity;
 import android.app.TabActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,9 +28,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +40,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import android.widget.TabHost.OnTabChangeListener;
@@ -89,14 +101,25 @@ public class MyTableHost extends TabActivity{
 	private Drawable manager_focue;
 	private Drawable manager_normal;
 	private int tadid = 1;
-
+	private TabWidget tw;
+	private DownStateBroadcast dsb;
+	private DownStateBroadcastRank dsbRank;
+	
+	//Rank
+	private List<AppInfo> appRankInfos;
+	//Home
+	private List<AppInfo> appHomeInfos_temp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState); 
 		setContentView(R.layout.main_bottom);
 		tabHost = getTabHost();
 		tabHost.setup();
+		appRankInfos = MarketApplication.getInstance().getRankappinfos();
+		appHomeInfos_temp = MarketApplication.getInstance().getHomeAppInfos();
 		from = LayoutInflater.from(this);
+		MarketApplication.getInstance().getAppLication().add(this);
+		tw = (TabWidget) findViewById(android.R.id.tabs);
 		bottomView1 = from.inflate(R.layout.item_main_bottom, null);
 		bottomView2 = from.inflate(R.layout.item_main_bottom, null);
 		bottomView3 = from.inflate(R.layout.item_main_bottom, null);
@@ -110,6 +133,10 @@ public class MyTableHost extends TabActivity{
 		downBroadcast.addAction("startanim");
 		PlayAnimBroadcast pb = new PlayAnimBroadcast();
 		registerReceiver(pb, downBroadcast);
+	/*	IntentFilter openBroadcast = new IntentFilter();
+		openBroadcast.addAction("open.menu");
+		OpenMenuBroadcast ob = new OpenMenuBroadcast();
+		registerReceiver(ob, openBroadcast);*/
 		int currentTab = tabHost.getCurrentTab();
 		LogUtils.d("asfsaf", currentTab + "");
 		switch (currentTab) {
@@ -128,8 +155,10 @@ public class MyTableHost extends TabActivity{
 		}
 		PushManager.startWork(this, PushConstants.LOGIN_TYPE_API_KEY,
 				"RYganXncxIQeKDe8tsOzUdZp");
+		int height = tabHost.getHeight();
+		LogUtils.d("MyTabHost", height+"height");
 	}
-
+	
 	private void init() {
 		MobclickAgent.setDebugMode(true);
 		findGame_normal = getResources().getDrawable(
@@ -198,7 +227,44 @@ public class MyTableHost extends TabActivity{
 		 * if(NetworkUtils.isNetworkConnected(this)) { tabHost.setCurrentTab(0);
 		 * } else { tabHost.setCurrentTab(1); }
 		 */
-		myHandler.sendEmptyMessageDelayed(INMAIN, 3500);
+		//预加载内容
+		new AsyncTask<Void, Void, Void>() {
+
+			
+			@Override
+			protected Void doInBackground(Void... params) {
+				String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ Global.RANK_PAGE);
+					ParseRankJson(str);
+					String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+							+ Global.HOME_PAGE);
+						ParseHomeJson(str2);
+				return null;
+			}
+			protected void onPostExecute(Void result) {
+				MarketApplication.getInstance().setRankAppInfos(appRankInfos);
+				MarketApplication.getInstance().setHomeAppInfos(appHomeInfos_temp);
+				myHandler.sendEmptyMessage(INMAIN);
+				for (AppInfo ai : appHomeInfos_temp) {
+					dsb = new DownStateBroadcast();
+					IntentFilter filter = new IntentFilter();
+					String fileName = DownloadService.CreatFileName(
+							ai.getAppName()).getAbsolutePath();
+					filter.addAction(fileName + "down");
+					registerReceiver(dsb, filter);
+				}
+				for (AppInfo ai : appRankInfos) {
+					dsbRank = new DownStateBroadcastRank();
+					IntentFilter filter = new IntentFilter();
+					String fileName = DownloadService.CreatFileName(
+							ai.getAppName()).getAbsolutePath();
+					filter.addAction(fileName + "down");
+					registerReceiver(dsbRank, filter);
+				}
+			};
+			
+		}.execute();
+		
 		tv5.setCompoundDrawablesWithIntrinsicBounds(null, local_focue, null,
 				null);
 		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
@@ -229,6 +295,7 @@ public class MyTableHost extends TabActivity{
 				}
 			}
 		});
+		
 	}
 
 	private void findview() {
@@ -265,5 +332,159 @@ public class MyTableHost extends TabActivity{
 		}
 
 	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (!mPreparedQuit) {
+				ToastUtils.show(R.string.quit_alert);
+				mPreparedQuit = true;
+				myHandler.sendEmptyMessageDelayed(RESETQUIT, 3000);
+				return true;
+			}
+			
+			Intent cancalNt = new Intent();
+			cancalNt.setAction("duobaohui.cancalnotifition");
+			this.sendBroadcast(cancalNt);
+		/*	
+			 ArrayList<Activity> appLication = MarketApplication.getInstance().getAppLication();
+			 for(Activity at : appLication) {
+				 at.finish();
+			 }
+			 System.exit(0);
+			 android.os.Process.killProcess(android.os.Process.myPid());
+			 finish();*/
+			// this.finish();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
+/*	//打开分页菜单广播
+	class OpenMenuBroadcast extends BroadcastReceiver {
 
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			tw.setVisibility(View.INVISIBLE);
+		}
+		
+	}*/
+	//解析Rank
+	private void ParseRankJson(String str) {
+		try {
+			Log.e("tag", "--------------2--------");
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				String appDownCount = jsonObject.getString("appdowncount");
+				String apppkgname = jsonObject.getString("apppkgname");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
+				appInfo.setLastTime(Long.MAX_VALUE);
+				appRankInfos.add(appInfo);
+				// appRankInfos.add(appInfo);
+				Log.e("tag", "info = " + appInfo.toString());
+			}
+			Log.e("tag", "--------------2--------");
+			// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+		} catch (Exception ex) {
+			Log.e("tag", "error = " + ex.getMessage());
+		}
+	}
+	private void ParseHomeJson(String str) {
+		try {
+			// Log.e("tag", "--------2--------");
+			JSONArray jsonArray = new JSONArray(str);
+			LogUtils.d("descr", str);
+			int len = jsonArray.length();
+			LogUtils.d("len", len + "ge");
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				String appdes = jsonObject.getString("appdes");
+				String recoPic = jsonObject.getString("recoPic");
+				String apppkgname = jsonObject.getString("apppkgname");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,
+						apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setLastTime(Long.MAX_VALUE);
+				if (recoPic == null) {
+					String appimgurl = jsonObject.getString("appimgurl");
+					String[] appImgurls = appimgurl.split(",");
+					appInfo.setAppimgurl(appImgurls);
+				}
+
+				appInfo.setRecoPic(recoPic);
+				appInfo.setInstalled(AppUtils.isInstalled(jsonObject.getString("apppkgname")));
+				appHomeInfos_temp.add(appInfo);
+
+				// Log.e("tag", "info = " + appInfo.toString());
+			}
+			// Log.e("tag", "--------------2--------");
+		} catch (Exception ex) {
+			 Log.e("tag", "error = " + ex.getMessage());
+		}
+	}
+	class DownStateBroadcast extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("MAINActivity", "我接受到了暂停广播");
+			for (AppInfo ai : appHomeInfos_temp) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					//appHomeAdapter.notifyDataSetChanged();
+					LogUtils.d("Mainctivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
+					break;
+				}
+			}
+		}
+
+	}
+	class DownStateBroadcastRank extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("MAINActivity", "我接受到了暂停广播");
+			for (AppInfo ai : appRankInfos) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					//appHomeAdapter.notifyDataSetChanged();
+					LogUtils.d("Mainctivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
+					break;
+				}
+			}
+		}
+
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(dsb);
+		unregisterReceiver(dsbRank);
+	}
 }

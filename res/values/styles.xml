@@ -15,7 +15,7 @@
     <style name="circle_progress" parent="@android:style/Widget.ProgressBar">
         <item name="android:indeterminateDrawable">@drawable/ic_progress</item>
     </style>
-    <!-- Application theme. -->
+    <!-- Application theme. --> 
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>

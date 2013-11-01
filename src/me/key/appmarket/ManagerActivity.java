@@ -80,6 +80,7 @@ public class ManagerActivity extends Activity implements OnScrollListener{
 		if (!cache.exists()) {
 			cache.mkdirs();
 		}
+		MarketApplication.getInstance().getAppLication().add(this);
 		// TODO Auto-generated method stub
 		mManagerListView = (ListView) findViewById(R.id.manalist);
 		pBar = (ProgressBar) findViewById(R.id.pro_bar);

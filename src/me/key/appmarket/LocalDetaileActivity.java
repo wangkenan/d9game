@@ -67,7 +67,7 @@ public class LocalDetaileActivity extends Activity {
 		}
 
 		type = getIntent().getIntExtra("type", 1);
-
+		MarketApplication.getInstance().getAppLication().add(this);
 		topbar_title1 = (TextView) findViewById(R.id.topbar_title1);
 		back_icon = (ImageView) findViewById(R.id.back_icon);
 		logo_title = (ImageView) findViewById(R.id.logo_title);

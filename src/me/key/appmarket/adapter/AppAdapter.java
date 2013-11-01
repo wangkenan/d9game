@@ -286,6 +286,8 @@ public class AppAdapter extends BaseAdapter {
 			 */
 			v1.tvdown.setText("安装");
 			v1.progress_view.setProgress(100);
+			v1.progress_view.setVisibility(View.INVISIBLE);
+			v1.tvdown.setVisibility(View.VISIBLE);
 		} else if (!isDownLoading) {
 			v1.tvdown.setText("下载");
 			/*

@@ -344,6 +344,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 		if (appInfos.get(position).isIspause()) {
 			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 			v1.tvdown.setText("暂停");
+			v1.progress_view.setVisibility(View.INVISIBLE);
+			v1.tvdown.setVisibility(View.VISIBLE);
 			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 			LogUtils.d("new", "我是下载中暂停"+appInfos.get(position).getAppName());
 			if (!isDownLoaded) {
@@ -361,7 +363,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 				v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 				LogUtils.d("ture", isDownLoading + "isDown");
 				LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());
-			}
+			} 
+	
 		}
 		if (appInfos.get(position).isInstalled()) {
 			v1.tvdown.setText("打开");
@@ -396,6 +399,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 			 */
 			v1.tvdown.setText("安装");
 			v1.progress_view.setProgress(100);
+			v1.progress_view.setVisibility(View.INVISIBLE);
+			v1.tvdown.setVisibility(View.VISIBLE);
 		} else if (!isDownLoading) {
 			v1.tvdown.setText("下载");
 			/*
@@ -416,7 +421,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 							.getAppName())) {
 				LogUtils.d("test", "已经存在");
 				v1.tvdown.setText("暂停");
-
+				v1.progress_view.setVisibility(View.INVISIBLE);
+				v1.tvdown.setVisibility(View.VISIBLE);
 				long count = sp.getLong(tempFile.getAbsolutePath() + "precent",
 						0);
 				v1.progress_view.setProgress(count);
@@ -475,11 +481,13 @@ public class NewRecommnAdapter extends BaseAdapter {
 					if (!appInfos.get(position).isIspause()) {
 						v1.tvdown.setText("暂停");
 						appInfos.get(position).setDown(false);
+						
 					} else {
 						v1.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
 						v1.progress_view.setVisibility(View.VISIBLE);
 						v1.tvdown.setVisibility(View.INVISIBLE);
+						
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");

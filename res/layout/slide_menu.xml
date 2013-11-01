@@ -40,7 +40,6 @@
     android:id="@+id/category_lv"
     android:layout_width="100dip"
     android:layout_height="fill_parent" 
-   
     ></ListView>
     <FrameLayout
         android:id="@+id/slide_content"
