@@ -1,27 +1,16 @@
 package me.key.appmarket.widgets;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.utils.LogUtils;
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -33,7 +22,6 @@ import android.widget.Toast;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.market.d9game.R;
-import com.umeng.common.net.DownloadingService;
 
 public class PushMessageReceiver extends BroadcastReceiver {
 	private Context mycontext;

@@ -21,8 +21,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 
-import com.market.d9game.R;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -37,6 +35,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.widget.RemoteViews;
+
+import com.market.d9game.R;
 
 public class UpdateApk {
 

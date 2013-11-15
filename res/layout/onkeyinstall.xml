@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- title -->
+<RelativeLayout
+        android:id="@+id/title_onkey"
+        style="@style/topbar" >
+
+         <ImageView
+            android:id="@+id/back_onkey"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="0dip"
+            android:layout_marginTop="5dip"
+            android:contentDescription="@null"
+            android:src="@drawable/btn_back_p" />
+
+        <TextView
+            android:id="@+id/titlename_onekey"
+            style="@style/topbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5sp"
+            android:layout_centerInParent="true"
+            android:text="@string/app_name" />
+
+    </RelativeLayout>
+    
+<FrameLayout
+       android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@id/nextoronkey"
+        android:layout_below="@id/title_onkey" >
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" 
+            >
+     <ProgressBar
+       	      android:id="@+id/onkey_pb"
+       	      android:layout_width="wrap_content"
+       	       android:layout_centerInParent="true"
+       	       style="@style/circle_progress"
+       	      android:layout_height="wrap_content" 
+       	      />
+     </RelativeLayout>
+    <ListView
+        android:id="@id/recomapp_onkey"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+    </ListView>
+</FrameLayout> 
+    <Button
+        android:id="@id/nextoronkey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dip"
+        android:background="@drawable/app_detail_download_btn"
+          android:textColor="#ffffff"
+        android:gravity="center"
+        android:text="下一步"
+         android:textSize="16dip" />
+
+</RelativeLayout>

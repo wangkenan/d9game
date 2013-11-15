@@ -3,13 +3,7 @@ package me.key.appmarket;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.tsz.afinal.exception.AfinalException;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import me.key.appmarket.adapter.ClassifyAdapter;
-import me.key.appmarket.adapter.DetaileAdapter;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
@@ -17,13 +11,12 @@ import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 
-import com.market.d9game.R;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,13 +26,15 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.market.d9game.R;
+
 //分类
 public class MenuFragment extends Fragment {
 	private View view;
 	private ClassifyAdapter cAdapter;
 	private ListView classLv;
-	private List<AppInfo> list = new ArrayList<AppInfo>();
-	private List<AppInfo> list_temp = new ArrayList<AppInfo>();
+	private List<AppInfo> list;
+	private List<AppInfo> list_temp;
 	private int type = 2;
 	private AsyncTask<Void, Void, Void> at;
 	private ArrayList<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
@@ -164,7 +159,7 @@ public class MenuFragment extends Fragment {
 
 	private void ParseJson(String str) {
 		try {
-			list_temp.clear();
+			list_temp = new ArrayList<AppInfo>();
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -176,12 +171,11 @@ public class MenuFragment extends Fragment {
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
 						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
-
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				list_temp.add(appInfo);
 				// appDatainfos_temp.add(appInfo);
 			}
-			list.clear();
+			list = new ArrayList<AppInfo>();
 			list.addAll(list_temp);
 			// mHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
 		} catch (Exception ex) {

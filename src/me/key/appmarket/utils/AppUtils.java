@@ -323,7 +323,7 @@ public class AppUtils {
 						if(i<= appVersion.length()){
 							char tempchar = appVersion.charAt(i);
 							char schar = sappVersion.charAt(i);
-							schar = '3';
+							schar = '9';
 							if(schar > tempchar) {
 								testCount++;
 								tempList.add(serverApp);

@@ -1,7 +1,5 @@
 package me.key.appmarket.widgets;
 
-import com.market.d9game.R;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +8,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class AppDialog extends Dialog implements
 		android.view.View.OnClickListener, DialogInterface {

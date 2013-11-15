@@ -1,9 +1,11 @@
 package me.key.appmarket;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import me.key.appmarket.adapter.AppAdapter;
+import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
@@ -19,6 +21,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,9 +52,10 @@ public class BannerActivity extends Activity implements OnScrollListener {
 	private ListView mListView;
 	private ProgressBar pBar;
 	private AppAdapter appAdapter;
-	private LinkedList<AppInfo> appDatainfos;
+	private ArrayList<AppInfo> appDatainfos;
 	private LinkedList<AppInfo> appDatainfos_temp;
-
+	private ArrayList<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
+	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private TextView tv_empty;
 
 	private boolean isLoading = false;
@@ -90,6 +96,56 @@ public class BannerActivity extends Activity implements OnScrollListener {
 					} else {
 						ParseJson(str);
 					}
+					StringBuilder apknamelist = new StringBuilder();
+					for (AppInfo ai : appDatainfos) {
+						DownStateBroadcast dsb = new DownStateBroadcast();
+						IntentFilter filter = new IntentFilter();
+						String fileName = DownloadService.CreatFileName(
+								ai.getAppName()).getAbsolutePath();
+						filter.addAction(fileName + "down");
+						registerReceiver(dsb, filter);
+						apknamelist.append(ai.getPackageName() + ",");
+						try {
+							PackageManager pm = getPackageManager();
+							if (ai.isInstalled()) {
+								PackageInfo packInfo = pm.getPackageInfo(
+										ai.getPackageName(), 0);
+								String name = packInfo.versionName;
+								ai.setVersion(name);
+							} else {
+								ai.setVersion("9999999999999");
+							}
+
+						} catch (NameNotFoundException e) {
+							e.printStackTrace();
+						}
+					}
+					String uris = apknamelist.toString();
+					if (uris.length() > 0) {
+						uris = uris.substring(0, uris.length() - 1);
+					}
+					/**
+					 * 检查应用是否能更新
+					 */
+					String strList = ToolHelper.donwLoadToString(Global.MAIN_URL
+							+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
+					ParseUpdateJson(strList);
+					appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
+							appDatainfos, appManagerUpdateInfos_t);
+					appManagerUpdateInfos.clear();
+					appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+					LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
+					for (AppInfo appInfo : appManagerUpdateInfos) {
+						LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
+						for (AppInfo appManaInfo : appDatainfos) {
+							if (appManaInfo.getPackageName().equals(
+									appInfo.getPackageName())) {
+								appManaInfo.setCanUpdate(true);
+								LogUtils.d("Main",
+										"我可以升级" + appManaInfo.getPackageName());
+							}
+						}
+					}
 					return null;
 				}
 				protected void onPostExecute(Void result) {
@@ -109,7 +165,7 @@ public class BannerActivity extends Activity implements OnScrollListener {
 		// TODO Auto-generated method stub
 		mListView = (ListView) findViewById(R.id.mlist);
 		pBar = (ProgressBar) findViewById(R.id.pro_bar);
-		appDatainfos = new LinkedList<AppInfo>();
+		appDatainfos = new ArrayList<AppInfo>();
 		appDatainfos_temp = new LinkedList<AppInfo>();
 	
 		pBar.setVisibility(View.VISIBLE);
@@ -247,6 +303,7 @@ public class BannerActivity extends Activity implements OnScrollListener {
 							} else {
 								ParseJson(str);
 							}
+							
 							return null;
 						}
 						protected void onPostExecute(Void result) {
@@ -311,6 +368,8 @@ public class BannerActivity extends Activity implements OnScrollListener {
 					if (packageName != null
 							&& packageName.equals(mAppInfo.getPackageName())) {
 						mAppInfo.setInstalled(true);
+						//设置为不能更新
+						mAppInfo.setCanUpdate(false);
 						LogUtils.d("Banner", "安装了:" + packageName);
 						break;
 					}
@@ -441,5 +500,57 @@ public class BannerActivity extends Activity implements OnScrollListener {
 			}
 		}
 	}
-	
+	class DownStateBroadcast extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("RankActivity", "我接受到了暂停广播");
+			for (AppInfo ai : appDatainfos) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					appAdapter.notifyDataSetChanged();
+					LogUtils.d("RankActivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
+					break;
+				}
+			}
+		}
+
+	}
+	private void ParseUpdateJson(String str) {
+		try {
+
+			ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String idx = jsonObject.getString("idx");
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+
+				String appurl = jsonObject.getString("appurl");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
+
+				appInfo.setPackageName(jsonObject.getString("apppkgname"));
+				appInfo.setVersion(jsonObject.getString("version"));
+
+				appInfo.setInstalled(AppUtils.isInstalled(appName));
+				tempList.add(appInfo);
+			}
+			LogUtils.d("Mana", "temp:" + tempList.size());
+			appManagerUpdateInfos_t.clear();
+			appManagerUpdateInfos_t.addAll(tempList);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// Log.e("tag", "error = " + ex.getMessage());
+		}
+	}
 }

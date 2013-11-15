@@ -2,14 +2,8 @@ package me.key.appmarket.adapter;
 
 import java.util.ArrayList;
 
-import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.widgets.ProgressView;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -19,6 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 /**
  * 下载管理天重启
  * @author Administrator

@@ -2,9 +2,6 @@ package me.key.appmarket.adapter;
 
 import java.util.List;
 
-import com.market.d9game.R;
-
-import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.LogUtils;
 import android.content.Context;
@@ -17,6 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class MenuCategoryAdapter extends BaseAdapter {
 	private Context context;
@@ -35,6 +34,8 @@ public class MenuCategoryAdapter extends BaseAdapter {
 		height = lv.getHeight();
 		width = lv.getWidth();
 		LogUtils.d("testLocal", "width:"+width);
+		LogUtils.d("Local", classInfos.size()+"sliment"+classInfos.get(0).getName());
+		
 	}
 	@Override
 	public int getCount() {
@@ -43,12 +44,12 @@ public class MenuCategoryAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		return null;
+		return classInfos.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return 0;
+		return position;
 	}
 
 	@Override

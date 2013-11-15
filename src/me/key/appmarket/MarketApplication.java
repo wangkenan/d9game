@@ -8,6 +8,8 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Activity;
 import android.app.Application;
+import android.media.AudioManager;
+import android.media.SoundPool;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -24,6 +26,34 @@ public class MarketApplication extends Application {
 	private ArrayList<AppInfo> appList;
 	private ArrayList<AppInfo> downApplist = new ArrayList<AppInfo>();
 	private final static ArrayList<Activity> activitys = new ArrayList<Activity>();
+	
+	private List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
+	private List<AppInfo> appManaInfos_temp = new ArrayList<AppInfo>();
+	private List<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
+	
+	public List<AppInfo> getAppManaInfos_temp() {
+		return appManaInfos_temp;
+	}
+
+	public void setAppManaInfos_temp(List<AppInfo> appManaInfos_temp) {
+		this.appManaInfos_temp = appManaInfos_temp;
+	}
+
+	public List<AppInfo> getAppManagerUpdateInfos() {
+		return appManagerUpdateInfos;
+	}
+
+	public void setAppManagerUpdateInfos(List<AppInfo> appManagerUpdateInfos) {
+		this.appManagerUpdateInfos = appManagerUpdateInfos;
+	}
+
+	public List<AppInfo> getmAppInfos() {
+		return mAppInfos;
+	}
+
+	public void setmAppInfos(List<AppInfo> mAppInfos) {
+		this.mAppInfos = mAppInfos;
+	}
 
 	public static List<AppInfo> getRankAppInfos() {
 		return rankAppInfos;
@@ -85,6 +115,7 @@ public class MarketApplication extends Application {
 				.discCacheSize(50 * 1024 * 1024).discCacheFileCount(100)
 				.build();
 		ImageLoader.getInstance().init(config);
+
 	}
 
 	public ArrayList<AppInfo> getAppList() {
@@ -97,4 +128,5 @@ public class MarketApplication extends Application {
 	public void reflashAppList() {
 		appList = AppUtils.getInstallApps(this);
 	}
+	
 }

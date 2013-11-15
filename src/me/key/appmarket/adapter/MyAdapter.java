@@ -2,22 +2,18 @@ package me.key.appmarket.adapter;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
 import java.util.List;
 
-import net.tsz.afinal.FinalDb;
-
-import me.key.appmarket.AppDetailActivity;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.tool.DownloadService;
-import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
+import net.tsz.afinal.FinalDb;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -67,6 +63,7 @@ public class MyAdapter extends BaseAdapter {
 	private List<AppInfo> appManaInfos;
 	private List<AppInfo> downList;
 	private List<AppInfo> updateList;
+	private FinalDb db;
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
 			.showImageForEmptyUri(R.drawable.tempicon)
 			.showStubImage(R.drawable.tempicon).resetViewBeforeLoading(false)
@@ -92,11 +89,12 @@ public class MyAdapter extends BaseAdapter {
 		bigImHeight = (int) ((width - gapPy) / 2 / 1.27f);
 		ROOT = LocalUtils.getRoot(context);
 		this.downList = downList;
+		db = FinalDb.create(context);
 	}
 
 	@Override
 	public int getCount() {
-		return mData.size() + appManaInfos.size() + downList.size() + 1;
+		return appManaInfos.size() + downList.size();
 	}
 
 	@Override
@@ -109,20 +107,21 @@ public class MyAdapter extends BaseAdapter {
 		return 0;
 	}
 
+	@Override
 	public int getItemViewType(int position) {
-		if (position == 0) {
+	/*	if (position == 0) {
 			return 2;
-		} else {
-			if (position - 1 < downList.size()) {
+		} else {*/
+			if (position< downList.size()) {
 				return 0;
 			}
 			return 1;
-		}
+		//}
 	}
 
 	@Override
 	public int getViewTypeCount() {
-		return 3;
+		return 2;
 	}
 
 	@Override
@@ -139,7 +138,7 @@ public class MyAdapter extends BaseAdapter {
 		 * 
 		 * } );
 		 */
-		final int newposition = position - 1;
+		final int newposition = position;
 		final ViewHolder holder;
 		final ViewHolder1 viewHolder1;
 		final ViewHolder2 viewHolder2;
@@ -148,13 +147,13 @@ public class MyAdapter extends BaseAdapter {
 		final AppInfo sdappInfo;
 		if (convertView == null) {
 			switch (type) {
-			case 2:
+	/*		case 2:
 				viewHolder2 = new ViewHolder2();
 				convertView = mInflater.inflate(R.layout.banner_item, null);
 				viewHolder2.banner = (ImageView) convertView
 						.findViewById(R.id.icon_banner);
 				convertView.setTag(viewHolder2);
-				break;
+				break;*/
 			case 1:
 				holder = new ViewHolder();
 				convertView = mInflater.inflate(R.layout.list_item, null);
@@ -199,13 +198,13 @@ public class MyAdapter extends BaseAdapter {
 			case 1:
 				holder = (ViewHolder) convertView.getTag();
 				break;
-			case 2:
+		/*	case 2:
 				viewHolder2 = (ViewHolder2) convertView.getTag();
-				break;
+				break;*/
 			}
 		}
 		switch (type) {
-		case 2:
+/*		case 2:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
 			setImagePosition(R.drawable.a20131008174300, v3.banner);
 			v3.banner.setOnClickListener(new OnClickListener() {
@@ -218,7 +217,7 @@ public class MyAdapter extends BaseAdapter {
 				}
 
 			});
-			break;
+			break;*/
 		case 0:
 			sdappInfo = downList.get(newposition);
 			sdappInfo.setDown(false);
@@ -242,17 +241,18 @@ public class MyAdapter extends BaseAdapter {
 			} else {
 				v1.install_dm.setText("下载中");
 			}
-			if (sdappInfo.isInstalled()) {
-				v1.install_dm.setText("打开");
-
-				v1.progress_view_local_dm.setProgress(100);
-				/*
-				 * Drawable mDrawableicon = cnt.getResources().getDrawable(
-				 * R.drawable.action_type_software_update);
-				 * v1.install_dm.setCompoundDrawablesWithIntrinsicBounds(null,
-				 * mDrawableicon, null, null);
-				 */
-			} else if (sdappInfo.isDown()) {
+			/*
+			 * if (sdappInfo.isInstalled()) { v1.install_dm.setText("打开");
+			 * 
+			 * v1.progress_view_local_dm.setProgress(100);
+			 * 
+			 * Drawable mDrawableicon = cnt.getResources().getDrawable(
+			 * R.drawable.action_type_software_update);
+			 * v1.install_dm.setCompoundDrawablesWithIntrinsicBounds(null,
+			 * mDrawableicon, null, null);
+			 * 
+			 * } else
+			 */if (sdappInfo.isDown()) {
 
 				v1.progress_view_local_dm.setProgress(DownloadService
 						.getPrecent(idx));
@@ -339,9 +339,10 @@ public class MyAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View arg0) {
 					LogUtils.d("MYADAPTER", "我被点击了");
-					if (sdappInfo.isInstalled()) {
-						AppUtils.launchApp(cnt, sdappInfo.getAppName());
-					} else if (DownloadService.isDownLoading(Integer
+					/*
+					 * if (sdappInfo.isInstalled()) { AppUtils.launchApp(cnt,
+					 * sdappInfo.getAppName()); } else
+					 */if (DownloadService.isDownLoading(Integer
 							.parseInt(sdappInfo.getIdx()))) {
 						LogUtils.d("test", "暂停");
 						File tempFile = DownloadService.CreatFileName(sdappInfo
@@ -370,7 +371,7 @@ public class MyAdapter extends BaseAdapter {
 							.getAppName())) {
 						// 已经下载
 						DownloadService.Instanll(sdappInfo.getAppName(), cnt);
-					} else if (!sdappInfo.isInstalled()) {
+					} else {
 						Log.e("tag",
 								"appurl = " + Global.MAIN_URL
 										+ sdappInfo.getAppUrl());
@@ -420,64 +421,56 @@ public class MyAdapter extends BaseAdapter {
 		case 1:
 			final ViewHolder v2 = ((ViewHolder) convertView.getTag());
 			boolean isUpdate = false;
+			sdappInfo = appManaInfos.get(newposition - downList.size());
 			if (newposition - downList.size() < appManaInfos.size()) {
-				sdappInfo = appManaInfos.get(newposition - downList.size());
-				for (AppInfo appInfo : updateList) {
-					LogUtils.d("MyAdapter", appInfo.getPackageName() + "___"
-							+ sdappInfo.getPackageName());
-					if (appInfo.getPackageName().equals(
-							sdappInfo.getPackageName())) {
-						LogUtils.d("MyUpdate", sdappInfo.getPackageName());
-						v2.btn.setText("升级");
-						isUpdate = true;
-						break;
-					} else {
-						LogUtils.d("MyUpdate", sdappInfo.getPackageName()+"打开");
-						v2.btn.setText("打开");
-						v2.progress_view.setProgress(100);
-						/*
-						 * Drawable mDrawable1 =
-						 * this.cnt.getResources().getDrawable(
-						 * R.drawable.action_type_software_update);
-						 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null,
-						 * mDrawable1, null, null);
-						 */
-						if (sdappInfo.getLastTime() == Long.MAX_VALUE) {
-							v2.appsize.setText("您最近没有玩过哦");
-						} else {
-							Long lastTime = sdappInfo.getLastTime();
-							long scond = lastTime / 1000;
-							long minute = scond / 60;
-							long houre = minute / 60;
-							long day = houre / 24;
-							if (scond < 60) {
-								v2.appsize.setText("您上次玩是" + scond + "秒之前");
-							} else if (minute < 60) {
-								v2.appsize.setText("您上次玩是" + minute + "分之前");
-							} else if (houre < 60) {
-								v2.appsize.setText("您上次玩是" + houre + "小时之前");
-							} else if (day < 60) {
-								v2.appsize.setText("您上次玩是" + day + "天之前");
-							}
-						}
+				isUpdate = sdappInfo.isCanUpdate();
+				if (isUpdate) {
+					v2.btn.setText("升级");
+				} else {
+					LogUtils.d("MyUpdate", sdappInfo.getPackageName() + "打开");
+					v2.btn.setText("打开");
+
+				}
+				v2.progress_view.setProgress(100);
+				/*
+				 * Drawable mDrawable1 = this.cnt.getResources().getDrawable(
+				 * R.drawable.action_type_software_update);
+				 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawable1, null, null);
+				 */
+				if (sdappInfo.getLastTime() == Long.MAX_VALUE) {
+					v2.appsize.setText("您最近没有玩过哦");
+				} else {
+					Long lastTime = sdappInfo.getLastTime();
+					long scond = lastTime / 1000;
+					long minute = scond / 60;
+					long houre = minute / 60;
+					long day = houre / 24;
+					if (scond < 60) {
+						v2.appsize.setText("您上次玩是" + scond + "秒之前");
+					} else if (minute < 60) {
+						v2.appsize.setText("您上次玩是" + minute + "分之前");
+					} else if (houre < 60) {
+						v2.appsize.setText("您上次玩是" + houre + "小时之前");
+					} else if (day < 60) {
+						v2.appsize.setText("您上次玩是" + day + "天之前");
 					}
 				}
-
-			} else {
+			}/* else {
 				sdappInfo = mData
 						.get((newposition - appManaInfos.size() - downList
 								.size()));
-				/*
+				
 				 * Drawable mDrawable2 = cnt.getResources().getDrawable(
 				 * R.drawable.downloaded);
 				 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null,
 				 * mDrawable2, null, null);
-				 */
+				 
 				v2.btn.setText("安装");
 				v2.progress_view.setProgress(0);
 				String mb = ToolHelper.Kb2Mb(sdappInfo.getAppSize());
 				v2.appsize.setText(mb);
-			}
+			}*/
 			if ((newposition - downList.size()) < appManaInfos.size()) {
 				v2.btn.setOnClickListener(new OnClickListener() {
 
@@ -497,14 +490,37 @@ public class MyAdapter extends BaseAdapter {
 						installApp(sdappInfo);
 					}
 				});
-				
+
 			}
-			if(isUpdate) {
+			if (isUpdate) {
 				v2.btn.setOnClickListener(new OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
+						List<AppInfo> down_temp = new ArrayList<AppInfo>();
+						File tempFile = new File(Environment
+								.getExternalStorageDirectory(), "/market/"
+								+ sdappInfo.getAppName() + ".apk");
+						if (tempFile.exists()) {
+							tempFile.delete();
+						}
 						DownloadService.downNewFile(sdappInfo, 0, 0, null);
+						downList.add(sdappInfo);
+						notifyDataSetChanged();
+						sdappInfo.setDown(true);
+						sdappInfo.setIspause(false);
+						Intent intent = new Intent();
+						Intent downState = new Intent();
+
+						downState.setAction(tempFile.getAbsolutePath() + "down");
+						downState.putExtra("isPause", sdappInfo.isIspause());
+						cnt.sendBroadcast(downState);
+						intent.setAction(MarketApplication.PRECENT);
+						cnt.sendBroadcast(intent);
+						Toast.makeText(cnt,
+								sdappInfo.getAppName() + " 开始下载...",
+								Toast.LENGTH_SHORT).show();
+
 					}
 				});
 			}
@@ -524,8 +540,6 @@ public class MyAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		public TextView appsize;
-		public TextView tvdown;
-		public TextView appSize;
 		public TextView btn;
 		public ImageView icon;
 		public TextView info;
@@ -570,7 +584,7 @@ public class MyAdapter extends BaseAdapter {
 		getNewBitMapPos(bm, newbitmap);
 		banner.setImageBitmap(newbitmap);
 	}
-
+//处理图片
 	private void getNewBitMapPos(Bitmap bm, Bitmap newbitmap) {
 		Paint paint = new Paint();
 		Canvas canvas = new Canvas(newbitmap);

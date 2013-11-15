@@ -1,14 +1,7 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
-import java.lang.ref.SoftReference;
-import java.util.HashMap;
 import java.util.List;
-
-import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
@@ -38,6 +31,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class RankAdapter extends BaseAdapter {
 	private List<AppInfo> appInfos;

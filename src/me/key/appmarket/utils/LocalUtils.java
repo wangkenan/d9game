@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.key.appmarket.LocalIndexDetaileActivity;
-import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.tool.TxtReader;
 
 import org.json.JSONArray;
@@ -27,10 +25,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.market.d9game.R;
@@ -38,7 +32,7 @@ import com.market.d9game.R;
 public class LocalUtils {
 	
 	
-	public static List<AppInfo> InitHomePager(String ItemId,Context context,String Root) {
+	public static List<AppInfo> InitHomePager(String ItemId,Context context,String Root,List<PackageInfo> packages ) {
 		InputStream inputStream;
 		if (ItemId.equals("0")) {
 			inputStream = context.getResources().openRawResource(R.raw.category_1);
@@ -92,8 +86,7 @@ public class LocalUtils {
 				boolean isIns = AppUtils.isInstalled((String)list.get("pkgname"));
 				mAppInfo.setInstalled(isIns);
 				mAppInfos.add(mAppInfo);
-				List<PackageInfo> packages = context.getPackageManager()
-						.getInstalledPackages(0);
+				LogUtils.d("Local", "context"+context);
 				for(PackageInfo pi : packages) {
 					if(pi.packageName.equals((String)list.get("pkgname"))) {
 						mAppInfos.remove(mAppInfos.get(mAppInfos.size()-1));

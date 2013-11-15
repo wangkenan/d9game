@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.market.d9game.R;
-
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.CommentInfo;
 import android.content.Context;
@@ -18,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class CommentAdapter extends BaseAdapter {
 

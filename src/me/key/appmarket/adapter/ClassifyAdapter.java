@@ -2,18 +2,11 @@ package me.key.appmarket.adapter;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
-import me.key.appmarket.adapter.NewRecommnAdapter.BaseHolder;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
@@ -31,13 +24,18 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class ClassifyAdapter extends BaseAdapter {
 	private List<AppInfo> appInfos;

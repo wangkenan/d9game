@@ -1,24 +1,17 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import com.market.d9game.R;
-
-import me.key.appmarket.tool.ToolHelper;
-import me.key.appmarket.utils.CommentInfo;
 import me.key.appmarket.utils.HotSearchInfo;
 import android.content.Context;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class HotSearchAdapter extends BaseAdapter {
 

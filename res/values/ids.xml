@@ -14,4 +14,7 @@
     <item name="recommend_date" type="id" />
     <item name="cover" type="id" />
     <item name="date" type="id" />
+    <item name="nextoronkey" type="id" />
+    <item name="recomapp_onkey" type="id" />
+    <item name="title_onkey" type="id" />
 </resources>

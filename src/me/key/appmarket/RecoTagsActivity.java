@@ -12,9 +12,6 @@ import me.key.appmarket.widgets.FlowLayout;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.market.d9game.R;
-import com.umeng.analytics.MobclickAgent;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +25,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 精选标签Activity

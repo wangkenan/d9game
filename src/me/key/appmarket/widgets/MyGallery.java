@@ -3,8 +3,6 @@ package me.key.appmarket.widgets;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.market.d9game.R;
-
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.BannerInfo;
 import android.content.Context;
@@ -23,6 +21,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.market.d9game.R;
 
 public class MyGallery extends HorizontalScrollView implements
 		OnGestureListener {

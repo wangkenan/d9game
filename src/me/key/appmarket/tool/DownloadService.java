@@ -2,15 +2,10 @@ package me.key.appmarket.tool;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,29 +14,19 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import kbps.io.BufferedRandomAccessFile;
-
 import me.key.appmarket.MainActivity;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
-import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.LocalAppInfo;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.utils.Test;
 import me.key.appmarket.widgets.MyTableHost;
 import net.tsz.afinal.FinalDb;
 import net.tsz.afinal.FinalHttp;
-import net.tsz.afinal.exception.AfinalException;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.HttpHandler;
-import net.tsz.afinal.http.RetryHandler;
-
-import org.apache.http.client.ClientProtocolException;
-
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -63,18 +48,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.WindowManager;
-import android.webkit.WebView.FindListener;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -470,7 +450,7 @@ public class DownloadService extends Service {
 					R.layout.custom_notification);
 			notification.contentView = contentView;
 			// 异步下载图标
-			new AsyncTask<Void, Void, Void>() {
+/*			new AsyncTask<Void, Void, Void>() {
 
 				@Override
 				protected Void doInBackground(Void... params) {
@@ -484,7 +464,7 @@ public class DownloadService extends Service {
 							drawable2Bitmap(loadImageFromUrl));
 				};
 
-			}.execute();
+			}.execute();*/
 			if (loadImageFromUrl == null) {
 				notification.contentView
 						.setImageViewBitmap(
@@ -767,6 +747,7 @@ public class DownloadService extends Service {
 			intent.setDataAndType(Uri.fromFile(tempFile),
 					"application/vnd.android.package-archive");
 			context.startActivity(intent);
+			
 		}
 	}
 

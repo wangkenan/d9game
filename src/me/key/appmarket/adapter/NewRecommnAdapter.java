@@ -1,34 +1,14 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
-import java.lang.ref.SoftReference;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import net.tsz.afinal.FinalDb;
-
-import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import me.key.appmarket.MarketApplication;
-import me.key.appmarket.MyListView;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
-import me.key.appmarket.adapter.NewRankAdapter.ViewHolder;
-import me.key.appmarket.network.AppDetailRequest;
-import me.key.appmarket.network.AppDetailResponse;
-import me.key.appmarket.network.HttpResponse;
-import me.key.appmarket.network.HttpRequest.OnResponseListener;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
@@ -36,6 +16,7 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
+import net.tsz.afinal.FinalDb;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -43,10 +24,10 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.BitmapFactory.Options;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -59,20 +40,23 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+
 public class NewRecommnAdapter extends BaseAdapter {
 
-	private LinkedList<AppInfo> appInfos;
+	private ArrayList<AppInfo> appInfos;
 	private LayoutInflater lay;
 	private File cache;
 	private Context mContext;
@@ -108,7 +92,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 	private static final int TYPE_3 = 2;
 	private Map<Integer, String> bigImageMap = new HashMap<Integer, String>();
 
-	public NewRecommnAdapter(LinkedList<AppInfo> appInfos, Context context,
+	public NewRecommnAdapter(ArrayList<AppInfo> appInfos, Context context,
 			File cache, ListView mylistView) {
 		super();
 		this.appInfos = appInfos;
@@ -331,7 +315,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 	public void setDownState(final int position, final BaseHolder v1) {
 		Drawable mDrawable;
-		//v1.progress_view.setProgress(0);
+		// v1.progress_view.setProgress(0);
 		// v1.progress_view.setVisibility(View.VISIBLE);
 		File tempFile = new File(Environment.getExternalStorageDirectory(),
 				"/market/" + appInfos.get(position).getAppName() + ".apk");
@@ -341,97 +325,112 @@ public class NewRecommnAdapter extends BaseAdapter {
 				position).getAppName());
 		int idx = Integer.parseInt(appInfos.get(position).getIdx());
 		isDownLoading = DownloadService.isDownLoading(idx);
-		if (appInfos.get(position).isIspause()) {
-			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
-			v1.tvdown.setText("暂停");
-			v1.progress_view.setVisibility(View.INVISIBLE);
-			v1.tvdown.setVisibility(View.VISIBLE);
-			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
-			LogUtils.d("new", "我是下载中暂停"+appInfos.get(position).getAppName());
-			if (!isDownLoaded) {
-				LogUtils.d("new", "我执行了下载中暂停"+appInfos.get(position).getAppName());
-				v1.progress_view.setVisibility(View.INVISIBLE);
-				v1.tvdown.setVisibility(View.VISIBLE);
-			}
+		boolean isUpdate = false;
+		isUpdate = appInfos.get(position).isCanUpdate();
+		if (isUpdate) {
+			v1.tvdown.setText("升级");
 		} else {
-			v1.tvdown.setText("下载中");
-			LogUtils.d("new", "我是暂停中下载"+appInfos.get(position).getAppName());
-			if (!isDownLoaded) {
-				LogUtils.d("new", "我执行了暂停中下载"+appInfos.get(position).getAppName());
-				v1.progress_view.setVisibility(View.VISIBLE);
-				v1.tvdown.setVisibility(View.INVISIBLE);
-				v1.progress_view.setProgress(DownloadService.getPrecent(idx));
-				LogUtils.d("ture", isDownLoading + "isDown");
-				LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());
-			} 
-	
-		}
-		if (appInfos.get(position).isInstalled()) {
-			v1.tvdown.setText("打开");
-			v1.progress_view.setVisibility(View.INVISIBLE);
-			v1.tvdown.setVisibility(View.VISIBLE);
-			v1.progress_view.setProgress(100);
-			/*
-			 * Drawable mDrawableicon = mContext.getResources().getDrawable(
-			 * R.drawable.action_type_software_update);
-			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-			 * mDrawableicon, null, null);
-			 */
-		} else if (appInfos.get(position).isDown()) {
-			v1.progress_view.setProgress(DownloadService.getPrecent(idx));
-			LogUtils.d("ture", isDownLoading + "isDown");
-			LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());
-		/*	//v1.tvdown.setText("下载中");
-			v1.progress_view.setVisibility(View.VISIBLE);
-			v1.tvdown.setVisibility(View.INVISIBLE);
-			
-			  Drawable mDrawableicon = mContext.getResources().getDrawable(
-			  R.drawable.downloading);
-			  v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-			  mDrawableicon, null, null);*/
-			 
-		} else if (isDownLoaded) {
-			/*
-			 * Drawable mDrawableicon = mContext.getResources().getDrawable(
-			 * R.drawable.downloaded);
-			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-			 * mDrawableicon, null, null);
-			 */
-			v1.tvdown.setText("安装");
-			v1.progress_view.setProgress(100);
-			v1.progress_view.setVisibility(View.INVISIBLE);
-			v1.tvdown.setVisibility(View.VISIBLE);
-		} else if (!isDownLoading) {
-			v1.tvdown.setText("下载");
-			/*
-			 * mDrawable = mContext.getResources().getDrawable(
-			 * R.layout.mydown_buton);
-			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-			 * mDrawable, null, null);
-			 */
-			// 获取将要下载的文件名，如果本地存在该文件，则取出该文件
-
-			// LogUtils.d("sa", tempFile.getAbsolutePath());
-			v1.progress_view.setVisibility(View.INVISIBLE);
-			v1.tvdown.setVisibility(View.VISIBLE);
-			long length = sp.getLong(tempFile.getAbsolutePath(), 0);
-			// LogUtils.d("sa", length+"");
-			if (length != 0
-					&& DownloadService.isExist(appInfos.get(position)
-							.getAppName())) {
-				LogUtils.d("test", "已经存在");
+			if (appInfos.get(position).isIspause()) {
+				LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 				v1.tvdown.setText("暂停");
 				v1.progress_view.setVisibility(View.INVISIBLE);
 				v1.tvdown.setVisibility(View.VISIBLE);
-				long count = sp.getLong(tempFile.getAbsolutePath() + "precent",
-						0);
-				v1.progress_view.setProgress(count);
-			} else if (length != 0
-					&& !DownloadService.isExist(appInfos.get(position)
-							.getAppName())) {
-				Editor edit = sp.edit();
-				edit.remove(tempFile.getAbsolutePath());
-				edit.commit();
+				v1.progress_view.setProgress(DownloadService.getPrecent(idx));
+				LogUtils.d("new", "我是下载中暂停"
+						+ appInfos.get(position).getAppName());
+				if (!isDownLoaded) {
+					LogUtils.d("new", "我执行了下载中暂停"
+							+ appInfos.get(position).getAppName());
+					v1.progress_view.setVisibility(View.INVISIBLE);
+					v1.tvdown.setVisibility(View.VISIBLE);
+				}
+			} else {
+				v1.tvdown.setText("下载中");
+				LogUtils.d("new", "我是暂停中下载"
+						+ appInfos.get(position).getAppName());
+				if (!isDownLoaded) {
+					LogUtils.d("new", "我执行了暂停中下载"
+							+ appInfos.get(position).getAppName());
+					v1.progress_view.setVisibility(View.VISIBLE);
+					v1.tvdown.setVisibility(View.INVISIBLE);
+					v1.progress_view.setProgress(DownloadService
+							.getPrecent(idx));
+					LogUtils.d("ture", isDownLoading + "isDown");
+					LogUtils.d("newdowndown", "我变成下载中了"
+							+ appInfos.get(position).getAppName());
+				}
+
+			}
+			if (appInfos.get(position).isInstalled()) {
+				v1.tvdown.setText("打开");
+				v1.progress_view.setVisibility(View.INVISIBLE);
+				v1.tvdown.setVisibility(View.VISIBLE);
+				v1.progress_view.setProgress(100);
+				/*
+				 * Drawable mDrawableicon = mContext.getResources().getDrawable(
+				 * R.drawable.action_type_software_update);
+				 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawableicon, null, null);
+				 */
+			} else if (appInfos.get(position).isDown()) {
+				v1.progress_view.setProgress(DownloadService.getPrecent(idx));
+				LogUtils.d("ture", isDownLoading + "isDown");
+				LogUtils.d("newdowndown", "我变成下载中了"
+						+ appInfos.get(position).getAppName());
+				/*
+				 * //v1.tvdown.setText("下载中");
+				 * v1.progress_view.setVisibility(View.VISIBLE);
+				 * v1.tvdown.setVisibility(View.INVISIBLE);
+				 * 
+				 * Drawable mDrawableicon = mContext.getResources().getDrawable(
+				 * R.drawable.downloading);
+				 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawableicon, null, null);
+				 */
+
+			} else if (isDownLoaded) {
+				/*
+				 * Drawable mDrawableicon = mContext.getResources().getDrawable(
+				 * R.drawable.downloaded);
+				 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawableicon, null, null);
+				 */
+				v1.tvdown.setText("安装");
+				v1.progress_view.setProgress(100);
+				v1.progress_view.setVisibility(View.INVISIBLE);
+				v1.tvdown.setVisibility(View.VISIBLE);
+			} else if (!isDownLoading) {
+				v1.tvdown.setText("下载");
+				/*
+				 * mDrawable = mContext.getResources().getDrawable(
+				 * R.layout.mydown_buton);
+				 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawable, null, null);
+				 */
+				// 获取将要下载的文件名，如果本地存在该文件，则取出该文件
+
+				// LogUtils.d("sa", tempFile.getAbsolutePath());
+				v1.progress_view.setVisibility(View.INVISIBLE);
+				v1.tvdown.setVisibility(View.VISIBLE);
+				long length = sp.getLong(tempFile.getAbsolutePath(), 0);
+				// LogUtils.d("sa", length+"");
+				if (length != 0
+						&& DownloadService.isExist(appInfos.get(position)
+								.getAppName())) {
+					LogUtils.d("test", "已经存在");
+					v1.tvdown.setText("暂停");
+					v1.progress_view.setVisibility(View.INVISIBLE);
+					v1.tvdown.setVisibility(View.VISIBLE);
+					long count = sp.getLong(tempFile.getAbsolutePath()
+							+ "precent", 0);
+					v1.progress_view.setProgress(count);
+				} else if (length != 0
+						&& !DownloadService.isExist(appInfos.get(position)
+								.getAppName())) {
+					Editor edit = sp.edit();
+					edit.remove(tempFile.getAbsolutePath());
+					edit.commit();
+				}
 			}
 		}
 		v1.progress_view.setOnClickListener(new OnClickListener() {
@@ -481,13 +480,13 @@ public class NewRecommnAdapter extends BaseAdapter {
 					if (!appInfos.get(position).isIspause()) {
 						v1.tvdown.setText("暂停");
 						appInfos.get(position).setDown(false);
-						
+
 					} else {
 						v1.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
 						v1.progress_view.setVisibility(View.VISIBLE);
 						v1.tvdown.setVisibility(View.INVISIBLE);
-						
+
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
@@ -545,6 +544,38 @@ public class NewRecommnAdapter extends BaseAdapter {
 
 			}
 		});
+		if (isUpdate) {
+			final AppInfo sdappInfo = appInfos.get(position);
+			v1.tvdown.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					File tempFile = new File(Environment
+							.getExternalStorageDirectory(), "/market/"
+							+ sdappInfo.getAppName() + ".apk");
+					List<AppInfo> down_temp = new ArrayList<AppInfo>();
+					if (tempFile.exists()) {
+						tempFile.delete();
+					}
+					DownloadService.downNewFile(sdappInfo, 0, 0, null);
+					// downList.add(sdappInfo);
+					notifyDataSetChanged();
+					sdappInfo.setDown(true);
+					sdappInfo.setIspause(false);
+					Intent intent = new Intent();
+					Intent downState = new Intent();
+
+					downState.setAction(tempFile.getAbsolutePath() + "down");
+					downState.putExtra("isPause", sdappInfo.isIspause());
+					mContext.sendBroadcast(downState);
+					intent.setAction(MarketApplication.PRECENT);
+					mContext.sendBroadcast(intent);
+					Toast.makeText(mContext,
+							sdappInfo.getAppName() + " 开始下载...",
+							Toast.LENGTH_SHORT).show();
+
+				}
+			});
+		}
 	}
 
 	private static class ViewHolder extends BaseHolder {

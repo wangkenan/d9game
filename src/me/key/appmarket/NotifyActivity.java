@@ -1,9 +1,9 @@
 package me.key.appmarket;
 
-import com.market.d9game.R;
-
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.market.d9game.R;
 
 public class NotifyActivity extends Activity {
 	@Override

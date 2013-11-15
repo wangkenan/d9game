@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import me.key.appmarket.MainActivity.PrecentReceiver;
-import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.ManagerAdapter;
 import me.key.appmarket.adapter.ManagerUpdateAdapter;
 import me.key.appmarket.tool.ToolHelper;
@@ -18,8 +13,8 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 
-import com.market.d9game.R;
-import com.umeng.analytics.MobclickAgent;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -31,18 +26,20 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 /**
  * 管理界面
  * @author Administrator

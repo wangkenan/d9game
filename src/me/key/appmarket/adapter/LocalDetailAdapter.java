@@ -2,17 +2,13 @@ package me.key.appmarket.adapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import me.key.appmarket.IndexDetaileActivity;
 import me.key.appmarket.LocalIndexDetaileActivity;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
-import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.CategoryInfo;
-import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.widgets.MyImageView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -38,7 +33,6 @@ import android.widget.TextView;
 
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 分类信息adapter

@@ -1,26 +1,14 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import me.key.appmarket.MarketApplication;
-import me.key.appmarket.MyListView;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
-import me.key.appmarket.adapter.NewRecommnAdapter.BaseHolder;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
@@ -42,17 +30,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+
 public class AppAdapter extends BaseAdapter {
 
-	private LinkedList<AppInfo> appInfos;
+	private ArrayList<AppInfo> appInfos;
 	private LayoutInflater lay;
 	private File cache;
 	private Context mContext;
@@ -77,7 +68,7 @@ public class AppAdapter extends BaseAdapter {
     .build(); 
 
 
-	public AppAdapter(LinkedList<AppInfo> appInfos, Context context,
+	public AppAdapter(ArrayList<AppInfo> appInfos, Context context,
 			File cache, ListView mylistView) {
 		super();
 		this.appInfos = appInfos;
@@ -231,6 +222,11 @@ public class AppAdapter extends BaseAdapter {
 				position).getAppName());
 		int idx = Integer.parseInt(appInfos.get(position).getIdx());
 		isDownLoading = DownloadService.isDownLoading(idx);
+		boolean isUpdate = false;
+		isUpdate = appInfos.get(position).isCanUpdate();
+		if (isUpdate) {
+			v1.tvdown.setText("升级");
+		} else {
 		if (appInfos.get(position).isIspause()) {
 			LogUtils.d("ture", appInfos.get(position).isIspause() + "");
 			v1.tvdown.setText("暂停");
@@ -319,6 +315,7 @@ public class AppAdapter extends BaseAdapter {
 				edit.remove(tempFile.getAbsolutePath());
 				edit.commit();
 			}
+		}
 		}
 		v1.progress_view.setOnClickListener(new OnClickListener() {
 
@@ -429,5 +426,36 @@ public class AppAdapter extends BaseAdapter {
 
 			}
 		});
+		if (isUpdate) {
+			final AppInfo sdappInfo = appInfos.get(position);
+			v1.tvdown.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					File tempFile = new File(Environment.getExternalStorageDirectory(),
+							"/market/" + sdappInfo.getAppName() + ".apk");
+					List<AppInfo> down_temp = new ArrayList<AppInfo>();
+					if(tempFile.exists()) {
+						tempFile.delete();
+					}
+					DownloadService.downNewFile(sdappInfo, 0, 0, null);
+					//downList.add(sdappInfo);
+					notifyDataSetChanged();
+					sdappInfo.setDown(true);
+					sdappInfo.setIspause(false);
+					Intent intent = new Intent();
+					Intent downState = new Intent();
+				
+					downState.setAction(tempFile.getAbsolutePath() + "down");
+					downState.putExtra("isPause", sdappInfo.isIspause());
+					mContext.sendBroadcast(downState);
+					intent.setAction(MarketApplication.PRECENT);
+					mContext.sendBroadcast(intent);
+					Toast.makeText(mContext,
+							sdappInfo.getAppName() + " 开始下载...",
+							Toast.LENGTH_SHORT).show();
+					
+				}
+			});
+		}
 	}
 }

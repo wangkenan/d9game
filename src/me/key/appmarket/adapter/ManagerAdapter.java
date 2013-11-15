@@ -3,8 +3,6 @@ package me.key.appmarket.adapter;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.market.d9game.R;
-
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
@@ -20,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class ManagerAdapter extends BaseAdapter {
 

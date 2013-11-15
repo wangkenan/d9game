@@ -1,9 +1,7 @@
 package me.key.appmarket;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,78 +10,54 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import me.key.appmarket.LocalGameActivity.DownStateBroadcast;
 import me.key.appmarket.MyListView.OnLoadMoreListener;
-import me.key.appmarket.MyListView.OnRefreshListener;
 import me.key.appmarket.adapter.AppAdapter;
-import me.key.appmarket.adapter.CategoryAdapter;
-import me.key.appmarket.adapter.ClassifyAdapter;
 import me.key.appmarket.adapter.DetaileAdapter;
-import me.key.appmarket.adapter.LocalCategoryAdapter;
 import me.key.appmarket.adapter.ManagerAdapter;
 import me.key.appmarket.adapter.ManagerUpdateAdapter;
 import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.adapter.NewRankAdapter;
 import me.key.appmarket.adapter.NewRecommnAdapter;
-import me.key.appmarket.adapter.RankAdapter;
 import me.key.appmarket.adapter.TabPageAdapter;
 import me.key.appmarket.adapter.TuiJianImageAdapter;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
-import me.key.appmarket.tool.TxtReader;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
-import me.key.appmarket.utils.BannerInfo;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.utils.Test;
 import me.key.appmarket.utils.ToastUtils;
 import me.key.appmarket.widgets.GalleryFlow;
-import me.key.appmarket.widgets.MyTableHost;
-import net.tsz.afinal.FinalDb;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.market.d9game.R;
-import com.slidingmenu.lib.app2.SlidingFragmentActivity;
-import com.slidingmenu.lib2.SlidingMenu;
-import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
-import com.slidingmenu.lib2.SlidingMenu.OnOpenListener;
-import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
-import com.umeng.analytics.MobclickAgent;
-
-import android.R.anim;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.storage.StorageManager;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -95,22 +69,24 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ViewSwitcher;
+
+import com.market.d9game.R;
+import com.slidingmenu.lib.app2.SlidingFragmentActivity;
+import com.slidingmenu.lib2.SlidingMenu;
+import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
+import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
+import com.umeng.analytics.MobclickAgent;
 
 public class MainActivity extends SlidingFragmentActivity { 
 
@@ -133,13 +109,15 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	// home
 	private ListView mHomeListView;
-	private LinkedList<AppInfo> appHomeInfos;
+	private ArrayList<AppInfo> appHomeInfos;
 	private List<AppInfo> appHomeInfos_temp = new LinkedList<AppInfo>();
 	private NewRecommnAdapter appHomeAdapter;
 	private ProgressBar pHomeBar;
 	private String curpos = "0";
 	private LinearLayout ll_homeerror;
 	private ArrayList<AppInfo> bannerList = new ArrayList<AppInfo>();
+	private ArrayList<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
+	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private GalleryFlow tuijian_gallery;
 	private TuiJianImageAdapter tuiJianAdapter;
 	// game
@@ -176,7 +154,6 @@ public class MainActivity extends SlidingFragmentActivity {
 	private ManagerAdapter mManagerAdapter;
 	private ManagerUpdateAdapter mManagerUpdateAdapter;
 	private ArrayList<AppInfo> appManagerInfos = new ArrayList<AppInfo>();
-	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 
 	private Button install_app;
 	private Button update_app;
@@ -482,7 +459,9 @@ public class MainActivity extends SlidingFragmentActivity {
 		 * LocalCategoryAdapter mCategoryAdapter = new LocalCategoryAdapter(
 		 * categoryInfoList, MainActivity.this, cache);
 		 */
-		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root);
+		List<PackageInfo> packages = MainActivity
+				.this.getPackageManager().getInstalledPackages(0);
+		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root,packages);
 		LogUtils.d("mAppInfos", mAppInfos.size() + "");
 		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos, null,
 				null,null);
@@ -791,7 +770,7 @@ public class MainActivity extends SlidingFragmentActivity {
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar_home);
 		pHomeBar.setVisibility(View.VISIBLE);
 		ll_homeerror = (LinearLayout) homeView.findViewById(R.id.ll_error);
-		appHomeInfos = new LinkedList<AppInfo>();
+		appHomeInfos = new ArrayList<AppInfo>();
 		Button btn_refresh = (Button) ll_homeerror.findViewById(R.id.btn_Refsh);
 		// tuijian_gallery = (GalleryFlow)
 		// homeView.findViewById(R.id.tuijian_gallery);
@@ -967,6 +946,7 @@ public class MainActivity extends SlidingFragmentActivity {
 			appHome = MarketApplication.getInstance().getHomeAppInfos();
 			appHomeInfos.addAll(appHome);
 			pHomeBar.setVisibility(View.INVISIBLE);
+			StringBuilder apknamelist = new StringBuilder();
 			for (AppInfo ai : appHomeInfos) {
 				DownStateBroadcast dsb = new DownStateBroadcast();
 				IntentFilter filter = new IntentFilter();
@@ -974,6 +954,47 @@ public class MainActivity extends SlidingFragmentActivity {
 						ai.getAppName()).getAbsolutePath();
 				filter.addAction(fileName + "down");
 				registerReceiver(dsb, filter);
+				apknamelist.append(ai.getPackageName() + ",");
+				try {
+					PackageManager pm = getPackageManager();
+					if (ai.isInstalled()) {
+						PackageInfo packInfo = pm.getPackageInfo(
+								ai.getPackageName(), 0);
+						String name = packInfo.versionName;
+						ai.setVersion(name);
+					} else {
+						ai.setVersion("9999999999999");
+					}
+
+				} catch (NameNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			String uris = apknamelist.toString();
+			if (uris.length() > 0) {
+				uris = uris.substring(0, uris.length() - 1);
+			}
+			/**
+			 * 检查应用是否能更新
+			 */
+			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+					+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
+			ParseUpdateJson(str);
+			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
+					appHomeInfos, appManagerUpdateInfos_t);
+			appManagerUpdateInfos.clear();
+			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+			LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
+			for (AppInfo appInfo : appManagerUpdateInfos) {
+				LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
+				for (AppInfo appManaInfo : appHomeInfos) {
+					if (appManaInfo.getPackageName().equals(
+							appInfo.getPackageName())) {
+						appManaInfo.setCanUpdate(true);
+						LogUtils.d("Main",
+								"我可以升级" + appManaInfo.getPackageName());
+					}
+				}
 			}
 		}
 	};
@@ -1194,19 +1215,12 @@ public class MainActivity extends SlidingFragmentActivity {
 				appInfo.setInstalled(AppUtils.isInstalled(appName));
 				tempList.add(appInfo);
 			}
-
-			ArrayList<AppInfo> appManagerUpdateInfos_1 = AppUtils
-					.getCanUpadateApp(appManagerInfos, tempList);
-			appManagerUpdateInfos.clear();
-			appManagerUpdateInfos.addAll(appManagerUpdateInfos_1);
-			homeUpdateHandler
-					.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
-			appGameAdapter.notifyDataSetChanged();
+			LogUtils.d("Mana", "temp:" + tempList.size());
+			appManagerUpdateInfos_t.clear();
+			appManagerUpdateInfos_t.addAll(tempList);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			// Log.e("tag", "error = " + ex.getMessage());
-			homeUpdateHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
-
 		}
 	}
 
@@ -1492,7 +1506,9 @@ public class MainActivity extends SlidingFragmentActivity {
 		}
 		sp.edit().putInt("day", mDay).commit();
 	}
-
+	
+			
+			
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -1568,6 +1584,7 @@ public class MainActivity extends SlidingFragmentActivity {
 									&& packageName.equals(mAppInfo
 											.getPackageName())) {
 								mAppInfo.setInstalled(true);
+								mAppInfo.setCanUpdate(false);
 								break;
 							}
 						}

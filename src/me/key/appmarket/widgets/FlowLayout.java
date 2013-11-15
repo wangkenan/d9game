@@ -1,7 +1,5 @@
 package me.key.appmarket.widgets;
 
-import com.market.d9game.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -9,6 +7,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.market.d9game.R;
 
 /**
  * 自定义 ViewGroup

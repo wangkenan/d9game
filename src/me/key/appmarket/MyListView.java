@@ -1,27 +1,17 @@
 ﻿package me.key.appmarket;
 
-import java.util.Date;
-
-import com.market.d9game.R;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class MyListView extends ListView implements OnScrollListener {
 

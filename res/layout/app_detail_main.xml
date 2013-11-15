@@ -144,23 +144,12 @@
 
                     <!-- 描述图片 -->
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="250dip"
-                        android:fadingEdge="none"
-                        android:paddingBottom="5dip"
-                        android:paddingLeft="10dip"
-                        android:paddingRight="10dip"
-                        android:paddingTop="5dip"
-                        android:scrollbars="@null" >
 
-                        <LinearLayout
+                        <me.key.appmarket.GalleryFlow
                             android:id="@+id/app_des_pic"
-                            android:layout_width="wrap_content"
+                            android:layout_width="fill_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal" >
-                        </LinearLayout>
-                    </HorizontalScrollView>
+                            android:orientation="horizontal" />
                     <!-- 版本、大小 -->
 
                     <LinearLayout

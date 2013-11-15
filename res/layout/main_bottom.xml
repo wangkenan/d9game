@@ -1,55 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/main_bottom_vs"
+    android:id="@+id/main_bottom_vs"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:inAnimation="@android:anim/slide_in_left"
     android:outAnimation="@android:anim/slide_out_right" >
- <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/welcome_d9" />
-    
 
-    <TabHost
-          android:id="@android:id/tabhost"
-         android:layout_width="fill_parent"
+   
+     <ImageView
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-        >
+    android:background="@drawable/welcome_d9" 
+    />
+   
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
+
             <FrameLayout
-                android:id="@android:id/tabcontent"
+                android:id="@+id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+            </FrameLayout>
+
+            <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginBottom="60dip" 
-                >
-            
-            </FrameLayout>
-    	<RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_above="@android:id/tabs"
-                    >
-                    <ImageView
-                        android:id="@+id/down_anim"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/down_draw" 
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentBottom="true"
-                        android:visibility="invisible"
-                        />
-                </RelativeLayout>
-            <TabWidget
-                android:id="@android:id/tabs"
+                android:layout_above="@android:id/tabs" >
+
+                <ImageView
+                    android:id="@+id/down_anim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/down_draw"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_main"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/main_tab_widget_bg" >
-            </TabWidget>
+
+                <TextView
+                    android:id="@+id/findgame"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/main_tab_recommand_icon_normal"
+                    android:gravity="center"
+                    android:text="找游戏"
+                    android:textColor="@color/white"
+                    android:textSize="8sp" />
+
+                <FrameLayout
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/main_tab_recommand_icon_bg" />
+
+                    <TextView
+                        android:id="@+id/localgame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawableTop="@drawable/main_tab_play_normal"
+                        android:gravity="center"
+                        android:text="找游戏"
+                        android:textColor="@color/white"
+                        android:textSize="8sp" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/rankgame"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/main_tab_recommand_icon_normal"
+                    android:gravity="center"
+                    android:text="找游戏"
+                    android:textColor="@color/white"
+                    android:textSize="8sp" />
+            </LinearLayout>
         </RelativeLayout>
-    </TabHost>
-    </ViewSwitcher>
+    </FrameLayout>
+
+</ViewSwitcher>

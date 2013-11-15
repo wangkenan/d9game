@@ -11,9 +11,6 @@ import me.key.appmarket.utils.Global;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.market.d9game.R;
-import com.umeng.analytics.MobclickAgent;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -29,12 +26,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 @SuppressLint("HandlerLeak")
 /**

@@ -14,8 +14,16 @@ public class AppInfo implements Serializable{
 	private String appDownCount;
 	private String id;
 	private Long lastTime;
+	private boolean canUpdate;
+	
 	public Long getLastTime() {
 		return lastTime;
+	}
+	public boolean isCanUpdate() {
+		return canUpdate;
+	}
+	public void setCanUpdate(boolean canUpdate) {
+		this.canUpdate = canUpdate;
 	}
 	public void setLastTime(Long lastTime) {
 		this.lastTime = lastTime;

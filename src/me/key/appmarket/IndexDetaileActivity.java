@@ -1,6 +1,7 @@
 package me.key.appmarket;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import me.key.appmarket.adapter.AppAdapter;
@@ -47,7 +48,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 	private ListView mListView;
 	private ProgressBar pBar;
 	private AppAdapter appAdapter;
-	private LinkedList<AppInfo> appDatainfos;
+	private ArrayList<AppInfo> appDatainfos;
 	private LinkedList<AppInfo> appDatainfos_temp;
 
 	private int type1 = 1;
@@ -123,7 +124,7 @@ public class IndexDetaileActivity extends Activity implements OnScrollListener {
 		// TODO Auto-generated method stub
 		mListView = (ListView) findViewById(R.id.mlist);
 		pBar = (ProgressBar) findViewById(R.id.pro_bar);
-		appDatainfos = new LinkedList<AppInfo>();
+		appDatainfos = new ArrayList<AppInfo>();
 		appDatainfos_temp = new LinkedList<AppInfo>();
 	
 		pBar.setVisibility(View.VISIBLE);

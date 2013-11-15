@@ -112,7 +112,10 @@ public class AsyncImageLoader {
 				HttpEntity httpEntity = httpResponse.getEntity();
 				// 获得一个输入流
 				InputStream is = httpEntity.getContent();
-				bitmap = BitmapFactory.decodeStream(is);
+				  BitmapFactory.Options options=new BitmapFactory.Options();
+				     options.inJustDecodeBounds = false;
+				     options.inSampleSize = 3;   //width，hight设为原来的十分一
+				     bitmap = BitmapFactory.decodeStream(is,null,options);
 				is.close();
 			}
 

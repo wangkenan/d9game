@@ -2,12 +2,6 @@ package me.key.appmarket.adapter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
-
-import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
@@ -24,6 +18,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class CategoryAdapter extends BaseAdapter {
 

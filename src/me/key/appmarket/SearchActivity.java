@@ -3,25 +3,19 @@ package me.key.appmarket;
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
-import me.key.appmarket.MainActivity.MyInstalledReceiver;
-import me.key.appmarket.MainActivity.PrecentReceiver;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.HotSearchAdapter;
+import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.HotSearchInfo;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.utils.ToastUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.market.d9game.R;
-import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -29,6 +23,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -51,9 +49,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * 搜索页
@@ -66,8 +66,10 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 	private TextView total_size;
 	private ListView mSearchListView;
-	private LinkedList<AppInfo> appSearchInfos;
-	private LinkedList<AppInfo> appSearchInfos_temp = new LinkedList<AppInfo>();
+	private ArrayList<AppInfo> appSearchInfos;
+	private ArrayList<AppInfo> appSearchInfos_temp = new ArrayList<AppInfo>();
+	private ArrayList<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
+	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private AppAdapter appSearchAdapter;
 	private ProgressBar searchBar;
 	private LinearLayout ll_searcherror;
@@ -119,6 +121,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 		this.registerReceiver(installedReceiver, filter);
 		new Thread(runHotData).start();
+		//添加下载状态广播，遗迹增添应用更新信息
+		
 	}
 
 	private void initSearchView() {
@@ -141,7 +145,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 		mSearchListView = (ListView) findViewById(R.id.list);
 		searchBar = (ProgressBar) findViewById(R.id.pro_bar);
-		appSearchInfos = new LinkedList<AppInfo>();
+		appSearchInfos = new ArrayList<AppInfo>();
 		ll_searcherror = (LinearLayout) findViewById(R.id.ll_error);
 
 		mHotSearchAdapter = new HotSearchAdapter(hotList, this, cache);
@@ -239,6 +243,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 					searchHandler
 							.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 				} else {
+					searchHandler
+					.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
 					Log.e("tag", "--------------ParseSearchJson 1-------------");
 					ParseSearchJson(str);
 				}
@@ -319,6 +325,57 @@ public class SearchActivity extends Activity implements OnClickListener {
 				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appSearchInfos_temp.add(appInfo);
 				Log.e("SearchActivity", "info = " + appInfo.toString());
+				
+			}
+			StringBuilder apknamelist = new StringBuilder();
+			for (AppInfo ai : appSearchInfos) {
+				DownStateBroadcast dsb = new DownStateBroadcast();
+				IntentFilter filter = new IntentFilter();
+				String fileName = DownloadService.CreatFileName(
+						ai.getAppName()).getAbsolutePath();
+				filter.addAction(fileName + "down");
+				registerReceiver(dsb, filter);
+				apknamelist.append(ai.getPackageName() + ",");
+				try {
+					PackageManager pm = getPackageManager();
+					if (ai.isInstalled()) {
+						PackageInfo packInfo = pm.getPackageInfo(
+								ai.getPackageName(), 0);
+						String name = packInfo.versionName;
+						ai.setVersion(name);
+					} else {
+						ai.setVersion("9999999999999");
+					}
+
+				} catch (NameNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+			String uris = apknamelist.toString();
+			if (uris.length() > 0) {
+				uris = uris.substring(0, uris.length() - 1);
+			}
+			/**
+			 * 检查应用是否能更新
+			 */
+			String strList = ToolHelper.donwLoadToString(Global.MAIN_URL
+					+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
+			ParseUpdateJson(strList);
+			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
+					appSearchInfos, appManagerUpdateInfos_t);
+			appManagerUpdateInfos.clear();
+			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+			LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
+			for (AppInfo appInfo : appManagerUpdateInfos) {
+				LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
+				for (AppInfo appManaInfo : appSearchInfos) {
+					if (appManaInfo.getPackageName().equals(
+							appInfo.getPackageName())) {
+						appManaInfo.setCanUpdate(true);
+						LogUtils.d("Main",
+								"我可以升级" + appManaInfo.getPackageName());
+					}
+				}
 			}
 			Log.e("tag", "--------------2--------");
 			if (totalCount == 0 || len == 0) {
@@ -461,7 +518,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 			appSearchInfos.clear();
 			appSearchAdapter.notifyDataSetChanged();
 			total_size.setText("找到0项符合的软件");
-
+		
 			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			inputMethodManager.hideSoftInputFromWindow(SearchActivity.this
 					.getCurrentFocus().getWindowToken(),
@@ -489,6 +546,16 @@ public class SearchActivity extends Activity implements OnClickListener {
 				Toast.makeText(getApplicationContext(), "输入关键字",
 						Toast.LENGTH_SHORT).show();
 			}
+			new AsyncTask<Void,Void, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					
+				
+					return null;
+				}
+				
+			}.execute();
 			break;
 		case R.id.loadMoreButton:
 			loadMoreButton.setText("正在加载中...");
@@ -623,6 +690,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 					if (packageName != null
 							&& packageName.equals(mAppInfo.getPackageName())) {
 						mAppInfo.setInstalled(true);
+						mAppInfo.setCanUpdate(false);
 						LogUtils.d("Search", "我接收到了安装"+packageName);
 						break;
 					}
@@ -632,5 +700,57 @@ public class SearchActivity extends Activity implements OnClickListener {
 			}
 		}
 	}
+	private void ParseUpdateJson(String str) {
+		try {
 
+			ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String idx = jsonObject.getString("idx");
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+
+				String appurl = jsonObject.getString("appurl");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
+
+				appInfo.setPackageName(jsonObject.getString("apppkgname"));
+				appInfo.setVersion(jsonObject.getString("version"));
+
+				appInfo.setInstalled(AppUtils.isInstalled(appName));
+				tempList.add(appInfo);
+			}
+			LogUtils.d("Mana", "temp:" + tempList.size());
+			appManagerUpdateInfos_t.clear();
+			appManagerUpdateInfos_t.addAll(tempList);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// Log.e("tag", "error = " + ex.getMessage());
+		}
+	}
+	class DownStateBroadcast extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("RankActivity", "我接受到了暂停广播");
+			for (AppInfo ai : appSearchInfos) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					appSearchAdapter.notifyDataSetChanged();
+					LogUtils.d("RankActivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
+					break;
+				}
+			}
+		}
+
+	}
 }

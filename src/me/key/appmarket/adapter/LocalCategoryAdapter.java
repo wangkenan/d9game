@@ -2,15 +2,11 @@ package me.key.appmarket.adapter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
-
-import com.market.d9game.R;
 
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.ImageNet.AsyncImageLoader.ImageCallback;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.CategoryInfo;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -21,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.market.d9game.R;
 
 public class LocalCategoryAdapter extends BaseAdapter {
 

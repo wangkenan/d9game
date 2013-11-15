@@ -3,8 +3,6 @@ package me.key.appmarket.adapter;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.market.d9game.R;
-
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.BannerInfo;
 import android.content.Context;
@@ -17,6 +15,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+
+import com.market.d9game.R;
 
 public class TuiJianImageAdapter extends BaseAdapter {
 	int mGalleryItemBackground;

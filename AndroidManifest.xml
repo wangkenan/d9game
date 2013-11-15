@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.market.d9game"
-    android:versionCode="10"
-    android:versionName="1.9" >
-
+    android:versionCode="11"
+    android:versionName="1.9.1" >
+ 
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
@@ -70,7 +70,7 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="me.key.appmarket.widgets.MyTableHost"
+            android:name="me.key.appmarket.MyFragmengManager"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -78,6 +78,7 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="me.key.appmarket.LocalGameActivity"
             android:screenOrientation="portrait" >
@@ -94,6 +95,17 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 	    android:name="me.key.appmarket.RankActivity" 
 	    android:screenOrientation="portrait"
 	    ></activity>
+	<activity android:name="me.key.appmarket.MianLiuActivity"
+	    android:screenOrientation="portrait"
+	    ></activity>
+	<activity android:name="me.key.appmarket.OneKeyInstallActivity"
+	     android:screenOrientation="portrait">
+	</activity>
+	<activity android:name="me.key.appmarket.NeceasyActivity"
+	     android:screenOrientation="portrait">
+	</activity>
+	
+	<activity android:name="me.key.appmarket.MyScoreActivity"  android:screenOrientation="portrait"></activity>
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="52540adc56240bc56426fecf" >

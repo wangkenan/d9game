@@ -1,41 +1,14 @@
 package me.key.appmarket;
 
-import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import me.key.appmarket.adapter.MyAdapter;
-import me.key.appmarket.tool.ToolHelper;
-import me.key.appmarket.tool.TxtReader;
 import me.key.appmarket.utils.AppInfo;
-import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.utils.ToastUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.market.d9game.R;
-import com.umeng.analytics.MobclickAgent;
-
 import android.app.Activity;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.media.MediaRouter.VolumeCallback;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.storage.StorageManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.market.d9game.R;
+import com.umeng.analytics.MobclickAgent;
 
 public class LocalIndexDetaileActivity extends Activity {
 	private String Root = "";
@@ -71,7 +46,8 @@ public class LocalIndexDetaileActivity extends Activity {
 		}*/
 		Root = LocalUtils.getRoot(this);
 //		InitHomePager();
-		List<AppInfo> mAppInfos = LocalUtils.InitHomePager(ItemId, this, Root);
+		List<PackageInfo> packages = LocalIndexDetaileActivity.this.getPackageManager().getInstalledPackages(0);
+		List<AppInfo> mAppInfos = LocalUtils.InitHomePager(ItemId, this, Root,packages);
 		mListReco = (ListView) this.findViewById(R.id.mlist);
 		TextView tv = (TextView) this.findViewById(R.id.wushju);
 		if(mAppInfos.size() == 0) {
