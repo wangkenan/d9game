@@ -43,8 +43,7 @@ public class AppUtils {
 
 	public static ArrayList<AppInfo> getUserApps(Context mContext,int mysize) {
 		ArrayList<PackageInfo> appList = new ArrayList<PackageInfo>(); // 用来存储获取的应用信息数据
-		List<PackageInfo> packages = mContext.getPackageManager()
-				.getInstalledPackages(0);
+		List<PackageInfo> packages = mContext.getPackageManager().getInstalledPackages(0);
 		LogUtils.d("AppUtil", "packagessize"+packages.size());
 		if(mysize > packages.size()) {
 			mysize = packages.size();

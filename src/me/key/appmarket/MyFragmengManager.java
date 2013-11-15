@@ -60,14 +60,16 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import android.widget.AdapterView.OnItemClickListener;
-
+/**
+ * 侧滑菜单按钮
+ * @author Administrator
+ *
+ */
 public class MyFragmengManager extends SlidingFragmentActivity implements
 		OnClickListener {
-	private LayoutInflater from;
 	private static final int RESETQUIT = 0;
 	private static final int INMAIN = 2;
 	private boolean mPreparedQuit = false;
-	private ImageView down_anim;
 	private ListView lv;
 	// 寻找游戏
 	private TextView findgame;
@@ -77,25 +79,9 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private TextView rankgame;
 	private MenuCategoryAdapter menuCategoryAdapter;
 	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
-	private View bottomView1;
-	private View bottomView2;
-	private View bottomView3;
-	private View bottomView4;
-	private View bottomView5;
-	private TabHost tabHost;
-	private Drawable findGame_normal;
-	private Drawable findGame_focue;
-	private Drawable local_focue;
-	private Drawable local_normal;
-	private Drawable manager_focue;
-	private Drawable manager_normal;
-	private int tadid = 1;
 	private SlidingMenu menu;
-	private TabWidget tw;
 	private DownStateBroadcast dsb;
 	private DownStateBroadcastRank dsbRank;
-	private int width;
-	private int height;
 	private FinalDb db;
 	// 本地sd卡地址
 	private String root;
@@ -134,6 +120,13 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private FragmentManager fm;
 	private LocalGameFragment lf;
 	private MainActivityFragment mf;
+	private FragmentTransaction fragmentTransaction;
+	private Drawable findGame_normal;
+	private Drawable findGame_focue;
+	private Drawable local_focue;
+	private Drawable local_normal;
+	private Drawable manager_focue;
+	private Drawable manager_normal;
 
 	@Override
 	public void onCreate(Bundle arg0) {
@@ -155,6 +148,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		findgame = (TextView) findViewById(R.id.findgame);
 		localgame = (TextView) findViewById(R.id.localgame);
 		rankgame = (TextView) findViewById(R.id.rankgame);
+		rankgame.setText("排行");
 		findgame.setOnClickListener(this);
 		localgame.setOnClickListener(this);
 		rankgame.setOnClickListener(this);
@@ -169,70 +163,22 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		ft.commit();
 		// 获取sd卡地址
 		root = LocalUtils.getRoot(this);
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+		fragmentTransaction = getSupportFragmentManager()
 				.beginTransaction();
-		final MenuFragment menuFragment = new MenuFragment();
-		fragmentTransaction.replace(R.id.slide_content, menuFragment);
-		// fragmentTransaction.replace(R.id.content, new ContentFragment());
-		fragmentTransaction.commit();
-		startService(new Intent(this, DownloadService.class));
-		LogUtils.d("Main", "我已经被加载了哟");
-		lv = (ListView) findViewById(R.id.category_lv);
-		LogUtils.d("Main", lv + "");
-		/*
-		 * ImageButton search_btn = (ImageButton) findViewById(R.id.search_btn);
-		 * search_btn.setOnClickListener(new OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { menu.toggle(); } });
-		 */
-		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
-		IntentFilter filter = new IntentFilter();
-
-		filter.addAction("android.intent.action.PACKAGE_ADDED");
-		filter.addDataScheme("package");
-		this.registerReceiver(installedReceiver, filter);
-		LogUtils.d("Main1", menuCategoryAdapter + "");
-		menu = getSlidingMenu();
-		menu.setMode(SlidingMenu.RIGHT);
-		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		/*
-		 * menu.setShadowWidthRes(R.dimen.shadow_width);
-		 * menu.setShadowDrawable(R.drawable.shadow);
-		 */
-		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		menu.setFadeDegree(0.35f);
-		menu.setOnCloseListener(new OnCloseListener() {
-
-			@Override
-			public void onClose() {
-				LogUtils.d("Main", "close");
-			}
-		});
-		menu.setOnOpenedListener(new OnOpenedListener() {
-
-			@Override
-			public void onOpened() {
-				LogUtils.d("Main", "open");
-				/*
-				 * Intent intent = new Intent(); intent.setAction("open.menu");
-				 * sendBroadcast(intent);
-				 */
-			}
-		});
-		LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
-		etSeacher.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-				intent.setClass(MyFragmengManager.this, SearchActivity.class);
-				startActivity(intent);
-				LogUtils.d("MAIN", "动画前");
-				MyFragmengManager.this.overridePendingTransition(
-						R.anim.left_anim, R.anim.right_anim);
-				LogUtils.d("MAIN", "动画后");
-			}
-		});
+		findGame_normal = getResources().getDrawable(
+				R.drawable.main_tab_recommand_icon_normal);
+		findGame_focue = getResources().getDrawable(
+				R.drawable.main_tab_recommand_icon_selected);
+		local_focue = getResources().getDrawable(
+				R.drawable.main_tab_play_selected);
+		local_normal = getResources().getDrawable(
+				R.drawable.main_tab_play_normal);
+		manager_focue = getResources().getDrawable(
+				R.drawable.main_tab_top_icon_selected);
+		manager_normal = getResources().getDrawable(
+				R.drawable.main_tab_top_icon_normal);
+		localgame.setCompoundDrawablesWithIntrinsicBounds(null, local_focue, null,
+				null);
 		// 预加载内容
 		new AsyncTask<Void, Void, Void>() {
 
@@ -304,6 +250,68 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					filter.addAction(fileName + "down");
 					registerReceiver(dsbRank, filter);
 				}
+				final MenuFragment menuFragment = new MenuFragment();
+				fragmentTransaction.replace(R.id.slide_content, menuFragment);
+				// fragmentTransaction.replace(R.id.content, new ContentFragment());
+				fragmentTransaction.commit();
+			
+				LogUtils.d("Main", "我已经被加载了哟");
+				lv = (ListView) findViewById(R.id.category_lv);
+				LogUtils.d("Main", lv + "");
+				/*
+				 * ImageButton search_btn = (ImageButton) findViewById(R.id.search_btn);
+				 * search_btn.setOnClickListener(new OnClickListener() {
+				 * 
+				 * @Override public void onClick(View v) { menu.toggle(); } });
+				 */
+				MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+				IntentFilter filter = new IntentFilter();
+
+				filter.addAction("android.intent.action.PACKAGE_ADDED");
+				filter.addDataScheme("package");
+				registerReceiver(installedReceiver, filter);
+				LogUtils.d("Main1", menuCategoryAdapter + "");
+				menu = getSlidingMenu();
+				menu.setMode(SlidingMenu.RIGHT);
+				menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+				/*
+				 * menu.setShadowWidthRes(R.dimen.shadow_width);
+				 * menu.setShadowDrawable(R.drawable.shadow);
+				 */
+				menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+				menu.setFadeDegree(0.35f);
+				menu.setOnCloseListener(new OnCloseListener() {
+
+					@Override
+					public void onClose() {
+						LogUtils.d("Main", "close");
+					}
+				});
+				menu.setOnOpenedListener(new OnOpenedListener() {
+
+					@Override
+					public void onOpened() {
+						LogUtils.d("Main", "open");
+						/*
+						 * Intent intent = new Intent(); intent.setAction("open.menu");
+						 * sendBroadcast(intent);
+						 */
+					}
+				});
+				LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
+				etSeacher.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.setClass(MyFragmengManager.this, SearchActivity.class);
+						startActivity(intent);
+						LogUtils.d("MAIN", "动画前");
+						MyFragmengManager.this.overridePendingTransition(
+								R.anim.left_anim, R.anim.right_anim);
+						LogUtils.d("MAIN", "动画后");
+					}
+				});
 				menuCategoryAdapter = new MenuCategoryAdapter(
 						MyFragmengManager.this, gcategoryInfoList_temp, lv);
 				lv.setAdapter(menuCategoryAdapter);
@@ -345,7 +353,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			};
 
 		}.execute();
-
+		
 	}
 
 	// 解析Rank
@@ -556,18 +564,34 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.findgame:
-
 			FragmentTransaction ft = fm.beginTransaction();
 			ft.replace(R.id.tabcontent, mf);
 			ft.commit();
+			findgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					findGame_focue, null, null);
+			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					local_normal, null, null);
+			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					manager_normal, null, null);
 			break;
 		case R.id.localgame:
-
+			findgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					findGame_normal, null, null);
+			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					local_focue, null, null);
+			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					manager_normal, null, null);
 			FragmentTransaction ft2 = fm.beginTransaction();
 			ft2.replace(R.id.tabcontent, lf);
 			ft2.commit();
 			break;
 		case R.id.rankgame:
+			findgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					findGame_normal, null, null);
+			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					local_normal, null, null);
+			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					manager_focue, null, null);
 			FragmentTransaction ft1 = fm.beginTransaction();
 			ft1.replace(R.id.tabcontent, f1);
 			ft1.commit();

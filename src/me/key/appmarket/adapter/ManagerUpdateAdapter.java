@@ -178,7 +178,7 @@ public class ManagerUpdateAdapter extends BaseAdapter {
 
 		}
 	 if (appInfos.get(position).isDown()) {
-		
+		 
 			viewHolder.progress_view.setProgress(DownloadService
 					.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");

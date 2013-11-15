@@ -36,6 +36,14 @@
             android:layout_marginRight="10dip"
             android:background="@null"
             android:src="@drawable/search_selector" />
+         <ImageButton
+       	      android:id="@+id/setting"
+       	      android:layout_width="35dip"
+       	      android:layout_height="35dip"
+       	      android:layout_alignTop="@+id/search_btn"
+       	      android:layout_toLeftOf="@+id/search_btn"
+       	      android:background="@null"
+       	      android:src="@drawable/main_menu_settings_icon" />
     </RelativeLayout>
 
     <ListView
@@ -51,77 +59,6 @@
     android:layout_height="wrap_content" 
     android:layout_marginLeft="5dip"
     />
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="105dip"
-        android:layout_margin="5dip"
-        android:orientation="horizontal" >
-
-        <FrameLayout
-            android:layout_width="0dip"
-            android:layout_height="105dip"
-            android:layout_weight="1" >
-
-            <ImageView
-                android:id="@+id/onkey_localapplist"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/red" />
-
-            <TextView
-                android:id="@+id/onkey_text"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:text="一键安装" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:layout_width="0dip"
-            android:layout_height="105dip"
-            android:layout_marginLeft="5dip"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dip" >
-
-                <ImageView
-                     android:id="@+id/onkey_mianliu"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@color/blue" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center"
-                     android:textColor="@color/white"
-                    android:text="免流专区" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="fill_parent"
-                android:layout_height="50dip"
-                android:layout_marginTop="5dip" >
-
-                <ImageView
-                    android:id="@+id/onkey_myjifen"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@color/green_light" />
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                     android:textColor="@color/white"
-                    android:gravity="center"
-                    android:text="我的积分" />
-            </FrameLayout>
-        </LinearLayout>
-    </LinearLayout>
     <!-- 我的游戏 内置游戏 -->
 	<LinearLayout
         android:id="@+id/mygamebar"

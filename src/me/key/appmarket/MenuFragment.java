@@ -14,6 +14,7 @@ import me.key.appmarket.utils.LogUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class MenuFragment extends Fragment {
 	private int type = 2;
 	private AsyncTask<Void, Void, Void> at;
 	private ArrayList<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
-
+	private Context context;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,6 +75,7 @@ public class MenuFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 		classLv = (ListView) view.findViewById(R.id.clasifys_lv);
 		MarketApplication.getInstance().getAppLication().add(getActivity());
+		context = getActivity().getApplicationContext();
 		new AsyncTask<Void, Void, Void>() {
 
 			@Override
@@ -209,8 +211,7 @@ public class MenuFragment extends Fragment {
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
 				LogUtils.d("Menu", list.size() + "sss");
-				cAdapter = new ClassifyAdapter(getActivity()
-						.getApplicationContext(), list);
+				cAdapter = new ClassifyAdapter(context, list);
 				classLv.setAdapter(cAdapter);
 				classLv.setOnItemClickListener(new OnItemClickListener() {
 

@@ -148,10 +148,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		 * intent.putExtra("appid", 15603+""); startActivity(intent); } });
 		 */
 		pBar = (ProgressBar) inflate.findViewById(R.id.pro_bar_loacl);
-		onkey_localapplist = (ImageView) inflate.findViewById(R.id.onkey_localapplist);
-		onkey_myjifen = (ImageView)inflate.findViewById(R.id.onkey_myjifen);
-		onkey_mianliu = (ImageView) inflate.findViewById(R.id.onkey_mianliu);
-		onkey_text = (TextView) inflate.findViewById(R.id.onkey_text);
 		root = LocalUtils.getRoot(getActivity());
 		pBar.setVisibility(View.VISIBLE);
 		mygamebar = (LinearLayout) inflate.findViewById(R.id.mygamebar);
@@ -176,9 +172,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 
 		mygame.setOnClickListener(this);
 		sdgame.setOnClickListener(this);
-		onkey_localapplist.setOnClickListener(this);
-		onkey_myjifen.setOnClickListener(this);
-		onkey_mianliu.setOnClickListener(this);
 		LogUtils.d("Local", width + "Local");
 		new AsyncTask<Void, Void, Void>() {
 
@@ -545,30 +538,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 			sdgame.setBackgroundResource(R.drawable.btn_bar_2);
 			// sdgame.setPadding(40, 0, 40, 0);
 			mygame.setBackgroundResource(0);
-			break;
-		case R.id.onkey_localapplist:
-			SharedPreferences sp = getActivity().getSharedPreferences("onkey", getActivity().MODE_PRIVATE);
-			boolean onkey = sp.getBoolean("onkey", false);
-			if (!onkey) {
-				Intent intent = new Intent();
-				intent.setClass(getActivity(), OneKeyInstallActivity.class);
-				startActivity(intent);
-			} else {
-				onkey_text.setText("装机必备");
-				Intent mlintent = new Intent();
-				mlintent.setClass(getActivity(), NeceasyActivity.class);
-				startActivity(mlintent);
-			}
-			break;
-		case R.id.onkey_myjifen:
-			Intent msintent = new Intent();
-			msintent.setClass(getActivity(), MyScoreActivity.class);
-			startActivity(msintent);
-			break;
-		case R.id.onkey_mianliu:
-			Intent mlintent = new Intent();
-			mlintent.setClass(getActivity(), MianLiuActivity.class);
-			startActivity(mlintent);
 			break;
 		}
 	}

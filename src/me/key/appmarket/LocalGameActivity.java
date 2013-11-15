@@ -159,10 +159,6 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 		 * intent.putExtra("appid", 15603+""); startActivity(intent); } });
 		 */
 		pBar = (ProgressBar) findViewById(R.id.pro_bar_loacl);
-		onkey_localapplist = (ImageView) findViewById(R.id.onkey_localapplist);
-		onkey_myjifen = (ImageView) findViewById(R.id.onkey_myjifen);
-		onkey_mianliu = (ImageView) findViewById(R.id.onkey_mianliu);
-		onkey_text = (TextView) findViewById(R.id.onkey_text);
 		root = LocalUtils.getRoot(this);
 		pBar.setVisibility(View.VISIBLE);
 		mygamebar = (LinearLayout) findViewById(R.id.mygamebar);
@@ -878,30 +874,6 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 			sdgame.setBackgroundResource(R.drawable.btn_bar_2);
 			// sdgame.setPadding(40, 0, 40, 0);
 			mygame.setBackgroundResource(0);
-			break;
-		case R.id.onkey_localapplist:
-			SharedPreferences sp = getSharedPreferences("onkey", MODE_PRIVATE);
-			boolean onkey = sp.getBoolean("onkey", false);
-			if(!onkey) {
-				Intent intent = new Intent();
-				intent.setClass(this, OneKeyInstallActivity.class);
-				startActivity(intent);
-			} else {
-				onkey_text.setText("装机必备");
-				Intent mlintent = new Intent();
-				mlintent.setClass(this, NeceasyActivity.class); 
-				startActivity(mlintent);
-			}
-			break;
-		case R.id.onkey_myjifen :
-			Intent msintent = new Intent();
-			msintent.setClass(this, MyScoreActivity.class); 
-			startActivity(msintent);
-			break;
-		case R.id.onkey_mianliu :
-			Intent mlintent = new Intent();
-			mlintent.setClass(this, MianLiuActivity.class); 
-			startActivity(mlintent);
 			break;
 		}
 	}

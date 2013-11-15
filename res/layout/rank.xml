@@ -26,8 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5sp"
-            android:text="@string/app_name" />
-        
+            android:text="@string/app_name" /> 
        	  <ImageButton
             android:id="@+id/search_btn"
             android:layout_width="35dip"
@@ -36,7 +35,17 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dip"
             android:background="@null"
-            android:src="@drawable/search_selector" /> 
+            android:src="@drawable/search_selector" />
+
+       	  <ImageButton
+       	      android:id="@+id/setting"
+       	      android:layout_width="35dip"
+       	      android:layout_height="35dip"
+       	      android:layout_alignTop="@+id/search_btn"
+       	      android:layout_toLeftOf="@+id/search_btn"
+       	      android:background="@null"
+       	      android:src="@drawable/main_menu_settings_icon" />
+ 
     </RelativeLayout>
      <FrameLayout
       android:layout_width="fill_parent"

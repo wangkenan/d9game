@@ -37,6 +37,14 @@
             android:layout_marginRight="10dip"
             android:background="@null"
             android:src="@drawable/search_selector" /> 
+             <ImageButton
+       	      android:id="@+id/setting"
+       	      android:layout_width="35dip"
+       	      android:layout_height="35dip"
+       	      android:layout_alignTop="@+id/search_btn"
+       	      android:layout_toLeftOf="@+id/search_btn"
+       	      android:background="@null"
+       	      android:src="@drawable/main_menu_settings_icon" />
     </RelativeLayout>
 
     <!-- <LinearLayout

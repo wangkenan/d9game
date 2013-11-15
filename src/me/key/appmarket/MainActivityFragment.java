@@ -152,6 +152,7 @@ public class MainActivityFragment extends Fragment {
 	public static List<Activity> activities = new ArrayList<Activity>();
 	private ListView lv;
 	private View inflate;
+	private Context context;
 	// app
 
 	File cache;
@@ -189,6 +190,7 @@ public class MainActivityFragment extends Fragment {
 	};
 	public void onActivityCreated(android.os.Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		context = getActivity();
 		// 自动升级，不能删
 				updateSelf(true);
 				InitViewPager();
@@ -364,7 +366,7 @@ public class MainActivityFragment extends Fragment {
 
 				// 刷新管理界面
 				appManagerInfos.clear();
-				ArrayList<AppInfo> appManagerInfos1 = AppUtils.getUserApps(getActivity()
+				ArrayList<AppInfo> appManagerInfos1 = AppUtils.getUserApps(context
 						, 4000);
 				appManagerInfos.addAll(appManagerInfos1);
 				appManagerInfos1.clear();

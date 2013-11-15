@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:drawableTop="@drawable/main_tab_recommand_icon_normal"
+                    android:drawableTop="@drawable/main_tab_top_icon_normal"
                     android:gravity="center"
                     android:text="找游戏"
                     android:textColor="@color/white"
