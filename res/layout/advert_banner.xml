@@ -6,7 +6,7 @@
     android:layout_marginTop="6dip"
     android:orientation="horizontal" >
 
-    <ImageView
+    <me.key.appmarket.widgets.RoundImageView
         android:id="@+id/iv_advert1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:layout_marginLeft="4dip"
         android:adjustViewBounds="true" />
 
-    <ImageView
+    <me.key.appmarket.widgets.RoundImageView
         android:id="@+id/iv_advert2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         android:layout_marginRight="4dip"
         android:adjustViewBounds="true" />
 
-    <ImageView
+    <me.key.appmarket.widgets.RoundImageView
         android:id="@+id/iv_advert3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
