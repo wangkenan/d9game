@@ -2,48 +2,101 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/local_background"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/topbar"
-        style="@style/topbar" >
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:background="@drawable/title_shape"
+        android:padding="2dip" >
 
-        <ImageView
-            android:id="@+id/logo_title"
-            android:layout_width="35dip"
-            android:layout_height="35dip"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="6sp"
-            android:src="@drawable/icon" />
-
-        <TextView
-            android:id="@+id/topbar_title"
-            style="@style/topbar_title"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5sp"
-            android:layout_toRightOf="@+id/logo_title"
-            android:text="@string/app_name" />
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/search_btn" >
+
+            <ImageView
+                android:id="@+id/updata_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/update" />
+
+            <TextView
+                android:id="@+id/updata_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1dip"
+                android:text="39"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/setting"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/search_btn"
+            android:layout_marginRight="10dip"
+            android:background="@null"
+            android:src="@drawable/right_btn" />
 
         <ImageButton
             android:id="@+id/search_btn"
             android:layout_width="35dip"
             android:layout_height="35dip"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dip"
+            android:layout_marginLeft="10dip"
             android:background="@null"
-            android:src="@drawable/search_selector" />
-         <ImageButton
-       	      android:id="@+id/setting"
-       	      android:layout_width="35dip"
-       	      android:layout_height="35dip"
-       	      android:layout_alignTop="@+id/search_btn"
-       	      android:layout_toLeftOf="@+id/search_btn"
-       	      android:background="@null"
-       	      android:src="@drawable/main_menu_settings_icon" />
+            android:src="@drawable/left_btn" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/search_btn"
+            android:background="@drawable/v_driver" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="80dip"
+            android:layout_height="30dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/imageView1"
+            android:src="@drawable/log" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="游戏盒子"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignTop="@+id/imageView1"
+            android:layout_marginRight="10dip"
+            android:layout_toLeftOf="@+id/setting"
+            android:background="@drawable/v_driver" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:layout_alignBottom="@+id/imageView1"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="2dip"
+            android:src="@drawable/diveri" />
     </RelativeLayout>
 
     <ListView
@@ -53,44 +106,13 @@
         android:visibility="gone" >
     </ListView>
     <!-- 一键安装等截面 -->
-<ImageView
-    android:id="@+id/banner_local"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" 
-    android:layout_marginLeft="5dip"
-    />
-    <!-- 我的游戏 内置游戏 -->
-	<LinearLayout
-        android:id="@+id/mygamebar"
-        android:layout_width="fill_parent"
-        android:layout_height="30dip"
-        android:orientation="horizontal"
-        android:layout_margin="5dip"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:background="@drawable/btn_bar_1" >
-        <Button 
-            android:id="@+id/mygame"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/btn_bar_2"
-            android:text="我的游戏"
-            />
-        <Button
-            android:id="@+id/sdgame" 
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-             android:layout_weight="1"
-            android:background="@null"
-            android:text="安装游戏"
-            />
-    </LinearLayout>
+
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@id/topbar" >
-
+	
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
@@ -103,12 +125,18 @@
                 android:layout_centerInParent="true" />
         </RelativeLayout>
 
-        <ListView
-            android:id="@+id/mlist"
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:listSelector="@drawable/list_item_selector" >
-        </ListView>
+            android:layout_height="fill_parent" >
+
+            <ListView
+                android:id="@+id/mlist"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:listSelector="@drawable/list_item_selector"
+                android:scrollbars="none" >
+            </ListView>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/wushju"
@@ -117,6 +145,9 @@
             android:layout_gravity="center"
             android:text="暂无数据ß"
             android:visibility="gone" />
+        <include
+	    layout="@layout/tab_localgame" 
+	    />
     </FrameLayout>
 
 </LinearLayout>
