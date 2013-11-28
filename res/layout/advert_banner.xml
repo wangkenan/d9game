@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="6dip"
+    android:layout_marginTop="6dip"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/iv_advert1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/advert1"
+        android:layout_weight="1"
+        android:layout_marginLeft="4dip"
+        android:adjustViewBounds="true" />
+
+    <ImageView
+        android:id="@+id/iv_advert2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/advert2"
+        android:layout_weight="1"
+        android:layout_marginLeft="4dip"
+        android:layout_marginRight="4dip"
+        android:adjustViewBounds="true" />
+
+    <ImageView
+        android:id="@+id/iv_advert3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/advert3"
+        android:layout_weight="1"
+        android:layout_marginRight="4dip"
+        android:adjustViewBounds="true" />
+
+</LinearLayout>
