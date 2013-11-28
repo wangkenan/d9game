@@ -99,8 +99,6 @@ public class MenuFragment extends Fragment {
 			@Override
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
-				LogUtils.d("Menu", list.size() + "sss");
-				
 				cAdapter = new ClassifyAdapter(getActivity().getApplicationContext(), list);
 				classLv.setAdapter(cAdapter);
 				classLv.setOnItemClickListener(new OnItemClickListener() {
@@ -167,13 +165,14 @@ public class MenuFragment extends Fragment {
 			for (int i = 0; i < len; i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String appName = jsonObject.getString("appname");
+				String apppkgname = jsonObject.getString("apppkgname");
 				String appiconurl = jsonObject.getString("appiconurl");
 				String appSize = jsonObject.getString("appsize");
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
-				appInfo.setInstalled(AppUtils.isInstalled(appName));
+						Global.MAIN_URL + appiconurl, appurl, "", "", apppkgname);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				list_temp.add(appInfo);
 				// appDatainfos_temp.add(appInfo);
 			}

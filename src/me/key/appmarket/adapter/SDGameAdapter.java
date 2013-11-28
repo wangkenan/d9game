@@ -1,12 +1,19 @@
 package me.key.appmarket.adapter;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
+import me.key.appmarket.utils.Info;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.PingYinUtil;
+import me.key.appmarket.utils.PinyinComparator;
 import me.key.appmarket.widgets.ProgressView;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.market.d9game.R;
@@ -31,10 +39,11 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
  * @author Administrator
  *
  */
-public class SDGameAdapter extends BaseAdapter {
+public class SDGameAdapter extends BaseAdapter{
 	private LayoutInflater mInflater;
 	private List<AppInfo> mData;
 	private Context context;
+	public static String[] mNicks;
 	//sd卡目录
 	private String ROOT;
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -43,12 +52,21 @@ public class SDGameAdapter extends BaseAdapter {
 	.delayBeforeLoading(100).cacheInMemory(true).cacheOnDisc(true)
 	.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 	.bitmapConfig(Bitmap.Config.RGB_565).build();
-	
+	private Map<String, Info> m = new HashMap<String, Info>();
 	public SDGameAdapter(Context context,List<AppInfo> mData){
 		this.context = context;
 		this.mData = mData;
 		this.mInflater = LayoutInflater.from(context);
 		ROOT = LocalUtils.getRoot(context);
+	/*	this.m = s;
+		if (m != null)
+		{
+			Set<String> set = m.keySet();
+			mNicks = new String[set.size()];
+			set.toArray(mNicks);
+		}
+		// 排序(实现了中英文混排)
+		Arrays.sort(mNicks, new PinyinComparator()); */
 	}
 	@Override
 	public int getCount() {
@@ -137,4 +155,27 @@ public class SDGameAdapter extends BaseAdapter {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		this.context.startActivity(intent);
 	}
+/*	@Override
+	public Object[] getSections() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int getPositionForSection(int section) {
+		for (int i = 0; i < mNicks.length; i++)
+		{
+			String l = PingYinUtil.converterToFirstSpell(mNicks[i]).substring(0, 1);
+			char firstChar = l.toUpperCase().charAt(0);
+			if (firstChar == section)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+	@Override
+	public int getSectionForPosition(int position) {
+		// TODO Auto-generated method stub
+		return 0;
+	}*/
 }

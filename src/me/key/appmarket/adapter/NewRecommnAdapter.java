@@ -131,17 +131,12 @@ public class NewRecommnAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return appInfos.size() + 1;
+		return appInfos.size();
 	}
 
 	@Override
 	public Object getItem(int arg0) {
-		// TODO Auto-generated method stub
-		if (arg0 != 0) {
-			return appInfos.get(arg0 - 1);
-		} else {
-			return null;
-		}
+			return appInfos.get(arg0);
 	}
 
 	@Override
@@ -153,16 +148,12 @@ public class NewRecommnAdapter extends BaseAdapter {
 	@Override
 	public int getItemViewType(int position) {
 
-		if (position == 0) {
-			return TYPE_3;
-		} else {
-			int type = (position - 1) % 3;
+			int type = (position ) % 3;
 			if (type == 0) {
 				return TYPE_1;
 			} else {
 				return TYPE_2;
 			}
-		}
 	}
 
 	@Override
@@ -212,17 +203,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 						.findViewById(R.id.progress_view2);
 				convertvView.setTag(viewHolder);
 				break;
-			case TYPE_3:
-				viewHolder3 = new ViewHolder3();
-				convertvView = lay.inflate(R.layout.item_banner, null);
-				viewHolder3.banner = (ImageView) convertvView
-						.findViewById(R.id.banner);
-				LayoutParams par11 = viewHolder3.banner.getLayoutParams();
-				par11.height = (width - gapPy) / 4;
-				par11.width = width - gapPy;
-				viewHolder3.banner.setLayoutParams(par11);
-				convertvView.setTag(viewHolder3);
-				break;
 			}
 
 		} else {
@@ -234,14 +214,11 @@ public class NewRecommnAdapter extends BaseAdapter {
 			case TYPE_2:
 				viewHolder = (ViewHolder) convertvView.getTag();
 				break;
-			case TYPE_3:
-				viewHolder3 = (ViewHolder3) convertvView.getTag();
-				break;
 			}
 		}
 		switch (type) {
 		case TYPE_1:
-			final int newposition = position - 1;
+			final int newposition = position;
 			sdappInfo = appInfos.get(newposition);
 			AppInfo findApp = db
 					.findById(sdappInfo.getAppName(), AppInfo.class);
@@ -287,7 +264,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 			break;
 
 		case TYPE_2:
-			final int newposition2 = position - 1;
+			final int newposition2 = position;
 			sdappInfo = appInfos.get(newposition2);
 			AppInfo findApp1 = db.findById(sdappInfo.getAppName(),
 					AppInfo.class);
@@ -303,10 +280,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 			ImageLoader.getInstance().displayImage(sdappInfo.getIconUrl(),
 					v1.icon, options);
 			setDownState(newposition2, v1);
-			break;
-		case TYPE_3:
-			final ViewHolder3 v3 = ((ViewHolder3) convertvView.getTag());
-			setImagePosition(R.drawable.banner, v3.banner);
 			break;
 		}
 

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.market.d9game"
-    android:versionCode="11"
-    android:versionName="1.9.1" >
- 
+    android:versionCode="12"
+    android:versionName="1.9.2" >
+
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
-<permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/>	
+
+    <permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+
     <uses-permission android:name="androd.permission.INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -22,10 +24,10 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-   <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER"/> 
-<uses-permission 
-android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-<uses-permission android:name="android.permission.GET_TASKS"/> 
+    <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
     <application
         android:name="me.key.appmarket.MarketApplication"
         android:allowBackup="true"
@@ -47,7 +49,8 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
             android:name="me.key.appmarket.AppDetailActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="me.key.appmarket.BannerActivity"></activity>
+        <activity android:name="me.key.appmarket.BannerActivity" >
+        </activity>
         <activity
             android:name="me.key.appmarket.IndexDetaileActivity"
             android:screenOrientation="portrait" >
@@ -58,8 +61,7 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
         </activity>
         <activity
             android:name="me.key.appmarket.SearchActivity"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="me.key.appmarket.RecoTagsActivity"
@@ -67,6 +69,10 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
         </activity>
         <activity
             android:name="me.key.appmarket.LocalIndexDetaileActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="me.key.appmarket.DownLoadManagerActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
@@ -78,7 +84,6 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
         <activity
             android:name="me.key.appmarket.LocalGameActivity"
             android:screenOrientation="portrait" >
@@ -87,25 +92,31 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
             android:name="me.key.appmarket.ManagerActivity"
             android:screenOrientation="portrait" >
         </activity>
-	<activity
-	    android:name="me.key.appmarket.NotifyActivity" 
-	    android:theme="@android:style/Theme.Dialog"
-	    ></activity>
-	<activity
-	    android:name="me.key.appmarket.RankActivity" 
-	    android:screenOrientation="portrait"
-	    ></activity>
-	<activity android:name="me.key.appmarket.MianLiuActivity"
-	    android:screenOrientation="portrait"
-	    ></activity>
-	<activity android:name="me.key.appmarket.OneKeyInstallActivity"
-	     android:screenOrientation="portrait">
-	</activity>
-	<activity android:name="me.key.appmarket.NeceasyActivity"
-	     android:screenOrientation="portrait">
-	</activity>
-	
-	<activity android:name="me.key.appmarket.MyScoreActivity"  android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="me.key.appmarket.NotifyActivity"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="me.key.appmarket.RankActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="me.key.appmarket.MianLiuActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="me.key.appmarket.OneKeyInstallActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="me.key.appmarket.NeceasyActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="me.key.appmarket.MyScoreActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="52540adc56240bc56426fecf" >
@@ -116,6 +127,7 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
         <!-- push service client -->
         <receiver android:name="me.key.appmarket.widgets.PushMessageReceiver" >
             <intent-filter>
+
                 <!-- 接收 push消息 -->
                 <action android:name="com.baidu.android.pushservice.action.MESSAGE" />
                 <!-- 接收 bind、setTags等method 的返回结果 -->
@@ -139,7 +151,7 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
         <!-- Push服务接收客户端发送的各种请求 -->
         <!--
 注意：RegistrationReceiver 在 2.1.1及之前版本有拼写失误，为RegistratonReceiver ，用新
-版本SDK时请更改为如下代码
+版本SDK时请更改为如下代码
         -->
         <receiver
             android:name="com.baidu.android.pushservice.RegistrationReceiver"
@@ -159,21 +171,19 @@ android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
             android:name="com.baidu.android.pushservice.PushService"
             android:exported="true"
             android:process=":bdservice_v1" />
-        <!-- push service rich media display --> 
-  
- 
- 
-<activity             
-android:name="com.baidu.android.pushservice.richmedia.MediaViewActivity" 
-android:configChanges="orientation|keyboardHidden" 
-android:label="MediaViewActivity" > 
-</activity> 
-<activity   
-android:name="com.baidu.android.pushservice.richmedia.MediaListActivity" 
-android:configChanges="orientation|keyboardHidden" 
-android:label="MediaListActivity" 
-android:launchMode="singleTask" > 
-</activity>
+        <!-- push service rich media display -->
+
+        <activity
+            android:name="com.baidu.android.pushservice.richmedia.MediaViewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="MediaViewActivity" >
+        </activity>
+        <activity
+            android:name="com.baidu.android.pushservice.richmedia.MediaListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="MediaListActivity"
+            android:launchMode="singleTask" >
+        </activity>
     </application>
 
 </manifest>

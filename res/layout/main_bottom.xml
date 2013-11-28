@@ -7,11 +7,11 @@
     android:outAnimation="@android:anim/slide_out_right" >
 
    
-     <ImageView
+       <ImageView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/welcome_d9" 
-    />
+    /> 
    
 
     <FrameLayout
@@ -25,13 +25,15 @@
             <FrameLayout
                 android:id="@+id/tabcontent"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
+                android:layout_height="fill_parent"
+                >
             </FrameLayout>
 
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_above="@android:id/tabs" >
+                android:layout_above="@android:id/tabs" 
+                >
 
                 <ImageView
                     android:id="@+id/down_anim"
@@ -44,11 +46,12 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/bottom_main"
+                android:id="@id/bottom_main"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="68dip"
                 android:layout_alignParentBottom="true"
-                android:background="@drawable/main_tab_widget_bg" >
+                android:background="@drawable/buttom"
+                >
 
                 <TextView
                     android:id="@+id/findgame"
@@ -63,15 +66,12 @@
                     android:textSize="8sp" />
 
                 <FrameLayout
+                     android:id="@+id/localgame_click"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1" >
 
-                    <ImageView
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:background="@drawable/main_tab_recommand_icon_bg" />
 
                     <TextView
                         android:id="@+id/localgame"
@@ -80,7 +80,7 @@
                         android:layout_gravity="center"
                         android:drawableTop="@drawable/main_tab_play_normal"
                         android:gravity="center"
-                        android:text="找游戏"
+                        android:text="本地游戏"
                         android:textColor="@color/white"
                         android:textSize="8sp" />
                 </FrameLayout>

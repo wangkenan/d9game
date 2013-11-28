@@ -200,7 +200,6 @@ public class AppUtils {
 			// 获得应用名
 			String appLabel = packageManager.getApplicationLabel(
 					pa.applicationInfo).toString();
-
 			if (appName != null && appLabel.equals(appName)) {
 				// 获得包名
 				result = pa.packageName;
@@ -319,10 +318,9 @@ public class AppUtils {
 				String sappVersion = serverApp.getVersion();
 				if(spackageName.equals(packageName)) {
 					for(int i = 0;i<sappVersion.length();i++){
-						if(i<= appVersion.length()){
+						if(i< appVersion.length()){
 							char tempchar = appVersion.charAt(i);
 							char schar = sappVersion.charAt(i);
-							schar = '9';
 							if(schar > tempchar) {
 								testCount++;
 								tempList.add(serverApp);

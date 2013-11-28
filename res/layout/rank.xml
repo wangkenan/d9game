@@ -45,7 +45,28 @@
        	      android:layout_toLeftOf="@+id/search_btn"
        	      android:background="@null"
        	      android:src="@drawable/main_menu_settings_icon" />
- 
+ 	<FrameLayout
+	       android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" 
+            android:layout_toLeftOf="@+id/search_btn"
+	    >
+        <ImageView
+            android:id="@+id/updata_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/update" />
+        <TextView
+            android:id="@+id/updata_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:text="39" 
+            android:layout_marginBottom="1dip"
+            />
+</FrameLayout>
     </RelativeLayout>
      <FrameLayout
       android:layout_width="fill_parent"
@@ -76,6 +97,7 @@
        	       android:layout_centerInParent="true"
        	       style="@style/circle_progress"
        	      android:layout_height="wrap_content" 
+       	      android:visibility="invisible"
        	      />
        	  </RelativeLayout>
 	</FrameLayout>

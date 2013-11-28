@@ -2,43 +2,30 @@ package me.key.appmarket;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TimerTask;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import me.key.appmarket.LocalGameActivity.DownStateBroadcast;
-import me.key.appmarket.LocalGameActivity.LocalInstallBroadcast;
-import me.key.appmarket.LocalGameActivity.PrecentReceiver;
 import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.adapter.SDGameAdapter;
 import me.key.appmarket.tool.DownloadService;
-import me.key.appmarket.tool.ToolHelper;
+import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
-import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
-import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalAppInfo;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.utils.ToastUtils;
 import net.tsz.afinal.FinalDb;
-
-import com.market.d9game.R;
-import com.slidingmenu.lib2.SlidingMenu;
-import com.umeng.analytics.MobclickAgent;
-
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -47,27 +34,38 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class LocalGameFragment extends Fragment implements OnClickListener{
+import com.market.d9game.R;
+import com.slidingmenu.lib2.SlidingMenu;
+
+public class LocalGameFragment extends Fragment implements OnClickListener {
 	private LinearLayout gameLinearLayout;
 	private ListView mListReco;
 	private ProgressBar pBar;
@@ -77,21 +75,22 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 	private PrecentReceiver mPrecentReceiver;
 	private ListView lv;
 	// SD卡游戏
-	private List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
-	private MyAdapter adapter;
+	private static List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
+	private static MyAdapter adapter;
 	private LocalInstallBroadcast receiver;
 	private String root;
 	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
 	private SlidingMenu menu;
 	private MenuCategoryAdapter menuCategoryAdapter;
 	private String apknamelist;
-
+	private TextView updata_num;
 	// 我的游戏和内置游戏栏
-	private LinearLayout mygamebar;
-	private Button mygame;
-	private Button sdgame;
-	private SDGameAdapter sdAdapter;
+	private RelativeLayout mygamebar;
+	private static SDGameAdapter sdAdapter;
 	private TextView onkey_text;
+
+	// 设置按钮
+	private ImageButton setting;
 
 	// 一键安装按钮
 	private ImageView onkey_localapplist;
@@ -100,20 +99,23 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 	// 免流
 	private ImageView onkey_mianliu;
 	// 本机已安装
-	private List<AppInfo> appManaInfos_temp;
-	private List<AppInfo> downApplist = new ArrayList<AppInfo>();
+	private static List<AppInfo> appManaInfos_temp = new ArrayList<AppInfo>();
+	private static List<AppInfo> downApplist = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
-	private ImageView banner_local;
+	//private ImageView banner_local;
 	private int width;
 	private int height;
 	private int gapPy;
 	private int bigImHeight;
 	private int gapPx;
-	private FinalDb db;
+	private static FinalDb db;
 	private static final int RESETQUIT = 0;
 	private boolean mPreparedQuit = false;
 	private View inflate;
+	
+	private int x;
+	private int y;
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -126,7 +128,24 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 			}
 		}
 	};
-	private PackageManager packageManager;
+	private PopupWindow pw;
+	private static PackageManager packageManager;
+	//下载和更新
+	private TextView downandupdata;
+	//检查更新
+	private TextView checkupdata_pop;
+	//退出
+	private TextView getout_pop;
+	//关于
+	private TextView about;
+	private ImageButton search_btn;
+	private ActivityManager am;
+	
+	private View footView;
+	
+
+	// 拼音索引栏
+	// private DisapearThread disapearThread;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,8 +157,15 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		packageManager = getActivity().getPackageManager();
-		db = FinalDb.create(getActivity());
+		Context context = getActivity();
+		if(context ==null) {
+			
+		}
+		packageManager = context.getPackageManager();
+		am = (ActivityManager) context
+				.getSystemService(context.ACTIVITY_SERVICE);
+		db = FinalDb.create(context);
+		// disapearThread = new DisapearThread();
 		/*
 		 * iv.setOnClickListener(new OnClickListener() {
 		 * 
@@ -150,57 +176,66 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		pBar = (ProgressBar) inflate.findViewById(R.id.pro_bar_loacl);
 		root = LocalUtils.getRoot(getActivity());
 		pBar.setVisibility(View.VISIBLE);
-		mygamebar = (LinearLayout) inflate.findViewById(R.id.mygamebar);
+		mygamebar = (RelativeLayout) inflate.findViewById(R.id.local_tab);
 		mListReco = (ListView) inflate.findViewById(R.id.mlist);
-		banner_local = (ImageView)inflate.findViewById(R.id.banner_local);
-		setImagePosition(R.drawable.a20131008174300, banner_local);
+		mListReco.setDivider(getResources().getDrawable(R.drawable.driver1));
+		//banner_local = (ImageView) inflate.findViewById(R.id.banner_local);
+		updata_num = (TextView) inflate.findViewById(R.id.updata_num);
+		//setImagePosition(R.drawable.a20131008174300, banner_local);
 		lv = (ListView) inflate.findViewById(R.id.category_lv1);
-		banner_local.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(),
-						AppDetailActivity.class);
-				intent.putExtra("appid", 15603 + "");
-				startActivity(intent);
-			}
-
-		});
-
-		mygame = (Button) inflate.findViewById(R.id.mygame);
-		sdgame = (Button) inflate.findViewById(R.id.sdgame);
-
-		mygame.setOnClickListener(this);
-		sdgame.setOnClickListener(this);
-		LogUtils.d("Local", width + "Local");
+		View contentView = View.inflate(getActivity(),
+				R.layout.popup_item, null);
+		pw = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT, true);
+		ColorDrawable cd = new ColorDrawable(-0000);
+		pw.setBackgroundDrawable(cd);
+		pw.setOutsideTouchable(true);
+		downandupdata = (TextView) contentView.findViewById(R.id.downandupdata);
+		checkupdata_pop = (TextView) contentView.findViewById(R.id.checkupdata_pop);
+		getout_pop = (TextView) contentView.findViewById(R.id.getout_pop);
+		about = (TextView) contentView.findViewById(R.id.about);
+		downandupdata.setOnClickListener(this);
+		checkupdata_pop.setOnClickListener(this);
+		getout_pop.setOnClickListener(this);
+		about.setOnClickListener(this); 
+		// 搜索按钮点击事件
+				search_btn = (ImageButton) inflate.findViewById(R.id.search_btn);
+				search_btn.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						MyFragmengManager myFragment = (MyFragmengManager) getActivity();
+						myFragment.menu.toggle();
+					} 
+				});
+		/*
+		 * mListReco.setOnScrollListener(this);
+		 * mListReco.setOnItemClickListener(this);
+		 * mListReco.setOnItemLongClickListener(this);
+		 */
 		new AsyncTask<Void, Void, Void>() {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				mAppInfos = MarketApplication.getInstance()
-						.getmAppInfos();
-				appManaInfos_temp = MarketApplication.getInstance().getAppManaInfos_temp();
+				mAppInfos = MarketApplication.getInstance().getmAppInfos();
+				appManaInfos_temp = MarketApplication.getInstance()
+						.getAppManaInfos_temp();
 				downApplist = MarketApplication.getInstance().getDownApplist();
-				appManagerUpdateInfos = MarketApplication.getInstance().getAppManagerUpdateInfos();
+				appManagerUpdateInfos = MarketApplication.getInstance()
+						.getAppManagerUpdateInfos();
 				LogUtils.d("Mana", "appUpdate" + appManagerUpdateInfos.size());
-				for (AppInfo appInfo : appManagerUpdateInfos) {
-					for (AppInfo appManaInfo : appManaInfos_temp) {
-						if (appManaInfo.getPackageName().equals(
-								appInfo.getPackageName())) {
-							appManaInfo.setCanUpdate(true);
-						}
-					}
-				}
+		
 				return null;
 			}
 
 			protected void onPostExecute(Void result) {
-				adapter = new MyAdapter(getActivity(), mAppInfos,
-						appManaInfos_temp, downApplist, appManagerUpdateInfos);
+				adapter = new MyAdapter(getActivity(),
+						appManaInfos_temp);
 				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);
+				footView = inflate.inflate(getActivity(), R.layout.list_item, null);
+				mListReco.addFooterView(footView);
 				mListReco.setAdapter(adapter);
-				TextView tv = (TextView)inflate
-						.findViewById(R.id.wushju);
+				updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
+				TextView tv = (TextView) inflate.findViewById(R.id.wushju);
 				if (mAppInfos.size() == 0) {
 					tv.setVisibility(View.VISIBLE);
 				} else {
@@ -237,7 +272,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 				// 按照玩的时间进行排序
 				sort2lastTime();
 				java.util.Timer timer = new java.util.Timer(true);
-				final ActivityManager am = (ActivityManager) getActivity().getSystemService(getActivity().ACTIVITY_SERVICE);
+				
 				TimerTask task = new TimerTask() {
 					public void run() {
 						DownloadService.watchDog(appManaInfos_temp, am);
@@ -248,7 +283,46 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 			}
 
 		}.execute();
+		for (AppInfo appInfo : appManagerUpdateInfos) {
+			for (AppInfo appManaInfo : appManaInfos_temp) {
+				if (appManaInfo.getPackageName().equals(
+						appInfo.getPackageName())) {
+					appManaInfo.setCanUpdate(true);
+				}
+			}
+		}
 		Log.v("nano", "nano" + mListReco);
+		 
+		LogUtils.d("LocaBro", "我注册了一次广播");
+		gapPx = convertDipOrPx(getActivity(), 5);
+		gapPy = convertDipOrPx(getActivity(), 10);
+		bigImHeight = (int) ((width - gapPy) / 2 / 1.27f);
+		setting = (ImageButton) inflate.findViewById(R.id.setting);
+		setting.setOnClickListener(this);
+		LogUtils.d("Local", width + "Local");
+		mListReco.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				if(firstVisibleItem >= 1) {
+					mygamebar.setVisibility(View.VISIBLE);
+				} else {
+					mygamebar.setVisibility(View.INVISIBLE);
+				}
+			}
+		});
+	}
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
 		IntentFilter filter = new IntentFilter();
 
 		filter.addAction("android.intent.action.PACKAGE_ADDED");
@@ -256,29 +330,25 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		filter.addDataScheme("package");
 		receiver = new LocalInstallBroadcast();
 		getActivity().registerReceiver(receiver, filter);
-		gapPx = convertDipOrPx(getActivity(), 5);
-		gapPy = convertDipOrPx(getActivity(), 10);
-		bigImHeight = (int) ((width - gapPy) / 2 / 1.27f);
 	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
-		List<AppInfo> down_temp = new ArrayList<AppInfo>();
-		down_temp = db.findAll(AppInfo.class);
 		downApplist.clear();
-		downApplist.addAll(down_temp);
+		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
+		downList_temp = db.findAll(AppInfo.class);
+		downApplist.addAll(downList_temp);
 		Collections.reverse(downApplist);
-		if (adapter != null) {
-			adapter.notifyDataSetChanged();
-		}
-		registerPrecent();
-		SharedPreferences sp = getActivity().getSharedPreferences("onkey", getActivity().MODE_PRIVATE);
+		registerPrecent(); 
+		SharedPreferences sp = getActivity().getSharedPreferences("onkey",
+				getActivity().MODE_PRIVATE);
+		updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
 		boolean onkey = sp.getBoolean("onkey", false);
 		if (onkey) {
 			onkey_text.setText("装机必备");
 		}
-		if (appManaInfos_temp != null && adapter != null) {
+		if (appManaInfos_temp != null && adapter != null) 
 			for (AppInfo ai : appManaInfos_temp) {
 				LocalAppInfo findById = db.findById(ai.getId(),
 						LocalAppInfo.class);
@@ -306,7 +376,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 				}
 			}
 			sort2lastTime();
-		}
 		for (AppInfo ai : downApplist) {
 			DownStateBroadcast dsb = new DownStateBroadcast();
 			IntentFilter filter = new IntentFilter();
@@ -317,7 +386,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		}
 	}
 
-	class LocalInstallBroadcast extends BroadcastReceiver {
+	public  class LocalInstallBroadcast extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// 接收安装广播
@@ -331,19 +400,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 				 * downApplist.clear(); downApplist.addAll(down_temp);
 				 */
 				MarketApplication.getInstance().reflashAppList();
-				for (int i = 0; i < appManaInfos_temp.size(); i++) {
-					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
-							.getPackageName() + "");
-					if (packageName != null
-							&& packageName.equals(appManaInfos_temp.get(i)
-									.getPackageName())) {
-						// appManaInfos_temp.add(mAppInfos.get(i));
-						//appManaInfos_temp.remove(appManaInfos_temp.get(i));
-						appManaInfos_temp.get(i).setCanUpdate(false);
-						sort2lastTime();
-						break;
-					}
-				}
+			
 
 				for (int i = 0; i < downApplist.size(); i++) {
 					LogUtils.d("wojieshou2", downApplist.get(i)
@@ -368,7 +425,19 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 						break;
 					}
 				}
-			
+				for (int i = 0; i < appManaInfos_temp.size(); i++) {
+					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
+							.getPackageName() + "");
+					if (packageName != null
+							&& packageName.equals(appManaInfos_temp.get(i)
+									.getPackageName())) {
+						// appManaInfos_temp.add(mAppInfos.get(i));
+						LogUtils.d("Local", "我删除了"+appManaInfos_temp.get(i).getAppName());
+						appManaInfos_temp.remove(appManaInfos_temp.get(i));
+						sort2lastTime();
+						break;
+					}
+				}
 				try {
 					PackageInfo packageInfo = packageManager.getPackageInfo(
 							packageName, 0);
@@ -381,6 +450,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 					appInfo.setId(packageName);
 					appInfo.setLastTime(Long.MAX_VALUE);
 					appManaInfos_temp.add(appInfo);
+					MarketApplication.getInstance().setAppManaInfos_temp(appManaInfos_temp);
+					sort2lastTime();
+					LogUtils.d("Local", "我已经安装了"+appInfo.getAppName()+"regedit"+appManaInfos_temp.size());
 					File tempFile = new File(
 							Environment.getExternalStorageDirectory(),
 							"/market/" + appInfo.getAppName() + ".apk");
@@ -392,9 +464,21 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
-
+			
+				for (int i = 0; i < appManaInfos_temp.size(); i++) {
+					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
+							.getPackageName() + "");
+					if (packageName != null
+							&& packageName.equals(appManaInfos_temp.get(i)
+									.getPackageName())) {
+						appManaInfos_temp.get(i).setCanUpdate(false);
+						sort2lastTime();
+						break;
+					}
+				}
 				adapter.notifyDataSetChanged();
 				sdAdapter.notifyDataSetChanged();
+				LogUtils.d("Local", "我更新了adapter"+adapter.getCount());
 				// 接受卸载广播
 			}
 			if (intent.getAction().equals(
@@ -422,7 +506,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 
 		Bitmap bm = BitmapFactory.decodeResource(this.getResources(), resId);
 		LogUtils.d("Local", width + "");
-		//width = getActivity().getIntent().getExtras().getInt("width");
+		// width = getActivity().getIntent().getExtras().getInt("width");
 		DisplayMetrics dm = new DisplayMetrics();
 		getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
 		width = dm.widthPixels;
@@ -483,6 +567,11 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		}
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		unregisterPrecent();
+	}
 
 	class DownStateBroadcast extends BroadcastReceiver {
 
@@ -508,7 +597,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 
 	}
 
-	public void sort2lastTime() {
+	public static void sort2lastTime() {
 		Collections.sort(appManaInfos_temp, new Comparator<AppInfo>() {
 
 			@Override
@@ -523,28 +612,64 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		});
 	}
 
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.mygame:
+		/*case R.id.mygame:
 			mListReco.setAdapter(adapter);
-			mygame.setBackgroundResource(R.drawable.btn_bar_2);
+			mygame.setBackgroundResource(R.drawable.mygame_btn);
 			// mygame.setPadding(40, 0, 40, 0);
 			sdgame.setBackgroundResource(0);
 			break;
-		case R.id.sdgame:
+		case R.id.sdgame_tv:
 			mListReco.setAdapter(sdAdapter);
-			sdgame.setBackgroundResource(R.drawable.btn_bar_2);
+			sdgame.setBackgroundResource(R.drawable.mygame_btn);
 			// sdgame.setPadding(40, 0, 40, 0);
 			mygame.setBackgroundResource(0);
+			break;*/
+		case R.id.setting:
+			// 获取view在当前窗体的位置
+			int location[] = new int[2];
+			setting.getLocationInWindow(location);
+			x= location[0] + px2dip(getActivity(), 60);
+			y = location[1]+ px2dip(getActivity(), 120);
+			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
+			break;
+		case R.id.downandupdata:
+			Intent intent = new Intent();
+			intent.setClass(getActivity(), DownLoadManagerActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.checkupdata_pop:
+			updateSelf(true);
+			break;
+		case R.id.getout_pop:
+			Intent cancalNt = new Intent();
+			cancalNt.setAction("duobaohui.cancalnotifition");
+			getActivity().sendBroadcast(cancalNt);
+			LogUtils.d("Main", "我发出了取消广播");
+
+			ArrayList<Activity> appLication = MarketApplication.getInstance()
+					.getAppLication();
+			for (Activity at : appLication) {
+				at.finish();
+			}
+			getActivity().stopService(new Intent(getActivity(), LocalGameFragment.class));
+			System.exit(0);
+			android.os.Process.killProcess(android.os.Process.myPid());
+			break;
+		case R.id.about:
+			Intent mysc = new Intent();
+			mysc.setClass(getActivity(), MyScoreActivity.class);
+			startActivity(mysc);
 			break;
 		}
 	}
 
 	public boolean isDownLoaded(String name) {
 		boolean result = false;
-		SharedPreferences sp = getActivity().getSharedPreferences("down", getActivity().MODE_PRIVATE);
+		SharedPreferences sp = getActivity().getSharedPreferences("down",
+				getActivity().MODE_PRIVATE);
 		File tempFile = new File(Environment.getExternalStorageDirectory(),
 				"/market/" + name + ".apk");
 
@@ -558,8 +683,75 @@ public class LocalGameFragment extends Fragment implements OnClickListener{
 		}
 		return result;
 	}
-
-	
-
-
+	/*
+	 * private class DisapearThread implements Runnable { public void run() { //
+	 * 避免在1.5s内，用户再次拖动时提示框又执行隐藏命令。 if (scrollState ==
+	 * ListView.OnScrollListener.SCROLL_STATE_IDLE) {
+	 * txtOverlay.setVisibility(View.INVISIBLE); } } }
+	 * 
+	 * @Override public void onItemClick(AdapterView<?> parent, View view, int
+	 * position, long id) { String telNum =
+	 * list.get(p2s.get(position)).getNumber(); if (telNum == null ||
+	 * telNum.trim().equals("")) { //为空 } else { String [] str =
+	 * telNum.split(";"); telNum = str[0]; Intent telI = new
+	 * Intent(Intent.ACTION_CALL,Uri.parse("tel:"+telNum)); startActivity(telI);
+	 * }
+	 * 
+	 * }
+	 * 
+	 * @Override public boolean onItemLongClick(AdapterView<?> parent, View
+	 * view, int position, long id) { AlertDialog diamondAl = new
+	 * AlertDialog.Builder(getActivity()).setMessage("更多功能")
+	 * .setNegativeButton("确定", new DialogInterface.OnClickListener() {
+	 * 
+	 * @Override public void onClick(DialogInterface dialog, int which) {
+	 * 
+	 * } }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+	 * 
+	 * @Override public void onClick(DialogInterface dialog, int which) { }
+	 * }).create(); diamondAl.show();
+	 * 
+	 * return false; }
+	 * 
+	 * @Override public void onScroll(AbsListView view, int firstVisibleItem,
+	 * int visibleItemCount, int totalItemCount) { if (mNicks != null &&
+	 * mNicks.length > 0)
+	 * txtOverlay.setText(String.valueOf(PingYinUtil.converterToFirstSpell
+	 * (mNicks[firstVisibleItem + (visibleItemCount >>
+	 * 1)]).charAt(0)).toUpperCase()); }
+	 * 
+	 * @Override public void onScrollStateChanged(AbsListView view, int
+	 * scrollState) { this.scrollState = scrollState; if (scrollState ==
+	 * ListView.OnScrollListener.SCROLL_STATE_IDLE) {
+	 * handler.removeCallbacks(disapearThread); // 提示延迟1s再消失
+	 * handler.postDelayed(disapearThread, 1000); } else {
+	 * txtOverlay.setVisibility(View.VISIBLE); } } private Map<String, Info>
+	 * getContacts() { // 存放多个电话号码 Map<String, Info> map = new HashMap<String,
+	 * Info>(); for(AppInfo appInfo : mAppInfos) { map.put(appInfo.getAppName(),
+	 * new Info(false, appInfo.getPackageName())); } return map; }
+	 */
+	 public static int px2dip(Context context, float pxValue){ 
+         final float scale = context.getResources().getDisplayMetrics().density; 
+         return (int)(pxValue / scale + 0.5f); 
+ } 
+	 /**
+		 * 检查更新
+		 * 
+		 * @param showToast
+		 */
+		private void updateSelf(boolean showToast) {
+			Calendar c = Calendar.getInstance();
+			int mDay = c.get(Calendar.MILLISECOND);// 获取当前月份的日期号码
+			SharedPreferences sp = PreferenceManager.
+					getDefaultSharedPreferences(getActivity());
+			int lastDay = sp.getInt("day", 0); 
+			if (lastDay != mDay) {
+				try { 
+					UpdateApk.checkUpdate(getActivity(), showToast, true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			sp.edit().putInt("day", mDay).commit();
+		}
 }

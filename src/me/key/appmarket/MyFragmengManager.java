@@ -5,12 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.tsz.afinal.FinalDb;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import me.key.appmarket.RankActivity.MyInstalledReceiver;
 import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
@@ -21,12 +15,10 @@ import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
+import net.tsz.afinal.FinalDb;
 
-import com.market.d9game.R;
-import com.slidingmenu.lib.app2.SlidingFragmentActivity;
-import com.slidingmenu.lib2.SlidingMenu;
-import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
-import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -41,25 +33,25 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.market.d9game.R;
+import com.slidingmenu.lib.app2.SlidingFragmentActivity;
+import com.slidingmenu.lib2.SlidingMenu;
+import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
+import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
 /**
  * 侧滑菜单按钮
  * @author Administrator
@@ -78,10 +70,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	// 排行游戏
 	private TextView rankgame;
 	private MenuCategoryAdapter menuCategoryAdapter;
-	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
-	private SlidingMenu menu;
-	private DownStateBroadcast dsb;
-	private DownStateBroadcastRank dsbRank;
 	private FinalDb db;
 	// 本地sd卡地址
 	private String root;
@@ -97,7 +85,9 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private String apknamelist;
 	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private ArrayList<AppInfo> downApplist = new ArrayList<AppInfo>();
+	private List<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
 	private RankFragment f1;
+	public SlidingMenu menu;
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -127,7 +117,9 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private Drawable local_normal;
 	private Drawable manager_focue;
 	private Drawable manager_normal;
-
+	private FrameLayout localgame_click;
+	private DownStateBroadcast dsb;
+	private DownStateBroadcastRank dsbRank;
 	@Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -141,6 +133,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			edit.putBoolean("db", true);
 			edit.commit();
 		}
+		MarketApplication.getInstance().getAppLication().add(this);
 		startService(new Intent(this, DownloadService.class));
 		appRankInfos = MarketApplication.getInstance().getRankappinfos();
 		appHomeInfos_temp = MarketApplication.getInstance().getHomeAppInfos();
@@ -148,19 +141,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		findgame = (TextView) findViewById(R.id.findgame);
 		localgame = (TextView) findViewById(R.id.localgame);
 		rankgame = (TextView) findViewById(R.id.rankgame);
+		localgame_click = (FrameLayout) findViewById(R.id.localgame_click);
 		rankgame.setText("排行");
 		findgame.setOnClickListener(this);
-		localgame.setOnClickListener(this);
 		rankgame.setOnClickListener(this);
+		localgame_click.setOnClickListener(this);
 		fm = getSupportFragmentManager();
-		lf = new LocalGameFragment();
-		mf = new MainActivityFragment();
-
-		ft = fm.beginTransaction();
-		f1 = new RankFragment();
-		// 把对应的view对象区域替换成f1
-		ft.replace(R.id.tabcontent, lf);
-		ft.commit();
 		// 获取sd卡地址
 		root = LocalUtils.getRoot(this);
 		fragmentTransaction = getSupportFragmentManager()
@@ -179,6 +165,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				R.drawable.main_tab_top_icon_normal);
 		localgame.setCompoundDrawablesWithIntrinsicBounds(null, local_focue, null,
 				null);
+	
 		// 预加载内容
 		new AsyncTask<Void, Void, Void>() {
 
@@ -195,7 +182,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
-				mAppInfos_temp = LocalUtils.InitHomePager("0",
+				mAppInfos_temp = LocalUtils.InitHomePager("1",
 						MyFragmengManager.this, root, packages);
 				mAppInfos.addAll(mAppInfos_temp);
 				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
@@ -234,6 +221,17 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				MarketApplication.getInstance().setHomeAppInfos(
 						appHomeInfos_temp);
 				myHandler.sendEmptyMessage(INMAIN);
+				lf = new LocalGameFragment();
+				mf = new MainActivityFragment();
+				ft = fm.beginTransaction();
+				f1 = new RankFragment();
+				// 把对应的view对象区域替换成f1
+				//ft.replace(R.id.tabcontent, lf);
+				ft.add(R.id.tabcontent, mf);
+				ft.add(R.id.tabcontent, f1);
+				ft.add(R.id.tabcontent, lf);
+				ft.show(lf);
+				ft.commitAllowingStateLoss();
 				for (AppInfo ai : appHomeInfos_temp) {
 					dsb = new DownStateBroadcast();
 					IntentFilter filter = new IntentFilter();
@@ -250,6 +248,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					filter.addAction(fileName + "down");
 					registerReceiver(dsbRank, filter);
 				}
+			
 				final MenuFragment menuFragment = new MenuFragment();
 				fragmentTransaction.replace(R.id.slide_content, menuFragment);
 				// fragmentTransaction.replace(R.id.content, new ContentFragment());
@@ -523,6 +522,11 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						type2, Global.MAIN_URL + appUrl);
 				gcategoryInfoList_temp.add(mCategoryInfo);
 			}
+			if(len == 0) {
+				CategoryInfo mCategoryInfo = new CategoryInfo("1", "失误", "1",
+						"2", Global.MAIN_URL + "no");
+				gcategoryInfoList_temp.add(mCategoryInfo);
+			}
 			Log.e("tag", "--------------ParseCategoryJson 2--------");
 			/*
 			 * categoryDataHandler
@@ -565,7 +569,15 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		switch (v.getId()) {
 		case R.id.findgame:
 			FragmentTransaction ft = fm.beginTransaction();
-			ft.replace(R.id.tabcontent, mf);
+			//ft.replace(R.id.tabcontent, mf);
+			//ft.addToBackStack(null);
+			if(lf.isAdded()) {
+				ft.hide(lf);
+			}
+			if(f1.isAdded()) {
+				ft.hide(f1);
+			}
+			ft.show(mf);
 			ft.commit();
 			findgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					findGame_focue, null, null);
@@ -574,7 +586,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					manager_normal, null, null);
 			break;
-		case R.id.localgame:
+		case R.id.localgame_click:
 			findgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					findGame_normal, null, null);
 			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
@@ -582,7 +594,15 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					manager_normal, null, null);
 			FragmentTransaction ft2 = fm.beginTransaction();
-			ft2.replace(R.id.tabcontent, lf);
+			//ft2.replace(R.id.tabcontent, lf);
+			//ft2.addToBackStack(null);
+			if(f1.isAdded()) {
+				ft2.hide(f1);
+			}
+			if(mf.isAdded()) {
+				ft2.hide(mf);
+			}
+			ft2.show(lf);
 			ft2.commit();
 			break;
 		case R.id.rankgame:
@@ -593,7 +613,15 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					manager_focue, null, null);
 			FragmentTransaction ft1 = fm.beginTransaction();
-			ft1.replace(R.id.tabcontent, f1);
+			//ft1.replace(R.id.tabcontent, f1);
+			//ft1.addToBackStack(null);
+			if(lf.isAdded()) {
+				ft1.hide(lf);
+			}
+			if(mf.isAdded()) {
+				ft1.hide(mf);
+			}
+			ft1.show(f1);
 			ft1.commit();
 			break;
 		}

@@ -17,4 +17,5 @@
     <item name="nextoronkey" type="id" />
     <item name="recomapp_onkey" type="id" />
     <item name="title_onkey" type="id" />
+    <item name="bottom_main" type="id" />
 </resources>

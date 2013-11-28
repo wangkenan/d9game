@@ -71,7 +71,7 @@ public class ToolHelper {
 		String line = null;
 		Log.e("tag", "url = " + urlStr);
 		try {
-			InputStream inputStream = postIsFromUrl(urlStr);
+			InputStream inputStream = getIsFromUrl(urlStr);
 			if (inputStream == null) {
 				return "";
 			}

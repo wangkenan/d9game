@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+      <RelativeLayout
+        android:id="@+id/topbar"
+        style="@style/topbar" >
+
+        <TextView
+            android:id="@+id/topbar_title"
+            style="@style/topbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="下载/更新" />
+
+        <ImageView
+            android:id="@+id/back_downmanager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:src="@drawable/btn_back_p" />
+
+    </RelativeLayout>
+        <LinearLayout
+        android:id="@+id/mygamebar"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_gravity="center"
+        android:layout_margin="5dip"
+        android:background="@drawable/btn_bar_1"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/downlist"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_bar_2"
+            android:text="下载管理" />
+
+        <Button
+            android:id="@+id/updatalist"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:text="更新游戏" />
+    </LinearLayout>
+    <ListView
+        android:id="@+id/down_manager_lv"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        ></ListView>
+
+</LinearLayout>

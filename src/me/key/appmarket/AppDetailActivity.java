@@ -214,7 +214,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					idx = response.getIdx();
 					name = response.getAppName();
 
-					isInstalled = AppUtils.isInstalled(name);
+					isInstalled = AppUtils.isInstalled(response.getAppPackageName());
 					// 是否已经下载完
 					isDowned = DownloadService.isDownLoaded(name);
 					// 是否正在下载
@@ -605,20 +605,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				LogUtils.d("newdowndown", "我变成下载中了" + appInfo.getAppName());
 			}
 		}
-		if (appInfo.isInstalled()) {
-			appDownload.setText("打开");
-			/*
-			 * v1.progress_view.setVisibility(View.INVISIBLE);
-			 * v1.tvdown.setVisibility(View.VISIBLE);
-			 * v1.progress_view.setProgress(100);
-			 */
-			/*
-			 * Drawable mDrawableicon = mContext.getResources().getDrawable(
-			 * R.drawable.action_type_software_update);
-			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
-			 * mDrawableicon, null, null);
-			 */
-		} else if (appInfo.isDown()) {
+		if (appInfo.isDown()) {
 			// v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");
 			LogUtils.d("newdowndown", "我变成下载中了" + appInfo.getAppName());
@@ -674,6 +661,20 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				edit.remove(tempFile.getAbsolutePath());
 				edit.commit();
 			}
+		}
+		if (appInfo.isInstalled()) {
+			appDownload.setText("打开");
+			/*
+			 * v1.progress_view.setVisibility(View.INVISIBLE);
+			 * v1.tvdown.setVisibility(View.VISIBLE);
+			 * v1.progress_view.setProgress(100);
+			 */
+			/*
+			 * Drawable mDrawableicon = mContext.getResources().getDrawable(
+			 * R.drawable.action_type_software_update);
+			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
+			 * mDrawableicon, null, null);
+			 */
 		}
 		/*
 		 * v1.progress_view.setOnClickListener(new OnClickListener() {
@@ -749,6 +750,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					 * position).getIdx()), appInfos.get(position)
 					 * .getAppName(),length,0);
 					 */
+					LogUtils.d("Local", appInfo.getId()+"id"+appInfo.getAppName());
 					DownloadService.downNewFile(appInfo, length, 0, null);
 					appInfo.setDown(true);
 					Intent intent = new Intent();

@@ -27,10 +27,8 @@ public class MyScoreActivity extends FinalActivity {
 	        tableView.commit();
 	}
 	   private void createList() {
-	        tableView.addBasicItem("昵称", "艾丝凡");
-	        tableView.addBasicItem("我的积分", "213");
-	        tableView.addBasicItem("我的等级", "lv2212");
-	        tableView.addBasicItem("我的d9币", "21");
+	        tableView.addBasicItem("版本号", "v1.9");
+	        tableView.addBasicItem("开发日期", "2013/3/1");
 	    }
 	   
 	   public void onClick(View v){

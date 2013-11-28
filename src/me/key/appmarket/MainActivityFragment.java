@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import net.tsz.afinal.FinalDb;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,6 +54,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -60,9 +63,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -74,16 +80,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView; 
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout.LayoutParams;
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements OnClickListener {
 	private ViewPager mPager;
 	private List<View> listViews;
 	private TextView t1, t2, t3, t4, t5;
 	private View homeView, gameView, rankView, managerView, logcalGmaeView;
-
+	
 	private boolean mPreparedQuit = false;
 	private int headContentWidth;
 	private int headContentHeight;
@@ -112,7 +120,20 @@ public class MainActivityFragment extends Fragment {
 	// game
 	private boolean isLoading = false;
 	private boolean isFirst = true;
-
+	private int x;
+	private int y;
+	private FinalDb db;
+	private TextView updata_num;
+	// 设置按钮
+		private ImageButton setting;
+	private PopupWindow pw;
+	//下载和更新
+		private TextView downandupdata;
+		//检查更新
+		private TextView checkupdata_pop;
+		//退出
+		private TextView getout_pop;
+		private TextView about;
 	private SlidingMenu menu;
 	private MyListView mGameListView;
 	private ProgressBar pGameBar;
@@ -191,6 +212,7 @@ public class MainActivityFragment extends Fragment {
 	public void onActivityCreated(android.os.Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		context = getActivity();
+		db = FinalDb.create(context);
 		// 自动升级，不能删
 				updateSelf(true);
 				InitViewPager();
@@ -203,6 +225,7 @@ public class MainActivityFragment extends Fragment {
 				// new Thread(runRankData).start();
 				// new Thread(runBannerData).start();
 				registerInstall();
+			
 	};
 	@Override
 	public void onResume() {
@@ -210,6 +233,9 @@ public class MainActivityFragment extends Fragment {
 		super.onResume();
 		registerPrecent();
 		appHomeAdapter.notifyDataSetChanged();
+		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
+		downList_temp = db.findAll(AppInfo.class);
+		updata_num.setText(downList_temp.size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 	}
 	/**
 	 * 检查更新
@@ -280,7 +306,8 @@ public class MainActivityFragment extends Fragment {
 		search_btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				menu.toggle();
+				MyFragmengManager myFragment = (MyFragmengManager) getActivity();
+				myFragment.menu.toggle();
 			}
 		});
 	}
@@ -710,10 +737,6 @@ public class MainActivityFragment extends Fragment {
 				// Log.e("tag", "--------------1-------------");
 				ParseHomeJson(str);
 			}*/
-			appHomeInfos.clear();
-			List<AppInfo> appHome = new ArrayList<AppInfo>();
-			appHome = MarketApplication.getInstance().getHomeAppInfos();
-			appHomeInfos.addAll(appHome);
 			pHomeBar.setVisibility(View.INVISIBLE);
 			StringBuilder apknamelist = new StringBuilder();
 			for (AppInfo ai : appHomeInfos) {
@@ -774,6 +797,25 @@ public class MainActivityFragment extends Fragment {
 		pHomeBar.setVisibility(View.VISIBLE);
 		ll_homeerror = (LinearLayout) homeView.findViewById(R.id.ll_error);
 		appHomeInfos = new ArrayList<AppInfo>();
+		View contentView = View.inflate(getActivity(),
+				R.layout.popup_item, null);
+		pw = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT, true);
+		ColorDrawable cd = new ColorDrawable(-0000);
+		pw.setBackgroundDrawable(cd);
+		pw.setOutsideTouchable(true);
+		
+		downandupdata = (TextView) contentView.findViewById(R.id.downandupdata);
+		checkupdata_pop = (TextView) contentView.findViewById(R.id.checkupdata_pop);
+		getout_pop = (TextView) contentView.findViewById(R.id.getout_pop);
+		about = (TextView) contentView.findViewById(R.id.about);
+		downandupdata.setOnClickListener(this);
+		checkupdata_pop.setOnClickListener(this);
+		getout_pop.setOnClickListener(this);
+		about.setOnClickListener(this);
+		setting = (ImageButton) inflate.findViewById(R.id.setting);
+		updata_num = (TextView) inflate.findViewById(R.id.updata_num);
+		setting.setOnClickListener(this);
 		Button btn_refresh = (Button) ll_homeerror.findViewById(R.id.btn_Refsh);
 		// tuijian_gallery = (GalleryFlow)
 		// homeView.findViewById(R.id.tuijian_gallery);
@@ -811,7 +853,11 @@ public class MainActivityFragment extends Fragment {
 				return false;
 			}
 		});
-
+		appHomeInfos.clear();
+		List<AppInfo> appHome = new ArrayList<AppInfo>();
+		appHome = MarketApplication.getInstance().getHomeAppInfos();
+		updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
+		appHomeInfos.addAll(appHome);
 		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, getActivity(),
 				cache, mHomeListView);
 		mHomeListView.setAdapter(appHomeAdapter);
@@ -897,4 +943,49 @@ public class MainActivityFragment extends Fragment {
 		 * mBanner.getAppID()); startActivity(intent); } } });
 		 */
 	}
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.setting:
+			// 获取view在当前窗体的位置
+			int location[] = new int[2];
+			setting.getLocationInWindow(location);
+			x= location[0] + px2dip(getActivity(), 60);
+			y = location[1]+ px2dip(getActivity(), 120);
+			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
+			break;
+		case R.id.downandupdata:
+			Intent intent = new Intent();
+			intent.setClass(getActivity(), DownLoadManagerActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.checkupdata_pop:
+			updateSelf(true);
+			break;
+		case R.id.getout_pop:
+			Intent cancalNt = new Intent();
+			cancalNt.setAction("duobaohui.cancalnotifition");
+			getActivity().sendBroadcast(cancalNt);
+			LogUtils.d("Main", "我发出了取消广播");
+
+			ArrayList<Activity> appLication = MarketApplication.getInstance()
+					.getAppLication();
+			for (Activity at : appLication) {
+				at.finish();
+			}
+			getActivity().stopService(new Intent(getActivity(), LocalGameFragment.class));
+			System.exit(0);
+			android.os.Process.killProcess(android.os.Process.myPid());
+			break;
+		case R.id.about:
+			Intent mysc = new Intent();
+			mysc.setClass(getActivity(), MyScoreActivity.class);
+			startActivity(mysc);
+			break;
+		}
+	}
+	 public static int px2dip(Context context, float pxValue){ 
+         final float scale = context.getResources().getDisplayMetrics().density; 
+         return (int)(pxValue / scale + 0.5f); 
+ } 
 }

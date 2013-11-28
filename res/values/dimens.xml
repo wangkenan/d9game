@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-   <dimen name="topbar_height_withshadow">44.0dip</dimen>
+   <dimen name="topbar_height_withshadow">55.0dip</dimen>
    <dimen name="btn_padding_topbar">16.0dip</dimen>
    <dimen name="btn_maxWidth_topbar">104.0dip</dimen>
     <dimen name="btn_minWidth_back">78.0dip</dimen>

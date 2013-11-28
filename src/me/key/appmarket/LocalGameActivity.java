@@ -4,7 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimerTask;
 
 import me.key.appmarket.adapter.MenuCategoryAdapter;
@@ -16,9 +18,11 @@ import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.Info;
 import me.key.appmarket.utils.LocalAppInfo;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.SideBar;
 import me.key.appmarket.utils.ToastUtils;
 import net.tsz.afinal.FinalDb;
 
@@ -51,6 +55,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -97,8 +102,8 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 
 	// 我的游戏和内置游戏栏
 	private LinearLayout mygamebar;
-	private Button mygame;
-	private Button sdgame;
+	private TextView mygame;
+	private TextView sdgame;
 	private SDGameAdapter sdAdapter;
 	private TextView onkey_text;
 
@@ -122,6 +127,8 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 	private FinalDb db;
 	private static final int RESETQUIT = 0;
 	private boolean mPreparedQuit = false;
+	
+	
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -162,7 +169,7 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 		root = LocalUtils.getRoot(this);
 		pBar.setVisibility(View.VISIBLE);
 		mygamebar = (LinearLayout) findViewById(R.id.mygamebar);
-		banner_local = (ImageView) findViewById(R.id.banner_local);
+		//banner_local = (ImageView) findViewById(R.id.banner_local);
 		setImagePosition(R.drawable.a20131008174300, banner_local);
 		lv = (ListView) findViewById(R.id.category_lv1);
 		 banner_local.setOnClickListener(new OnClickListener() {
@@ -173,8 +180,8 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 			  
 			  });
 		 
-		mygame = (Button) findViewById(R.id.mygame);
-		sdgame = (Button) findViewById(R.id.sdgame);
+		mygame = (TextView) findViewById(R.id.mygame);
+		//sdgame = (TextView) findViewById(R.id.sdgame);  
 		
 		mygame.setOnClickListener(this);
 		sdgame.setOnClickListener(this);
@@ -219,9 +226,12 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 			}
 
 			protected void onPostExecute(Void result) {
-				adapter = new MyAdapter(LocalGameActivity.this, mAppInfos,
-						appManaInfos_temp, downApplist, appManagerUpdateInfos);
-				sdAdapter = new SDGameAdapter(LocalGameActivity.this, mAppInfos);
+				adapter = new MyAdapter(LocalGameActivity.this,
+						appManaInfos_temp);
+				/**
+				 * 记得打开注释
+				 */
+				//sdAdapter = new SDGameAdapter(LocalGameActivity.this, mAppInfos);
 				mListReco.setAdapter(adapter);
 				TextView tv = (TextView) LocalGameActivity.this
 						.findViewById(R.id.wushju);
@@ -869,12 +879,12 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 			// mygame.setPadding(40, 0, 40, 0);
 			sdgame.setBackgroundResource(0);
 			break;
-		case R.id.sdgame:
+	/*	case R.id.sdgame:
 			mListReco.setAdapter(sdAdapter);
 			sdgame.setBackgroundResource(R.drawable.btn_bar_2);
 			// sdgame.setPadding(40, 0, 40, 0);
 			mygame.setBackgroundResource(0);
-			break;
+			break;*/
 		}
 	}
 	public  boolean isDownLoaded(String name) {
@@ -905,4 +915,6 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 	            }
 	        }
 	    }
+	  
+	
 }
