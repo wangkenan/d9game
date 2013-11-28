@@ -10,7 +10,7 @@
     <color name="dark">#ff000000</color>
     <color name="black">#ff000000</color>
     <color name="red">#ffff0000</color>
-    <color name="dark_gray">#ff474747</color>
+    <color name="dark_gray">#ffbcbec0</color>
     <color name="toast_black">#a4000000</color>
     <color name="light_gray">#ffdddddd</color>
     <color name="tran_gray">#3a666666</color>
