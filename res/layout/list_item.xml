@@ -3,39 +3,40 @@
     android:id="@+id/top_bar"
     android:layout_width="fill_parent"
     android:layout_height="82dip"
-    android:background="@drawable/bg"
-    >
+    android:background="@drawable/bg" >
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="48sp"
-        android:layout_height="48sp"
+        android:layout_width="60dip"
+        android:layout_height="60dip"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="18sp"
-        android:layout_marginLeft="8sp"
-        android:layout_marginTop="18sp"
+        android:layout_marginLeft="12dip"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/app_name"
         android:src="@drawable/tempicon" />
 
-    <!-- <RelativeLayout
+    <!--
+         <RelativeLayout
         android:id="@+id/frame_layout"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="10sp"
-        android:layout_marginRight="12sp" > -->
+        android:layout_marginRight="12sp" >
+    -->
 
-        <me.key.appmarket.widgets.ProgressView
-            android:id="@+id/progress_view_local"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"
-            android:layout_gravity="center" />
+    <me.key.appmarket.widgets.ProgressView
+        android:id="@+id/progress_view_local"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
 
-       <!--  <TextView
+    <!--
+             <TextView
             android:id="@+id/install"
              android:layout_width="60dip"
              android:layout_height="35dip"
@@ -46,68 +47,67 @@
              android:focusable="false"
              android:gravity="center"
              android:textColor="#0066FF"
-             android:textSize="13sp" /> -->
-             <FrameLayout
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content" 
-                  android:layout_alignParentRight="true"
-        	android:layout_centerVertical="true"
-                 >
-            
-         <ImageView
-       
-             android:layout_width="65dip"
-             android:layout_height="28dip"
-             android:clickable="true"
-             android:focusable="false"
-             android:gravity="center"
-             android:textColor="#0066FF"
-             android:scaleType="fitXY"
-             android:src="@drawable/install_btn"
-             android:layout_marginRight="20dip"
-             android:textSize="13sp" /> 
-               <TextView
-                   android:id="@+id/install"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="center"
-                 android:layout_marginRight="15dip"
-                 android:layout_marginBottom="1dip"
-                 android:text="打开" 
-                 />
-            </FrameLayout>
- <!--    </RelativeLayout> -->
+             android:textSize="13sp" />
+    -->
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" >
+
+        <ImageView
+            android:layout_width="65dip"
+            android:layout_height="28dip"
+            android:layout_marginRight="10dip"
+            android:clickable="true"
+            android:focusable="false"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/install_btn"
+            android:textColor="#0066FF"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/install"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="1dip"
+            android:layout_marginRight="15dip"
+            android:text="打开"
+            android:textColor="#ffffff" />
+    </FrameLayout>
+    <!-- </RelativeLayout> -->
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="18dip"
         android:layout_toLeftOf="@id/divider"
         android:layout_toRightOf="@id/icon"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/info"
-            style="@style/topbar_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7sp"
-            android:gravity="center_vertical"
             android:text="@string/app_name"
-            android:textSize="18sp" />
+            android:textColor="#ffffff"
+            style="@style/topbar_title"
+            android:layout_marginBottom="7dip" />
+        <!--  -->
 
         <TextView
             android:id="@+id/appsize"
-            style="@style/topbar_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10sp"
-            android:layout_marginTop="5sp"
             android:gravity="center_vertical"
             android:text="2.14MB"
             android:textColor="@color/dark_gray"
             android:textSize="12sp" />
+        <!-- style="@style/topbar_title" -->
     </LinearLayout>
 
 </RelativeLayout>
