@@ -2,19 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-  
-    >
-     <!-- 我的游戏 内置游戏 -->
+    android:orientation="vertical" >
+
+    <!-- 我的游戏 内置游戏 -->
 
     <RelativeLayout
         android:id="@+id/local_tab"
         android:layout_width="wrap_content"
         android:layout_height="32dip"
+        android:layout_marginBottom="5dip"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
-        android:layout_marginBottom="5dip"
-          android:background="@drawable/local_background" 
+        android:background="@drawable/local_background"
         android:gravity="center" >
 
         <LinearLayout
@@ -28,26 +27,60 @@
             android:layout_width="fill_parent"
             android:layout_height="35dip" >
 
-            <TextView
-                android:id="@+id/mygame"
+            <FrameLayout
                 android:layout_width="0dip"
                 android:layout_height="35dip"
-                android:layout_marginLeft="10dip"
-                android:layout_weight="1"
-                android:background="@drawable/mygame_btn"
-                android:gravity="center"
-                android:text="我的游戏"
-                android:textColor="@color/white" />
+                android:layout_weight="1" >
 
-            <TextView
-                android:id="@+id/sdgame_tv"
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" >
+
+                    <TextView
+                        android:id="@+id/mygame"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/mygame_btn"
+                        android:gravity="center"
+                        android:text="我的游戏"
+                        android:textColor="@color/white" />
+
+                    <ImageView
+                        android:layout_width="20dip"
+                        android:layout_height="20dip"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="22dp"
+                        android:src="@drawable/mygame_icon" />
+                </RelativeLayout>
+            </FrameLayout>
+
+            <FrameLayout
                 android:layout_width="0dip"
-                android:layout_height="30dip"
-                android:layout_marginRight="10dip"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="我的游"
-                android:textColor="@color/white" />
+                android:layout_height="35dip"
+                android:layout_weight="1" >
+  <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" >
+                <TextView
+                    android:id="@+id/sdgame_tv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginRight="10dip"
+                    android:gravity="center"
+                    android:text="安装游戏"
+                    android:textColor="@color/white" />
+                
+                    <ImageView
+                        android:layout_width="20dip"
+                        android:layout_height="20dip"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="22dp"
+                        android:src="@drawable/mygame_icon" />
+                 </RelativeLayout>
+            </FrameLayout>
+            
         </LinearLayout>
     </RelativeLayout>
 

@@ -463,8 +463,8 @@ public class MainActivity extends SlidingFragmentActivity {
 				.this.getPackageManager().getInstalledPackages(0);
 		List<AppInfo> mAppInfos = LocalUtils.InitHomePager("0", this, Root,packages);
 		LogUtils.d("mAppInfos", mAppInfos.size() + "");
-		MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos);
-		mListGame.setAdapter(adapter);
+		//MyAdapter adapter = new MyAdapter(MainActivity.this, mAppInfos);
+		//mListGame.setAdapter(adapter);
 
 	}
 

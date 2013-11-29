@@ -226,8 +226,8 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 			}
 
 			protected void onPostExecute(Void result) {
-				adapter = new MyAdapter(LocalGameActivity.this,
-						appManaInfos_temp);
+				/*adapter = new MyAdapter(LocalGameActivity.this,
+						appManaInfos_temp);*/
 				/**
 				 * 记得打开注释
 				 */

@@ -165,7 +165,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				R.drawable.main_tab_top_icon_normal);
 		localgame.setCompoundDrawablesWithIntrinsicBounds(null, local_focue, null,
 				null);
-	
 		// 预加载内容
 		new AsyncTask<Void, Void, Void>() {
 
@@ -182,7 +181,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
-				mAppInfos_temp = LocalUtils.InitHomePager("1",
+				mAppInfos_temp = LocalUtils.InitHomePager("0",
 						MyFragmengManager.this, root, packages);
 				mAppInfos.addAll(mAppInfos_temp);
 				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
@@ -665,5 +664,9 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	public static void cleanDatabases(Context context) {
 		deleteFilesByDirectory(new File("/data/data/"
 				+ context.getPackageName() + "/databases"));
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 	}
 }

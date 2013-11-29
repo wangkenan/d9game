@@ -32,6 +32,7 @@ import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
 import com.umeng.analytics.MobclickAgent;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,6 +49,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Gravity;
@@ -121,6 +123,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 			}
 		}
 	};
+	private ArrayList<Activity> appLication;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,6 +135,14 @@ public class RankFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		FragmentActivity factivity = getActivity();
+		if(factivity == null) {
+			for(Activity activity :appLication) {
+				activity.finish();
+			}
+		}
+		MarketApplication marketApplecation = (MarketApplication) getActivity().getApplication();
+		appLication = marketApplecation.getAppLication();
 		mRankListView = (ListView) inflate.findViewById(R.id.list_rank);
 		rank_pb = (ProgressBar) inflate.findViewById(R.id.rank_pb);
 		appRankInfos = new ArrayList<AppInfo>();
@@ -418,6 +429,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 	public void onDestroy() {
 		super.onDestroy();
 		unregisterPrecent();
+	
 	}
 
 	@Override

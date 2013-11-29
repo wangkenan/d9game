@@ -57,9 +57,9 @@ public class LocalIndexDetaileActivity extends Activity {
 		}
 		Log.v("nano", "nano" + mListReco);
 		LogUtils.d("mAppInfos", mAppInfos.size()+"");
-		MyAdapter adapter = new MyAdapter(LocalIndexDetaileActivity.this,
+		/*MyAdapter adapter = new MyAdapter(LocalIndexDetaileActivity.this,
 				mAppInfos);
-		mListReco.setAdapter(adapter);
+		mListReco.setAdapter(adapter);*/
 		pBar.setVisibility(View.GONE);
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override

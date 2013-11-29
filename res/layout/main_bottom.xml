@@ -7,11 +7,11 @@
     android:outAnimation="@android:anim/slide_out_right" >
 
    
-       <ImageView
+     <ImageView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/welcome_d9" 
-    /> 
+    />   
    
 
     <FrameLayout
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:drawableTop="@drawable/main_tab_recommand_icon_normal"
+                    android:drawableTop="@drawable/findgame"
                     android:gravity="center"
                     android:text="找游戏"
                     android:textColor="@color/white"
@@ -78,7 +78,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:drawableTop="@drawable/main_tab_play_normal"
+                        android:drawableTop="@drawable/localgame"
                         android:gravity="center"
                         android:text="本地游戏"
                         android:textColor="@color/white"
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:drawableTop="@drawable/main_tab_top_icon_normal"
+                    android:drawableTop="@drawable/rank"
                     android:gravity="center"
                     android:text="找游戏"
                     android:textColor="@color/white"

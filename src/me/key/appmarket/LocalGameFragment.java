@@ -113,6 +113,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private static final int RESETQUIT = 0;
 	private boolean mPreparedQuit = false;
 	private View inflate;
+	public static TextView mygame;
+	public static TextView sdgame;
 	
 	private int x;
 	private int y;
@@ -177,6 +179,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		root = LocalUtils.getRoot(getActivity());
 		pBar.setVisibility(View.VISIBLE);
 		mygamebar = (RelativeLayout) inflate.findViewById(R.id.local_tab);
+		mygame = (TextView) mygamebar.findViewById(R.id.mygame);
+		sdgame = (TextView) mygamebar.findViewById(R.id.sdgame_tv);
 		mListReco = (ListView) inflate.findViewById(R.id.mlist);
 		mListReco.setDivider(getResources().getDrawable(R.drawable.driver1));
 		//banner_local = (ImageView) inflate.findViewById(R.id.banner_local);
@@ -198,6 +202,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		checkupdata_pop.setOnClickListener(this);
 		getout_pop.setOnClickListener(this);
 		about.setOnClickListener(this); 
+		mygame.setOnClickListener(this); 
+		sdgame.setOnClickListener(this); 
+		
 		// 搜索按钮点击事件
 				search_btn = (ImageButton) inflate.findViewById(R.id.search_btn);
 				search_btn.setOnClickListener(new OnClickListener() {
@@ -229,9 +236,13 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 
 			protected void onPostExecute(Void result) {
 				adapter = new MyAdapter(getActivity(),
-						appManaInfos_temp);
+						appManaInfos_temp,mAppInfos);
 				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);
 				footView = inflate.inflate(getActivity(), R.layout.list_item, null);
+				footView.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
+				footView.findViewById(R.id.info).setVisibility(View.INVISIBLE);
+				footView.findViewById(R.id.appsize).setVisibility(View.INVISIBLE);
+				footView.findViewById(R.id.state_btn).setVisibility(View.INVISIBLE);
 				mListReco.addFooterView(footView);
 				mListReco.setAdapter(adapter);
 				updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
@@ -300,6 +311,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		setting = (ImageButton) inflate.findViewById(R.id.setting);
 		setting.setOnClickListener(this);
 		LogUtils.d("Local", width + "Local");
+		
 		mListReco.setOnScrollListener(new OnScrollListener() {
 			
 			@Override
@@ -311,8 +323,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				if(firstVisibleItem >= 1) {
+				if(firstVisibleItem >= 2) {
 					mygamebar.setVisibility(View.VISIBLE);
+					
 				} else {
 					mygamebar.setVisibility(View.INVISIBLE);
 				}
@@ -615,18 +628,12 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		/*case R.id.mygame:
-			mListReco.setAdapter(adapter);
-			mygame.setBackgroundResource(R.drawable.mygame_btn);
-			// mygame.setPadding(40, 0, 40, 0);
-			sdgame.setBackgroundResource(0);
+		case R.id.mygame:
+			adapter.setLeft(adapter.tabHolder);
 			break;
 		case R.id.sdgame_tv:
-			mListReco.setAdapter(sdAdapter);
-			sdgame.setBackgroundResource(R.drawable.mygame_btn);
-			// sdgame.setPadding(40, 0, 40, 0);
-			mygame.setBackgroundResource(0);
-			break;*/
+			adapter.setRight(adapter.tabHolder);
+			break;
 		case R.id.setting:
 			// 获取view在当前窗体的位置
 			int location[] = new int[2];

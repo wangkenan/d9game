@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.key.appmarket.adapter.ClassifyAdapter;
+import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
@@ -14,11 +15,13 @@ import me.key.appmarket.utils.LogUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +102,7 @@ public class MenuFragment extends Fragment {
 			@Override
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
+				
 				cAdapter = new ClassifyAdapter(getActivity().getApplicationContext(), list);
 				classLv.setAdapter(cAdapter);
 				classLv.setOnItemClickListener(new OnItemClickListener() {

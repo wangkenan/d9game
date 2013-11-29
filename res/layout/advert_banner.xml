@@ -10,7 +10,7 @@
         android:id="@+id/iv_advert1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/advert1"
+        android:src="@drawable/bannar1"
         android:layout_weight="1"
         android:layout_marginLeft="4dip"
         android:adjustViewBounds="true" />
@@ -19,7 +19,7 @@
         android:id="@+id/iv_advert2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/advert2"
+        android:src="@drawable/bannar2"
         android:layout_weight="1"
         android:layout_marginLeft="4dip"
         android:layout_marginRight="4dip"
@@ -29,7 +29,7 @@
         android:id="@+id/iv_advert3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/advert3"
+        android:src="@drawable/bannar3"
         android:layout_weight="1"
         android:layout_marginRight="4dip"
         android:adjustViewBounds="true" />

@@ -5,8 +5,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.key.appmarket.LocalGameFragment;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.tool.DownloadService;
+import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.tool.TxtReader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
@@ -25,6 +27,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
@@ -65,7 +68,12 @@ public class MyAdapter extends BaseAdapter {
 	private List<AppInfo> appManaInfos;
 	private List<AppInfo> downList;
 	private List<AppInfo> updateList;
+	private List<AppInfo> mAppInfos;
+	private List<AppInfo> temp = new ArrayList<AppInfo>();
 	private FinalDb db;
+	public TabHolder tabHolder;
+	// 是我的游戏还是sd卡
+	private boolean isLeft = true;
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
 			.showImageForEmptyUri(R.drawable.tempicon)
 			.showStubImage(R.drawable.tempicon).resetViewBeforeLoading(false)
@@ -73,10 +81,12 @@ public class MyAdapter extends BaseAdapter {
 			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 			.bitmapConfig(Bitmap.Config.RGB_565).build();
 
-	public MyAdapter(Context context, List<AppInfo> appManaInfos) {
+	public MyAdapter(Context context, List<AppInfo> appManaInfos,
+			List<AppInfo> mAppInfos) {
 		this.mInflater = LayoutInflater.from(context);
 		this.cnt = context;
 		this.appManaInfos = appManaInfos;
+		this.mAppInfos = mAppInfos;
 		cnt = context;
 		DisplayMetrics dm = new DisplayMetrics();
 		((Activity) cnt).getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -91,7 +101,7 @@ public class MyAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return appManaInfos.size() + 1;
+		return appManaInfos.size() + 3;
 	}
 
 	@Override
@@ -110,6 +120,9 @@ public class MyAdapter extends BaseAdapter {
 		if (position == 0) {
 			return 0;
 		} else if (position == 1) {
+			return 3;
+
+		} else if (position == 2) {
 			return 2;
 		} else {
 			return 1;
@@ -118,16 +131,16 @@ public class MyAdapter extends BaseAdapter {
 
 	@Override
 	public int getViewTypeCount() {
-		return 3;
+		return 4;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		final int newposition = position - 1;
+		final int newposition = position - 3;
 		final ViewHolder holder;
 		final ViewHolder2 viewHolder2;
-		final TabHolder tabHolder;
+
 		int type = getItemViewType(position);
 		Drawable mDrawable;
 		final AppInfo sdappInfo;
@@ -141,7 +154,6 @@ public class MyAdapter extends BaseAdapter {
 						.findViewById(R.id.icon_banner);
 				convertView.setTag(viewHolder2);
 				break;
-
 			case 1:
 				holder = new ViewHolder();
 				convertView = mInflater.inflate(R.layout.list_item, null);
@@ -164,10 +176,12 @@ public class MyAdapter extends BaseAdapter {
 						.findViewById(R.id.sdgame_tv);
 				convertView.setTag(tabHolder);
 				break;
+			case 3:
+				convertView = mInflater.inflate(R.layout.advert_banner, null);
+				break;
 			}
 		} else {
 			switch (type) {
-
 			case 1:
 				holder = (ViewHolder) convertView.getTag();
 				break;
@@ -183,7 +197,7 @@ public class MyAdapter extends BaseAdapter {
 
 		case 0:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
-			setImagePosition(R.drawable.a20131008174300, v3.banner);
+			setImagePosition(R.drawable.bannaer, v3.banner);
 			break;
 
 		/*
@@ -335,107 +349,135 @@ public class MyAdapter extends BaseAdapter {
 			boolean isUpdate = false;
 			sdappInfo = appManaInfos.get(newposition);
 			isUpdate = sdappInfo.isCanUpdate();
-			if (isUpdate) {
-				// v2.btn.setText("升级");
-			} else {
+			if (isLeft) {
+				if (isUpdate) {
+					v2.btn.setText("升级");
+				} else {
 
-				LogUtils.d("MyUpdate", sdappInfo.getPackageName() + "打开");
-				// v2.btn.setText("打开");
+					LogUtils.d("MyUpdate", sdappInfo.getPackageName() + "打开");
+					v2.btn.setText("打开");
 
-			}
-			/*
-			 * Drawable mDrawable1 = this.cnt.getResources().getDrawable(
-			 * R.drawable.action_type_software_update);
-			 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null, mDrawable1,
-			 * null, null);
-			 */
-			if (sdappInfo.getLastTime() == Long.MAX_VALUE) {
-				v2.appsize.setText("您最近没有玩过哦");
-			} else {
-				Long lastTime = sdappInfo.getLastTime();
-				long scond = lastTime / 1000;
-				long minute = scond / 60;
-				long houre = minute / 60;
-				long day = houre / 24;
-				if (scond < 60) {
-					v2.appsize.setText("您上次玩是" + scond + "秒之前");
-				} else if (minute < 60) {
-					v2.appsize.setText("您上次玩是" + minute + "分之前");
-				} else if (houre < 60) {
-					v2.appsize.setText("您上次玩是" + houre + "小时之前");
-				} else if (day < 60) {
-					v2.appsize.setText("您上次玩是" + day + "天之前");
 				}
-			}
-			/*
-			 * else { sdappInfo = mData .get((newposition - appManaInfos.size()
-			 * - downList .size()));
-			 * 
-			 * Drawable mDrawable2 = cnt.getResources().getDrawable(
-			 * R.drawable.downloaded);
-			 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null, mDrawable2,
-			 * null, null);
-			 * 
-			 * v2.btn.setText("安装"); v2.progress_view.setProgress(0); String mb
-			 * = ToolHelper.Kb2Mb(sdappInfo.getAppSize());
-			 * v2.appsize.setText(mb); }
-			 */
-			v2.btn.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View arg0) {
-					LogUtils.d("MyAdapter", "我运行了" + sdappInfo.getAppName());
-					AppUtils.launchApp(cnt, sdappInfo.getAppName());
+				/*
+				 * Drawable mDrawable1 = this.cnt.getResources().getDrawable(
+				 * R.drawable.action_type_software_update);
+				 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawable1, null, null);
+				 */
+				if (sdappInfo.getLastTime() == Long.MAX_VALUE) {
+					v2.appsize.setText("您最近没有玩过哦");
+				} else {
+					Long lastTime = sdappInfo.getLastTime();
+					long scond = lastTime / 1000;
+					long minute = scond / 60;
+					long houre = minute / 60;
+					long day = houre / 24;
+					if (scond < 60) {
+						v2.appsize.setText("您上次玩是" + scond + "秒之前");
+					} else if (minute < 60) {
+						v2.appsize.setText("您上次玩是" + minute + "分之前");
+					} else if (houre < 60) {
+						v2.appsize.setText("您上次玩是" + houre + "小时之前");
+					} else if (day < 60) {
+						v2.appsize.setText("您上次玩是" + day + "天之前");
+					}
 				}
-
-			});
-			if (isUpdate) {
+				/*
+				 * else { sdappInfo = mData .get((newposition -
+				 * appManaInfos.size() - downList .size()));
+				 * 
+				 * Drawable mDrawable2 = cnt.getResources().getDrawable(
+				 * R.drawable.downloaded);
+				 * v2.btn.setCompoundDrawablesWithIntrinsicBounds(null,
+				 * mDrawable2, null, null);
+				 * 
+				 * v2.btn.setText("安装"); v2.progress_view.setProgress(0); String
+				 * mb = ToolHelper.Kb2Mb(sdappInfo.getAppSize());
+				 * v2.appsize.setText(mb); }
+				 */
 				v2.btn.setOnClickListener(new OnClickListener() {
 
 					@Override
-					public void onClick(View v) {
-						List<AppInfo> down_temp = new ArrayList<AppInfo>();
-						File tempFile = new File(Environment
-								.getExternalStorageDirectory(), "/market/"
-								+ sdappInfo.getAppName() + ".apk");
-						if (tempFile.exists()) {
-							tempFile.delete();
-						}
-						DownloadService.downNewFile(sdappInfo, 0, 0, null);
-						// downList.add(sdappInfo);
-						// notifyDataSetChanged();
-						sdappInfo.setDown(true);
-						sdappInfo.setIspause(false);
-						Intent intent = new Intent();
-						Intent downState = new Intent();
+					public void onClick(View arg0) {
+						LogUtils.d("MyAdapter", "我运行了" + sdappInfo.getAppName());
+						AppUtils.launchApp(cnt, sdappInfo.getAppName());
+					}
 
-						downState.setAction(tempFile.getAbsolutePath() + "down");
-						downState.putExtra("isPause", sdappInfo.isIspause());
-						cnt.sendBroadcast(downState);
-						intent.setAction(MarketApplication.PRECENT);
-						cnt.sendBroadcast(intent);
-						Toast.makeText(cnt,
-								sdappInfo.getAppName() + " 开始下载...",
-								Toast.LENGTH_SHORT).show();
-						/*
-						 * v2.btn.setVisibility(View.GONE);
-						 * v2.progress_view.setVisibility(View.VISIBLE);
-						 */
+				});
+				if (isUpdate) {
+					v2.btn.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							List<AppInfo> down_temp = new ArrayList<AppInfo>();
+							File tempFile = new File(Environment
+									.getExternalStorageDirectory(), "/market/"
+									+ sdappInfo.getAppName() + ".apk");
+							if (tempFile.exists()) {
+								tempFile.delete();
+							}
+							DownloadService.downNewFile(sdappInfo, 0, 0, null);
+							// downList.add(sdappInfo);
+							// notifyDataSetChanged();
+							sdappInfo.setDown(true);
+							sdappInfo.setIspause(false);
+							Intent intent = new Intent();
+							Intent downState = new Intent();
+
+							downState.setAction(tempFile.getAbsolutePath()
+									+ "down");
+							downState.putExtra("isPause", sdappInfo.isIspause());
+							cnt.sendBroadcast(downState);
+							intent.setAction(MarketApplication.PRECENT);
+							cnt.sendBroadcast(intent);
+							Toast.makeText(cnt,
+									sdappInfo.getAppName() + " 开始下载...",
+									Toast.LENGTH_SHORT).show();
+							/*
+							 * v2.btn.setVisibility(View.GONE);
+							 * v2.progress_view.setVisibility(View.VISIBLE);
+							 */
+						}
+					});
+				}
+				/*
+				 * int idx = Integer.parseInt(sdappInfo.getIdx());
+				 * v2.progress_view
+				 * .setProgress(DownloadService.getPrecent(idx)); boolean
+				 * isDownLoaded = DownloadService.isDownLoaded(sdappInfo
+				 * .getAppName()); if (isDownLoaded ){
+				 * v2.progress_view.setVisibility(View.GONE);
+				 * v2.btn.setVisibility(View.VISIBLE); }
+				 */
+				// v2.progress_view.setVisibility(View.VISIBLE);
+				v2.info.setText(sdappInfo.getAppName());
+				v2.icon.setVisibility(View.VISIBLE);
+				v2.icon.setImageDrawable(sdappInfo.getAppIcon());
+			} else {
+				v2.btn.setText("安装");
+				v2.progress_view.setProgress(0);
+				String mb = ToolHelper.Kb2Mb(sdappInfo.getAppSize());
+				v2.appsize.setText(mb);
+				v2.progress_view.setProgress(0);
+				// v2.progress_view.setVisibility(View.VISIBLE);
+				v2.info.setText(sdappInfo.getAppName());
+				v2.icon.setVisibility(View.VISIBLE);
+				Drawable appIcon = sdappInfo.getAppIcon();
+				if (appIcon != null) {
+					v2.icon.setImageDrawable(appIcon);
+				} else {
+					ImageLoader.getInstance().displayImage(
+							sdappInfo.getIconUrl(), v2.icon, options);
+				}
+
+				v2.btn.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						LogUtils.d("MyAdapter", "我安装了" + sdappInfo.getAppName());
+						installApp(sdappInfo);
 					}
 				});
 			}
-			/*
-			 * int idx = Integer.parseInt(sdappInfo.getIdx()); v2.progress_view
-			 * .setProgress(DownloadService.getPrecent(idx)); boolean
-			 * isDownLoaded = DownloadService.isDownLoaded(sdappInfo
-			 * .getAppName()); if (isDownLoaded ){
-			 * v2.progress_view.setVisibility(View.GONE);
-			 * v2.btn.setVisibility(View.VISIBLE); }
-			 */
-			// v2.progress_view.setVisibility(View.VISIBLE);
-			v2.info.setText(sdappInfo.getAppName());
-			v2.icon.setVisibility(View.VISIBLE);
-			v2.icon.setImageDrawable(sdappInfo.getAppIcon());
 			break;
 		case 2:
 			final TabHolder th = (TabHolder) convertView.getTag();
@@ -443,17 +485,17 @@ public class MyAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View v) {
-					th.mygame.setBackgroundResource(R.drawable.mygame_btn);
-					th.sdgame.setBackgroundResource(0);
+					setLeft(th);
 				}
+
 			});
 			th.sdgame.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					th.sdgame.setBackgroundResource(R.drawable.mygame_btn);
-					th.mygame.setBackgroundResource(0);
+					setRight(th);
 				}
+
 			});
 			break;
 		}
@@ -508,7 +550,7 @@ public class MyAdapter extends BaseAdapter {
 	private void setImagePosition(int resId, ImageView banner) {
 		Bitmap bm = BitmapFactory.decodeResource(cnt.getResources(), resId);
 		Bitmap newbitmap = Bitmap.createBitmap((width - gapPy),
-				(int) ((width - gapPy) / 5.34), bm.getConfig());
+				(int) ((width - gapPy) / 3.87), bm.getConfig());
 		getNewBitMapPos(bm, newbitmap);
 		banner.setImageBitmap(newbitmap);
 	}
@@ -536,4 +578,31 @@ public class MyAdapter extends BaseAdapter {
 		return (int) (dip * scale + 0.5f * (dip >= 0 ? 1 : -1));
 	}
 
+	public void setLeft(final TabHolder th) {
+		if(!isLeft) {
+		th.mygame.setBackgroundResource(R.drawable.mygame_btn);
+		th.sdgame.setBackgroundResource(0);
+		LocalGameFragment.mygame.setBackgroundResource(R.drawable.mygame_btn);
+		LocalGameFragment.sdgame.setBackgroundResource(0);
+		temp = appManaInfos;
+		appManaInfos = mAppInfos;
+		mAppInfos = temp;
+		notifyDataSetChanged();
+		isLeft = true;
+		}
+	}
+
+	public void setRight(final TabHolder th) {
+		if(isLeft){
+		th.sdgame.setBackgroundResource(R.drawable.mygame_btn);
+		th.mygame.setBackgroundResource(0);
+		LocalGameFragment.sdgame.setBackgroundResource(R.drawable.mygame_btn);
+		LocalGameFragment.mygame.setBackgroundResource(0);
+		temp = mAppInfos;
+		mAppInfos = appManaInfos;
+		appManaInfos = temp;
+		notifyDataSetChanged();
+		isLeft = false;
+	}
+	}
 }
