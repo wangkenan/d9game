@@ -5,7 +5,7 @@
     android:orientation="vertical" >
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="140dip"
+        android:layout_height="170dip"
         android:layout_gravity="center" >
 
         <Gallery
