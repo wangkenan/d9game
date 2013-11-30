@@ -1,6 +1,10 @@
 package me.key.appmarket.utils;
 
-import java.util.ArrayList;
+import android.graphics.Bitmap;
+
+import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class Global {
 	
@@ -45,5 +49,12 @@ public class Global {
 	public static final int DOWN_DATA_SUCCESSFULL = 208;
 	public static final int DOWN_DATA_FAILLY = 209;
 	public static final int DOWN_DATA_EMPTY = 210;
+	
+	public final static DisplayImageOptions options = new DisplayImageOptions.Builder()
+	.showImageForEmptyUri(R.drawable.a20131008173440)
+	.showStubImage(R.drawable.a20131008173440).resetViewBeforeLoading(false)
+	.delayBeforeLoading(50).cacheInMemory(true).cacheOnDisc(true)
+	.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+	.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 }

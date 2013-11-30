@@ -166,7 +166,7 @@ public class NewRankAdapter extends BaseAdapter {
 				viewHolder2.icon = (ImageView) convertvView
 						.findViewById(R.id.icon);
 				viewHolder2.name = (TextView) convertvView
-						.findViewById(R.id.app_name);
+						.findViewById(R.id.app_name2);
 				viewHolder2.size = (TextView) convertvView
 						.findViewById(R.id.appsize);
 				viewHolder2.tvdown = (TextView) convertvView

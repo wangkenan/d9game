@@ -95,7 +95,7 @@ public class RankAdapter extends BaseAdapter {
 			convertvView = lay.inflate(R.layout.app_list_item, null);
 			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon);
 			viewHolder.name = (TextView) convertvView
-					.findViewById(R.id.app_name);
+					.findViewById(R.id.app_name2);
 			viewHolder.size = (TextView) convertvView
 					.findViewById(R.id.appsize);
 			viewHolder.tvdown = (TextView) convertvView

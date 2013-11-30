@@ -61,7 +61,7 @@
     
         
     <!-- 详情页 -->
-    <string name="app_detail_download_counts">下载：%1$s</string>
+    <string name="app_detail_download_counts">下载：%1$s次</string>
     <string name="app_detail_version">版本：%1$s</string>
     <string name="app_detail_size">大小：%1$s</string>
     <string name="app_detail_update_time">时间：%1$s</string>

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.adapter.CommentAdapter;
+import me.key.appmarket.adapter.GalleryAdapter;
+import me.key.appmarket.adapter.GridViewAdapter;
 import me.key.appmarket.adapter.ImageAdapter;
 import me.key.appmarket.network.AppDetailRequest;
 import me.key.appmarket.network.AppDetailResponse;
@@ -35,6 +37,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -45,12 +48,17 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -64,22 +72,24 @@ import com.umeng.analytics.MobclickAgent;
 public class AppDetailActivity extends Activity implements OnClickListener {
 
 	private static final String TAG = "AppDetailActivity";
+	
+	private GalleryAdapter galleryAdapter;
+	private GridViewAdapter gridviewAdapter;
 
 	private ImageView backIcon;
-	private ImageView appIcon;
-	private TextView appName;
+	private ImageView appIcon1, appIcon2;
+	private TextView appName1, appName2;
 	private TextView appDeveloper;
-	private TextView appDownloadCounts;
-
-	private GalleryFlow appImgGallery;
+	private TextView appDownloadCounts1, appDownloadCounts2;
 
 	private TextView appVersion;
-	private TextView appSize;
+	private TextView appSize1, appSize2;
 	private TextView appUpdateTime;
 
 	private EllipsizingTextView appDes;
 	private ImageButton appDesExpand;
-	private Button appDownload;
+	private TextView tvOperate;
+	private ImageView ivOperate;
 
 	private CustomScrollView scrollView;
 
@@ -89,7 +99,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	private boolean isDowned = false;
 	private boolean isDowning = false;
 	private ProgressDialog myDialog;
-	private TextView t1, t2;
+	private TextView appDesc, appComment;
 	private AppInfo appInfo;
 	private String appid;
 	private ArrayList<CommentInfo> commentList = new ArrayList<CommentInfo>();
@@ -98,17 +108,23 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	// 是否是下载状态
 	private boolean isDownLoading;
 	private long count;
-	// 设置ImageLoade初始化信息
-	private DisplayImageOptions options = new DisplayImageOptions.Builder()
-			.showImageForEmptyUri(R.drawable.tempicon)
-			.showStubImage(R.drawable.tempicon).resetViewBeforeLoading(false)
-			.delayBeforeLoading(50).cacheInMemory(false).cacheOnDisc(true)
-			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-			.bitmapConfig(Bitmap.Config.RGB_565).build();
+
+	// 选中状态
+	private Integer[] thumbIds = { R.drawable.ball_selected,
+			R.drawable.ball_unselected };
+	private int currentIndex = 0;
+
+	private int gridviewSpac = 10;
+	private int gridviewXpadding = 10;
+	private int gridviewYpadding = 10;
 	File cache = new File(Environment.getExternalStorageDirectory(),
 			"detail_cache");
 	private SharedPreferences sp;
 	private File tempFile;
+
+	private Gallery picGallery;
+
+	private GridView picGridview;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,33 +136,41 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.app_detail_main);
 		MarketApplication.getInstance().getAppLication().add(this);
 		backIcon = (ImageView) findViewById(R.id.back_icon);
-		appIcon = (ImageView) findViewById(R.id.app_icon);
-		appName = (TextView) findViewById(R.id.app_name);
+		appIcon1 = (ImageView) findViewById(R.id.app_icon1);
+		appIcon2 = (ImageView) findViewById(R.id.app_icon2);
+		appName1 = (TextView) findViewById(R.id.app_name1);
+		appName2 = (TextView) findViewById(R.id.app_name2);
 		appDeveloper = (TextView) findViewById(R.id.app_developer);
-		appDownloadCounts = (TextView) findViewById(R.id.app_download_counts);
+		appDownloadCounts1 = (TextView) findViewById(R.id.app_download_counts1);
+		appDownloadCounts2 = (TextView) findViewById(R.id.app_download_counts2);
 
-		appImgGallery = (GalleryFlow) findViewById(R.id.app_des_pic);
+		picGallery = (Gallery) findViewById(R.id.gallery_square);
+		picGridview = (GridView) findViewById(R.id.square_gridview);
 
 		appVersion = (TextView) findViewById(R.id.app_version);
-		appSize = (TextView) findViewById(R.id.app_size);
+		appSize1 = (TextView) findViewById(R.id.app_size1);
+		appSize2 = (TextView) findViewById(R.id.app_size2);
 		appUpdateTime = (TextView) findViewById(R.id.app_update_time);
 
 		appDes = (EllipsizingTextView) findViewById(R.id.app_description);
 		appDesExpand = (ImageButton) findViewById(R.id.app_des_expand);
-		appDownload = (Button) findViewById(R.id.app_download);
+		tvOperate = (TextView) findViewById(R.id.tv_operate_app_detail);
+		ivOperate=(ImageView) findViewById(R.id.iv_operate_app_detail);
 
 		scrollView = (CustomScrollView) findViewById(R.id.scroll_app);
 
-		appDownloadCounts.setText(getString(
+		appDownloadCounts1.setText(getString(
+				R.string.app_detail_download_counts, ""));
+		appDownloadCounts2.setText(getString(
 				R.string.app_detail_download_counts, ""));
 		appVersion.setText(getString(R.string.app_detail_version, ""));
 		appUpdateTime.setText(getString(R.string.app_detail_update_time, ""));
-		appSize.setText(getString(R.string.app_detail_size, ""));
+		appSize1.setText(getString(R.string.app_detail_size, ""));
+		appSize2.setText(getString(R.string.app_detail_size, ""));
 
 		appDesExpand.setOnClickListener(this);
-		// appDownload.setOnClickListener(this);
+		tvOperate.setOnClickListener(this);
 		backIcon.setOnClickListener(this);
-		appIcon.setOnClickListener(this);
 		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
 		IntentFilter filter = new IntentFilter();
 
@@ -167,24 +191,28 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		sp = getSharedPreferences("down", MODE_PRIVATE);
 		tempFile = new File(Environment.getExternalStorageDirectory(),
 				"/market/" + appInfo.getAppName() + ".apk");
-		t1 = (TextView) findViewById(R.id.text1);
-		t2 = (TextView) findViewById(R.id.text2);
-		t1.setSelected(true);
-		t1.setOnClickListener(new OnClickListener() {
+		appDesc = (TextView) findViewById(R.id.tv_appdesc_app_detail);
+		appComment = (TextView) findViewById(R.id.tv_appcomment_app_detail);
+		appDesc.setSelected(true);
+		appDesc.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				t1.setSelected(true);
-				t2.setSelected(false);
+				appDesc.setSelected(true);
+				appComment.setSelected(false);
+				appDesc.setBackgroundResource(R.drawable.bk_navigate_tv_appdetail);
+				appComment.setBackgroundColor(00000000);
 
 				commentListView.setVisibility(View.GONE);
 				scrollView.setVisibility(View.VISIBLE);
 			}
 		});
-		t2.setOnClickListener(new OnClickListener() {
+		appComment.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				t2.setSelected(true);
-				t1.setSelected(false);
+				appComment.setSelected(true);
+				appDesc.setSelected(false);
+				appComment.setBackgroundResource(R.drawable.bk_navigate_tv_appdetail);
+				appDesc.setBackgroundColor(00000000);
 
 				scrollView.setVisibility(View.GONE);
 				commentListView.setVisibility(View.VISIBLE);
@@ -214,7 +242,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					idx = response.getIdx();
 					name = response.getAppName();
 
-					isInstalled = AppUtils.isInstalled(response.getAppPackageName());
+					isInstalled = AppUtils.isInstalled(response
+							.getAppPackageName());
 					// 是否已经下载完
 					isDowned = DownloadService.isDownLoaded(name);
 					// 是否正在下载
@@ -224,12 +253,16 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					appDesExpand.setSelected(true);
 
 					if (response.getAppName() != null) {
-						appName.setText(response.getAppName());
+						appName1.setText(response.getAppName());
+						appName2.setText(response.getAppName());
 						appInfo.setAppName(response.getAppName());
 
 					}
 					if (response.getAppDownloadCounts() != null) {
-						appDownloadCounts.setText(getString(
+						appDownloadCounts1.setText(getString(
+								R.string.app_detail_download_counts,
+								response.getAppDownloadCounts()));
+						appDownloadCounts2.setText(getString(
 								R.string.app_detail_download_counts,
 								response.getAppDownloadCounts()));
 						appInfo.setAppDownCount(response.getAppDownloadCounts());
@@ -246,13 +279,16 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 								response.getAppUpdateTime()));
 					}
 					if (response.getAppSize() != null) {
-						appSize.setText(getString(R.string.app_detail_size,
+						appSize1.setText(getString(R.string.app_detail_size,
+								formetFileSize(Long.parseLong(response
+										.getAppSize()))));
+						appSize2.setText(getString(R.string.app_detail_size,
 								formetFileSize(Long.parseLong(response
 										.getAppSize()))));
 						appInfo.setAppSize(response.getAppSize());
 					}
 					if (response.getAppUrl() != null) {
-						appDownload.setTag(response.getAppUrl());
+						tvOperate.setTag(response.getAppUrl());
 						appInfo.setAppUrl(response.getAppUrl());
 
 					}
@@ -261,8 +297,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						appInfo.setAppDescri(response.getAppDes());
 					}
 					if (response.getAppIconUrl() != null) {
-						asyncloadImage(appIcon,
-								Global.MAIN_URL + response.getAppIconUrl());
+						ImageLoader.getInstance().displayImage(Global.MAIN_URL + response.getAppIconUrl(), appIcon1, Global.options);
+						ImageLoader.getInstance().displayImage(Global.MAIN_URL + response.getAppIconUrl(), appIcon2, Global.options);
 						if (appInfo.getIconUrl() == null) {
 							LogUtils.d("AppDetail", response.getAppIconUrl());
 							appInfo.setIconUrl(response.getAppIconUrl());
@@ -293,10 +329,10 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					 * appDownload.setText("下载"); }
 					 */
 					setDownState(0);
-					appDownload.setCompoundDrawablesWithIntrinsicBounds(
-							getResources().getDrawable(
-									R.drawable.btn_icon_download_disable),
-							null, null, null);
+//					appOperate.setCompoundDrawablesWithIntrinsicBounds(
+//							getResources().getDrawable(
+//									R.drawable.btn_icon_download_disable),
+//							null, null, null);
 					/*
 					 * appDownload.setText("下载("+
 					 * formetFileSize(Long.parseLong(response
@@ -318,37 +354,76 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					 * 20, 0); iv.setLayoutParams(params);
 					 * appImgGallery.addView(iv); } }
 					 */
-					final String[] appImgUrl = response.getAppImgUrl();
-					final ArrayList<Bitmap> bitmapList = new ArrayList<Bitmap>();
-					new AsyncTask<Void, Void, Void>() {
-						@Override
-						protected Void doInBackground(Void... params) {
-							if (appImgUrl[0].length() > 0) {
-								LogUtils.d("AppDetail", appImgUrl[0]+"{}{}{}");
-								for (String url : appImgUrl) {
-									LogUtils.d("AppDetail", url);
-									try {
-										Bitmap originalImage = AsyncImageLoader
-												.getBitmap(new URI(url));
-										bitmapList.add(originalImage);
-									} catch (URISyntaxException e) {
-										e.printStackTrace();
-									}
+					String[] appImgUrl = response.getAppImgUrl();
+					// infoshow_gallery 赋值
+					galleryAdapter = new GalleryAdapter(AppDetailActivity.this, appImgUrl);
+					picGallery.setAdapter(galleryAdapter);
+
+					// Gallery 赋值
+					gridviewAdapter = new GridViewAdapter(AppDetailActivity.this, picGallery,appImgUrl);
+					picGridview.setAdapter(gridviewAdapter);
+					gridviewAdapter.autoPlay();
+					Bitmap bmp = new BitmapFactory().decodeResource(
+							getResources(), R.drawable.ball_unselected);
+					int width = bmp.getWidth();
+					int height = bmp.getHeight();
+					picGridview.setColumnWidth(width);
+					picGridview.setHorizontalSpacing(gridviewSpac);
+					picGridview.setNumColumns(appImgUrl.length);
+					LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) picGridview
+							.getLayoutParams();
+					lp.width = width * appImgUrl.length + gridviewSpac
+							* (appImgUrl.length - 1) + (gridviewXpadding << 1);
+					lp.height = height + (gridviewYpadding << 1);
+					picGridview.setLayoutParams(lp);
+					picGridview.setPadding(gridviewXpadding,
+							gridviewYpadding, gridviewXpadding,
+							gridviewYpadding);
+					// Gallery OnItemSelected
+					picGallery
+							.setOnItemSelectedListener(new Gallery.OnItemSelectedListener() {
+
+								@Override
+								public void onItemSelected(
+										AdapterView<?> parent, View view,
+										int position, long id) {
+									// TODO Auto-generated method stub
+									// 设置当前选中的Index
+									gridviewAdapter.currentIndex = position;
+									// 改变GridView显示
+									gridviewAdapter.notifyDataSetInvalidated();
 								}
-							}
-							return null;
-						}
 
-						protected void onPostExecute(Void result) {
-							ImageAdapter adapter = new ImageAdapter(
-									AppDetailActivity.this, bitmapList);
-							adapter.createReflectedImages();// 创建倒影效果
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// TODO Auto-generated method stub
 
-							appImgGallery.setFadingEdgeLength(0);
-							appImgGallery.setSpacing(-100); // 图片之间的间距
-							appImgGallery.setAdapter(adapter);
-						};
-					}.execute();
+								}
+
+							});
+					// Gallery OnItemClick
+					picGridview
+							.setOnItemClickListener(new OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> parent,
+										View view, int position, long id) {
+									// TODO Auto-generated method stub
+									// 设置当前选中的Index
+									currentIndex = position;
+									// 改变GridView显示
+									gridviewAdapter.notifyDataSetInvalidated();
+									// 改变Gallery显示
+									picGallery.setSelection(currentIndex);
+								}
+
+							});
+					// 释放图片资源
+					if (bmp != null && !bmp.isRecycled()) {
+						bmp.recycle();
+						bmp = null;
+					}
 
 				} else {
 					Toast.makeText(AppDetailActivity.this, "获取失败",
@@ -358,45 +433,45 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		});
 	}
 
-	/**
-	 * 下载图片，并显示
-	 * 
-	 * @param iv_header
-	 * @param path
-	 */
-	private void asyncloadImage(ImageView iv_header, String path) {
-		Log.d(TAG, "download pic url: " + path);
-		AsyncImageTask task = new AsyncImageTask(iv_header);
-		task.execute(path);
-	}
-
-	private final class AsyncImageTask extends AsyncTask<String, Integer, Uri> {
-
-		private ImageView iv_header;
-
-		public AsyncImageTask(ImageView iv_header) {
-			this.iv_header = iv_header;
-		}
-
-		@Override
-		protected Uri doInBackground(String... params) {
-			try {
-				return ToolHelper.getImageURI(params[0], cache);
-			} catch (Exception e) {
-				return null;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(Uri result) {
-			super.onPostExecute(result);
-			if (iv_header != null && result != null) {
-				// iv_header.setImageURI(result);
-				ImageLoader.getInstance().displayImage(result.toString(),
-						iv_header, options);
-			}
-		}
-	}
+//	/**
+//	 * 下载图片，并显示
+//	 * 
+//	 * @param iv_header
+//	 * @param path
+//	 */
+//	private void asyncloadImage(ImageView iv_header, String path) {
+//		Log.d(TAG, "download pic url: " + path);
+//		AsyncImageTask task = new AsyncImageTask(iv_header);
+//		task.execute(path);
+//	}
+//
+//	private final class AsyncImageTask extends AsyncTask<String, Integer, Uri> {
+//
+//		private ImageView iv_header;
+//
+//		public AsyncImageTask(ImageView iv_header) {
+//			this.iv_header = iv_header;
+//		}
+//
+//		@Override
+//		protected Uri doInBackground(String... params) {
+//			try {
+//				return ToolHelper.getImageURI(params[0], cache);
+//			} catch (Exception e) {
+//				return null;
+//			}
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Uri result) {
+//			super.onPostExecute(result);
+//			if (iv_header != null && result != null) {
+//				// iv_header.setImageURI(result);
+//				ImageLoader.getInstance().displayImage(result.toString(),
+//						iv_header, options);
+//			}
+//		}
+//	}
 
 	@Override
 	public void onClick(View v) {
@@ -424,7 +499,6 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		 * "  idx=" + idx + " url=" + appDownload.getTag());
 		 * DownloadService.downNewFile(appInfo, 0, 0, null); } } break;
 		 */
-		case R.id.app_icon:// 返回
 		case R.id.back_icon:
 			AppDetailActivity.this.finish();
 			break;
@@ -543,12 +617,17 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 			count = sp.getLong(tempFile.getAbsolutePath() + "precent", 0);
 			if (intent.getAction().equals(MarketApplication.PRECENT)) {
 				if (appInfo.isIspause()) {
-					appDownload.setText("暂停" + "(" + count + "%)");
+					//appOperate.setText("暂停" + "(" + count + "%)");
+					tvOperate.setText("暂停");
+					//ivOperate.setImageResource(resId);
 				} else {
-					appDownload.setText("下载中" + "(" + count + "%)");
+					//appOperate.setText("下载中" + "(" + count + "%)");
+					tvOperate.setText("下载中");
+					ivOperate.setImageResource(R.drawable.install_btn);
 				}
 				if (DownloadService.isDownLoaded(appInfo.getAppName())) {
-					appDownload.setText("安装");
+					tvOperate.setText("安装");
+					ivOperate.setImageResource(R.drawable.install_btn);
 				}
 				/*
 				 * if(idx != null) isDowning = DownloadService
@@ -585,7 +664,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		isDownLoading = DownloadService.isDownLoading(idx);
 		if (appInfo.isIspause()) {
 			LogUtils.d("ture", appInfo.isIspause() + "");
-			appDownload.setText("暂停" + "(" + count + "%)");
+			//appOperate.setText("暂停" + "(" + count + "%)");
+			tvOperate.setText("暂停");
+			
 			// v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 			LogUtils.d("new", "我是下载中暂停" + appInfo.getAppName());
 			if (!isDownLoaded) {
@@ -594,7 +675,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				// v1.tvdown.setVisibility(View.VISIBLE);
 			}
 		} else {
-			appDownload.setText("下载中" + "(" + count + "%)");
+			//appOperate.setText("下载中" + "(" + count + "%)");
+			tvOperate.setText("下载中");
+			ivOperate.setImageResource(R.drawable.install_btn);
 			LogUtils.d("new", "我是暂停中下载" + appInfo.getAppName());
 			if (!isDownLoaded) {
 				LogUtils.d("new", "我执行了暂停中下载" + appInfo.getAppName());
@@ -627,14 +710,16 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 			 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 			 * mDrawableicon, null, null);
 			 */
-			appDownload.setText("安装");
+			tvOperate.setText("安装");
+			ivOperate.setImageResource(R.drawable.install_btn);
 			/*
 			 * v1.progress_view.setProgress(100);
 			 * v1.progress_view.setVisibility(View.INVISIBLE);
 			 * v1.tvdown.setVisibility(View.VISIBLE);
 			 */
 		} else if (!isDownLoading) {
-			appDownload.setText("下载");
+			tvOperate.setText("下载");
+			ivOperate.setImageResource(R.drawable.install_btn);
 			/*
 			 * mDrawable = mContext.getResources().getDrawable(
 			 * R.layout.mydown_buton);
@@ -652,7 +737,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 			// LogUtils.d("sa", length+"");
 			if (length != 0 && DownloadService.isExist(appInfo.getAppName())) {
 				LogUtils.d("test", "已经存在");
-				appDownload.setText("暂停" + "(" + count + "%)");
+				//tvOperate.setText("暂停" + "(" + count + "%)");
+				tvOperate.setText("暂停");
 
 				// v1.progress_view.setProgress(count);
 			} else if (length != 0
@@ -663,7 +749,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 			}
 		}
 		if (appInfo.isInstalled()) {
-			appDownload.setText("打开");
+			tvOperate.setText("打开");
+			ivOperate.setImageResource(R.drawable.one_key);
 			/*
 			 * v1.progress_view.setVisibility(View.INVISIBLE);
 			 * v1.tvdown.setVisibility(View.VISIBLE);
@@ -692,7 +779,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		 * sendBroadcast(downState); LogUtils.d("pro", "我发出了下载中暂停广播");
 		 * appInfo.setIspause( !appInfo.isIspause()); } });
 		 */
-		appDownload.setOnClickListener(new OnClickListener() {
+		tvOperate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				if (appInfo.isInstalled()) {
@@ -712,10 +799,13 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					sendBroadcast(downState);
 					LogUtils.d("pro", "我发出了暂停中下载广播");
 					if (!appInfo.isIspause()) {
-						appDownload.setText("暂停" + "(" + count + "%)");
+						//appOperate.setText("暂停" + "(" + count + "%)");
+						tvOperate.setText("暂停");
 						appInfo.setDown(false);
 					} else {
-						appDownload.setText("下载中" + "(" + count + "%)");
+						//appOperate.setText("下载中" + "(" + count + "%)");
+						tvOperate.setText("下载中");
+						ivOperate.setImageResource(R.drawable.install_btn);
 						appInfo.setDown(true);
 						/*
 						 * v1.progress_view.setVisibility(View.VISIBLE);
@@ -750,7 +840,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					 * position).getIdx()), appInfos.get(position)
 					 * .getAppName(),length,0);
 					 */
-					LogUtils.d("Local", appInfo.getId()+"id"+appInfo.getAppName());
+					LogUtils.d("Local",
+							appInfo.getId() + "id" + appInfo.getAppName());
 					DownloadService.downNewFile(appInfo, length, 0, null);
 					appInfo.setDown(true);
 					Intent intent = new Intent();
@@ -760,7 +851,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					Toast.makeText(AppDetailActivity.this,
 							appInfo.getAppName() + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
-					appDownload.setText("下载中" + "(" + count + "%)");
+					//appOperate.setText("下载中" + "(" + count + "%)");
+					tvOperate.setText("下载中");
+					ivOperate.setImageResource(R.drawable.install_btn);
 					/*
 					 * v1.progress_view.setVisibility(View.VISIBLE);
 					 * v1.tvdown.setVisibility(View.INVISIBLE);
@@ -784,8 +877,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				String installAppName = AppUtils.getAppName(context,
 						packageName);
 				appInfo.setInstalled(true);
-				appDownload.setText("打开");
-				appDownload.setOnClickListener(new OnClickListener() {
+				tvOperate.setText("打开");
+				ivOperate.setImageResource(R.drawable.one_key);
+				tvOperate.setOnClickListener(new OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
