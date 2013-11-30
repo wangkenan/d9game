@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+     android:id="@+id/local_tab" 
+    >
 
     <!-- 我的游戏 内置游戏 -->
+	<View
+	    android:layout_width="fill_parent"
+	    android:layout_height="32dip"
+	    android:background="@drawable/navigation_backgroung" 
+	    android:layout_marginTop="3dip"
+	    />
 
-    <RelativeLayout
-        android:id="@+id/local_tab"
-        android:layout_width="wrap_content"
-        android:layout_height="32dip"
-        android:layout_marginBottom="5dip"
-        android:layout_marginLeft="5dip"
-        android:layout_marginRight="5dip"
-        android:background="@drawable/local_background"
-        android:gravity="center" >
 
         <LinearLayout
+            android:id="@+id/navigation"
             android:layout_width="fill_parent"
-            android:layout_height="27dip"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/title_shape" >
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="35dip" >
+            android:layout_height="35dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip" 
+            >
 
             <FrameLayout
                 android:layout_width="0dip"
@@ -35,7 +31,6 @@
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" >
-
                     <TextView
                         android:id="@+id/mygame"
                         android:layout_width="fill_parent"
@@ -59,18 +54,20 @@
                 android:layout_width="0dip"
                 android:layout_height="35dip"
                 android:layout_weight="1" >
-  <RelativeLayout
+
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" >
-                <TextView
-                    android:id="@+id/sdgame_tv"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginRight="10dip"
-                    android:gravity="center"
-                    android:text="安装游戏"
-                    android:textColor="@color/white" />
-                
+
+                    <TextView
+                        android:id="@+id/sdgame_tv"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginRight="10dip"
+                        android:gravity="center"
+                        android:text="安装游戏"
+                        android:textColor="@color/white" />
+
                     <ImageView
                         android:layout_width="20dip"
                         android:layout_height="20dip"
@@ -78,10 +75,13 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="22dp"
                         android:src="@drawable/mygame_icon" />
-                 </RelativeLayout>
+                </RelativeLayout>
             </FrameLayout>
-            
         </LinearLayout>
-    </RelativeLayout>
-
-</LinearLayout>
+<View
+    android:layout_below="@+id/navigation"
+    android:layout_width="fill_parent"
+    android:layout_height="5dip"
+    android:background="@drawable/shade" 
+    />
+</RelativeLayout>
