@@ -168,7 +168,7 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 		pBar = (ProgressBar) findViewById(R.id.pro_bar_loacl);
 		root = LocalUtils.getRoot(this);
 		pBar.setVisibility(View.VISIBLE);
-		mygamebar = (LinearLayout) findViewById(R.id.mygamebar);
+		mygamebar = (LinearLayout) findViewById(R.id.mygame);
 		//banner_local = (ImageView) findViewById(R.id.banner_local);
 		setImagePosition(R.drawable.a20131008174300, banner_local);
 		 banner_local.setOnClickListener(new OnClickListener() {
@@ -622,11 +622,11 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 				MarketApplication.getInstance().reflashAppList();
 				String packageName = intent.getDataString().substring(8);
 				LogUtils.d("YTL", "卸载了:" + packageName + "包名的程序");
-				for (int i = 0; i < appManaInfos_temp.size(); i++) {
+				for (int i = 0; i < mAppInfos.size(); i++) {
 					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
 							.getPackageName() + "");
 					if (packageName != null
-							&& packageName.equals(appManaInfos_temp.get(i)
+							&& packageName.equals(mAppInfos.get(i)
 									.getPackageName())) {
 						appManaInfos_temp.get(i).setInstalled(false);
 						break;
@@ -871,7 +871,7 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 	  private static void deleteFilesByDirectory(File directory) {
 	        if (directory != null && directory.exists() && directory.isDirectory()) {
 	            for (File item : directory.listFiles()) {
-	                item.delete();
+	                item.delete(); 
 	            }
 	        }
 	    }
