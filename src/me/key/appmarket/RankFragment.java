@@ -125,7 +125,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 		}
 	};
 	private ArrayList<Activity> appLication;
-	private RelativeLayout tabRank2;
+	private View tabRank2;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -150,7 +150,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
 		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
-		tabRank2 = (RelativeLayout)inflate.findViewById(R.id.rank_tab_rela);
+		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
 		tabRank.setPadding(0, 5, 0, 10);
 		advertBanner.setPadding(0, 10, 0, 10);
 		mRankListView.addHeaderView(testView);
