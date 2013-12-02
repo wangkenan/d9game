@@ -44,5 +44,11 @@
             </FrameLayout>
         </LinearLayout>
     </RelativeLayout>
+    <View
+    android:layout_below="@+id/navigation"
+    android:layout_width="fill_parent"
+    android:layout_height="5dip"
+    android:background="@drawable/shade" 
+    />
 
 </LinearLayout>

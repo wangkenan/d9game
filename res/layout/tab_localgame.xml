@@ -38,7 +38,8 @@
                         android:background="@drawable/mygame_btn"
                         android:gravity="center"
                         android:text="我的游戏"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="3dip" />
 
                     <ImageView
                         android:layout_width="20dip"
@@ -66,7 +67,8 @@
                         android:layout_marginRight="10dip"
                         android:gravity="center"
                         android:text="安装游戏"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="3dip" />
 
                     <ImageView
                         android:layout_width="20dip"
