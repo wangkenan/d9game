@@ -151,7 +151,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
 		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
 		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
-		tabRank.setPadding(0, 5, 0, 10);
+		//tabRank.setPadding(0, 5, 0, 10);
 		advertBanner.setPadding(0, 10, 0, 10);
 		mRankListView.addHeaderView(testView);
 		mRankListView.addHeaderView(advertBanner);
@@ -281,11 +281,6 @@ public class RankFragment extends Fragment implements OnClickListener {
 		}.execute();
 		appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), cache);
 		mRankListView.setAdapter(appRankAdapter);
-		if(mRankListView.getId()>2){
-			tabRank2.setVisibility(View.VISIBLE);
-		}else{
-			tabRank2.setVisibility(View.GONE);
-		}
 		
 		// 注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
