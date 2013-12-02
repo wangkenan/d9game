@@ -77,14 +77,14 @@
         android:id="@+id/topbar"
         android:layout_width="fill_parent"
         android:layout_height="55dip"
-        android:background="@drawable/title_shape"
-        android:padding="2dip" >
+        android:background="@drawable/title_middle"  
+         >
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/search_btn" >
+            android:layout_alignParentTop="true" 
+            android:layout_toLeftOf="@+id/search_btn_rl" > 
 
             <ImageView
                 android:id="@+id/updata_iv"
@@ -102,17 +102,12 @@
                 android:textColor="@color/white"
                 android:textSize="12sp" />
         </FrameLayout>
-
-        <ImageButton
-            android:id="@+id/setting"
-            android:layout_width="35dip"
-            android:layout_height="35dip"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/search_btn"
-            android:layout_marginRight="10dip"
-            android:background="@null"
-            android:src="@drawable/right_btn" />
-
+        <RelativeLayout
+            android:id="@+id/search_btn_rl"
+            android:layout_width="55dip"
+            android:layout_height="55dip" 
+            android:background="@drawable/title_left"
+            >
         <ImageButton
             android:id="@+id/search_btn"
             android:layout_width="35dip"
@@ -122,14 +117,15 @@
             android:layout_marginLeft="10dip"
             android:background="@null"
             android:src="@drawable/left_btn" />
-
+        </RelativeLayout>
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="10dip"
-            android:layout_toRightOf="@+id/search_btn"
+            android:visibility="invisible"
+            android:layout_toRightOf="@+id/search_btn_rl"
             android:background="@drawable/v_driver" />
 
         <ImageView
@@ -155,16 +151,29 @@
             android:layout_height="fill_parent"
             android:layout_alignTop="@+id/imageView1"
             android:layout_marginRight="10dip"
-            android:layout_toLeftOf="@+id/setting"
+            android:layout_toLeftOf="@+id/setting_rl"
+            android:visibility="invisible"
             android:background="@drawable/v_driver" />
 
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="2dip"
-            android:layout_alignBottom="@+id/imageView1"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="2dip"
-            android:src="@drawable/diveri" />
+<RelativeLayout
+    android:id="@+id/setting_rl"
+    android:layout_width="55dip"
+    android:layout_height="55dip"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:background="@drawable/title_right" >
+
+    <ImageButton 
+        android:id="@+id/setting" 
+        android:layout_width="35dip" 
+        android:layout_height="35dip"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:src="@drawable/right_btn" />
+
+</RelativeLayout>
+
     </RelativeLayout>
 
     <FrameLayout

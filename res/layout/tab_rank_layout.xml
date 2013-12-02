@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="35dip"
         android:layout_marginBottom="3dip"
-        android:background="@drawable/local_background"
+        android:background="@drawable/navigation_backgroung"
         android:gravity="center" >
 
         <LinearLayout
