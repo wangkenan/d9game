@@ -775,7 +775,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		 */
 		if(appInfo.isCanUpdate()){
 			tvOperate.setText("升级");
-			ivOperate.setImageResource(R.drawable.install_btn);
+			ivOperate.setImageResource(R.drawable.update_btn);
 		}
 		ivOperate.setOnClickListener(new OnClickListener() {
 			@Override
