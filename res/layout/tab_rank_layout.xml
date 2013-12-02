@@ -7,15 +7,14 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="35dip"
-        android:layout_marginBottom="3dip"
-        android:background="@drawable/navigation_backgroung"
-        android:gravity="center" >
+        
+        android:gravity="bottom" >
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="35dip"
             android:layout_marginTop="4dip"
-            android:background="@drawable/title_shape" >
+            android:background="@drawable/navigation_backgroung" >
         </LinearLayout>
 
         <LinearLayout
@@ -39,7 +38,8 @@
                         android:background="@drawable/mygame_btn"
                         android:gravity="center"
                         android:text="排行榜"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="3dip" />
                 </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
