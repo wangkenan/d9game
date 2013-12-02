@@ -150,13 +150,13 @@ public class RankFragment extends Fragment implements OnClickListener {
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
 		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
-//		advertBanner.setPadding(0, 5, 0, 5);
-		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
+		advertBanner.setPadding(0, 5, 0, 5);
+//		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
 		//tabRank.setPadding(0, 5, 0, 10);
-		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
+//		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
 		mRankListView.addHeaderView(testView,null,false);
 		mRankListView.addHeaderView(advertBanner,null,false);
-		mRankListView.addHeaderView(tabRank,null,false);
+//		mRankListView.addHeaderView(tabRank,null,false);
 		
 		
 		//////////////
@@ -305,11 +305,11 @@ public class RankFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				if(firstVisibleItem >= 2) {
-					tabRank2.setVisibility(View.VISIBLE);
-				} else {
-					tabRank2.setVisibility(View.INVISIBLE);
-				}
+//				if(firstVisibleItem >= 2) {
+//					tabRank2.setVisibility(View.VISIBLE);
+//				} else {
+//					tabRank2.setVisibility(View.INVISIBLE);
+//				}
 
 			}
 		});

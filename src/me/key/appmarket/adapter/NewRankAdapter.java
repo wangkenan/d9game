@@ -73,7 +73,7 @@ public class NewRankAdapter extends BaseAdapter {
 				ArrayList<Object> al = (ArrayList<Object>) msg.obj;
 				TextView tv = (TextView) al.get(0);
 				String desc = (String) al.get(1);
-				tv.setText(desc);
+	//			tv.setText(desc);
 			}
 			
 		}
@@ -175,7 +175,7 @@ public class NewRankAdapter extends BaseAdapter {
 				viewHolder2.ivDown = (ImageView) convertvView.findViewById(R.id.iv_down);
 //				viewHolder2.progress_view = (ProgressView) convertvView
 //						.findViewById(R.id.progress_view);
-				viewHolder2.descri = (TextView) convertvView.findViewById(R.id.item_newrank_tv);
+				//viewHolder2.descri = (TextView) convertvView.findViewById(R.id.item_newrank_tv);
 				viewHolder2.top = (ImageView) convertvView.findViewById(R.id.item_newrank_top_iv);
 				convertvView.setTag(viewHolder2);
 				break;

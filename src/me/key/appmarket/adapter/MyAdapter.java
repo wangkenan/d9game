@@ -39,6 +39,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.ProgressBar;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -149,9 +150,10 @@ public class MyAdapter extends BaseAdapter {
 
 			case 0:
 				viewHolder2 = new ViewHolder2();
-				convertView = mInflater.inflate(R.layout.banner_item, null);
+				convertView = mInflater.inflate(R.layout.ranktest, null);
 				viewHolder2.banner = (ImageView) convertView
-						.findViewById(R.id.icon_banner);
+						.findViewById(R.id.iv_rank_test);
+				viewHolder2.banner.setScaleType(ScaleType.FIT_XY);
 				convertView.setTag(viewHolder2);
 				break;
 			case 1:

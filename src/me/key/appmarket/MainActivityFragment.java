@@ -794,14 +794,14 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
 		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
-//		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
-//		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
+		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
+		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
 		//tabRank.setPadding(0, 5, 0, 10);
 //		advertBanner.setPadding(0, 5, 0, 5);
 		mHomeListView.addHeaderView(testView,null,false);
 		mHomeListView.addHeaderView(advertBanner,null,false);
-//		mHomeListView.addHeaderView(tabRank,null,false);
-		// mHomeListView.setDividerHeight(20);
+		mHomeListView.addHeaderView(tabRank,null,false);
+//		 mHomeListView.setDividerHeight(20);
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar_home);
 		pHomeBar.setVisibility(View.VISIBLE);
 		ll_homeerror = (LinearLayout) homeView.findViewById(R.id.ll_error);
@@ -879,22 +879,22 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		
 		  // 注册滑动监听事件 
 		
-		/*mHomeListView.setOnScrollListener(new OnScrollListener() {
+		mHomeListView.setOnScrollListener(new OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				// TODO Auto-generated method stub
-				switch (scrollState) {
-				case SCROLL_STATE_FLING:
-					appRankAdapter.isAsyn = true;
-					break;
-				case SCROLL_STATE_IDLE:
-					appRankAdapter.isAsyn = false;
-					appRankAdapter.notifyDataSetChanged();
-					break;
-				case SCROLL_STATE_TOUCH_SCROLL:
-					appRankAdapter.isAsyn = false;
-					break;
-				}
+//				switch (scrollState) {
+//				case SCROLL_STATE_FLING:
+//					appRankAdapter.isAsyn = true;
+//					break;
+//				case SCROLL_STATE_IDLE:
+//					appRankAdapter.isAsyn = false;
+//					appRankAdapter.notifyDataSetChanged();
+//					break;
+//				case SCROLL_STATE_TOUCH_SCROLL:
+//					appRankAdapter.isAsyn = false;
+//					break;
+//				}
 				
 			}
 			@Override
@@ -908,7 +908,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				}
 				
 			}
-		});*/
+		});
 		/* 
 		 * mHomeListView.setOnScrollListener(new OnScrollListener()
 		 * {
