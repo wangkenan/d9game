@@ -154,8 +154,9 @@ public class NewRankAdapter extends BaseAdapter {
 						.findViewById(R.id.appsize2);
 				viewHolder.tvdown = (TextView) convertvView
 						.findViewById(R.id.tv_down2);
-				viewHolder.progress_view = (ProgressView) convertvView
-						.findViewById(R.id.progress_view2);
+				viewHolder.ivDown = (ImageView) convertvView.findViewById(R.id.iv_down2);
+//				viewHolder.progress_view = (ProgressView) convertvView
+//						.findViewById(R.id.progress_view2);
 				viewHolder.topname = (TextView) convertvView.findViewById(R.id.topnum_applist_item_tv);
 				convertvView.setTag(viewHolder);
 				break;
@@ -171,8 +172,9 @@ public class NewRankAdapter extends BaseAdapter {
 						.findViewById(R.id.appsize);
 				viewHolder2.tvdown = (TextView) convertvView
 						.findViewById(R.id.tv_down);
-				viewHolder2.progress_view = (ProgressView) convertvView
-						.findViewById(R.id.progress_view);
+				viewHolder2.ivDown = (ImageView) convertvView.findViewById(R.id.iv_down);
+//				viewHolder2.progress_view = (ProgressView) convertvView
+//						.findViewById(R.id.progress_view);
 				viewHolder2.descri = (TextView) convertvView.findViewById(R.id.item_newrank_tv);
 				viewHolder2.top = (ImageView) convertvView.findViewById(R.id.item_newrank_top_iv);
 				convertvView.setTag(viewHolder2);
@@ -248,7 +250,6 @@ public class NewRankAdapter extends BaseAdapter {
 
 	public void fillData(final int position, final BaseHolder v1) {
 		Drawable mDrawable;
-		LogUtils.i("NullPointer--------------", appInfos.get(position).getAppName());
 		v1.name.setText(appInfos.get(position).getAppName());
 		v1.size.setText(ToolHelper.Kb2Mb(appInfos.get(position)
 				.getAppSize()));
@@ -300,42 +301,45 @@ public class NewRankAdapter extends BaseAdapter {
 		isUpdate = appInfos.get(position).isCanUpdate();
 		if (isUpdate) {
 			v1.tvdown.setText("升级");
+			v1.ivDown.setBackgroundResource(R.drawable.update_btn);
+			
 		} else {
 			if (appInfos.get(position).isIspause()) {
 				
 				v1.tvdown.setText("暂停");
-				v1.progress_view.setProgress(DownloadService
-						.getPrecent(idx));
-				if (!isDownLoaded) {
-					LogUtils.d("new", "我执行了下载中暂停"+appInfos.get(position).getAppName());
-					v1.progress_view.setVisibility(View.INVISIBLE);
-					v1.tvdown.setVisibility(View.VISIBLE);
-				}
+//				v1.progress_view.setProgress(DownloadService
+//						.getPrecent(idx));
+//				if (!isDownLoaded) {
+//					LogUtils.d("new", "我执行了下载中暂停"+appInfos.get(position).getAppName());
+//					v1.progress_view.setVisibility(View.INVISIBLE);
+//					v1.tvdown.setVisibility(View.VISIBLE);
+//				}
 			} else {
-				v1.tvdown.setText("下载中");
-				if (!isDownLoaded) {
-					LogUtils.d("new", "我执行了暂停中下载"+appInfos.get(position).getAppName());
-					v1.progress_view.setVisibility(View.VISIBLE);
-					v1.tvdown.setVisibility(View.INVISIBLE);
-					v1.progress_view.setProgress(DownloadService
-							.getPrecent(idx));
-					LogUtils.d("ture", isDownLoading + "isDown");
-				}
+				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+//				if (!isDownLoaded) {
+//					LogUtils.d("new", "我执行了暂停中下载"+appInfos.get(position).getAppName());
+//					v1.progress_view.setVisibility(View.VISIBLE);
+//					v1.tvdown.setVisibility(View.INVISIBLE);
+//					v1.progress_view.setProgress(DownloadService
+//							.getPrecent(idx));
+//					LogUtils.d("ture", isDownLoading + "isDown");
+//				}
 			}
 			if (appInfos.get(position).isInstalled()) {
 				v1.tvdown.setText("打开");
-				v1.progress_view.setVisibility(View.INVISIBLE);
-				v1.tvdown.setVisibility(View.VISIBLE);
-				v1.progress_view.setProgress(100);
+				v1.ivDown.setBackgroundResource(R.drawable.one_key);
+//				v1.progress_view.setVisibility(View.INVISIBLE);
+//				v1.tvdown.setVisibility(View.VISIBLE);
+//				v1.progress_view.setProgress(100);
 				/*Drawable mDrawableicon = mContext.getResources().getDrawable(
 						R.drawable.action_type_software_update);
 				v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 						mDrawableicon, null, null);*/
-			} else if (appInfos.get(position).isDown()) {
-
-				v1.progress_view.setProgress(DownloadService
-						.getPrecent(idx));
-				LogUtils.d("ture", isDownLoading + "isDown");
+//			} else if (appInfos.get(position).isDown()) {
+//
+//				v1.progress_view.setProgress(DownloadService
+//						.getPrecent(idx));
+//				LogUtils.d("ture", isDownLoading + "isDown");
 
 			/*	v1.tvdown.setText("下载中");
 				Drawable mDrawableicon = mContext.getResources().getDrawable(
@@ -344,19 +348,20 @@ public class NewRankAdapter extends BaseAdapter {
 						mDrawableicon, null, null);
 				v1.progress_view.setVisibility(View.VISIBLE);
 				v1.tvdown.setVisibility(View.INVISIBLE);*/
-			} else if (isDownLoaded) {
+		} 
+			else if (isDownLoaded) {
 				/*Drawable mDrawableicon = mContext.getResources().getDrawable(
 						R.drawable.downloaded);
 				v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 						mDrawableicon, null, null);*/
 				v1.tvdown.setText("安装");
-				v1.progress_view.setProgress(100);
-				v1.progress_view.setVisibility(View.INVISIBLE);
-				v1.tvdown.setVisibility(View.VISIBLE);
+//				v1.progress_view.setProgress(100);
+//				v1.progress_view.setVisibility(View.INVISIBLE);
+//				v1.tvdown.setVisibility(View.VISIBLE);
 			} else if (!isDownLoading) {
 				v1.tvdown.setText("下载");
-				v1.progress_view.setVisibility(View.INVISIBLE);
-				v1.tvdown.setVisibility(View.VISIBLE);
+//				v1.progress_view.setVisibility(View.INVISIBLE);
+//				v1.tvdown.setVisibility(View.VISIBLE);
 			/*	mDrawable = mContext.getResources().getDrawable(
 						R.drawable.downloading);
 				v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
@@ -372,11 +377,11 @@ public class NewRankAdapter extends BaseAdapter {
 								.getAppName())) {
 					LogUtils.d("test", "已经存在");
 					v1.tvdown.setText("继续");
-					v1.progress_view.setVisibility(View.INVISIBLE);
-					v1.tvdown.setVisibility(View.VISIBLE);
+//					v1.progress_view.setVisibility(View.INVISIBLE);
+//					v1.tvdown.setVisibility(View.VISIBLE);
 					long count = sp.getLong(tempFile.getAbsolutePath() + "precent",
 							0);
-					v1.progress_view.setProgress(count);
+//					v1.progress_view.setProgress(count);
 				} else if (length != 0
 						&& !DownloadService.isExist(appInfos.get(position)
 								.getAppName())) {
@@ -387,7 +392,7 @@ public class NewRankAdapter extends BaseAdapter {
 			}
 		}
 	
-	v1.progress_view.setOnClickListener(new OnClickListener() {
+	/*v1.progress_view.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -408,7 +413,7 @@ public class NewRankAdapter extends BaseAdapter {
 				appInfos.get(position).setIspause(
 						!appInfos.get(position).isIspause());
 			}
-		});
+		});*/
 		v1.tvdown.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -435,8 +440,8 @@ public class NewRankAdapter extends BaseAdapter {
 					} else {
 						v1.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
-						v1.progress_view.setVisibility(View.VISIBLE);
-						v1.tvdown.setVisibility(View.INVISIBLE);
+//						v1.progress_view.setVisibility(View.VISIBLE);
+//						v1.tvdown.setVisibility(View.INVISIBLE);
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
@@ -487,8 +492,8 @@ public class NewRankAdapter extends BaseAdapter {
 					Toast.makeText(mContext,
 							appInfos.get(position).getAppName() + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
-					v1.progress_view.setVisibility(View.VISIBLE);
-					v1.tvdown.setVisibility(View.INVISIBLE);
+//					v1.progress_view.setVisibility(View.VISIBLE);
+//					v1.tvdown.setVisibility(View.INVISIBLE);
 				}
 			
 			}
@@ -541,7 +546,8 @@ public class NewRankAdapter extends BaseAdapter {
 		TextView size;
 		TextView tvdown;
 		TextView descri;
-		ProgressView progress_view;
+		ImageView ivDown;
+//		ProgressView progress_view;
 	}
 
 	private void asyncloadImage(ImageView iv_header, String path) {

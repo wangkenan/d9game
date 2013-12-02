@@ -793,8 +793,21 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			}
 		}
 	};
+	private View recomnView;
 	private void initHomeView() {
 		mHomeListView = (ListView) homeView.findViewById(R.id.list_home);
+		
+		//添加广告、导航栏等
+		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+		testView.setPadding(0, 1, 0, 1);
+		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
+//		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
+		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
+		//tabRank.setPadding(0, 5, 0, 10);
+//		advertBanner.setPadding(0, 5, 0, 5);
+		mHomeListView.addHeaderView(testView,null,false);
+		mHomeListView.addHeaderView(advertBanner,null,false);
+//		mHomeListView.addHeaderView(tabRank,null,false);
 		// mHomeListView.setDividerHeight(20);
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar_home);
 		pHomeBar.setVisibility(View.VISIBLE);
@@ -901,6 +914,12 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				if (position == 1) {
+					Intent intent = new Intent(getActivity(),
+							BannerActivity.class);
+					startActivity(intent);
+
+				} else {
 					AppInfo mAppInfo = (AppInfo) mHomeListView.getAdapter()
 							.getItem(position);
 					// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
@@ -910,6 +929,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 					intent.putExtra("appid", mAppInfo.getIdx());
 					intent.putExtra("appinfo", mAppInfo);
 					startActivity(intent);
+				}
 				// if(appHomeInfos != null && appHomeInfos.size() > position){
 				// AppInfo mAppInfo = appHomeInfos.get(position);
 				// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());

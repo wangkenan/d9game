@@ -109,8 +109,8 @@ public class ClassifyAdapter extends BaseAdapter {
 					.findViewById(R.id.appsize2);
 			viewHolder.tvdown = (TextView) convertvView
 					.findViewById(R.id.tv_down2);
-			viewHolder.progress_view = (ProgressView) convertvView
-					.findViewById(R.id.progress_view2);
+//			viewHolder.progress_view = (ProgressView) convertvView
+//					.findViewById(R.id.progress_view2);
 			convertvView.setLayoutParams(new LayoutParams(width, height/9));
 			convertvView.setTag(viewHolder);
 		} else {

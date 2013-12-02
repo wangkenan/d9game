@@ -148,14 +148,15 @@ public class RankFragment extends Fragment implements OnClickListener {
 		mRankListView = (ListView) inflate.findViewById(R.id.list_rank);
 		//在rankListView中添加广告栏、导航栏等
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
 		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
 		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
 		//tabRank.setPadding(0, 5, 0, 10);
-		advertBanner.setPadding(0, 10, 0, 10);
-		mRankListView.addHeaderView(testView);
-		mRankListView.addHeaderView(advertBanner);
-		mRankListView.addHeaderView(tabRank);
+//		advertBanner.setPadding(0, 5, 0, 5);
+		mRankListView.addHeaderView(testView,null,false);
+		mRankListView.addHeaderView(advertBanner,null,false);
+		mRankListView.addHeaderView(tabRank,null,false);
 		
 		
 		//////////////

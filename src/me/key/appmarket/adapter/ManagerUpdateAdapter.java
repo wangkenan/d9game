@@ -103,8 +103,8 @@ public class ManagerUpdateAdapter extends BaseAdapter {
 					.findViewById(R.id.appsize2);
 			viewHolder.tvdown = (TextView) convertvView
 					.findViewById(R.id.tv_down2);
-			viewHolder.progress_view = (ProgressView) convertvView
-					.findViewById(R.id.progress_view2);
+//			viewHolder.progress_view = (ProgressView) convertvView
+//					.findViewById(R.id.progress_view2);
 			convertvView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();

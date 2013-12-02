@@ -100,8 +100,8 @@ public class RankAdapter extends BaseAdapter {
 					.findViewById(R.id.appsize);
 			viewHolder.tvdown = (TextView) convertvView
 					.findViewById(R.id.tv_down);
-			viewHolder.progress_view = (ProgressView) convertvView
-					.findViewById(R.id.progress_view);
+//			viewHolder.progress_view = (ProgressView) convertvView
+//					.findViewById(R.id.progress_view);
 			convertvView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();
