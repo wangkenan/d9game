@@ -45,6 +45,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -61,6 +62,7 @@ import com.umeng.analytics.MobclickAgent;
 public class SearchActivity extends Activity implements OnClickListener {
 
 	private Button btn_search;
+	private FrameLayout search;
 	private EditText edit_search;
 	private String search_text;
 
@@ -74,8 +76,9 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private ProgressBar searchBar;
 	private LinearLayout ll_searcherror;
 
-	private ImageView back_icon;
-	private ImageView logo_title;
+//	private ImageView back_icon;
+//	private ImageView logo_title;
+	private ImageView ivBack;
 
 	private int page = 0; // 最后的可视项索引
 	private View loadMoreView;
@@ -93,9 +96,9 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private HotSearchAdapter mHotSearchAdapter;
 	private HotSearchAdapter mHistoryAdapter;
 
-	private LinearLayout search_linear;
-	private Button searchHot;
-	private Button searchHistory;
+//	private LinearLayout search_linear;
+//	private Button searchHot;
+//	private Button searchHistory;
 	private ListView search_HotList;
 	private boolean isShowingHot = true;
 
@@ -126,20 +129,23 @@ public class SearchActivity extends Activity implements OnClickListener {
 	}
 
 	private void initSearchView() {
-		back_icon = (ImageView) findViewById(R.id.back_icon);
-		logo_title = (ImageView) findViewById(R.id.logo_title);
+//		back_icon = (ImageView) findViewById(R.id.back_icon);
+	//	logo_title = (ImageView) findViewById(R.id.logo_title);
 
-		search_linear = (LinearLayout) findViewById(R.id.search_linear);
-		searchHot = (Button) findViewById(R.id.search_hot);
-		searchHistory = (Button) findViewById(R.id.search_history);
+//		search_linear = (LinearLayout) findViewById(R.id.search_linear);
+//		searchHot = (Button) findViewById(R.id.search_hot);
+//		searchHistory = (Button) findViewById(R.id.search_history);
 		search_HotList = (ListView) findViewById(R.id.search_history_list);
-		searchHot.setOnClickListener(this);
-		searchHistory.setOnClickListener(this);
+//		searchHot.setOnClickListener(this);
+//		searchHistory.setOnClickListener(this);
 		;
-		back_icon.setOnClickListener(this);
-		logo_title.setOnClickListener(this);
+//		back_icon.setOnClickListener(this);
+//		logo_title.setOnClickListener(this);
+		
+		ivBack=(ImageView) findViewById(R.id.iv_back_search);
 
-		btn_search = (Button) findViewById(R.id.btn_search);
+		//btn_search = (Button) findViewById(R.id.btn_search);
+		search=(FrameLayout) findViewById(R.id.search_btn_search);
 		edit_search = (EditText) findViewById(R.id.edit_search);
 		total_size = (TextView) findViewById(R.id.total_size);
 
@@ -154,6 +160,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 		LayoutInflater inflater = LayoutInflater.from(this);
 		text_delete = (TextView) findViewById(R.id.text_delete);
 		text_delete.setOnClickListener(this);
+		ivBack.setOnClickListener(this);
 
 		search_HotList.setAdapter(mHotSearchAdapter);
 		search_HotList.setOnItemClickListener(new OnItemClickListener() {
@@ -167,14 +174,14 @@ public class SearchActivity extends Activity implements OnClickListener {
 					HotSearchInfo mHotSearchInfo = historyList.get(arg2);
 					edit_search.setText(mHotSearchInfo.getWord());
 				}
-				btn_search.performClick();
+				search.performClick();
 			}
 		});
 
-		searchHot.setPadding(40, 0, 40, 0);
-		searchHistory.setPadding(40, 0, 40, 0);
+//		searchHot.setPadding(40, 0, 40, 0);
+//		searchHistory.setPadding(40, 0, 40, 0);
 
-		btn_search.setOnClickListener(this);
+		search.setOnClickListener(this);
 
 		// 加载更多
 		loadMoreView = getLayoutInflater().inflate(R.layout.loadmore, null);
@@ -509,11 +516,12 @@ public class SearchActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.back_icon:
-		case R.id.logo_title:
-			SearchActivity.this.finish();
-			break;
-		case R.id.btn_search:
+		case R.id.iv_back_search:
+			finish();
+//		case R.id.logo_title:
+//			SearchActivity.this.finish();
+//			break;
+		case R.id.search_btn_search:
 			search_text = edit_search.getText().toString();
 			appSearchInfos.clear();
 			appSearchAdapter.notifyDataSetChanged();
@@ -538,7 +546,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 				text_delete.setVisibility(View.GONE);
 
-				search_linear.setVisibility(View.GONE);
+//				search_linear.setVisibility(View.GONE);
 				search_HotList.setVisibility(View.GONE);
 				new Thread(searchData).start();
 			} else {
@@ -562,33 +570,33 @@ public class SearchActivity extends Activity implements OnClickListener {
 			page = page + 1;
 			new Thread(searchData).start();
 			break;
-		case R.id.search_hot:
-			if (!isShowingHot) {
-				isShowingHot = true;
-				search_HotList.setAdapter(mHotSearchAdapter);
-				text_delete.setVisibility(View.GONE);
-
-				searchHot.setBackgroundResource(R.drawable.btn_bar_2);
-				searchHot.setPadding(40, 0, 40, 0);
-				searchHistory.setBackgroundResource(0);
-			}
-			break;
-		case R.id.search_history:
-			if (isShowingHot) {
-				isShowingHot = false;
-
-				text_delete.setVisibility(View.VISIBLE);
-
-				ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
-				historyList.clear();
-				historyList.addAll(historyList_temp);
-				search_HotList.setAdapter(mHistoryAdapter);
-
-				searchHistory.setBackgroundResource(R.drawable.btn_bar_2);
-				searchHistory.setPadding(40, 0, 40, 0);
-				searchHot.setBackgroundResource(0);
-			}
-			break;
+//		case R.id.search_hot:
+//			if (!isShowingHot) {
+//				isShowingHot = true;
+//				search_HotList.setAdapter(mHotSearchAdapter);
+//				text_delete.setVisibility(View.GONE);
+//
+//				searchHot.setBackgroundResource(R.drawable.btn_bar_2);
+//				searchHot.setPadding(40, 0, 40, 0);
+//				searchHistory.setBackgroundResource(0);
+//			}
+//			break;
+//		case R.id.search_history:
+//			if (isShowingHot) {
+//				isShowingHot = false;
+//
+//				text_delete.setVisibility(View.VISIBLE);
+//
+//				ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
+//				historyList.clear();
+//				historyList.addAll(historyList_temp);
+//				search_HotList.setAdapter(mHistoryAdapter);
+//
+//				searchHistory.setBackgroundResource(R.drawable.btn_bar_2);
+//				searchHistory.setPadding(40, 0, 40, 0);
+//				searchHot.setBackgroundResource(0);
+//			}
+//			break;
 		case R.id.text_delete:
 			SharedPreferences sp = PreferenceManager
 					.getDefaultSharedPreferences(this);
@@ -604,9 +612,9 @@ public class SearchActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (search_linear.getVisibility() == View.GONE) {
-				edit_search.setText("");
-				search_linear.setVisibility(View.VISIBLE);
+//			if (search_linear.getVisibility() == View.GONE) {
+//				edit_search.setText("");
+//				search_linear.setVisibility(View.VISIBLE);
 				search_HotList.setVisibility(View.VISIBLE);
 
 				if (!isShowingHot) {
@@ -623,7 +631,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				ll_searcherror.setVisibility(View.GONE);
 				loadMoreButton.setVisibility(View.GONE);
 				return true;
-			}
+//			}
 		}
 		return super.onKeyDown(keyCode, event);
 	}

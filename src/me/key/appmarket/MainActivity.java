@@ -536,7 +536,7 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	private void initGameView() {
 		mListGame = (ListView) gameView.findViewById(R.id.list_app_game);
-		topbar_title1 = (TextView) findViewById(R.id.topbar_title1);
+//		topbar_title1 = (TextView) findViewById(R.id.topbar_title1);
 		back_icon = (ImageView) findViewById(R.id.back_icon);
 		logo_title = (ImageView) findViewById(R.id.logo_title);
 		// type = getIntent().getIntExtra("type", 2);

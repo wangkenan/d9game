@@ -551,8 +551,10 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				String type1 = jsonObject.getString("type1");
 				String type2 = jsonObject.getString("type2");
 				String appUrl = jsonObject.getString("appiconurl");
+				String totalNum = jsonObject.getString("total_num");
 				CategoryInfo mCategoryInfo = new CategoryInfo(id, name, type1,
 						type2, Global.MAIN_URL + appUrl);
+				mCategoryInfo.setTotalNum(totalNum);
 				gcategoryInfoList_temp.add(mCategoryInfo);
 			}
 			if (len == 0) {

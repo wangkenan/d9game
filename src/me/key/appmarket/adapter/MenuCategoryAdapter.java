@@ -53,11 +53,12 @@ public class MenuCategoryAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder vh = null;
-		
+		CategoryInfo categoryInfo = classInfos.get(position);
 		if(convertView == null) {
 			vh = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.menu_category_item, null);
 			vh.tv = (TextView) convertView.findViewById(R.id.category_menu);
+			vh.gameNum = (TextView) convertView.findViewById(R.id.game_num);
 			convertView.setTag(vh);
 			convertView.setLayoutParams(new LayoutParams(width, height/classInfos.size()));
 		} else {
@@ -66,13 +67,15 @@ public class MenuCategoryAdapter extends BaseAdapter {
 	if(position == 0) {
 		convertView.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
 		}
-		vh.tv.setText(classInfos.get(position).getName());
+		vh.tv.setText(categoryInfo.getName());
+		vh.gameNum.setText(categoryInfo.getTotalNum());
 		return convertView;
 	}
 	 
 	static class ViewHolder {
 		private TextView tv;
 		private ImageView click_menu;
+		private TextView gameNum;
 	}
 
 }

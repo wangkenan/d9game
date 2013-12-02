@@ -6,7 +6,7 @@ public class CategoryInfo {
 	private String type1;
 	private String type2;
 	private String appIcon;
-
+	private String totalNum;
 	public CategoryInfo(String id, String name, String type1, String type2,
 			String appIcon) {
 		this.id = id;
@@ -14,6 +14,14 @@ public class CategoryInfo {
 		this.type1 = type1;
 		this.type2 = type2;
 		this.appIcon = appIcon;
+	}
+
+	public String getTotalNum() {
+		return totalNum;
+	}
+
+	public void setTotalNum(String totalNum) {
+		this.totalNum = totalNum;
 	}
 
 	public String getAppIcon() {

@@ -36,7 +36,7 @@ public class NeceasyActivity extends FinalActivity {
 	@ViewInject(id=R.id.back_onkey,click="onClick")
 	private ImageView back_onkey;
 	//标题
-	@ViewInject(id=R.id.titlename_onekey)
+//	@ViewInject(id=R.id.titlename_onekey)
 	private TextView titlename_onekey;
 	//listview
 	@ViewInject(id=R.id.recomapp_onkey)

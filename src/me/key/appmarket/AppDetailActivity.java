@@ -78,8 +78,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	private TextView appSize1,appSize2;
 	private TextView appUpdateTime;
 
-	private EllipsizingTextView appDes;
-	private ImageButton appDesExpand;
+	//private EllipsizingTextView appDes;
+	private TextView appDes;
+	//private ImageButton appDesExpand;
 	private TextView tvOperate;
 	private ImageView ivOperate;
 
@@ -137,8 +138,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		appSize2 = (TextView) findViewById(R.id.app_size2_app_detail);
 		appUpdateTime = (TextView) findViewById(R.id.app_update_time_app_detail);
 
-		appDes = (EllipsizingTextView) findViewById(R.id.app_description_app_detail);
-		appDesExpand = (ImageButton) findViewById(R.id.app_des_expand_app_detail);
+		appDes=(TextView) findViewById(R.id.app_description_app_detail);
+		//appDes = (EllipsizingTextView) findViewById(R.id.app_description_app_detail);
+		//appDesExpand = (ImageButton) findViewById(R.id.app_des_expand_app_detail);
 		tvOperate = (TextView) findViewById(R.id.tv_operate_app_detail);
 		ivOperate=(ImageView) findViewById(R.id.iv_operate_app_detail);
 
@@ -151,7 +153,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 //		appSize1.setText(getString(R.string.app_detail_size, ""));
 //		appSize2.setText(getString(R.string.app_detail_size, ""));
 
-		appDesExpand.setOnClickListener(this);
+	//	appDesExpand.setOnClickListener(this);
 		ivOperate.setOnClickListener(this);
 		backIcon.setOnClickListener(this);
 		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
@@ -234,7 +236,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					isDowning = DownloadService.isDownLoading(Integer
 							.parseInt(idx));
 
-					appDesExpand.setSelected(true);
+					//appDesExpand.setSelected(true);
 
 					if (response.getAppName() != null) {
 						appName.setText(response.getAppName());
@@ -468,15 +470,15 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.app_des_expand_app_detail:
-			if (appDesExpand.isSelected()) {
-				appDesExpand.setSelected(false);
-				appDes.setMaxLines(100);
-			} else {
-				appDesExpand.setSelected(true);
-				appDes.setMaxLines(5);
-			}
-			break;
+//		case R.id.app_des_expand_app_detail:
+//			if (appDesExpand.isSelected()) {
+//				appDesExpand.setSelected(false);
+//				appDes.setMaxLines(100);
+//			} else {
+//				appDesExpand.setSelected(true);
+//				appDes.setMaxLines(5);
+//			}
+//			break;
 		/*
 		 * case R.id.app_download: if (isInstalled) {
 		 * AppUtils.launchApp(AppDetailActivity.this, name); } else if
