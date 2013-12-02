@@ -31,7 +31,7 @@
             android:layout_height="fill_parent"
             android:fadingEdge="none"
             android:numColumns="2"
-            android:background="@drawable/mybackground"
+            android:listSelector="@drawable/list_item_selector"
             >
         </ListView>
              <ProgressBar

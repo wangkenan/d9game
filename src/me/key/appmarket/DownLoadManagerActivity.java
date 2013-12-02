@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import me.key.appmarket.LocalGameActivity.PrecentReceiver;
 import me.key.appmarket.LocalGameFragment.LocalInstallBroadcast;
 import me.key.appmarket.adapter.DownManagerAdapter;
 import me.key.appmarket.adapter.UpdataAdapter;

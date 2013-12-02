@@ -400,7 +400,7 @@ public class MyAdapter extends BaseAdapter {
 					@Override
 					public void onClick(View arg0) {
 						LogUtils.d("MyAdapter", "我运行了" + sdappInfo.getAppName());
-						AppUtils.launchApp(cnt, sdappInfo.getAppName());
+						AppUtils.launchApp(cnt, sdappInfo.getPackageName());
 					}
 
 				});

@@ -801,7 +801,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				}
 				if (appInfo.isInstalled()) {
 					AppUtils.launchApp(AppDetailActivity.this,
-							appInfo.getAppName());
+							appInfo.getPackageName());
 				} else if (DownloadService.isDownLoading(Integer
 						.parseInt(appInfo.getIdx()))) {
 					LogUtils.d("test", "暂停");
@@ -901,7 +901,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					@Override
 					public void onClick(View v) {
 						AppUtils.launchApp(AppDetailActivity.this,
-								appInfo.getAppName());
+								appInfo.getPackageName());
 					}
 				});
 			}

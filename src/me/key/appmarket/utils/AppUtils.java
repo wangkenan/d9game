@@ -221,9 +221,8 @@ public class AppUtils {
 		return result;
 	}
 
-	public static void launchApp(Context context, String appName) {
+	public static void launchApp(Context context, String packageName) {
 		PackageManager packageManager = context.getPackageManager();
-		String packageName = getPackageName(context, appName);
 		Intent intent = packageManager.getLaunchIntentForPackage(packageName);
 		if (intent != null) {
 			context.startActivity(intent);

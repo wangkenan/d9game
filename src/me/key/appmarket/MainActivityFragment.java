@@ -901,12 +901,6 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				if (position == 1) {
-					Intent intent = new Intent(getActivity(),
-							BannerActivity.class);
-					startActivity(intent);
-
-				} else {
 					AppInfo mAppInfo = (AppInfo) mHomeListView.getAdapter()
 							.getItem(position);
 					// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
@@ -916,7 +910,6 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 					intent.putExtra("appid", mAppInfo.getIdx());
 					intent.putExtra("appinfo", mAppInfo);
 					startActivity(intent);
-				}
 				// if(appHomeInfos != null && appHomeInfos.size() > position){
 				// AppInfo mAppInfo = appHomeInfos.get(position);
 				// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
