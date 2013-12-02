@@ -2,62 +2,105 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/bk_appdetail" >
 
 
-      <RelativeLayout
-        android:id="@+id/topbar"
-        style="@style/topbar" >
+      <FrameLayout
+            android:id="@+id/topbar_app_detail"
+            android:layout_width="fill_parent"
+            android:layout_height="55dip"
+            android:background="@drawable/title_middle" >
 
-        <TextView
-            android:id="@+id/topbar_title"
-            style="@style/topbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="下载/更新" />
+            <ImageView
+                android:id="@+id/iv_back_downmanager"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/btn_back_p" />
 
-        <ImageView
-            android:id="@+id/back_downmanager"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dip"
-            android:src="@drawable/btn_back_p" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
 
-    </RelativeLayout>
-        <LinearLayout
-        android:id="@+id/mygamebar"
-        android:layout_width="fill_parent"
-        android:layout_height="30dip"
-        android:layout_gravity="center"
-        android:layout_margin="5dip"
-        android:background="@drawable/btn_bar_1"
-        android:gravity="center"
-        android:orientation="horizontal" >
+                <ImageView
+                    android:id="@+id/ivlog_downmanager"
+                    android:layout_width="80dip"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/log" />
 
-        <Button
-            android:id="@+id/downlist"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/btn_bar_2"
-            android:text="下载管理" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="游戏盒子"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </FrameLayout>
+        
+      
+      <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/updatalist"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:text="更新游戏" />
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="vertical" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@drawable/navigation_backgroung" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@drawable/shade" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp" >
+
+                <TextView
+                    android:id="@+id/tv_manager_downmanager"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1.0"
+                    android:background="@drawable/bk_navigate_tv_appdetail"
+                    android:gravity="center"
+                    android:text="下载管理"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_update_downmanager"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="center"
+                    android:text="更新游戏"
+                    android:textColor="#ffffff"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </FrameLayout>
+        
     <ListView
         android:id="@+id/down_manager_lv"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
+        android:divider="@drawable/driver1"
+        android:listSelector="@drawable/list_item_selector"
         ></ListView>
 
 </LinearLayout>

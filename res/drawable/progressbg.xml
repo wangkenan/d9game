@@ -5,16 +5,16 @@
 <item  android:id="@android:id/background" >                
 <shape>  
     <corners android:radius="5dip" />                 
-        <gradient android:startColor="@color/gray_hint"                
-              android:endColor="@color/gray_hint" />                
+        <gradient android:startColor="#888888"                
+              android:endColor="#888888" />                
 </shape>               
 </item>  
 <item  android:id="@android:id/progress" >                
 <clip>                 
     <shape>                  
         <corners android:radius="5dip" />                  
-    <gradient  android:startColor="#0066FF"                 
-           android:endColor="#0066FF" />                 
+    <gradient  android:startColor="#fe9b00"                 
+           android:endColor="#fe9b00" />                 
     </shape>                
 </clip>               
 </item>     

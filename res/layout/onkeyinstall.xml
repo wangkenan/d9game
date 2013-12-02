@@ -2,69 +2,82 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="@drawable/bk_appdetail">
 
     <!-- title -->
-<RelativeLayout
-        android:id="@+id/title_onkey"
-        style="@style/topbar" >
 
-         <ImageView
-            android:id="@+id/back_onkey"
-            android:layout_width="35dip"
-            android:layout_height="35dip"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="0dip"
-            android:layout_marginTop="5dip"
-            android:contentDescription="@null"
+    <FrameLayout
+        android:id="@+id/topbar_onekeyinstall"
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:background="@drawable/title_middle" >
+
+        <ImageView
+            android:id="@+id/iv_back_onkeyinstall"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
             android:src="@drawable/btn_back_p" />
 
-        <TextView
-            android:id="@+id/titlename_onekey"
-            style="@style/topbar_title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5sp"
-            android:layout_centerInParent="true"
-            android:text="@string/app_name" />
+            android:layout_gravity="center" >
 
-    </RelativeLayout>
-    
-<FrameLayout
-       android:layout_width="fill_parent"
+            <ImageView
+                android:id="@+id/ivlog_downmanager"
+                android:layout_width="80dip"
+                android:layout_height="30dip"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/log" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="游戏盒子"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/nextoronkey"
-        android:layout_below="@id/title_onkey" >
+        android:layout_below="@id/topbar_onekeyinstall" >
+
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" 
-            >
-     <ProgressBar
-       	      android:id="@+id/onkey_pb"
-       	      android:layout_width="wrap_content"
-       	       android:layout_centerInParent="true"
-       	       style="@style/circle_progress"
-       	      android:layout_height="wrap_content" 
-       	      />
-     </RelativeLayout>
-    <ListView
-        android:id="@id/recomapp_onkey"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    </ListView>
-</FrameLayout> 
+            android:layout_height="fill_parent" >
+
+            <ProgressBar
+                android:id="@+id/onkey_pb"
+                style="@style/circle_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@id/recomapp_onkey"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:listSelector="@drawable/list_item_selector" >
+        </ListView>
+    </FrameLayout>
+
     <Button
-        android:id="@id/nextoronkey"
+        android:id="@+id/nextoronkey"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="5dip"
         android:background="@drawable/app_detail_download_btn"
-          android:textColor="#ffffff"
         android:gravity="center"
-        android:text="下一步"
-         android:textSize="16dip" />
+        android:text="一键安装"
+        android:textColor="#ffffff"
+        android:textSize="16dip" />
 
 </RelativeLayout>

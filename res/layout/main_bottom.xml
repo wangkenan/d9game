@@ -6,13 +6,13 @@
     android:inAnimation="@android:anim/slide_in_left"
     android:outAnimation="@android:anim/slide_out_right" >
 
-    <!--
+   
   <ImageView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/welcome_d9" 
   />
-    -->
+  
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -51,44 +51,55 @@
                 android:background="@drawable/buttom" >
 
                 <RelativeLayout
+                    android:id="@+id/rl_findapp_main_bottom"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1" >
+                    android:layout_weight="2"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="6dp" >
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:text="找游戏"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true" >
 
-                    <ImageView
-                        android:id="@+id/findgame"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:src="@drawable/findgame" />
+                        <ImageView
+                            android:id="@+id/findgame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/findgame" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="5dp"
+                            android:gravity="center"
+                            android:text="找游戏"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
                 </RelativeLayout>
 
                 <FrameLayout
-                    android:id="@+id/localgame_click"
+                    android:id="@+id/fl_localapp_main_bottom"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1" >
+                    android:layout_weight="1"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="8dp" >
 
                     <TextView
                         android:id="@+id/localgame"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:drawableTop="@drawable/localgame"
+                        android:drawableTop="@drawable/localgame_fouce"
                         android:gravity="center"
                         android:text="本地游戏"
                         android:textColor="@color/white"
@@ -96,33 +107,41 @@
                 </FrameLayout>
 
                 <RelativeLayout
+                    android:id="@+id/rl_rankapp_main_bottom"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1" >
-
-                    <TextView
-                        android:id="@+id/textView1"
+                    android:layout_weight="2"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="6dp" >
+                    
+                    
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="21dp"
-                        android:gravity="center"
-                        android:text="找游戏"
-                        android:textColor="@color/white"
-                        android:textSize="12sp" />
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true" >
 
-                    <ImageView
-                        android:id="@+id/rankgame"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_toLeftOf="@+id/textView1"
-                        android:src="@drawable/rank" />
+                        <ImageView
+                             android:id="@+id/rankgame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/rank" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="5dp"
+                            android:gravity="center"
+                            android:text="排行榜"
+                            android:textColor="@color/white"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                    
                 </RelativeLayout>
-
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>
