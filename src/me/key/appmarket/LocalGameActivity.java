@@ -622,11 +622,11 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 				MarketApplication.getInstance().reflashAppList();
 				String packageName = intent.getDataString().substring(8);
 				LogUtils.d("YTL", "卸载了:" + packageName + "包名的程序");
-				for (int i = 0; i < mAppInfos.size(); i++) {
+				for (int i = 0; i < appManaInfos_temp.size(); i++) {
 					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
 							.getPackageName() + "");
 					if (packageName != null
-							&& packageName.equals(mAppInfos.get(i)
+							&& packageName.equals(appManaInfos_temp.get(i)
 									.getPackageName())) {
 						appManaInfos_temp.get(i).setInstalled(false);
 						break;
