@@ -1,16 +1,13 @@
 package me.key.appmarket;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.adapter.CommentAdapter;
 import me.key.appmarket.adapter.GalleryAdapter;
 import me.key.appmarket.adapter.GridViewAdapter;
-import me.key.appmarket.adapter.ImageAdapter;
 import me.key.appmarket.network.AppDetailRequest;
 import me.key.appmarket.network.AppDetailResponse;
 import me.key.appmarket.network.HttpRequest.OnResponseListener;
@@ -39,8 +36,6 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -49,7 +44,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -58,12 +53,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.market.d9game.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.umeng.analytics.MobclickAgent;
 
 /**
@@ -779,9 +771,34 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		 * sendBroadcast(downState); LogUtils.d("pro", "我发出了下载中暂停广播");
 		 * appInfo.setIspause( !appInfo.isIspause()); } });
 		 */
+		if(appInfo.isCanUpdate()){
+			tvOperate.setText("升级");
+			ivOperate.setImageResource(R.drawable.install_btn);
+		}
 		tvOperate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				if(appInfo.isCanUpdate()){
+					File tempFile = new File(Environment.getExternalStorageDirectory(),
+							"/market/" + appInfo.getAppName() + ".apk");
+					List<AppInfo> down_temp = new ArrayList<AppInfo>();
+					if(tempFile.exists()) {
+						tempFile.delete();
+					}
+					DownloadService.downNewFile(appInfo, 0, 0, null);
+					Intent intent = new Intent();
+					Intent downState = new Intent();
+				
+					downState.setAction(tempFile.getAbsolutePath() + "down");
+					downState.putExtra("isPause", appInfo.isIspause());
+					AppDetailActivity.this.sendBroadcast(downState);
+					intent.setAction(MarketApplication.PRECENT);
+					AppDetailActivity.this.sendBroadcast(intent);
+					Toast.makeText(AppDetailActivity.this,
+							appInfo.getAppName() + " 开始升级...",
+							Toast.LENGTH_SHORT).show();
+					
+				}
 				if (appInfo.isInstalled()) {
 					AppUtils.launchApp(AppDetailActivity.this,
 							appInfo.getAppName());
