@@ -384,9 +384,10 @@ public class AppUtils {
 	}
 
 	public static List<AppInfo> getAppList(Context mContext) {
-		ArrayList<PackageInfo> appList = new ArrayList<PackageInfo>(); // 用来存储获取的应用信息数据
+		ArrayList<PackageInfo> packList = new ArrayList<PackageInfo>(); // 用来存储获取的应用信息数据
 		List<PackageInfo> packages = mContext.getPackageManager()
 				.getInstalledPackages(0);
+		List<AppInfo> appLists = new ArrayList<AppInfo>();
 		LogUtils.d("AppUtil", "packagessize" + packages.size());
 		for (int i = 0; i < packages.size(); i++) {
 			PackageInfo packageInfo = packages.get(i);
@@ -405,10 +406,25 @@ public class AppUtils {
 			 * .getPackageManager()));
 			 */
 			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-				appList.add(packageInfo);// 如果非系统应用，则添加至appList
+				packList.add(packageInfo);// 如果非系统应用，则添加至appList
+				AppInfo tmpInfo = new AppInfo();
+				tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
+						mContext.getPackageManager()).toString());
+				tmpInfo.setPackageName(packageInfo.packageName);
+
+				String dir = packageInfo.applicationInfo.publicSourceDir;
+				int size = Integer.valueOf((int) new File(dir).length());
+				tmpInfo.setAppSize(size + "");
+
+				tmpInfo.setVersion(packageInfo.versionName);
+				tmpInfo.setAppIcon(packageInfo.applicationInfo
+						.loadIcon(mContext.getPackageManager()));
+				tmpInfo.setId(packageInfo.packageName);
+				tmpInfo.setLastTime(System.currentTimeMillis());
+				appLists.add(tmpInfo);
 			}
-			
+
 		}
-		return null;
+		return appLists;
 	}
 }

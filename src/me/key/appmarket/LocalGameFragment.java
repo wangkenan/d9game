@@ -237,11 +237,15 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				if(appManaInfos_temp.size() == 0) {
 					List<AppInfo> localList = AppUtils.getAppList(getActivity());
 					List<AppInfo> readGameList = LocalUtils.readGameList(getActivity());
-				/*	for(AppInfo gameListAppInfo : readGameList) {
+					for(AppInfo gameListAppInfo : readGameList) {
 						for(AppInfo localAppInfo : localList) {
-							
+							if(gameListAppInfo.getPackageName().equals(localAppInfo.getPackageName())) {
+								localAppInfo.setIdx(gameListAppInfo.getIdx());
+								appManaInfos_temp.add(localAppInfo);
+							}
 						}
-					}*/
+					}
+					LogUtils.d("Local", localList.size()+"localList");
 				}
 				adapter = new MyAdapter(getActivity(),
 						appManaInfos_temp,mAppInfos);
@@ -509,11 +513,11 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				MarketApplication.getInstance().reflashAppList();
 				String packageName = intent.getDataString().substring(8);
 				LogUtils.d("YTL", "卸载了:" + packageName + "包名的程序");
-				for (int i = 0; i < mAppInfos.size(); i++) {
+				for (int i = 0; i < appManaInfos_temp.size(); i++) {
 					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
 							.getPackageName() + "");
 					if (packageName != null
-							&& packageName.equals(mAppInfos.get(i)
+							&& packageName.equals(appManaInfos_temp.get(i)
 									.getPackageName())) {
 						appManaInfos_temp.get(i).setInstalled(false);
 						break;

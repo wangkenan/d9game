@@ -10,79 +10,40 @@
         android:background="@drawable/bk_appdetail"
         android:orientation="vertical" >
 
-        <!-- 头部apk信息 -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/app_detail_title_divider_bg"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingBottom="6dip"
-            android:paddingLeft="5dip"
-            android:paddingRight="10dip"
-            android:paddingTop="6dip" >
-
-            <!-- 返回的icon -->
+        <FrameLayout
+            android:id="@+id/topbar_app_detail"
+            android:layout_width="fill_parent"
+            android:layout_height="55dip"
+            android:background="@drawable/title_middle" >
 
             <ImageView
-                android:id="@+id/back_icon"
+                android:id="@+id/iv_back_app_detail"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="0dip"
-                android:layout_marginRight="0dip"
-                android:contentDescription="@null"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/btn_back_p" />
-            <!-- 应用icon -->
-
-            <ImageView
-                android:id="@+id/app_icon1"
-                android:layout_width="46dip"
-                android:layout_height="46dip"
-                android:layout_marginRight="5dip"
-                android:contentDescription="@null"
-                android:src="@drawable/app_detail_empty_icon" />
-            <!-- 应用名称、开发者 -->
 
             <LinearLayout
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" >
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/ivlog_app_detail"
+                    android:layout_width="80dip"
+                    android:layout_height="30dip"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/log" />
 
                 <TextView
-                    android:id="@+id/app_name1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dip"
-                    android:textSize="16dip" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-
-                    <TextView
-                        android:id="@+id/app_developer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:text="安卓开发者"
-                        android:textColor="#535353"
-                        android:textSize="14dip" />
-                    <!-- 应用下载量 -->
-
-                    <TextView
-                        android:id="@+id/app_download_counts1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="@string/app_detail_download_counts"
-                        android:textSize="14dip" />
-                </RelativeLayout>
+                    android:layout_gravity="center_vertical"
+                    android:text="游戏盒子"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
             </LinearLayout>
-        </LinearLayout>
-
-        <include layout="@layout/app_detail_gallery" />
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,7 +56,7 @@
             android:paddingTop="10dip" >
 
             <ImageView
-                android:id="@+id/app_icon2"
+                android:id="@+id/app_icon_app_detail"
                 android:layout_width="60dip"
                 android:layout_height="60dip"
                 android:layout_marginRight="5dip"
@@ -111,7 +72,7 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/app_name2"
+                    android:id="@+id/app_name_app_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dip"
@@ -119,7 +80,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/app_size1"
+                    android:id="@+id/app_size1_app_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/app_detail_size"
@@ -128,7 +89,7 @@
                 <!-- 应用下载量 -->
 
                 <TextView
-                    android:id="@+id/app_download_counts2"
+                    android:id="@+id/app_download_counts_app_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/app_detail_download_counts"
@@ -137,7 +98,7 @@
             </LinearLayout>
 
             <FrameLayout
-                android:id="@+id/state_btn"
+                android:id="@+id/state_btn_app_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
@@ -219,27 +180,29 @@
         </FrameLayout>
 
         <ListView
-            android:id="@+id/list_comment"
+            android:id="@+id/list_comment_app_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="70dip"
             android:listSelector="@drawable/list_item_selector"
+            android:divider="@drawable/driver1"
             android:visibility="gone" >
         </ListView>
 
         <!-- 详细内容 -->
 
         <me.key.appmarket.widgets.CustomScrollView
-            android:id="@+id/scroll_app"
+            android:id="@+id/scroll_app_app_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="70dip"
             android:fadingEdge="none" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical" >
+
+                <include layout="@layout/app_detail_gallery" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -259,7 +222,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        android:id="@+id/app_version"
+                        android:id="@+id/app_version_app_detail"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -268,7 +231,7 @@
                         android:textSize="13sp" />
 
                     <TextView
-                        android:id="@+id/app_size2"
+                        android:id="@+id/app_size2_app_detail"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -289,7 +252,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        android:id="@+id/app_update_time"
+                        android:id="@+id/app_update_time_app_detail"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -298,7 +261,7 @@
                         android:textSize="13sp" />
 
                     <TextView
-                        android:id="@+id/app_language"
+                        android:id="@+id/app_language_app_detail"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -329,7 +292,7 @@
                         android:textSize="15sp" />
 
                     <me.key.appmarket.widgets.EllipsizingTextView
-                        android:id="@+id/app_description"
+                        android:id="@+id/app_description_app_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dip"
@@ -343,7 +306,7 @@
                     <!-- 软件介绍，按钮 -->
 
                     <ImageButton
-                        android:id="@+id/app_des_expand"
+                        android:id="@+id/app_des_expand_app_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"

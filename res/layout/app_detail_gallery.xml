@@ -9,7 +9,7 @@
         android:layout_gravity="center" >
 
         <Gallery
-            android:id="@+id/gallery_square"
+            android:id="@+id/gallery_app_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -24,7 +24,7 @@
                 android:gravity="center_horizontal" >
 
                 <GridView
-                    android:id="@+id/square_gridview"
+                    android:id="@+id/gridview_app_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
