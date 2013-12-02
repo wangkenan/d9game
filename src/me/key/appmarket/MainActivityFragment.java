@@ -10,15 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.tsz.afinal.FinalDb;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import me.key.appmarket.MainActivity.DownStateBroadcast;
-import me.key.appmarket.MainActivity.MyInstalledReceiver;
-import me.key.appmarket.MainActivity.MyOnPageChangeListener;
-import me.key.appmarket.MainActivity.PrecentReceiver;
 import me.key.appmarket.MyListView.OnLoadMoreListener;
 import me.key.appmarket.adapter.AppAdapter;
 import me.key.appmarket.adapter.DetaileAdapter;
@@ -38,10 +29,10 @@ import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.GalleryFlow;
+import net.tsz.afinal.FinalDb;
 
-import com.market.d9game.R;
-import com.slidingmenu.lib2.SlidingMenu;
-import com.umeng.analytics.MobclickAgent;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -63,8 +54,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
@@ -74,18 +63,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView; 
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
+
+import com.market.d9game.R;
+import com.slidingmenu.lib2.SlidingMenu;
 
 public class MainActivityFragment extends Fragment implements OnClickListener {
 	private ViewPager mPager;
@@ -802,7 +795,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
 //		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
-		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
+//		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
 		//tabRank.setPadding(0, 5, 0, 10);
 //		advertBanner.setPadding(0, 5, 0, 5);
 		mHomeListView.addHeaderView(testView,null,false);
@@ -881,34 +874,69 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				cache, mHomeListView);
 		mHomeListView.setAdapter(appHomeAdapter);
 		appHomeAdapter.notifyDataSetChanged();
-		/*
-		 * // 注册滑动监听事件 mHomeListView.setOnScrollListener(new OnScrollListener()
+		
+		
+		
+		  // 注册滑动监听事件 
+		
+		/*mHomeListView.setOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				switch (scrollState) {
+				case SCROLL_STATE_FLING:
+					appRankAdapter.isAsyn = true;
+					break;
+				case SCROLL_STATE_IDLE:
+					appRankAdapter.isAsyn = false;
+					appRankAdapter.notifyDataSetChanged();
+					break;
+				case SCROLL_STATE_TOUCH_SCROLL:
+					appRankAdapter.isAsyn = false;
+					break;
+				}
+				
+			}
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub
+				if(firstVisibleItem>=2){
+					recomnView.setVisibility(View.VISIBLE);
+				}else{
+					recomnView.setVisibility(View.INVISIBLE);
+				}
+				
+			}
+		});*/
+		/* 
+		 * mHomeListView.setOnScrollListener(new OnScrollListener()
 		 * {
-		 * 
-		 * @Override public void onScrollStateChanged(AbsListView view, int
-		 * scrollState) { switch (scrollState) { case SCROLL_STATE_FLING:
-		 * appHomeAdapter.isAsyn = true; break; case SCROLL_STATE_IDLE:
-		 * appHomeAdapter.isAsyn = false; appHomeAdapter.notifyDataSetChanged();
-		 * break; case SCROLL_STATE_TOUCH_SCROLL: appHomeAdapter.isAsyn = false;
-		 * break;
-		 * 
-		 * }
-		 * 
-		 * }
-		 * 
-		 * @Override public void onScroll(AbsListView view, int
-		 * firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		 * 
-		 * } });
-		 */
+		  
+		 @Override public void onScrollStateChanged(AbsListView view, int
+		 scrollState) { switch (scrollState) { case SCROLL_STATE_FLING:
+		 appHomeAdapter.isAsyn = true; break; case SCROLL_STATE_IDLE:
+		 appHomeAdapter.isAsyn = false; appHomeAdapter.notifyDataSetChanged();
+		 break; case SCROLL_STATE_TOUCH_SCROLL: appHomeAdapter.isAsyn = false;
+		 break;
+		 
+		 }
+		  
+		  }
+		 
+		  @Override public void onScroll(AbsListView view, int
+		 firstVisibleItem, int visibleItemCount, int totalItemCount) {
+		 
+		 } });*/
+		 
 		/*
 		 * mHomeListView.setonRefreshListener(new OnRefreshListener() {
 		 * 
 		 * @Override public void onRefresh() {
 		 * myHandler.removeMessages(SHOWNEXT); appHomeInfos.clear(); new
 		 * Thread(runHomeData).start(); // new Thread(runBannerData).start(); }
-		 * });
-		 */
+		 });
+		 
 
 		mHomeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
