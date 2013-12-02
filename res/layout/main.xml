@@ -7,66 +7,107 @@
     >  
 
 
-    <RelativeLayout
+   <RelativeLayout
         android:id="@+id/topbar"
-        style="@style/topbar" >
-	  <ImageView
-            android:id="@+id/logo_title"
-            android:layout_width="35dip"
-            android:layout_height="35dip"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="6sp"
-            android:src="@drawable/icon" />
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:background="@drawable/title_middle"  
+         >
 
-        <TextView
-            android:id="@+id/topbar_title"
-            style="@style/topbar_title"
-            android:layout_toRightOf="@+id/logo_title"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5sp"
-            android:text="@string/app_name" />
-        
-       	  <ImageButton
+            android:layout_alignParentTop="true" 
+            android:layout_toLeftOf="@+id/search_btn_rl" > 
+
+            <ImageView
+                android:id="@+id/updata_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/update" />
+
+            <TextView
+                android:id="@+id/updata_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1dip"
+                android:text="39"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </FrameLayout>
+        <RelativeLayout
+            android:id="@+id/search_btn_rl"
+            android:layout_width="55dip"
+            android:layout_height="55dip" 
+            android:background="@drawable/title_left"
+            >
+        <ImageButton
             android:id="@+id/search_btn"
             android:layout_width="35dip"
             android:layout_height="35dip"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dip"
+            android:layout_marginLeft="10dip"
             android:background="@null"
-            android:src="@drawable/search_selector" /> 
-             <ImageButton
-       	      android:id="@+id/setting"
-       	      android:layout_width="35dip"
-       	      android:layout_height="35dip"
-       	      android:layout_alignTop="@+id/search_btn"
-       	      android:layout_toLeftOf="@+id/search_btn"
-       	      android:background="@null"
-       	      android:src="@drawable/main_menu_settings_icon" />
-              	<FrameLayout
-	       android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" 
-            android:layout_toLeftOf="@+id/search_btn"
-	    >
+            android:src="@drawable/left_btn" />
+        </RelativeLayout>
         <ImageView
-            android:id="@+id/updata_iv"
+            android:id="@+id/imageView1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/update" />
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dip"
+            android:visibility="invisible"
+            android:layout_toRightOf="@+id/search_btn_rl"
+            android:background="@drawable/v_driver" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="80dip"
+            android:layout_height="30dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/imageView1"
+            android:src="@drawable/log" />
+
         <TextView
-            android:id="@+id/updata_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="12sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="游戏盒子"
             android:textColor="@color/white"
-            android:text="39" 
-            android:layout_marginBottom="1dip"
-            />
-</FrameLayout>
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignTop="@+id/imageView1"
+            android:layout_marginRight="10dip"
+            android:layout_toLeftOf="@+id/setting_rl"
+            android:visibility="invisible"
+            android:background="@drawable/v_driver" />
+
+<RelativeLayout
+    android:id="@+id/setting_rl"
+    android:layout_width="55dip"
+    android:layout_height="55dip"
+    android:layout_alignParentRight="true"
+    android:layout_centerVertical="true"
+    android:background="@drawable/title_right" >
+
+    <ImageButton 
+        android:id="@+id/setting" 
+        android:layout_width="35dip" 
+        android:layout_height="35dip"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@null"
+        android:src="@drawable/right_btn" />
+
+</RelativeLayout>
+
     </RelativeLayout>
 
     <!-- <LinearLayout

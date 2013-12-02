@@ -26,13 +26,12 @@
             android:visibility="gone" />
           
         <ListView
-               android:background="@color/gray_hint"
             android:id="@+id/list_home"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:fadingEdge="none"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
+            android:numColumns="2"
+            android:background="@drawable/mybackground"
             >
         </ListView>
              <ProgressBar

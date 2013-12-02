@@ -76,6 +76,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView; 
 import android.widget.LinearLayout;
@@ -840,7 +841,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		tuijian_gallery = (GalleryFlow) inflater.inflate(
 				R.layout.home_head_banner, null);
-		mHomeListView.addHeaderView(tuijian_gallery);
+		//mHomeListView.addHeaderView(tuijian_gallery);
 
 		tuijian_gallery.setOnTouchListener(new OnTouchListener() {
 			@Override

@@ -3,7 +3,7 @@ package me.key.appmarket.widgets;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import me.key.appmarket.LocalGameActivity;
+import me.key.appmarket.LocalGameFragment;
 import me.key.appmarket.MainActivity;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.RankActivity;
@@ -198,7 +198,7 @@ public class MyTableHost extends TabActivity {
 		 * .setContent(new Intent(this, MainActivity.class)));
 		 */
 
-		Intent tabIntent = new Intent(MyTableHost.this, LocalGameActivity.class);
+		Intent tabIntent = new Intent(MyTableHost.this, LocalGameFragment.class);
 		Bundle bundle = new Bundle();
 		bundle.putInt("width", width);
 		tabIntent.putExtras(bundle);

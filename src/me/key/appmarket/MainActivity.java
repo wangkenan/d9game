@@ -804,8 +804,8 @@ public class MainActivity extends SlidingFragmentActivity {
 			}
 		});
 
-		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, MainActivity.this,
-				cache, mHomeListView);
+	/*	appHomeAdapter = new NewRecommnAdapter(appHomeInfos, MainActivity.this,
+				cache, mHomeListView);*/
 		mHomeListView.setAdapter(appHomeAdapter);
 		appHomeAdapter.notifyDataSetChanged();
 		/*
