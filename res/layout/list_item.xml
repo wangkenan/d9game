@@ -58,6 +58,7 @@
         android:layout_centerVertical="true" >
 
         <ImageView
+            android:id="@+id/iv_oprate_state"
             android:layout_width="65dip"
             android:layout_height="28dip"
             android:layout_marginRight="10dip"
@@ -65,7 +66,7 @@
             android:focusable="false"
             android:gravity="center"
             android:scaleType="fitXY"
-            android:src="@drawable/update_btn"
+            android:src="@drawable/install_btn"
             android:textColor="#0066FF"
             android:textSize="13sp" />
 
