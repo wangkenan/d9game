@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import me.key.appmarket.LocalGameActivity.PrecentReceiver;
 import me.key.appmarket.LocalGameFragment.LocalInstallBroadcast;
 import me.key.appmarket.adapter.DownManagerAdapter;
 import me.key.appmarket.adapter.UpdataAdapter;
@@ -43,12 +45,12 @@ public class DownLoadManagerActivity extends FinalActivity {
 	private UpdataAdapter upAdapter;
 	@ViewInject(id=R.id.down_manager_lv)
 	private ListView downLv;
-	@ViewInject(id=R.id.back_downmanager,click="onClick")
+	@ViewInject(id=R.id.iv_back_downmanager,click="onClick")
 	private ImageView back_downmanager;
-	@ViewInject(id=R.id.downlist,click="onClick")
-	private Button downlist;
-	@ViewInject(id=R.id.updatalist,click="onClick")
-	private Button updatalist;
+	@ViewInject(id=R.id.tv_manager_downmanager,click="onClick")
+	private TextView downlist;
+	@ViewInject(id=R.id.tv_update_downmanager,click="onClick")
+	private TextView updatalist;
 	//进度更新广播
 	private PrecentReceiver mPrecentReceiver;
 	private PackageManager packageManager;
@@ -129,17 +131,17 @@ public class DownLoadManagerActivity extends FinalActivity {
 	}
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.back_downmanager:
+		case R.id.iv_back_downmanager:
 			finish();
 			break;
-		case R.id.downlist:
+		case R.id.tv_manager_downmanager:
 			downLv.setAdapter(dmAdapter);
-			downlist.setBackgroundResource(R.drawable.btn_bar_2);
+			downlist.setBackgroundResource(R.drawable.bk_navigate_tv_appdetail);
 			updatalist.setBackgroundResource(0);
 			break;
-		case R.id.updatalist:
+		case R.id.tv_update_downmanager:
 			downLv.setAdapter(upAdapter);
-			updatalist.setBackgroundResource(R.drawable.btn_bar_2);
+			updatalist.setBackgroundResource(R.drawable.bk_navigate_tv_appdetail);
 			downlist.setBackgroundResource(0);
 			break;
 		}

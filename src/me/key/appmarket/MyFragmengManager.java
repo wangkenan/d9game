@@ -47,6 +47,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -70,10 +71,13 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private ListView lv;
 	// 寻找游戏
 	private ImageView findgame;
+	private RelativeLayout findApp;
 	// 管理游戏
 	private TextView localgame;
+	
 	// 排行游戏
 	private ImageView rankgame;
+	private RelativeLayout rankApp;
 	private MenuCategoryAdapter menuCategoryAdapter;
 	private FinalDb db;
 	// 本地sd卡地址
@@ -122,7 +126,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private Drawable local_normal;
 	private Drawable manager_focue;
 	private Drawable manager_normal;
-	private FrameLayout localgame_click;
+	private FrameLayout localApp;
 	private DownStateBroadcast dsb;
 	private DownStateBroadcastRank dsbRank;
 	private View errorview;
@@ -147,14 +151,16 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		appHomeInfos_temp = MarketApplication.getInstance().getHomeAppInfos();
 		db = FinalDb.create(this);
 		findgame = (ImageView) findViewById(R.id.findgame);
+		findApp=(RelativeLayout) findViewById(R.id.rl_findapp_main_bottom);
 		localgame = (TextView) findViewById(R.id.localgame);
 		rankgame = (ImageView) findViewById(R.id.rankgame);
+		rankApp=(RelativeLayout) findViewById(R.id.rl_rankapp_main_bottom);
 		inflater = LayoutInflater.from(this);
 		errorview = findViewById(R.id.errorview);
-		localgame_click = (FrameLayout) findViewById(R.id.localgame_click);
-		findgame.setOnClickListener(this);
-		rankgame.setOnClickListener(this);
-		localgame_click.setOnClickListener(this);
+		localApp = (FrameLayout) findViewById(R.id.fl_localapp_main_bottom);
+		findApp.setOnClickListener(this);
+		rankApp.setOnClickListener(this);
+		localApp.setOnClickListener(this);
 		fm = getSupportFragmentManager();
 		// 获取sd卡地址
 		root = LocalUtils.getRoot(this);
@@ -594,7 +600,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.findgame:
+		case R.id.rl_findapp_main_bottom:
 			FragmentTransaction ft = fm.beginTransaction();
 			// ft.replace(R.id.tabcontent, mf);
 			// ft.addToBackStack(null);
@@ -611,7 +617,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					local_normal, null, null);
 			rankgame.setImageResource(R.drawable.rank);
 			break;
-		case R.id.localgame_click:
+		case R.id.fl_localapp_main_bottom:
 			findgame.setImageResource(R.drawable.findgame);
 			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					local_focue, null, null);
@@ -628,7 +634,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			ft2.show(lf);
 			ft2.commit();
 			break;
-		case R.id.rankgame:
+		case R.id.rl_rankapp_main_bottom:
 			findgame.setImageResource(R.drawable.findgame);
 			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					local_normal, null, null);

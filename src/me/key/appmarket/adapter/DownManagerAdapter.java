@@ -87,10 +87,12 @@ public class DownManagerAdapter extends BaseAdapter {
 				vh = new ViewHolder1();
 				vh.icon_dm = (ImageView) convertView
 						.findViewById(R.id.icon_dm);
+				vh.appOprate=(ImageView) convertView
+						.findViewById(R.id.iv_operate_downmanager);
 				vh.install_dm = (TextView) convertView
-						.findViewById(R.id.install_dm);
-				vh.progress_view_local_dm = (ProgressView) convertView
-						.findViewById(R.id.progress_view_local_dm);
+						.findViewById(R.id.install_item_downmanager);
+//				vh.progress_view_local_dm = (ProgressView) convertView
+//						.findViewById(R.id.progress_view_local_dm);
 				vh.progressbar_updown = (ProgressBar) convertView
 						.findViewById(R.id.progressbar_updown);
 				vh.name_down = (TextView) convertView
@@ -128,10 +130,10 @@ public class DownManagerAdapter extends BaseAdapter {
 		if (sdappInfo.isIspause()) {
 			LogUtils.d("tureMy", sdappInfo.isIspause() + "");
 			v1.install_dm.setText("暂停");
-			v1.progress_view_local_dm.setProgress(DownloadService
-					.getPrecent(idx));
+//			v1.progress_view_local_dm.setProgress(DownloadService
+//					.getPrecent(idx));
 		} else {
-			v1.install_dm.setText("下载中");
+			v1.install_dm.setText("下载");
 		}
 		/*
 		 * if (sdappInfo.isInstalled()) { v1.install_dm.setText("打开");
@@ -146,11 +148,11 @@ public class DownManagerAdapter extends BaseAdapter {
 		 * } else
 		 */if (sdappInfo.isDown()) {
 
-			v1.progress_view_local_dm.setProgress(DownloadService
-					.getPrecent(idx));
+//			v1.progress_view_local_dm.setProgress(DownloadService
+//					.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");
 
-			v1.install_dm.setText("下载中");
+			v1.install_dm.setText("下载");
 			/*
 			 * Drawable mDrawableicon = cnt.getResources().getDrawable(
 			 * R.drawable.downloading);
@@ -165,7 +167,7 @@ public class DownManagerAdapter extends BaseAdapter {
 			 * mDrawableicon, null, null);
 			 */
 			v1.install_dm.setText("安装");
-			v1.progress_view_local_dm.setProgress(100);
+//			v1.progress_view_local_dm.setProgress(100);
 			v1.progressbar_updown.setProgress(100);
 			v1.size_pro_downmanager.setText(Long.parseLong(sdappInfo
 					.getAppSize())
@@ -199,7 +201,7 @@ public class DownManagerAdapter extends BaseAdapter {
 
 				long count = sp.getLong(tempFile.getAbsolutePath()
 						+ "precent", 0);
-				v1.progress_view_local_dm.setProgress(count);
+//				v1.progress_view_local_dm.setProgress(count);
 			} else if (length != 0
 					&& !DownloadService.isExist(sdappInfo.getAppName())) {
 				Editor edit = sp.edit();
@@ -227,7 +229,7 @@ public class DownManagerAdapter extends BaseAdapter {
 					+ formattotal + "MB");
 			v1.press_pro_downmanager.setText("100%");
 		}
-		v1.install_dm.setOnClickListener(new OnClickListener() {
+		v1.appOprate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				LogUtils.d("MYADAPTER", "我被点击了");
@@ -252,7 +254,7 @@ public class DownManagerAdapter extends BaseAdapter {
 						v1.install_dm.setText("暂停");
 						sdappInfo.setDown(false);
 					} else {
-						v1.install_dm.setText("下载中");
+						v1.install_dm.setText("下载");
 						sdappInfo.setDown(true);
 					}
 					LogUtils.d("down", sdappInfo.isDown() + "");
@@ -279,7 +281,7 @@ public class DownManagerAdapter extends BaseAdapter {
 					File tempFile = new File(Environment
 							.getExternalStorageDirectory(), "/market/"
 							+ sdappInfo.getAppName() + ".apk");
-					v1.install_dm.setText("下载中");
+					v1.install_dm.setText("下载");
 
 					long length = sp.getLong(tempFile.getAbsolutePath(), 0);
 					LogUtils.d("myppp",
@@ -311,10 +313,10 @@ public class DownManagerAdapter extends BaseAdapter {
 	}
 	
 	static class ViewHolder1 {
-		ImageView icon_dm;
+		ImageView icon_dm,appOprate;
 		ProgressBar progressbar_updown;
 		TextView install_dm;
-		ProgressView progress_view_local_dm;
+//		ProgressView progress_view_local_dm;
 		TextView name_down;
 		TextView size_pro_downmanager;
 		TextView press_pro_downmanager;
