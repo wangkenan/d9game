@@ -7,15 +7,15 @@
 
     <TextView
         android:id="@+id/topnum_applist_item_tv"
-        android:layout_width="28dip"
-        android:layout_height="11dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="7dip"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:text="1 0"
         android:textColor="#9f9f9f"
-        android:textSize="11sp" />
+        android:textSize="15sp" />
 
     <ImageView
         android:id="@+id/icon2"
@@ -86,7 +86,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" >
 
-        <ImageView
+        <!-- <ImageView
             android:layout_width="134dip"
             android:layout_height="17dip"
             android:layout_gravity="bottom"
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dip"
             android:singleLine="true"
-            android:text="aaaaaaaaaa" />
+            android:text="aaaaaaaaaa" /> -->
     </FrameLayout>
 
     <LinearLayout

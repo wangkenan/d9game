@@ -209,8 +209,8 @@
                 android:layout_centerInParent="true"
                 android:visibility="invisible" />
         </RelativeLayout>
-        <include layout="@layout/tab_rank_layout"
-            android:id="@+id/ranktab2"/>
+        <!-- <include layout="@layout/tab_rank_layout"
+            android:id="@+id/ranktab2"/> -->
         
        <!--   <RelativeLayout
             android:id="@+id/rank_tab_rela"

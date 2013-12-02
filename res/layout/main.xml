@@ -36,6 +36,7 @@
                 android:text="39"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
+
         </FrameLayout>
         <RelativeLayout
             android:id="@+id/search_btn_rl"
@@ -110,9 +111,6 @@
 </RelativeLayout>
 
     </RelativeLayout>
-    <include layout="@layout/tab_localgame"
-        android:id="@+id/tab_recomn2"
-        android:visibility="gone"/>
 
     <!-- <LinearLayout
         android:id="@+id/linearLayout1"
@@ -160,15 +158,22 @@
             android:textSize="15sp" />
     </LinearLayout> -->
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vPager"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/linearLayout1"
-        android:layout_gravity="center"
-        android:flipInterval="30"
-        android:persistentDrawingCache="animation"
-         /> 
-        
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vPager"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:flipInterval="30"
+            android:persistentDrawingCache="animation" >
+        </android.support.v4.view.ViewPager>
+
+        <include
+            android:id="@+id/tab_recomn2"
+            layout="@layout/tab_localgame" />
+
+    </FrameLayout>
 
 </LinearLayout>

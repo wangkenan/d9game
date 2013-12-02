@@ -94,14 +94,14 @@
         android:src="@drawable/tab_divider" />
     -->
 
-    <FrameLayout
+     <FrameLayout
         android:id="@+id/imageView1_fl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true" >
 
-        <ImageView
+       <!-- <ImageView
             android:layout_width="134dip"
             android:layout_height="17dip"
             android:layout_gravity="bottom"
@@ -114,8 +114,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dip"
             android:singleLine="true"
-            android:text="aaaaaaaaaa" />
-    </FrameLayout>
+            android:text="aaaaaaaaaa" />-->
+    </FrameLayout> 
 
     <LinearLayout
         android:id="@+id/linearLayout1"
