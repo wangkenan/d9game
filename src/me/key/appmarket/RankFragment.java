@@ -65,6 +65,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
@@ -124,6 +125,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 		}
 	};
 	private ArrayList<Activity> appLication;
+	private RelativeLayout tabRank2;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -144,6 +146,19 @@ public class RankFragment extends Fragment implements OnClickListener {
 		MarketApplication marketApplecation = (MarketApplication) getActivity().getApplication();
 		appLication = marketApplecation.getAppLication();
 		mRankListView = (ListView) inflate.findViewById(R.id.list_rank);
+		//在rankListView中添加广告栏、导航栏等
+		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
+		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
+		tabRank2 = (RelativeLayout)inflate.findViewById(R.id.rank_tab_rela);
+		tabRank.setPadding(0, 5, 0, 10);
+		advertBanner.setPadding(0, 10, 0, 10);
+		mRankListView.addHeaderView(testView);
+		mRankListView.addHeaderView(advertBanner);
+		mRankListView.addHeaderView(tabRank);
+		
+		
+		//////////////
 		rank_pb = (ProgressBar) inflate.findViewById(R.id.rank_pb);
 		appRankInfos = new ArrayList<AppInfo>();
 		ll_rankerror = (LinearLayout) inflate.findViewById(R.id.ll_error);
@@ -266,6 +281,12 @@ public class RankFragment extends Fragment implements OnClickListener {
 		}.execute();
 		appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), cache);
 		mRankListView.setAdapter(appRankAdapter);
+		if(mRankListView.getId()>2){
+			tabRank2.setVisibility(View.VISIBLE);
+		}else{
+			tabRank2.setVisibility(View.GONE);
+		}
+		
 		// 注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
 
@@ -288,10 +309,18 @@ public class RankFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
+				if(firstVisibleItem >= 2) {
+					tabRank2.setVisibility(View.VISIBLE);
+					
+				} else {
+					tabRank2.setVisibility(View.INVISIBLE);
+				}
 
 			}
 		});
+		Log.d("YTL", "mAppInfo.getIdx() = ");
 		mRankListView.setOnItemClickListener(new OnItemClickListener() {
+			
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {

@@ -60,16 +60,13 @@ public class MenuCategoryAdapter extends BaseAdapter {
 			vh = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.menu_category_item, null);
 			vh.tv = (TextView) convertView.findViewById(R.id.category_menu);
-			vh.click_menu = (ImageView) convertView.findViewById(R.id.click_menu);
 			convertView.setTag(vh);
 			convertView.setLayoutParams(new LayoutParams(width, height/classInfos.size()));
 		} else {
 			vh = (ViewHolder) convertView.getTag();
 		}
 	if(position == 0) {
-		convertView.setBackgroundColor(context.getResources().getColor(R.color.classiv_cloor));
-		vh.click_menu.setVisibility(View.VISIBLE);
-		vh.tv.setTextColor(context.getResources().getColor(R.color.myprobar));
+		convertView.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
 		}
 		vh.tv.setText(classInfos.get(position).getName());
 		return convertView;

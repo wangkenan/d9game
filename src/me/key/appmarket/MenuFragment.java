@@ -11,6 +11,7 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.MyAsynTask;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,13 +21,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -43,6 +49,18 @@ public class MenuFragment extends Fragment {
 	private AsyncTask<Void, Void, Void> at;
 	private ArrayList<CategoryInfo> categoryInfoList = new ArrayList<CategoryInfo>();
 	private Context context;
+	private View errorview;
+	private LayoutInflater inflater;
+	private View loadMoreView;
+	private int visibleLast = 0;
+	private int visibleCount;
+	private Button loadmore_btn;
+	private Handler handler = new Handler();
+	// 每次获取的数量
+	private int page = 0;
+	private boolean isLoading = false;
+	private boolean isFirst = false;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -76,25 +94,39 @@ public class MenuFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		classLv = (ListView) view.findViewById(R.id.clasifys_lv);
-		MarketApplication.getInstance().getAppLication().add(getActivity());
 		context = getActivity().getApplicationContext();
-		new AsyncTask<Void, Void, Void>() {
+		classLv = (ListView) view.findViewById(R.id.clasifys_lv);
+		classLv.setDivider(null);
+		classLv.setDividerHeight(0);
+		inflater = LayoutInflater.from(context);
+		loadMoreView = inflater.inflate(R.layout.loadmore, null);
+		classLv.addFooterView(loadMoreView);
+		loadmore_btn = (Button) loadMoreView.findViewById(R.id.loadMoreButton);
+		MarketApplication.getInstance().getAppLication().add(getActivity());
+
+		errorview = view.findViewById(R.id.error);
+
+		new MyAsynTask(context, errorview) {
 
 			@Override
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
 				Log.e("tag", "runCategoryData result =" + str);
-				ParseCategoryJson(str);
-				if (categoryInfoList.size() > 0) {
-					CategoryInfo cif = categoryInfoList.get(2);
-					int type1 = Integer.parseInt(cif.getType1());
-					int type2 = Integer.parseInt(cif.getType2());
-					String str1 = ToolHelper.donwLoadToString(Global.MAIN_URL
-							+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2="
-							+ type2 + "&page=" + 0);
-					ParseJson(str1);
+				if (str == null) {
+					errorview.setVisibility(View.VISIBLE);
+				} else {
+					ParseCategoryJson(str);
+					if (categoryInfoList.size() > 0) {
+						CategoryInfo cif = categoryInfoList.get(2);
+						int type1 = Integer.parseInt(cif.getType1());
+						int type2 = Integer.parseInt(cif.getType2());
+						String str1 = ToolHelper
+								.donwLoadToString(Global.MAIN_URL
+										+ Global.INDEX_PAGE + "?type1=" + type1
+										+ "&type2=" + type2 + "&page=" + 0);
+						ParseJson(str1);
+					}
 				}
 				return null;
 			}
@@ -102,9 +134,12 @@ public class MenuFragment extends Fragment {
 			@Override
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
-				
-				cAdapter = new ClassifyAdapter(getActivity().getApplicationContext(), list);
+
+				cAdapter = new ClassifyAdapter(getActivity()
+						.getApplicationContext(), list, classLv,
+						categoryInfoList);
 				classLv.setAdapter(cAdapter);
+
 				classLv.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
@@ -123,8 +158,31 @@ public class MenuFragment extends Fragment {
 						startActivity(intent);
 					}
 				});
+				classLv.setOnScrollListener(new OnScrollListener() {
+
+					@Override
+					public void onScrollStateChanged(AbsListView view,
+							int scrollState) {
+						// TODO Auto-generated method stub
+						int itemsLastIndex = cAdapter.getCount() - 1;
+						int lastIndex = itemsLastIndex + 1;
+						if (scrollState == OnScrollListener.SCROLL_STATE_IDLE
+								&& visibleLast == lastIndex) {
+							doUpdate();
+						}
+					}
+
+					@Override
+					public void onScroll(AbsListView view,
+							int firstVisibleItem, int visibleItemCount,
+							int totalItemCount) {
+						// TODO Auto-generated method stub
+						visibleCount = visibleItemCount;
+						visibleLast = firstVisibleItem + visibleItemCount - 1;
+					}
+				});
 			}
-		}.execute();
+		}.exe();
 
 	}
 
@@ -175,7 +233,8 @@ public class MenuFragment extends Fragment {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "", apppkgname);
+						Global.MAIN_URL + appiconurl, appurl, "", "",
+						apppkgname);
 				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				list_temp.add(appInfo);
 				// appDatainfos_temp.add(appInfo);
@@ -189,10 +248,11 @@ public class MenuFragment extends Fragment {
 	}
 
 	public void updata(final int type) {
-		if(at != null) {
+		page = 0;
+		if (at != null) {
 			at.cancel(true);
 		}
-		at =  new AsyncTask<Void, Void, Void>() {
+		at = new AsyncTask<Void, Void, Void>() {
 
 			@Override
 			protected Void doInBackground(Void... params) {
@@ -205,7 +265,7 @@ public class MenuFragment extends Fragment {
 				int type2 = Integer.parseInt(cif.getType2());
 				String str1 = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.INDEX_PAGE + "?type1=" + type1 + "&type2="
-						+ type2 + "&page=" + 0);
+						+ type2 + "&page=" + page);
 				ParseJson(str1);
 				return null;
 			}
@@ -214,8 +274,11 @@ public class MenuFragment extends Fragment {
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
 				LogUtils.d("Menu", list.size() + "sss");
-				cAdapter = new ClassifyAdapter(context, list);
+				cAdapter = new ClassifyAdapter(context, list, classLv,
+						categoryInfoList);
 				classLv.setAdapter(cAdapter);
+				classLv.setDivider(null);
+				classLv.setDividerHeight(0);
 				classLv.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
@@ -235,8 +298,135 @@ public class MenuFragment extends Fragment {
 					}
 				});
 				cAdapter.notifyDataSetChanged();
+				classLv.setOnScrollListener(new OnScrollListener() {
+
+					@Override
+					public void onScrollStateChanged(AbsListView view,
+							int scrollState) {
+						// TODO Auto-generated method stub
+						int itemsLastIndex = cAdapter.getCount() - 1;
+						int lastIndex = itemsLastIndex + 1;
+						if (scrollState == OnScrollListener.SCROLL_STATE_IDLE
+								&& visibleLast == lastIndex) {
+						}
+					}
+
+					@Override
+					public void onScroll(AbsListView view,
+							int firstVisibleItem, int visibleItemCount,
+							int totalItemCount) {
+						// TODO Auto-generated method stub
+						if ((firstVisibleItem + visibleItemCount == totalItemCount)
+								&& (totalItemCount != 0)) {
+							if (!isLoading && !isFirst) {
+								isLoading = true;
+								loadmore_btn.setText("正在加载中...");
+								loadmore_btn.setVisibility(View.VISIBLE);
+								page = page + 1;
+								loadData();
+							}
+							isFirst = false;
+						}
+					}
+				});
 			}
 		}.execute();
 	}
 
+	protected void doUpdate() {
+		// TODO Auto-generated method stub
+		loadmore_btn.setText("loading ...");
+		page = cAdapter.getCount();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				loadData();
+				cAdapter.notifyDataSetChanged();// 閫氱煡adapter鏁版嵁鍙樺寲
+				classLv.setSelection(visibleLast - visibleCount + 1);
+				loadmore_btn.setText("Load More");
+			}
+
+		}, 2000);
+	}
+
+	/**
+	 * 获取数据
+	 */
+	private void loadData() {
+		new MyAsynTask(context, errorview) {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.APP_CATEGORY + "?type=" + 2);
+				Log.e("tag", "runCategoryData result =" + str);
+				if (str == null) {
+					errorview.setVisibility(View.VISIBLE);
+				} else {
+					ParseCategoryJson(str);
+					if (categoryInfoList.size() > 0) {
+						CategoryInfo cif = categoryInfoList.get(2);
+						int type1 = Integer.parseInt(cif.getType1());
+						int type2 = Integer.parseInt(cif.getType2());
+						String str1 = ToolHelper
+								.donwLoadToString(Global.MAIN_URL
+										+ Global.INDEX_PAGE + "?type1=" + type1
+										+ "&type2=" + type2 + "&page=" + page);
+						ParseJsonUpdata(str1);
+					}
+				}
+
+				return null;
+			}
+
+			private void ParseJsonUpdata(String str1) {
+				try {
+					list_temp = new ArrayList<AppInfo>();
+					JSONArray jsonArray = new JSONArray(str1);
+					int len = jsonArray.length();
+					for (int i = 0; i < len; i++) {
+						JSONObject jsonObject = jsonArray.getJSONObject(i);
+						String appName = jsonObject.getString("appname");
+						String apppkgname = jsonObject.getString("apppkgname");
+						String appiconurl = jsonObject.getString("appiconurl");
+						String appSize = jsonObject.getString("appsize");
+						String idx = jsonObject.getString("idx");
+						String appurl = jsonObject.getString("appurl");
+						AppInfo appInfo = new AppInfo(idx, appName, appSize,
+								Global.MAIN_URL + appiconurl, appurl, "", "",
+								apppkgname);
+						appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
+						list_temp.add(appInfo);
+						// appDatainfos_temp.add(appInfo);
+					}
+					list.addAll(list_temp);
+					// mHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				loadmore_btn.setVisibility(View.GONE);
+				cAdapter.notifyDataSetChanged();
+				isLoading = false;
+				/*
+				 * classLv.setOnItemClickListener(new OnItemClickListener() {
+				 * 
+				 * @Override public void onItemClick(AdapterView<?> parent, View
+				 * view, int position, long id) { AppInfo mAppInfo = (AppInfo)
+				 * classLv.getAdapter() .getItem(position); // Log.d("YTL",
+				 * "mAppInfo.getIdx() = " + // mAppInfo.getIdx()); Intent intent
+				 * = new Intent(getActivity() .getApplicationContext(),
+				 * AppDetailActivity.class); // LogUtils.d("error",
+				 * position+""); intent.putExtra("appid", mAppInfo.getIdx());
+				 * intent.putExtra("appinfo", mAppInfo); startActivity(intent);
+				 * } });
+				 */
+			}
+		}.exe();
+	}
 }

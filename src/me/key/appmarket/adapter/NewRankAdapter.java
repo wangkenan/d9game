@@ -166,7 +166,7 @@ public class NewRankAdapter extends BaseAdapter {
 				viewHolder2.icon = (ImageView) convertvView
 						.findViewById(R.id.icon);
 				viewHolder2.name = (TextView) convertvView
-						.findViewById(R.id.app_name2);
+						.findViewById(R.id.app_name);
 				viewHolder2.size = (TextView) convertvView
 						.findViewById(R.id.appsize);
 				viewHolder2.tvdown = (TextView) convertvView
@@ -203,16 +203,16 @@ public class NewRankAdapter extends BaseAdapter {
 			fillData(position, v2);
 			switch (position) {
 			case 0:
-				v2.top.setImageResource(R.drawable.top1);
+				v2.top.setImageResource(R.drawable.rank_num1);
 				getDesc(0, v2);
 				break;
 
 			case 1:
-				v2.top.setImageResource(R.drawable.top2);
+				v2.top.setImageResource(R.drawable.rank_num2);
 				getDesc(1, v2);
 				break;
 			case 2:
-				v2.top.setImageResource(R.drawable.top3);
+				v2.top.setImageResource(R.drawable.rank_num3);
 				getDesc(2, v2);
 				break;
 			}
@@ -248,6 +248,7 @@ public class NewRankAdapter extends BaseAdapter {
 
 	public void fillData(final int position, final BaseHolder v1) {
 		Drawable mDrawable;
+		LogUtils.i("NullPointer--------------", appInfos.get(position).getAppName());
 		v1.name.setText(appInfos.get(position).getAppName());
 		v1.size.setText(ToolHelper.Kb2Mb(appInfos.get(position)
 				.getAppSize()));

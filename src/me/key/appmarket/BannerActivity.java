@@ -57,7 +57,7 @@ public class BannerActivity extends Activity implements OnScrollListener {
 	private ArrayList<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
 	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private TextView tv_empty;
-
+ 
 	private boolean isLoading = false;
 	private boolean isFirst = false;
 

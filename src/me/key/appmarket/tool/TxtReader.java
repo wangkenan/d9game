@@ -1,5 +1,6 @@
 package me.key.appmarket.tool;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,5 +54,24 @@ public class TxtReader {
 			e.printStackTrace();
 		}
 		return getString(fileInputStream);
+	}
+	
+	public static String getJsonStr(InputStream is) {
+		if (is != null) {
+			BufferedInputStream bis = new BufferedInputStream(is);
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			StringBuilder builder = new StringBuilder();
+			try {
+				while ((len = bis.read(buffer)) != -1) {
+					builder.append(new String(buffer, 0, len));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return builder.toString();
+		} else {
+			return null;
+		}
 	}
 }

@@ -11,6 +11,7 @@ import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AbsListView.LayoutParams;
 
 import com.market.d9game.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -50,7 +52,10 @@ public class ClassifyAdapter extends BaseAdapter {
 	private boolean isDownLoading;
 	// 是否异步加载图片
 	public boolean isAsyn;
+	private ListView lv;
+	private List<CategoryInfo> categorys;
 	private Map<String, Drawable> drawMap = new HashMap<String, Drawable>();
+	private int height,width;
 	//设置ImageLoade初始化信息
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()  
     .showImageForEmptyUri(R.drawable.tempicon).showStubImage(R.drawable.tempicon)  
@@ -61,13 +66,17 @@ public class ClassifyAdapter extends BaseAdapter {
     .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
     .bitmapConfig(Bitmap.Config.RGB_565)               
     .build(); 
-	public ClassifyAdapter(Context context, List<AppInfo> classInfos) {
+	public ClassifyAdapter(Context context, List<AppInfo> classInfos,ListView lv,List<CategoryInfo> categorys) {
 		this.appInfos = classInfos;
 		this.cache = cache;
 		this.mylistView = mylistView;
 		mContext = context;
 		lay = LayoutInflater.from(context);
 		asyncImageLoader = new AsyncImageLoader();
+		this.lv = lv;
+		this.categorys = categorys;
+		height = lv.getHeight();
+		width = lv.getWidth();
 	}
 	
 	@Override
@@ -102,6 +111,7 @@ public class ClassifyAdapter extends BaseAdapter {
 					.findViewById(R.id.tv_down2);
 			viewHolder.progress_view = (ProgressView) convertvView
 					.findViewById(R.id.progress_view2);
+			convertvView.setLayoutParams(new LayoutParams(width, height/9));
 			convertvView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertvView.getTag();

@@ -1,13 +1,15 @@
 package me.key.appmarket.network;
 
 import java.util.List;
+
+import me.key.appmarket.utils.Global;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import me.key.appmarket.utils.Global;
 
 public class AppDetailRequest extends HttpRequestWithToken {
 
-	private String mAppid;
+	private String mAppid; 
 
 	public AppDetailRequest(String appid) {
 		this.mAppid = appid;

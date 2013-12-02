@@ -7,13 +7,12 @@
     android:outAnimation="@android:anim/slide_out_right" >
 
    
-     <ImageView
+      <ImageView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/welcome_d9" 
-    />   
+    />    
    
-
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
@@ -21,7 +20,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-
+		
             <FrameLayout
                 android:id="@+id/tabcontent"
                 android:layout_width="fill_parent"

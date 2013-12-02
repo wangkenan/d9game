@@ -171,7 +171,6 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 		mygamebar = (LinearLayout) findViewById(R.id.mygamebar);
 		//banner_local = (ImageView) findViewById(R.id.banner_local);
 		setImagePosition(R.drawable.a20131008174300, banner_local);
-		lv = (ListView) findViewById(R.id.category_lv1);
 		 banner_local.setOnClickListener(new OnClickListener() {
 			  
 			  @Override public void onClick(View v) { Intent intent = new
@@ -397,8 +396,6 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 						menuFragment.updata(position);
 						view.setBackgroundColor(getResources().getColor(
 								R.color.classiv_cloor));
-						view.findViewById(R.id.click_menu).setVisibility(
-								View.VISIBLE);
 						TextView title = (TextView) view
 								.findViewById(R.id.category_menu);
 						title.setTextColor(getResources().getColor(
@@ -410,8 +407,6 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 							LogUtils.d("Main", i + "");
 							lv.getChildAt(i).setBackgroundColor(
 									getResources().getColor(R.color.white));
-							lv.getChildAt(i).findViewById(R.id.click_menu)
-									.setVisibility(View.INVISIBLE);
 							TextView tv = (TextView) lv.getChildAt(i)
 									.findViewById(R.id.category_menu);
 							tv.setTextColor(getResources().getColor(
@@ -449,43 +444,8 @@ public class LocalGameActivity extends SlidingFragmentActivity implements
 				fragmentTransaction.commit();
 
 				LogUtils.d("Main", "open__");
-				final ListView lv1 = (ListView) findViewById(R.id.category_lv1);
 				MenuCategoryAdapter menuCategoryAdapter = new MenuCategoryAdapter(
 						LocalGameActivity.this, gcategoryInfoList_temp, lv);
-				lv1.setAdapter(menuCategoryAdapter);
-				menuCategoryAdapter.notifyDataSetChanged();
-				lv1.setOnItemClickListener(new OnItemClickListener() {
-
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-
-						menuFragment.updata(position);
-						view.setBackgroundColor(getResources().getColor(
-								R.color.classiv_cloor));
-						view.findViewById(R.id.click_menu).setVisibility(
-								View.VISIBLE);
-						TextView title = (TextView) view
-								.findViewById(R.id.category_menu);
-						title.setTextColor(getResources().getColor(
-								R.color.myprobar));
-						for (int i = 0; i < lv1.getChildCount(); i++) {
-							if (i == position) {
-								continue;
-							}
-							LogUtils.d("Main", i + "");
-							lv1.getChildAt(i).setBackgroundColor(
-									getResources().getColor(R.color.white));
-							lv1.getChildAt(i).findViewById(R.id.click_menu)
-									.setVisibility(View.INVISIBLE);
-							TextView tv = (TextView) lv1.getChildAt(i)
-									.findViewById(R.id.category_menu);
-							tv.setTextColor(getResources().getColor(
-									R.color.black));
-						}
-					}
-
-				});
 
 				LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search1);
 				etSeacher.setOnClickListener(new OnClickListener() {

@@ -1,65 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:id="@+id/top_bar"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:id="@+id/top_bar"
+    android:layout_width="wrap_content"
+    android:layout_height="82dip"
+    android:background="@drawable/bg" >
+
     <FrameLayout
         android:id="@+id/frame_newrank"
-        android:layout_width="48dip"
-        android:layout_height="48dip"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="18dip"
-        android:layout_marginLeft="8dip"
-        android:layout_marginTop="18dip"
         android:contentDescription="@string/app_name" >
 
         <RelativeLayout
-            android:layout_width="48dip"
-            android:layout_height="48dip" >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" >
 
             <ImageView
                 android:id="@+id/icon"
-                android:layout_width="48dip"
-                android:layout_height="48dip"
+                android:layout_width="60dip"
+                android:layout_height="60dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="43dip"
                 android:src="@drawable/tempicon" />
+
+            <!-- android:layout_marginLeft="33dip" -->
+
+            <ImageView
+                android:id="@+id/item_newrank_top_iv"
+                android:layout_width="28dip"
+                android:layout_height="11dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="7dip"
+                android:scaleType="fitXY"
+                android:src="@drawable/rank_num1" />
         </RelativeLayout>
     </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/frame_layout"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/linearLayout1"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10sp"
-        android:layout_marginRight="12sp" >
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="12dip"
+        android:layout_marginTop="17dip" >
 
         <me.key.appmarket.widgets.ProgressView
             android:id="@+id/progress_view"
             android:layout_width="30dip"
             android:layout_height="30dip"
-            android:layout_gravity="center"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"
-            android:focusable="false" />
+            android:focusable="false"
+            android:visibility="invisible" />
+        <!--
+             android:textColor="#0066FF"
+             android:textSize="13sp"
+        -->
+        <!-- android:background="@drawable/mybutton_shape" -->
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="65dip"
+            android:layout_height="28dip"
+            android:scaleType="fitXY"
+            android:focusable="false"
+            android:src="@drawable/install_btn" />
 
         <TextView
             android:id="@+id/tv_down"
-           android:layout_width="50dip"
-             android:layout_height="27dip"
-             android:layout_alignParentLeft="true"
-             android:layout_centerVertical="true"
-             android:background="@drawable/mybutton_shape"
-             android:clickable="true"
-             android:focusable="false"
-             android:gravity="center"
-             android:text="下载"
-             android:textColor="#0066FF"
-             android:textSize="13sp"  />
+            android:layout_width="50dip"
+            android:layout_height="27dip"
+            android:layout_alignParentLeft="true"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="下载"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
     </RelativeLayout>
 
-    <ImageView
+    <!--
+          <ImageView
         android:id="@+id/divider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,64 +92,86 @@
         android:layout_toLeftOf="@id/frame_layout"
         android:contentDescription="@string/app_name"
         android:src="@drawable/tab_divider" />
+    -->
+
+    <FrameLayout
+        android:id="@+id/imageView1_fl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" >
+
+        <ImageView
+            android:layout_width="134dip"
+            android:layout_height="17dip"
+            android:layout_gravity="bottom"
+            android:scaleType="fitXY"
+            android:src="@drawable/rank_detail_background" />
+
+        <TextView
+            android:id="@+id/item_newrank_tv"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dip"
+            android:singleLine="true"
+            android:text="aaaaaaaaaa" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/divider"
-        android:layout_toRightOf="@id/frame_newrank"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="9dip"
+        android:layout_marginTop="17dip"
+        android:layout_toRightOf="@+id/frame_newrank"
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/app_name2"
-            style="@style/topbar_title"
-            android:layout_width="fill_parent"
+            android:id="@+id/app_name"
+            android:layout_width="120dip"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7sp"
             android:gravity="center_vertical"
             android:text="@string/app_name"
-            android:textSize="18sp" />
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:ellipsize="middle"
+            android:singleLine="true"
+             />
+<!--             style="@style/topbar_title" -->
 
-        <TextView
-            android:id="@+id/appsize"
-            style="@style/topbar_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10sp"
-            android:layout_marginTop="5sp"
-            android:gravity="center_vertical"
-            android:text="2.14MB"
-            android:textColor="@color/dark_gray"
-            android:textSize="12sp" />
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/appsize"
+                style="@style/topbar_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:gravity="center_vertical"
+                android:text="2.14MB"
+                android:textColor="@color/dark_gray"
+                android:textSize="8sp" />
+
+            <ProgressBar
+                android:id="@+id/rank_proBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </FrameLayout>
     </LinearLayout>
-<FrameLayout
-       android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-          android:layout_alignParentRight="true"
+
+ <LinearLayout
+        android:id="@+id/linear_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/linearLayout1"
-        android:layout_marginTop="20dip"
-          android:id="@+id/imageView1_fl"
-    >
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/top_critique" />
-    <TextView
-        android:id="@+id/item_newrank_tv"
-        android:layout_width="150dip"
-        android:layout_height="wrap_content" 
-        android:text="aaaaaaaaaa"
-        android:singleLine="true"
-        android:layout_marginLeft="10dip"
-        />
-</FrameLayout>
-    <ImageView
-        android:id="@+id/item_newrank_top_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/imageView1_fl"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/top1" />
+        android:layout_toRightOf="@+id/frame_newrank"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dip"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
 </RelativeLayout>

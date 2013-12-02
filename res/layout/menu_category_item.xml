@@ -3,41 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="@color/white" 
+      android:layout_gravity="center"
+        android:background="@drawable/slidingmenu_left_background" 
+ 
     >
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent" 
-        >
-        <ImageView
-            android:id="@+id/click_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:background="@drawable/chose_user_divider"
-            android:visibility="invisible"
-            />
-    <ImageView
-        android:layout_width="20dip"
-        android:layout_height="fill_parent"
-        android:background="@drawable/shadowright" 
-        />
-</FrameLayout>
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
     android:id="@+id/background_menu" 
+      
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
     >
     <TextView
         android:id="@+id/category_menu"
-        android:layout_width="70dip"
-        android:layout_height="40dip"
+        android:layout_width="90dip"
+        android:layout_height="20dip"
         android:gravity="center"
-        android:text="asf" />
-  <ImageView
-      android:id="@+id/shadow_category"
-        android:layout_width="10dip"
-        android:layout_height="fill_parent"
-        android:background="@drawable/shadowright" 
+         android:layout_gravity="center"
+        android:text="asf"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        />
+     <TextView
+        android:id="@+id/game_num"
+        android:layout_width="90dip"
+        android:layout_height="20dip"
+        android:gravity="center"
+         android:layout_gravity="center"
+        android:text="4000个游戏"
+        android:textColor="@color/gray_hint"
+         android:textSize="10sp"
         />
   </LinearLayout>
 </LinearLayout>

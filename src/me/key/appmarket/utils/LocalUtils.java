@@ -32,6 +32,8 @@ import com.market.d9game.R;
 public class LocalUtils {
 	
 	
+	private static JSONArray jsonArray;
+
 	public static List<AppInfo> InitHomePager(String ItemId,Context context,String Root,List<PackageInfo> packages ) {
 		InputStream inputStream;
 		if (ItemId.equals("0")) {
@@ -226,5 +228,31 @@ LogUtils.d("pkg", pkgParserPkg+"");
 		}
 		return Root;
 	}
-	
+	/**
+	 * 读取gamelist列表里的游戏
+	 * @param context
+	 * @return
+	 */
+	public static List<AppInfo> readGameList(Context context ) {
+		InputStream inputStream = context.getResources().openRawResource(R.raw.gamelist);
+		String js = (String) TxtReader.getJsonStr(inputStream);
+		List<AppInfo> gameList = new ArrayList<AppInfo>();
+		AppInfo appInfo;
+		try {
+			jsonArray = new JSONArray(js);
+			for(int i = 0;i<jsonArray.length();i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String idx = jsonObject.getString("idx");
+				String apppkgname = jsonObject.getString("apppkgname");
+				appInfo = new AppInfo();
+				appInfo.setPackageName(apppkgname);
+				appInfo.setIdx(idx);
+				gameList.add(appInfo);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return gameList;
+	}
 }

@@ -14,6 +14,7 @@ import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.MyAsynTask;
 import me.key.appmarket.utils.ToastUtils;
 import net.tsz.afinal.FinalDb;
 
@@ -37,6 +38,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -52,10 +54,12 @@ import com.slidingmenu.lib.app2.SlidingFragmentActivity;
 import com.slidingmenu.lib2.SlidingMenu;
 import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
 import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
+
 /**
  * 侧滑菜单按钮
+ * 
  * @author Administrator
- *
+ * 
  */
 public class MyFragmengManager extends SlidingFragmentActivity implements
 		OnClickListener {
@@ -120,12 +124,15 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private FrameLayout localgame_click;
 	private DownStateBroadcast dsb;
 	private DownStateBroadcastRank dsbRank;
+	private View errorview;
+	private LayoutInflater inflater;
+
 	@Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.main_bottom);
 		setBehindContentView(R.layout.slide_menu);
-		SharedPreferences sp =getSharedPreferences("cleandb", MODE_PRIVATE);
+		SharedPreferences sp = getSharedPreferences("cleandb", MODE_PRIVATE);
 		boolean cleanDb = sp.getBoolean("db", false);
 		if (!cleanDb) {
 			cleanDatabases(this);
@@ -141,6 +148,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		findgame = (TextView) findViewById(R.id.findgame);
 		localgame = (TextView) findViewById(R.id.localgame);
 		rankgame = (TextView) findViewById(R.id.rankgame);
+		inflater = LayoutInflater.from(this);
+		errorview = findViewById(R.id.errorview);
 		localgame_click = (FrameLayout) findViewById(R.id.localgame_click);
 		rankgame.setText("排行");
 		findgame.setOnClickListener(this);
@@ -149,22 +158,21 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		fm = getSupportFragmentManager();
 		// 获取sd卡地址
 		root = LocalUtils.getRoot(this);
-		fragmentTransaction = getSupportFragmentManager()
-				.beginTransaction();
+		fragmentTransaction = getSupportFragmentManager().beginTransaction();
 		findGame_normal = getResources().getDrawable(
-				R.drawable.main_tab_recommand_icon_normal);
+				R.drawable.findgame);
 		findGame_focue = getResources().getDrawable(
-				R.drawable.main_tab_recommand_icon_selected);
+				R.drawable.findgame_focus);
 		local_focue = getResources().getDrawable(
-				R.drawable.main_tab_play_selected);
+				R.drawable.local);
 		local_normal = getResources().getDrawable(
-				R.drawable.main_tab_play_normal);
+				R.drawable.localgame_fouce);
 		manager_focue = getResources().getDrawable(
-				R.drawable.main_tab_top_icon_selected);
+				R.drawable.rank);
 		manager_normal = getResources().getDrawable(
-				R.drawable.main_tab_top_icon_normal);
-		localgame.setCompoundDrawablesWithIntrinsicBounds(null, local_focue, null,
-				null);
+				R.drawable.rank_selected);
+		localgame.setCompoundDrawablesWithIntrinsicBounds(null, local_focue,
+				null, null);
 		// 预加载内容
 		new AsyncTask<Void, Void, Void>() {
 
@@ -172,10 +180,18 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.RANK_PAGE);
-				ParseRankJson(str);
+				if (str.isEmpty()) {
+					appRankInfos = new ArrayList<AppInfo>();
+				} else {
+					ParseRankJson(str);
+				}
 				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.HOME_PAGE);
-				ParseHomeJson(str2);
+				if (str2.isEmpty()) {
+					appHomeInfos_temp = new ArrayList<AppInfo>();
+				} else {
+					ParseHomeJson(str2);
+				}
 				appManaInfos_temp = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
@@ -188,15 +204,22 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						MyFragmengManager.this, 4000);
 				apknamelist = AppUtils
 						.getInstallAppPackage(MyFragmengManager.this);
-				String str3 = ToolHelper
-						.donwLoadToString(Global.MAIN_URL
-								+ Global.UPGRADEVERSION + "?apknamelist="
-								+ apknamelist);
-				ParseUpdateJson(str3);
-				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(userApps,
-						appManagerUpdateInfos_t);
-				appManagerUpdateInfos.clear();
-				appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+				if (apknamelist == null) {
+					appManagerUpdateInfos_t = new ArrayList<AppInfo>();
+				} else {
+					String str3 = ToolHelper.donwLoadToString(Global.MAIN_URL
+							+ Global.UPGRADEVERSION + "?apknamelist="
+							+ apknamelist);
+					ParseUpdateJson(str3);
+				}
+				if (userApps == null) {
+					appManagerUpdateInfos = new ArrayList<AppInfo>();
+				} else {
+					appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
+							userApps, appManagerUpdateInfos_t);
+					appManagerUpdateInfos.clear();
+					appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+				}
 				List<AppInfo> down_temp = new ArrayList<AppInfo>();
 				down_temp = db.findAll(AppInfo.class);
 				downApplist.clear();
@@ -205,7 +228,14 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
 				Log.e("tag", "runCategoryData result =" + str);
-				ParseCategoryJson(str4);
+				LogUtils.d("Local", "runCategoryData" + str4);
+				if (str4.isEmpty()) {
+					gcategoryInfoList_temp = null;
+					LogUtils.d("Local", "runCategoryData" + str4 + "str4");
+
+				} else {
+					ParseCategoryJson(str4);
+				}
 				return null;
 			}
 
@@ -225,39 +255,44 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				ft = fm.beginTransaction();
 				f1 = new RankFragment();
 				// 把对应的view对象区域替换成f1
-				//ft.replace(R.id.tabcontent, lf);
+				// ft.replace(R.id.tabcontent, lf);
 				ft.add(R.id.tabcontent, mf);
 				ft.add(R.id.tabcontent, f1);
 				ft.add(R.id.tabcontent, lf);
 				ft.show(lf);
 				ft.commitAllowingStateLoss();
-				for (AppInfo ai : appHomeInfos_temp) {
-					dsb = new DownStateBroadcast();
-					IntentFilter filter = new IntentFilter();
-					String fileName = DownloadService.CreatFileName(
-							ai.getAppName()).getAbsolutePath();
-					filter.addAction(fileName + "down");
-					registerReceiver(dsb, filter);
+				if (appHomeInfos_temp != null && appRankInfos != null) {
+					for (AppInfo ai : appHomeInfos_temp) {
+						dsb = new DownStateBroadcast();
+						IntentFilter filter = new IntentFilter();
+						String fileName = DownloadService.CreatFileName(
+								ai.getAppName()).getAbsolutePath();
+						filter.addAction(fileName + "down");
+						registerReceiver(dsb, filter);
+					}
+					for (AppInfo ai : appRankInfos) {
+						dsbRank = new DownStateBroadcastRank();
+						IntentFilter filter = new IntentFilter();
+						String fileName = DownloadService.CreatFileName(
+								ai.getAppName()).getAbsolutePath();
+						filter.addAction(fileName + "down");
+						registerReceiver(dsbRank, filter);
+					}
 				}
-				for (AppInfo ai : appRankInfos) {
-					dsbRank = new DownStateBroadcastRank();
-					IntentFilter filter = new IntentFilter();
-					String fileName = DownloadService.CreatFileName(
-							ai.getAppName()).getAbsolutePath();
-					filter.addAction(fileName + "down");
-					registerReceiver(dsbRank, filter);
-				}
-			
+
 				final MenuFragment menuFragment = new MenuFragment();
 				fragmentTransaction.replace(R.id.slide_content, menuFragment);
-				// fragmentTransaction.replace(R.id.content, new ContentFragment());
+				// fragmentTransaction.replace(R.id.content, new
+				// ContentFragment());
 				fragmentTransaction.commit();
-			
+
 				LogUtils.d("Main", "我已经被加载了哟");
 				lv = (ListView) findViewById(R.id.category_lv);
+				lv.setDividerHeight(0);
 				LogUtils.d("Main", lv + "");
 				/*
-				 * ImageButton search_btn = (ImageButton) findViewById(R.id.search_btn);
+				 * ImageButton search_btn = (ImageButton)
+				 * findViewById(R.id.search_btn);
 				 * search_btn.setOnClickListener(new OnClickListener() {
 				 * 
 				 * @Override public void onClick(View v) { menu.toggle(); } });
@@ -291,8 +326,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					public void onOpened() {
 						LogUtils.d("Main", "open");
 						/*
-						 * Intent intent = new Intent(); intent.setAction("open.menu");
-						 * sendBroadcast(intent);
+						 * Intent intent = new Intent();
+						 * intent.setAction("open.menu"); sendBroadcast(intent);
 						 */
 					}
 				});
@@ -302,7 +337,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					@Override
 					public void onClick(View v) {
 						Intent intent = new Intent();
-						intent.setClass(MyFragmengManager.this, SearchActivity.class);
+						intent.setClass(MyFragmengManager.this,
+								SearchActivity.class);
 						startActivity(intent);
 						LogUtils.d("MAIN", "动画前");
 						MyFragmengManager.this.overridePendingTransition(
@@ -310,48 +346,40 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						LogUtils.d("MAIN", "动画后");
 					}
 				});
-				menuCategoryAdapter = new MenuCategoryAdapter(
-						MyFragmengManager.this, gcategoryInfoList_temp, lv);
-				lv.setAdapter(menuCategoryAdapter);
-				// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
-				// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
-				LogUtils.d("Main", lv.getChildCount() + "");
+				if (gcategoryInfoList_temp == null) {
+					errorview.setVisibility(View.VISIBLE);
+				} else {
+					menuCategoryAdapter = new MenuCategoryAdapter(
+							MyFragmengManager.this, gcategoryInfoList_temp, lv);
+					
+					lv.setAdapter(menuCategoryAdapter);
 
-				lv.setOnItemClickListener(new OnItemClickListener() {
+					// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+					// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+					LogUtils.d("Main", lv.getChildCount() + "");
 
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
+					lv.setOnItemClickListener(new OnItemClickListener() {
 
-						menuFragment.updata(position);
-						view.setBackgroundColor(getResources().getColor(
-								R.color.classiv_cloor));
-						view.findViewById(R.id.click_menu).setVisibility(
-								View.VISIBLE);
-						TextView title = (TextView) view
-								.findViewById(R.id.category_menu);
-						title.setTextColor(getResources().getColor(
-								R.color.myprobar));
-						for (int i = 0; i < lv.getChildCount(); i++) {
-							if (i == position) {
-								continue;
+						@Override
+						public void onItemClick(AdapterView<?> parent,
+								View view, int position, long id) {
+
+							menuFragment.updata(position);
+							view.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
+							for (int i = 0; i < lv.getChildCount(); i++) {
+								if (i == position) {
+									continue;
+								}
+								LogUtils.d("Main", i + "");
+								lv.getChildAt(i).setBackgroundResource(R.drawable.slidingmenu_left_background);
 							}
-							LogUtils.d("Main", i + "");
-							lv.getChildAt(i).setBackgroundColor(
-									getResources().getColor(R.color.white));
-							lv.getChildAt(i).findViewById(R.id.click_menu)
-									.setVisibility(View.INVISIBLE);
-							TextView tv = (TextView) lv.getChildAt(i)
-									.findViewById(R.id.category_menu);
-							tv.setTextColor(getResources().getColor(
-									R.color.black));
 						}
-					}
-				});
+					});
+				}
 			};
 
 		}.execute();
-		
+
 	}
 
 	// 解析Rank
@@ -521,7 +549,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						type2, Global.MAIN_URL + appUrl);
 				gcategoryInfoList_temp.add(mCategoryInfo);
 			}
-			if(len == 0) {
+			if (len == 0) {
 				CategoryInfo mCategoryInfo = new CategoryInfo("1", "失误", "1",
 						"2", Global.MAIN_URL + "no");
 				gcategoryInfoList_temp.add(mCategoryInfo);
@@ -568,12 +596,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		switch (v.getId()) {
 		case R.id.findgame:
 			FragmentTransaction ft = fm.beginTransaction();
-			//ft.replace(R.id.tabcontent, mf);
-			//ft.addToBackStack(null);
-			if(lf.isAdded()) {
+			// ft.replace(R.id.tabcontent, mf);
+			// ft.addToBackStack(null);
+			if (lf.isAdded()) {
 				ft.hide(lf);
 			}
-			if(f1.isAdded()) {
+			if (f1.isAdded()) {
 				ft.hide(f1);
 			}
 			ft.show(mf);
@@ -593,12 +621,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					manager_normal, null, null);
 			FragmentTransaction ft2 = fm.beginTransaction();
-			//ft2.replace(R.id.tabcontent, lf);
-			//ft2.addToBackStack(null);
-			if(f1.isAdded()) {
+			// ft2.replace(R.id.tabcontent, lf);
+			// ft2.addToBackStack(null);
+			if (f1.isAdded()) {
 				ft2.hide(f1);
 			}
-			if(mf.isAdded()) {
+			if (mf.isAdded()) {
 				ft2.hide(mf);
 			}
 			ft2.show(lf);
@@ -612,12 +640,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			rankgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					manager_focue, null, null);
 			FragmentTransaction ft1 = fm.beginTransaction();
-			//ft1.replace(R.id.tabcontent, f1);
-			//ft1.addToBackStack(null);
-			if(lf.isAdded()) {
+			// ft1.replace(R.id.tabcontent, f1);
+			// ft1.addToBackStack(null);
+			if (lf.isAdded()) {
 				ft1.hide(lf);
 			}
-			if(mf.isAdded()) {
+			if (mf.isAdded()) {
 				ft1.hide(mf);
 			}
 			ft1.show(f1);
@@ -654,6 +682,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
 	private static void deleteFilesByDirectory(File directory) {
 		if (directory != null && directory.exists() && directory.isDirectory()) {
 			for (File item : directory.listFiles()) {
@@ -661,10 +690,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			}
 		}
 	}
+
 	public static void cleanDatabases(Context context) {
 		deleteFilesByDirectory(new File("/data/data/"
 				+ context.getPackageName() + "/databases"));
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

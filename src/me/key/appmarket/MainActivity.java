@@ -244,8 +244,6 @@ public class MainActivity extends SlidingFragmentActivity {
 						menuFragment.updata(position);
 						view.setBackgroundColor(getResources().getColor(
 								R.color.classiv_cloor));
-						view.findViewById(R.id.click_menu).setVisibility(
-								View.VISIBLE);
 						TextView title = (TextView) view
 								.findViewById(R.id.category_menu);
 						title.setTextColor(getResources().getColor(
@@ -257,8 +255,6 @@ public class MainActivity extends SlidingFragmentActivity {
 							LogUtils.d("Main", i + "");
 							lv.getChildAt(i).setBackgroundColor(
 									getResources().getColor(R.color.white));
-							lv.getChildAt(i).findViewById(R.id.click_menu)
-									.setVisibility(View.INVISIBLE);
 							TextView tv = (TextView) lv.getChildAt(i)
 									.findViewById(R.id.category_menu);
 							tv.setTextColor(getResources().getColor(

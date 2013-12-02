@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<LinearLayout android:id="@+id/top_bar" 
-    android:layout_width="fill_parent" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/top_bar"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-  xmlns:android="http://schemas.android.com/apk/res/android"
- android:background="@color/gray_hint"
- android:orientation="vertical"
-  >
- 
-   <RelativeLayout
+    android:background="@drawable/local_background"
+    android:orientation="vertical" >
+
+    <!--
+    <RelativeLayout
         android:id="@+id/topbar"
         style="@style/topbar" >
-	  <ImageView
+
+        <ImageView
             android:id="@+id/logo_title"
             android:layout_width="35dip"
             android:layout_height="35dip"
@@ -21,84 +22,230 @@
         <TextView
             android:id="@+id/topbar_title"
             style="@style/topbar_title"
-            android:layout_toRightOf="@+id/logo_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5sp"
-            android:text="@string/app_name" /> 
-       	  <ImageButton
+            android:layout_toRightOf="@+id/logo_title"
+            android:text="@string/app_name" />
+
+        <ImageButton
             android:id="@+id/search_btn"
             android:layout_width="35dip"
             android:layout_height="35dip"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_marginRight="10dip"
             android:background="@null"
             android:src="@drawable/search_selector" />
 
-       	  <ImageButton
-       	      android:id="@+id/setting"
-       	      android:layout_width="35dip"
-       	      android:layout_height="35dip"
-       	      android:layout_alignTop="@+id/search_btn"
-       	      android:layout_toLeftOf="@+id/search_btn"
-       	      android:background="@null"
-       	      android:src="@drawable/main_menu_settings_icon" />
- 	<FrameLayout
-	       android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" 
+        <ImageButton
+            android:id="@+id/setting"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_alignTop="@+id/search_btn"
             android:layout_toLeftOf="@+id/search_btn"
-	    >
-        <ImageView
-            android:id="@+id/updata_iv"
+            android:background="@null"
+            android:src="@drawable/main_menu_settings_icon" />
+
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/update" />
-        <TextView
-            android:id="@+id/updata_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:text="39" 
-            android:layout_marginBottom="1dip"
-            />
-</FrameLayout>
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/search_btn" >
+
+            <ImageView
+                android:id="@+id/updata_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/update" />
+
+            <TextView
+                android:id="@+id/updata_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1dip"
+                android:text="39"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </FrameLayout>
     </RelativeLayout>
-     <FrameLayout
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent" 
-      >
-    
-	  <include 
-	     android:layout_width="wrap_content"
-	     android:layout_height="wrap_content"
-	     android:layout_centerInParent="true"
-	     android:visibility="gone"
-	     layout="@layout/error_layout"/>
-	<ListView 
-	     android:background="#FFFFFF"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-	    android:layout_marginLeft="5dip"
-	    android:layout_marginRight="5dip"
-	    android:listSelector="@drawable/list_item_selector"
-	    android:id="@+id/list_rank"></ListView>
-	   	  <RelativeLayout
-       	      android:layout_width="fill_parent"
-       	      android:layout_height="fill_parent" 
-       	      >
-       	  <ProgressBar
-       	      android:id="@+id/rank_pb"
-       	      android:layout_width="wrap_content"
-       	       android:layout_centerInParent="true"
-       	       style="@style/circle_progress"
-       	      android:layout_height="wrap_content" 
-       	      android:visibility="invisible"
-       	      />
-       	  </RelativeLayout>
-	</FrameLayout>
+    -->
+
+    <RelativeLayout
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:background="@drawable/title_shape"
+        android:padding="2dip" >
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/search_btn" >
+
+            <ImageView
+                android:id="@+id/updata_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/update" />
+
+            <TextView
+                android:id="@+id/updata_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1dip"
+                android:text="39"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/setting"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/search_btn"
+            android:layout_marginRight="10dip"
+            android:background="@null"
+            android:src="@drawable/right_btn" />
+
+        <ImageButton
+            android:id="@+id/search_btn"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:background="@null"
+            android:src="@drawable/left_btn" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/search_btn"
+            android:background="@drawable/v_driver" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="80dip"
+            android:layout_height="30dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_toRightOf="@+id/imageView1"
+            android:src="@drawable/log" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="游戏盒子"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignTop="@+id/imageView1"
+            android:layout_marginRight="10dip"
+            android:layout_toLeftOf="@+id/setting"
+            android:background="@drawable/v_driver" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="2dip"
+            android:layout_alignBottom="@+id/imageView1"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="2dip"
+            android:src="@drawable/diveri" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            layout="@layout/error_layout"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/list_rank"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="#000000"
+            android:dividerHeight="1px"
+            android:footerDividersEnabled="true"
+            android:listSelector="@drawable/list_item_selector" >
+        </ListView>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <ProgressBar
+                android:id="@+id/rank_pb"
+                style="@style/circle_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="invisible" />
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:id="@+id/rank_tab_rela"
+        android:layout_width="wrap_content"
+        android:layout_height="32dip"
+        android:layout_marginBottom="5dip"
+        android:layout_marginLeft="5dip"
+        android:layout_marginRight="5dip"
+        android:background="@drawable/local_background"
+        android:gravity="center" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="27dip"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/title_shape" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="35dip" >
+
+            <FrameLayout
+                android:layout_width="0dip"
+                android:layout_height="35dip"
+                android:layout_weight="1" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:id="@+id/mygame"
+                        android:layout_width="150dip"
+                        android:layout_height="fill_parent"
+                        android:background="@drawable/mygame_btn"
+                        android:gravity="center"
+                        android:text="排行榜"
+                        android:textColor="@color/white" />
+                </RelativeLayout>
+            </FrameLayout>
+            
+        </LinearLayout>
+    </RelativeLayout>
+
+    </FrameLayout>
+
 </LinearLayout>

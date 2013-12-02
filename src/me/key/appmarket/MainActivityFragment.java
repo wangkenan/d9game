@@ -232,10 +232,12 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		registerPrecent();
+		if(appHomeAdapter != null) {
 		appHomeAdapter.notifyDataSetChanged();
 		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
 		downList_temp = db.findAll(AppInfo.class);
 		updata_num.setText(downList_temp.size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
+		}
 	}
 	/**
 	 * 检查更新
@@ -856,6 +858,9 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		appHomeInfos.clear();
 		List<AppInfo> appHome = new ArrayList<AppInfo>();
 		appHome = MarketApplication.getInstance().getHomeAppInfos();
+		if(appHome == null) {
+			
+		} else {
 		updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 		appHomeInfos.addAll(appHome);
 		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, getActivity(),
@@ -942,6 +947,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		 * AppDetailActivity.class); intent.putExtra("appid",
 		 * mBanner.getAppID()); startActivity(intent); } } });
 		 */
+		}
 	}
 	@Override
 	public void onClick(View v) {

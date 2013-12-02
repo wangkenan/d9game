@@ -14,6 +14,7 @@ import me.key.appmarket.adapter.SDGameAdapter;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
+import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.LocalAppInfo;
 import me.key.appmarket.utils.LocalUtils;
@@ -73,7 +74,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private ImageView iv;
 	private ListView downmanager_lv;
 	private PrecentReceiver mPrecentReceiver;
-	private ListView lv;
 	// SD卡游戏
 	private static List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
 	private static MyAdapter adapter;
@@ -186,7 +186,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		//banner_local = (ImageView) inflate.findViewById(R.id.banner_local);
 		updata_num = (TextView) inflate.findViewById(R.id.updata_num);
 		//setImagePosition(R.drawable.a20131008174300, banner_local);
-		lv = (ListView) inflate.findViewById(R.id.category_lv1);
 		View contentView = View.inflate(getActivity(),
 				R.layout.popup_item, null);
 		pw = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT,
@@ -229,12 +228,21 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				downApplist = MarketApplication.getInstance().getDownApplist();
 				appManagerUpdateInfos = MarketApplication.getInstance()
 						.getAppManagerUpdateInfos();
-				LogUtils.d("Mana", "appUpdate" + appManagerUpdateInfos.size());
 		
 				return null;
 			}
 
 			protected void onPostExecute(Void result) {
+				//如果没有网络或者本地没有游戏
+				if(appManaInfos_temp.size() == 0) {
+					List<AppInfo> localList = AppUtils.getAppList(getActivity());
+					List<AppInfo> readGameList = LocalUtils.readGameList(getActivity());
+				/*	for(AppInfo gameListAppInfo : readGameList) {
+						for(AppInfo localAppInfo : localList) {
+							
+						}
+					}*/
+				}
 				adapter = new MyAdapter(getActivity(),
 						appManaInfos_temp,mAppInfos);
 				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);
@@ -356,7 +364,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		registerPrecent(); 
 		SharedPreferences sp = getActivity().getSharedPreferences("onkey",
 				getActivity().MODE_PRIVATE);
-		updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
+		if(appManagerUpdateInfos != null) {
+			updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
+		}
 		boolean onkey = sp.getBoolean("onkey", false);
 		if (onkey) {
 			onkey_text.setText("装机必备");
@@ -611,6 +621,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	}
 
 	public static void sort2lastTime() {
+		if(appManaInfos_temp != null) {
 		Collections.sort(appManaInfos_temp, new Comparator<AppInfo>() {
 
 			@Override
@@ -623,6 +634,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			}
 
 		});
+		}
 	}
 
 	@Override

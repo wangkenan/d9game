@@ -18,4 +18,5 @@
     <item name="recomapp_onkey" type="id" />
     <item name="title_onkey" type="id" />
     <item name="bottom_main" type="id" />
+    <item name="divider" type="id" />
 </resources>
