@@ -1,31 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/top_bar2"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="82sp"
-    android:background="#FFFFFF" 
-    >
-    <ImageView
-        android:id="@+id/icon2"
-        android:layout_width="48dip"
-        android:layout_height="48dip"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="18dip"
-        android:layout_marginLeft="5dip"
-        android:layout_marginTop="18dip"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/tempicon" />
-    <RelativeLayout
-        android:id="@+id/frame_layout2"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10sp"
-        android:layout_marginRight="12sp" >
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" >
 
-        <TextView
+    <RelativeLayout
+        android:id="@+id/top_bar2"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:layout_height="102dip"
+        android:layout_marginLeft="10dip" 
+        >
+
+        <ImageView
+            android:id="@+id/icon2"
+            android:layout_width="58dip"
+            android:layout_height="58dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="18dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="18dip"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/tempicon" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/divider2"
+            android:layout_toRightOf="@id/icon2"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/app_name2"
+                style="@style/topbar_title"
+                android:layout_width="70dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7sp"
+                android:gravity="center_vertical"
+                android:text="@string/app_name"
+                android:ellipsize="middle"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/appsize2"
+                style="@style/topbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:gravity="center_vertical"
+                android:text="2.14MB"
+                android:textColor="@color/dark_gray"
+                android:textSize="8sp" />
+
+            <!--
+             <TextView
             android:id="@+id/tv_down2"
             android:layout_width="50dip"
              android:layout_height="27dip"
@@ -38,56 +68,89 @@
              android:text="下载"
              android:textColor="#0066FF"
              android:textSize="13sp" />
+            -->
 
-        <me.key.appmarket.widgets.ProgressView
-            android:id="@+id/progress_view2"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_alignTop="@+id/tv_down2"
-            android:layout_centerHorizontal="true"
-            android:visibility="invisible"
-            android:focusable="false" />
-
+            <TextView
+                android:id="@+id/tv_down2"
+                android:layout_width="60dip"
+                android:layout_height="24dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip"
+                android:background="@drawable/install_btn"
+                android:clickable="true"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="下载"
+                android:textSize="13sp" />
+        </LinearLayout>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/divider2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/frame_layout2"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/tab_divider" />
+    <RelativeLayout
+        android:id="@+id/top_bar_right"
+        android:layout_width="0dip"
+        android:layout_weight="1"
+        android:layout_height="102dip"
+        android:layout_marginLeft="10dip" 
+        >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/divider2"
-        android:layout_toRightOf="@id/icon2"
-        android:orientation="vertical" >
+        <ImageView
+            android:id="@+id/icon_right"
+            android:layout_width="58dip"
+            android:layout_height="58dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="18dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="18dip"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/tempicon" />
 
-        <TextView
-            android:id="@+id/app_name2"
-            style="@style/topbar_title"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7sp"
-            android:gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textSize="18sp" />
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/divider2"
+            android:layout_toRightOf="@id/icon_right"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/appsize2"
-            style="@style/topbar_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10sp"
-            android:layout_marginTop="5sp"
-            android:gravity="center_vertical"
-            android:text="2.14MB"
-            android:textColor="@color/dark_gray"
-            android:textSize="12sp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/app_name_right"
+                style="@style/topbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7sp"
+                android:gravity="center_vertical"
+                android:text="@string/app_name"
+                android:textSize="12sp" />
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/appsize_right"
+                style="@style/topbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:gravity="center_vertical"
+                android:text="2.14MB"
+                android:textColor="@color/dark_gray"
+                android:textSize="8sp" />
+
+            <TextView
+                android:id="@+id/tv_down_right"
+                android:layout_width="60dip"
+                android:layout_height="24dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/install_btn"
+                android:clickable="true"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="下载"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>
