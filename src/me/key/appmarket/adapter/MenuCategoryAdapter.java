@@ -34,8 +34,6 @@ public class MenuCategoryAdapter extends BaseAdapter {
 		height = lv.getHeight();
 		width = lv.getWidth();
 		LogUtils.d("testLocal", "width:"+width);
-		LogUtils.d("Local", classInfos.size()+"sliment"+classInfos.get(0).getName());
-		
 	}
 	@Override
 	public int getCount() {

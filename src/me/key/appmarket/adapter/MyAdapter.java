@@ -7,6 +7,7 @@ import java.util.List;
 
 import me.key.appmarket.LocalGameFragment;
 import me.key.appmarket.MarketApplication;
+import me.key.appmarket.OneKeyInstallActivity;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.tool.TxtReader;
@@ -198,6 +199,15 @@ public class MyAdapter extends BaseAdapter {
 		case 0:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
 			setImagePosition(R.drawable.bannaer, v3.banner);
+			v3.banner.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.setClass(cnt, OneKeyInstallActivity.class);
+					cnt.startActivity(intent);
+				}
+			});
 			break;
 
 		/*
