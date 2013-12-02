@@ -609,32 +609,33 @@ public class SearchActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-//			if (search_linear.getVisibility() == View.GONE) {
-//				edit_search.setText("");
-//				search_linear.setVisibility(View.VISIBLE);
-				search_HotList.setVisibility(View.VISIBLE);
-
-				if (!isShowingHot) {
-					ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
-					historyList.clear();
-					historyList.addAll(historyList_temp);
-					search_HotList.setAdapter(mHistoryAdapter);
-
-					text_delete.setVisibility(View.VISIBLE);
-				}
-
-				total_size.setVisibility(View.GONE);
-				mSearchListView.setVisibility(View.GONE);
-				ll_searcherror.setVisibility(View.GONE);
-				loadMoreButton.setVisibility(View.GONE);
-				return true;
-//			}
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		if (keyCode == KeyEvent.KEYCODE_BACK) {
+////			if (search_linear.getVisibility() == View.GONE) {
+////				edit_search.setText("");
+////				search_linear.setVisibility(View.VISIBLE);
+//				search_HotList.setVisibility(View.VISIBLE);
+//
+//				if (!isShowingHot) {
+//					ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
+//					historyList.clear();
+//					historyList.addAll(historyList_temp);
+//					search_HotList.setAdapter(mHistoryAdapter);
+//
+//					text_delete.setVisibility(View.VISIBLE);
+//				}
+//
+//				total_size.setVisibility(View.GONE);
+//				mSearchListView.setVisibility(View.GONE);
+//				ll_searcherror.setVisibility(View.GONE);
+//				loadMoreButton.setVisibility(View.GONE);
+//				return true;
+////			}
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
+	
 
 	@Override
 	protected void onResume() {

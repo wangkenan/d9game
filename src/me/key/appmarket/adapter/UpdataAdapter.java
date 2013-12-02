@@ -74,6 +74,7 @@ public class UpdataAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.list_item, null);
 			holder.info = (TextView) convertView.findViewById(R.id.info);
 			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
+			holder.operate = (ImageView) convertView.findViewById(R.id.iv_oprate_state);
 			holder.btn = (TextView) convertView.findViewById(R.id.install);
 			holder.progress_view = (ProgressView) convertView
 					.findViewById(R.id.progress_view_local);
@@ -89,6 +90,7 @@ public class UpdataAdapter extends BaseAdapter {
 		
 		holder.btn.setText("升级");
 		holder.progress_view.setProgress(100);
+		holder.operate.setImageResource(R.drawable.update_btn);
 		/*
 		 * Drawable mDrawable1 = this.cnt.getResources().getDrawable(
 		 * R.drawable.action_type_software_update);
@@ -148,7 +150,7 @@ public class UpdataAdapter extends BaseAdapter {
 	static class ViewHolder {
 		public TextView appsize;
 		public TextView btn;
-		public ImageView icon;
+		public ImageView icon,operate;
 		public TextView info;
 		private ProgressView progress_view;
 	}
