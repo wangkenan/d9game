@@ -200,14 +200,15 @@
                 android:layout_centerInParent="true"
                 android:visibility="invisible" />
         </RelativeLayout>
+        <include layout="@layout/tab_rank_layout"
+            android:id="@+id/ranktab2"/>
         
-        <RelativeLayout
+       <!--   <RelativeLayout
             android:id="@+id/rank_tab_rela"
         android:layout_width="wrap_content"
         android:layout_height="32dip"
         android:layout_marginBottom="5dip"
-        android:layout_marginLeft="5dip"
-        android:layout_marginRight="5dip"
+        
         android:background="@drawable/local_background"
         android:gravity="center" >
 
@@ -239,12 +240,13 @@
                         android:background="@drawable/mygame_btn"
                         android:gravity="center"
                         android:text="排行榜"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                         />
                 </RelativeLayout>
             </FrameLayout>
             
         </LinearLayout>
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     </FrameLayout>
 
