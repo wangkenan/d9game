@@ -438,7 +438,7 @@ public class NewRankAdapter extends BaseAdapter {
 						LogUtils.d("暂停", appInfos.get(position).getAppName() + "");
 						appInfos.get(position).setDown(false);
 					} else {
-						v1.tvdown.setText("下载中");
+//						v1.tvdown.setText("下载中");
 						appInfos.get(position).setDown(true);
 //						v1.progress_view.setVisibility(View.VISIBLE);
 //						v1.tvdown.setVisibility(View.INVISIBLE);
