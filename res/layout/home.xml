@@ -29,8 +29,10 @@
             android:id="@+id/list_home"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:fadingEdge="none"
+            android:background="@drawable/local_background"
             android:numColumns="2"
+            android:divider="@drawable/driver1"
+            android:footerDividersEnabled="true"
             android:listSelector="@drawable/list_item_selector"
             >
         </ListView>
@@ -39,6 +41,7 @@
             style="@style/circle_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" /> 
+            android:layout_centerInParent="true"
+            android:visibility="gone" /> 
 
 </RelativeLayout>

@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/a20131008173553" />
+        android:src="@drawable/bannaer" 
+        />
 
 </RelativeLayout>

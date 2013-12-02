@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="102dip"
+    android:background="@drawable/bg"
     android:orientation="horizontal" >
 
     <RelativeLayout
         android:id="@+id/top_bar2"
         android:layout_width="0dip"
-        android:layout_weight="1"
         android:layout_height="102dip"
-        android:layout_marginLeft="10dip" 
-        >
+        android:layout_marginLeft="10dip"
+        android:layout_weight="1" >
 
         <ImageView
             android:id="@+id/icon2"
@@ -18,9 +18,7 @@
             android:layout_height="58dip"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="18dip"
             android:layout_marginLeft="5dip"
-            android:layout_marginTop="18dip"
             android:contentDescription="@string/app_name"
             android:src="@drawable/tempicon" />
 
@@ -28,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/divider2"
             android:layout_toRightOf="@id/icon2"
             android:orientation="vertical" >
 
@@ -38,9 +35,9 @@
                 android:layout_width="70dip"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7sp"
+                android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:text="@string/app_name"
-                android:ellipsize="middle"
                 android:textSize="12sp" />
 
             <TextView
@@ -70,30 +67,48 @@
              android:textSize="13sp" />
             -->
 
-            <TextView
-                android:id="@+id/tv_down2"
+            <FrameLayout
                 android:layout_width="60dip"
                 android:layout_height="24dip"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dip"
-                android:layout_marginTop="10dip"
-                android:background="@drawable/install_btn"
-                android:clickable="true"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="下载"
-                android:textSize="13sp" />
+                android:layout_marginTop="10dip" >
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/install_btn" />
+
+                <TextView
+                    android:id="@+id/tv_down2"
+                    android:layout_width="40dip"
+                    android:layout_height="24dip"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="下载 "
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+            </FrameLayout>
         </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
+        android:layout_width="1dip"
+        android:layout_height="102dip"
+        
+        android:background="@drawable/diver_vertical"
+         >
+        <!--  -->
+    </RelativeLayout>
+    <RelativeLayout
         android:id="@+id/top_bar_right"
         android:layout_width="0dip"
-        android:layout_weight="1"
         android:layout_height="102dip"
-        android:layout_marginLeft="10dip" 
-        >
+        android:layout_marginLeft="10dip"
+        android:layout_weight="1" >
 
         <ImageView
             android:id="@+id/icon_right"
@@ -101,9 +116,7 @@
             android:layout_height="58dip"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="18dip"
             android:layout_marginLeft="5dip"
-            android:layout_marginTop="18dip"
             android:contentDescription="@string/app_name"
             android:src="@drawable/tempicon" />
 
@@ -111,16 +124,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/divider2"
-            android:layout_toRightOf="@id/icon_right"
+            android:layout_toRightOf="@+id/icon_right"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/app_name_right"
                 style="@style/topbar_title"
-                android:layout_width="wrap_content"
+                android:layout_width="70dip"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7sp"
+                android:ellipsize="middle"
                 android:gravity="center_vertical"
                 android:text="@string/app_name"
                 android:textSize="12sp" />
@@ -136,20 +149,31 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="8sp" />
 
-            <TextView
-                android:id="@+id/tv_down_right"
+            <FrameLayout
                 android:layout_width="60dip"
                 android:layout_height="24dip"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="10dip"
-                android:layout_marginTop="5dip"
-                android:background="@drawable/install_btn"
-                android:clickable="true"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="下载"
-                android:textSize="13sp" />
+                android:layout_marginTop="10dip" >
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/install_btn" />
+
+                <TextView
+                    android:id="@+id/tv_down_right"
+                    android:layout_width="40dip"
+                    android:layout_height="24dip"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="下载 "
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+            </FrameLayout>
+
         </LinearLayout>
     </RelativeLayout>
 

@@ -38,17 +38,17 @@
         android:layout_marginRight="12dip"
         android:layout_marginTop="17dip" >
 
-        <me.key.appmarket.widgets.ProgressView
+        <!-- <me.key.appmarket.widgets.ProgressView
             android:id="@+id/progress_view2"
             android:layout_width="30dip"
             android:layout_height="30dip"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:focusable="false"
-            android:visibility="invisible" />
+            android:visibility="gone" /> -->
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/iv_down2"
             android:layout_width="65dip"
             android:layout_height="28dip"
             android:scaleType="fitXY"
