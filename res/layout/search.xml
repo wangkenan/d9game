@@ -3,55 +3,83 @@
     android:id="@+id/index_select"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-     >
-    <RelativeLayout
-        android:id="@+id/app_topbar"
+    android:background="@drawable/bk_appdetail" >
+
+    <FrameLayout
+        android:id="@+id/topbar_search"
         android:layout_width="fill_parent"
-        android:layout_height="50dip"
-        android:background="@drawable/section_bg" >
-
-        <!-- 返回的icon -->
+        android:layout_height="55dip"
+        android:background="@drawable/title_middle" >
 
         <ImageView
-            android:id="@+id/back_icon"
+            android:id="@+id/iv_back_search"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/btn_back_p" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="2dip"
-            android:layout_marginRight="0dip"
-            android:contentDescription="@null"
-            android:layout_centerVertical="true"
-            android:src="@drawable/hi_setting_more_nor_left" />
+            android:layout_gravity="center" >
 
-        <ImageView
-            android:id="@+id/logo_title"
-            android:layout_width="30dip"
-            android:layout_height="30dip"
-            android:layout_toRightOf="@id/back_icon"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5sp"
-            android:src="@drawable/icon" />
+            <ImageView
+                android:id="@+id/ivlog_app_detail"
+                android:layout_width="80dip"
+                android:layout_height="30dip"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/log" />
 
-        <TextView
-            android:id="@+id/topbar_title1"
-            style="@style/topbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="7sp"
-            android:layout_toRightOf="@+id/logo_title"
-            android:text="@string/main_search" />
-    </RelativeLayout>
-
-    
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="游戏盒子"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/top"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/app_topbar"
-        android:background="@drawable/sub_top_bg" >
+        android:layout_below="@+id/topbar_search" >
 
-        <Button
+        <FrameLayout
+            android:id="@+id/search_btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="3dp">
+
+            <ImageView
+                android:id="@+id/iv_operate_app_detail"
+                android:layout_width="65dip"
+                android:layout_height="28dip"
+                android:layout_marginRight="10dip"
+                android:clickable="true"
+                android:focusable="false"
+                android:gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/one_key"
+                android:textColor="#0066FF"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tv_operate_app_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="1dip"
+                android:layout_marginRight="15dip"
+                android:text="@string/main_search"
+                android:textColor="#ffffff" />
+        </FrameLayout>
+
+        <!--
+             <Button
             android:id="@+id/btn_search"
             style="@style/topbar_title"
             android:layout_width="wrap_content"
@@ -62,70 +90,74 @@
             android:background="@drawable/btn_topbar_selector"
             android:text="@string/main_search"
             android:textSize="15sp" />
+        -->
 
         <EditText
             android:id="@+id/edit_search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="5sp"
-            android:layout_marginLeft="12sp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
             android:layout_marginTop="5sp"
-            android:layout_toLeftOf="@id/btn_search"
+            android:layout_toLeftOf="@id/search_btn_search"
             android:background="@drawable/input"
             android:hint="@string/input_soft"
             android:inputType="text"
             android:paddingLeft="6sp"
             android:textSize="15sp" />
     </RelativeLayout>
-    
-	<LinearLayout
+
+    <!--
+    <LinearLayout
         android:id="@+id/search_linear"
         android:layout_width="wrap_content"
         android:layout_height="30dip"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dip"
-        android:layout_marginBottom="5dip"
         android:layout_below="@id/top"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dip"
+        android:layout_marginTop="5dip"
+        android:background="@drawable/btn_bar_1"
         android:gravity="center"
-        android:background="@drawable/btn_bar_1" >
-        <Button 
+        android:orientation="horizontal" >
+
+        <Button
             android:id="@+id/search_hot"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@drawable/btn_bar_2"
-            android:text="热门搜索"
-            />
+            android:text="热门搜索" />
+
         <Button
-            android:id="@+id/search_history" 
+            android:id="@+id/search_history"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@null"
-            android:text="历史搜索"
-            />
+            android:text="历史搜索" />
     </LinearLayout>
+    -->
 
-	<TextView 
-	    android:id="@+id/text_delete"
-	    android:layout_width="fill_parent"
-	    android:layout_height="45dip"
-	    android:layout_weight="1"
-	    android:layout_below="@id/search_linear"
-	    android:background="@drawable/btn_head_selector"
-	    android:gravity="center"
-	    android:visibility="gone"
-	    android:text="删除历史搜索记录" />
+    <TextView
+        android:id="@+id/text_delete"
+        android:layout_width="fill_parent"
+        android:layout_height="45dip"
+        android:layout_below="@id/top"
+        android:layout_weight="1"
+        android:background="@drawable/btn_head_selector"
+        android:gravity="center"
+        android:text="删除历史搜索记录"
+        android:visibility="gone" />
 
-	
     <ListView
         android:id="@+id/search_history_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/text_delete"
+        android:divider="@drawable/driver1"
         android:listSelector="@drawable/list_item_selector" >
     </ListView>
-	
+
     <ProgressBar
         android:id="@+id/pro_bar"
         style="@style/circle_progress"
@@ -133,8 +165,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone" />
-    
-
 
     <include
         android:layout_width="wrap_content"
@@ -148,18 +178,19 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/total_size"
+        android:divider="@drawable/driver1"
         android:listSelector="@drawable/list_item_selector"
         android:visibility="gone" >
     </ListView>
-    
-    <TextView 
+
+    <TextView
         android:id="@+id/total_size"
-		android:layout_width="fill_parent"
+        android:layout_width="fill_parent"
         android:layout_height="30dip"
-        android:gravity="center"
         android:layout_below="@+id/top"
         android:background="@color/activity_bg_gray"
+        android:gravity="center"
         android:text="找到214项符合的软件"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -290,8 +290,17 @@
                         android:text="软件介绍"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
+                    <TextView 
+                        android:id="@+id/app_description_app_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dip"
+                        android:layout_marginTop="8dip"
+                        android:textColor="#bcbec0"
+                        android:textSize="13sp"
+                        android:layout_marginBottom="10dp"/>
 
-                    <me.key.appmarket.widgets.EllipsizingTextView
+                    <!-- <me.key.appmarket.widgets.EllipsizingTextView
                         android:id="@+id/app_description_app_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -303,7 +312,7 @@
                         android:singleLine="false"
                         android:textColor="#bcbec0"
                         android:textSize="13sp" />
-                    <!-- 软件介绍，按钮 -->
+                    软件介绍，按钮
 
                     <ImageButton
                         android:id="@+id/app_des_expand_app_detail"
@@ -316,7 +325,7 @@
                         android:paddingLeft="20dip"
                         android:paddingRight="30dip"
                         android:paddingTop="8dip"
-                        android:src="@drawable/app_detail_des_expand_button" />
+                        android:src="@drawable/app_detail_des_expand_button" /> -->
                 </LinearLayout>
             </LinearLayout>
         </me.key.appmarket.widgets.CustomScrollView>

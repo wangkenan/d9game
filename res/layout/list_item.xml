@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/top_bar"
     android:layout_width="fill_parent"
-    android:layout_height="95dip"
+    android:layout_height="75dip"
     android:background="@drawable/bg" >
 
     <ImageView
@@ -65,7 +65,7 @@
             android:focusable="false"
             android:gravity="center"
             android:scaleType="fitXY"
-            android:src="@drawable/install_btn"
+            android:src="@drawable/update_btn"
             android:textColor="#0066FF"
             android:textSize="13sp" />
 
