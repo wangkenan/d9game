@@ -290,7 +290,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					v1.iconRight, options);
 			setDownState(newposition2, v1, sdappInfo, sdappInfoRight);
 			final AppInfo sdappInfoF = sdappInfo;
-			final AppInfo sdappInfoRightF = sdappInfo;
+			final AppInfo sdappInfoRightF = sdappInfoRight;
 			v1.LeftBar.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -363,14 +363,14 @@ public class NewRecommnAdapter extends BaseAdapter {
 					v1.tvdown.setVisibility(View.VISIBLE);
 				}
 			} else {
-				v1.tvdown.setText("下载中");
+			//	v1.tvdown.setText("下载中");
 				LogUtils.d("new", "我是暂停中下载"
 						+ appInfos.get(position).getAppName());
 				if (!isDownLoaded) {
 					LogUtils.d("new", "我执行了暂停中下载"
 							+ appInfos.get(position).getAppName());
 					// v1.progress_view.setVisibility(View.VISIBLE);
-					v1.tvdown.setVisibility(View.INVISIBLE);
+					//v1.tvdown.setVisibility(View.INVISIBLE);
 					// v1.progress_view.setProgress(DownloadService
 					// .getPrecent(idx));
 					LogUtils.d("ture", isDownLoading + "isDown");
@@ -405,7 +405,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 				 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 				 * mDrawableicon, null, null);
 				 */
-
+				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
 			} else if (isDownLoaded) {
 				/*
 				 * Drawable mDrawableicon = mContext.getResources().getDrawable(
@@ -441,6 +441,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					long count = sp.getLong(tempFile.getAbsolutePath()
 							+ "precent", 0);
 					// v1.progress_view.setProgress(count);
+					//v1.tvdown.setText(count+"%");
 				} else if (length != 0
 						&& !DownloadService.isExist(appInfos.get(position)
 								.getAppName())) {
@@ -536,7 +537,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 							sdappInfo.getAppName() + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
 					// v1.progress_view.setVisibility(View.VISIBLE);
-					v1.tvdown.setVisibility(View.INVISIBLE);
+					//v1.tvdown.setVisibility(View.INVISIBLE);
 				}
 
 			}
@@ -590,14 +591,14 @@ public class NewRecommnAdapter extends BaseAdapter {
 					v1.tvdownRight.setVisibility(View.VISIBLE);
 				}
 			} else {
-				v1.tvdownRight.setText("下载中");
+				//v1.tvdownRight.setText("下载中");
 				LogUtils.d("new", "我是暂停中下载"
 						+ appInfos.get(position).getAppName());
 				if (!isDownLoadedRight) {
 					LogUtils.d("new", "我执行了暂停中下载"
 							+ appInfos.get(position).getAppName());
 					// v1.progress_view.setVisibility(View.VISIBLE);
-					v1.tvdownRight.setVisibility(View.INVISIBLE);
+					//v1.tvdownRight.setVisibility(View.INVISIBLE);
 					// v1.progress_view.setProgress(DownloadService
 					// .getPrecent(idx));
 					LogUtils.d("ture", isDownLoading + "isDown");
@@ -622,6 +623,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 				LogUtils.d("ture", isDownLoading + "isDown");
 				LogUtils.d("newdowndown", "我变成下载中了"
 						+ appInfos.get(position).getAppName());
+				v1.tvdownRight.setText(DownloadService.getPrecent(idxRight)+"%");
 				/*
 				 * //v1.tvdown.setText("下载中");
 				 * v1.progress_view.setVisibility(View.VISIBLE);
@@ -668,6 +670,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					long count = sp.getLong(tempFileRight.getAbsolutePath()
 							+ "precent", 0);
 					// v1.progress_view.setProgress(count);
+					//v1.tvdownRight.setText(count+"%");
 				} else if (length != 0
 						&& !DownloadService
 								.isExist(sdappInfoRight.getAppName())) {
@@ -715,14 +718,15 @@ public class NewRecommnAdapter extends BaseAdapter {
 					mContext.sendBroadcast(downState);
 					LogUtils.d("pro", "我发出了暂停中下载广播");
 					if (!sdappInfoRight.isIspause()) {
-						v1.tvdown.setText("暂停");
+						v1.tvdownRight.setText("暂停");
 						sdappInfoRight.setDown(false);
 
 					} else {
-						v1.tvdownRight.setText("下载中");
+						//v1.tvdownRight.setText("下载中");
 						sdappInfoRight.setDown(true);
 						// v1.progress_view.setVisibility(View.VISIBLE);
-						v1.tvdownRight.setVisibility(View.INVISIBLE);
+						//v1.tvdownRight.setVisibility(View.INVISIBLE);
+					//	v1.tvdownRight.setText(DownloadService.getPrecent(idx)+"%");
 
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
@@ -773,7 +777,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 							sdappInfoRight.getAppName() + " 开始下载...",
 							Toast.LENGTH_SHORT).show();
 					// v1.progress_view.setVisibility(View.VISIBLE);
-					v1.tvdown.setVisibility(View.INVISIBLE);
+					//v1.tvdown.setVisibility(View.INVISIBLE);
 				}
 
 			}

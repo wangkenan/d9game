@@ -112,6 +112,8 @@ public class RankFragment extends Fragment implements OnClickListener {
 	private TextView getout_pop;
 	private ImageButton search_btn;
 	private TextView updata_num;
+	private View testView;
+	private View advertBanner;
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -147,7 +149,8 @@ public class RankFragment extends Fragment implements OnClickListener {
 		appLication = marketApplecation.getAppLication();
 		mRankListView = (ListView) inflate.findViewById(R.id.list_rank);
 		//在rankListView中添加广告栏、导航栏等
-		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+		testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+		advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
 testView.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -158,13 +161,12 @@ testView.setOnClickListener(new OnClickListener() {
 			}
 		});
 		testView.setPadding(0, 1, 0, 1);
-		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
+	
 		advertBanner.setPadding(0, 6, 0, 6);
 //		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
 		//tabRank.setPadding(0, 5, 0, 10);
 //		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
-		mRankListView.addHeaderView(testView,null,false);
-		mRankListView.addHeaderView(advertBanner,null,false);
+		
 //		mRankListView.addHeaderView(tabRank,null,false);
 		
 		
@@ -284,6 +286,12 @@ testView.setOnClickListener(new OnClickListener() {
 			}
 
 			protected void onPostExecute(Void result) {
+				if(appRankInfos.size() == 0) {
+					ll_rankerror.setVisibility(View.VISIBLE);
+				} else {
+					mRankListView.addHeaderView(testView,null,false);
+					mRankListView.addHeaderView(advertBanner,null,false);
+				}
 				appRankAdapter.notifyDataSetChanged();
 				updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 				// rank_pb.setVisibility(View.INVISIBLE);

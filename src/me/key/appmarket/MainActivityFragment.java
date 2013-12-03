@@ -721,6 +721,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	Runnable runHomeData = new Runnable() {
 		@Override
 		public void run() {
+			appHome = MarketApplication.getInstance().getHomeAppInfos();
 		/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 					+ Global.HOME_PAGE);
 			// Log.e("tag", "result =" + str);
@@ -891,8 +892,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		appHomeInfos.clear();
 		List<AppInfo> appHome = new ArrayList<AppInfo>();
 		appHome = MarketApplication.getInstance().getHomeAppInfos();
-		if(appHome == null) {
-			
+		if(appHome.size() == 0) {
+			ll_homeerror.setVisibility(View.VISIBLE);
 		} else {
 		updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 		appHomeInfos.addAll(appHome);

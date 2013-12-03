@@ -400,7 +400,6 @@ public class MenuFragment extends Fragment {
 						list_temp.add(appInfo);
 						// appDatainfos_temp.add(appInfo);
 					}
-					list.addAll(list_temp);
 					// mHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -411,6 +410,7 @@ public class MenuFragment extends Fragment {
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
 				loadmore_btn.setVisibility(View.GONE);
+				list.addAll(list_temp);
 				cAdapter.notifyDataSetChanged();
 				isLoading = false;
 				/*
