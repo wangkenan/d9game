@@ -181,7 +181,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		mygame = (TextView) mygamebar.findViewById(R.id.mygame);
 		sdgame = (TextView) mygamebar.findViewById(R.id.sdgame_tv);
 		mListReco = (ListView) inflate.findViewById(R.id.mlist);
-		mListReco.setDivider(getResources().getDrawable(R.drawable.driver1));
+		mListReco.setDivider(null);
+//		mListReco.setDivider(getResources().getDrawable(R.drawable.driver1));
 		//banner_local = (ImageView) inflate.findViewById(R.id.banner_local);
 		updata_num = (TextView) inflate.findViewById(R.id.updata_num);
 		//setImagePosition(R.drawable.a20131008174300, banner_local);

@@ -182,7 +182,7 @@ public class MyAdapter extends BaseAdapter {
 				break;
 			case 3:
 				convertView = mInflater.inflate(R.layout.advert_banner, null);
-				convertView.setPadding(0, 6, 0, 6);
+//				convertView.setPadding(0, 6, 0, 6);
 				break;
 			}
 		} else {

@@ -823,7 +823,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		});
 //		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
 		//tabRank.setPadding(0, 5, 0, 10);
-		advertBanner.setPadding(0, 14, 0, 14);
+//		advertBanner.setPadding(0, 14, 0, 14);
 		mHomeListView.addHeaderView(testView,null,false);
 		mHomeListView.addHeaderView(advertBanner,null,false);
 //		mHomeListView.addHeaderView(tabRank,null,false);
