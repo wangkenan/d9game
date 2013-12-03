@@ -161,4 +161,7 @@
     <color name="myprobar">#0066FF</color>
     <color name="classiv_cloor">#F1F0ED</color>
     
+    <color name="focus">#ffb700</color>
+    <color name="normal">#ffffff</color>
+    
 </resources>

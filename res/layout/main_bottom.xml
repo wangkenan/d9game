@@ -7,11 +7,11 @@
     android:outAnimation="@android:anim/slide_out_right" >
 
    
-  <ImageView
+ <!--  <ImageView
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/welcome_d9" 
-  />
+  /> -->
   
 
     <FrameLayout
@@ -73,6 +73,7 @@
                             android:src="@drawable/findgame" />
 
                         <TextView
+                            android:id="@+id/tv_mainbottom_findgame"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
@@ -130,6 +131,7 @@
                             android:src="@drawable/rank" />
 
                         <TextView
+                            android:id="@+id/tv_mainbottom_rank"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
