@@ -144,7 +144,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:listSelector="@drawable/list_item_selector"
-                android:scrollbars="none" >
+                android:scrollbars="none"
+                android:divider="@null" >
             </ListView>
         </RelativeLayout>
 
