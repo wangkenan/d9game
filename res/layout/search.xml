@@ -149,14 +149,14 @@
         android:text="删除历史搜索记录"
         android:visibility="gone" />
 
-    <ListView
+   <!--  <ListView
         android:id="@+id/search_history_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/text_delete"
         android:divider="@drawable/driver1"
         android:listSelector="@drawable/list_item_selector" >
-    </ListView>
+    </ListView> -->
 
     <ProgressBar
         android:id="@+id/pro_bar"

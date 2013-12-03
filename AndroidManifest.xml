@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.market.d9game"
-    android:versionCode="12"
-    android:versionName="1.9.2" >
+    android:versionCode="13"
+    android:versionName="2.0.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="9"
         android:targetSdkVersion="17" />
 
     <permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />

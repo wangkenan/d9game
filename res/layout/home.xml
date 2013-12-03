@@ -31,7 +31,7 @@
             android:layout_height="fill_parent"
             android:background="@drawable/local_background"
             android:numColumns="2"
-            android:divider="@drawable/driver1"
+            android:divider="@drawable/diver_vertical"
             android:footerDividersEnabled="true"
             android:listSelector="@drawable/list_item_selector"
             >

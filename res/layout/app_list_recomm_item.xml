@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/top_bar2"
         android:layout_width="0dip"
-        android:layout_height="102dip"
+        android:layout_height="match_parent"
         android:layout_marginLeft="10dip"
         android:layout_weight="1" >
 
@@ -35,9 +35,10 @@
                 android:layout_width="70dip"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7sp"
-                android:ellipsize="middle"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:text="@string/app_name"
+                android:textColor="@color/white"
                 android:textSize="12sp" />
 
             <TextView
@@ -95,17 +96,11 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="1dip"
-        android:layout_height="match_parent"
-        
-        android:background="@drawable/diver_vertical"
-         >
-        <LinearLayout android:layout_width="1dip"
-            android:layout_height="1dip"
-            android:layout_alignParentTop="true"></LinearLayout>
-        <!--  -->
-    </RelativeLayout>
+        <View
+            android:layout_width="2dip"
+            android:layout_height="match_parent"
+            android:background="@drawable/diver_vertical" />
+
     <RelativeLayout
         android:id="@+id/top_bar_right"
         android:layout_width="0dip"
@@ -136,9 +131,10 @@
                 android:layout_width="70dip"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7sp"
-                android:ellipsize="middle"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:text="@string/app_name"
+                android:textColor="@color/white"
                 android:textSize="12sp" />
 
             <TextView
@@ -174,9 +170,7 @@
                     android:text="下载 "
                     android:textColor="#ffffff"
                     android:textSize="12sp" />
-
             </FrameLayout>
-
         </LinearLayout>
     </RelativeLayout>
 

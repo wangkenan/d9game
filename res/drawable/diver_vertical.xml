@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@drawable/diver_ver" 
-    android:tileMode="repeat"  
-    android:dither="true" >
+    android:src="@drawable/diver_ver_cut" 
+    android:tileMode="clamp"  
+    android:dither="true"
+     >
 
 </bitmap>

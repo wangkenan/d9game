@@ -99,10 +99,11 @@ public class SearchActivity extends Activity implements OnClickListener {
 //	private LinearLayout search_linear;
 //	private Button searchHot;
 //	private Button searchHistory;
-	private ListView search_HotList;
+	//private ListView search_HotList;
 	private boolean isShowingHot = true;
 
 	private TextView text_delete;
+	private ImageView iv_operate_app_detail;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +136,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 //		search_linear = (LinearLayout) findViewById(R.id.search_linear);
 //		searchHot = (Button) findViewById(R.id.search_hot);
 //		searchHistory = (Button) findViewById(R.id.search_history);
-		search_HotList = (ListView) findViewById(R.id.search_history_list);
+		//search_HotList = (ListView) findViewById(R.id.search_history_list);
 //		searchHot.setOnClickListener(this);
 //		searchHistory.setOnClickListener(this);
 		;
@@ -161,8 +162,9 @@ public class SearchActivity extends Activity implements OnClickListener {
 		text_delete = (TextView) findViewById(R.id.text_delete);
 		text_delete.setOnClickListener(this);
 		ivBack.setOnClickListener(this);
-
-		search_HotList.setAdapter(mHotSearchAdapter);
+		iv_operate_app_detail = (ImageView) findViewById(R.id.iv_operate_app_detail);
+		iv_operate_app_detail.setOnClickListener(this);
+	/*	search_HotList.setAdapter(mHotSearchAdapter);
 		search_HotList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -176,7 +178,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				}
 				search.performClick();
 			}
-		});
+		});*/
 
 //		searchHot.setPadding(40, 0, 40, 0);
 //		searchHistory.setPadding(40, 0, 40, 0);
@@ -521,7 +523,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 //		case R.id.logo_title:
 //			SearchActivity.this.finish();
 //			break;
-		case R.id.search_btn_search:
+		case R.id.iv_operate_app_detail:
 			search_text = edit_search.getText().toString();
 			appSearchInfos.clear();
 			appSearchAdapter.notifyDataSetChanged();
@@ -547,7 +549,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				text_delete.setVisibility(View.GONE);
 
 //				search_linear.setVisibility(View.GONE);
-				search_HotList.setVisibility(View.GONE);
+				//search_HotList.setVisibility(View.GONE);
 				new Thread(searchData).start();
 			} else {
 				loadMoreButton.setVisibility(View.GONE);

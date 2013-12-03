@@ -789,18 +789,44 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private View recomnView;
 	private void initHomeView() {
 		mHomeListView = (ListView) homeView.findViewById(R.id.list_home);
-		
+		View view = inflate.inflate(context, R.layout.app_list_recomm_item, null);
+		View icon2 = view.findViewById(R.id.icon2);
+		View app_name2 = view.findViewById(R.id.app_name2);
+		View appsize2 = view.findViewById(R.id.appsize2);
+		View imageView1 = view.findViewById(R.id.imageView1);
+		View iconRight = view.findViewById(R.id.icon_right);
+		View app_nameRight = view.findViewById(R.id.app_name_right);
+		View appsizeRight = view.findViewById(R.id.appsize_right);
+		View imageViewRight = view.findViewById(R.id.imageView2);
+		icon2.setVisibility(View.INVISIBLE);
+		app_name2.setVisibility(View.INVISIBLE);
+		appsize2.setVisibility(View.INVISIBLE);
+		imageView1.setVisibility(View.INVISIBLE);
+		iconRight.setVisibility(View.INVISIBLE);
+		app_nameRight.setVisibility(View.INVISIBLE);
+		appsizeRight.setVisibility(View.INVISIBLE);
+		imageViewRight.setVisibility(View.INVISIBLE);
 		//添加广告、导航栏等
+		mHomeListView.addFooterView(view);
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
 		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
-		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
-		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
+//		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
+		testView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(context, OneKeyInstallActivity.class);
+				startActivity(intent);
+			}
+		});
+//		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
 		//tabRank.setPadding(0, 5, 0, 10);
-//		advertBanner.setPadding(0, 5, 0, 5);
+		advertBanner.setPadding(0, 14, 0, 14);
 		mHomeListView.addHeaderView(testView,null,false);
 		mHomeListView.addHeaderView(advertBanner,null,false);
-		mHomeListView.addHeaderView(tabRank,null,false);
+//		mHomeListView.addHeaderView(tabRank,null,false);
 //		 mHomeListView.setDividerHeight(20);
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar_home);
 		pHomeBar.setVisibility(View.VISIBLE);
@@ -900,12 +926,12 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				// TODO Auto-generated method stub
+				/*// TODO Auto-generated method stub
 				if(firstVisibleItem>=2){
 					recomnView.setVisibility(View.VISIBLE);
 				}else{
 					recomnView.setVisibility(View.INVISIBLE);
-				}
+				}*/
 				
 			}
 		});

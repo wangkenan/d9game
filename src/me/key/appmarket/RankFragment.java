@@ -148,9 +148,18 @@ public class RankFragment extends Fragment implements OnClickListener {
 		mRankListView = (ListView) inflate.findViewById(R.id.list_rank);
 		//在rankListView中添加广告栏、导航栏等
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+testView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(getActivity(), OneKeyInstallActivity.class);
+				startActivity(intent);
+			}
+		});
 		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
-		advertBanner.setPadding(0, 5, 0, 5);
+		advertBanner.setPadding(0, 14, 0, 14);
 //		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
 		//tabRank.setPadding(0, 5, 0, 10);
 //		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);

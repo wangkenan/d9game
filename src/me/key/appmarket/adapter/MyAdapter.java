@@ -154,7 +154,7 @@ public class MyAdapter extends BaseAdapter {
 				convertView = mInflater.inflate(R.layout.ranktest, null);
 				viewHolder2.banner = (ImageView) convertView
 						.findViewById(R.id.iv_rank_test);
-				viewHolder2.banner.setScaleType(ScaleType.FIT_XY);
+				viewHolder2.banner.setPadding(0, 1, 0, 1);
 				convertView.setTag(viewHolder2);
 				break;
 			case 1:
@@ -168,6 +168,7 @@ public class MyAdapter extends BaseAdapter {
 
 				holder.appsize = (TextView) convertView
 						.findViewById(R.id.appsize);
+				holder.ivOprateState = (ImageView) convertView.findViewById(R.id.iv_oprate_state);
 				convertView.setTag(holder);
 				break;
 			case 2:
@@ -181,6 +182,7 @@ public class MyAdapter extends BaseAdapter {
 				break;
 			case 3:
 				convertView = mInflater.inflate(R.layout.advert_banner, null);
+				convertView.setPadding(0, 6, 0, 6);
 				break;
 			}
 		} else {
@@ -200,7 +202,7 @@ public class MyAdapter extends BaseAdapter {
 
 		case 0:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
-			setImagePosition(R.drawable.bannaer, v3.banner);
+//			setImagePosition(R.drawable.bannaer, v3.banner);
 			v3.banner.setOnClickListener(new OnClickListener() {
 				
 				@Override
@@ -364,11 +366,12 @@ public class MyAdapter extends BaseAdapter {
 			if (isLeft) {
 				if (isUpdate) {
 					v2.btn.setText("升级");
+					v2.ivOprateState.setImageResource(R.drawable.update_btn);
 				} else {
 
 					LogUtils.d("MyUpdate", sdappInfo.getPackageName() + "打开");
 					v2.btn.setText("打开");
-
+					v2.ivOprateState.setImageResource(R.drawable.one_key);
 				}
 				/*
 				 * Drawable mDrawable1 = this.cnt.getResources().getDrawable(
@@ -521,6 +524,7 @@ public class MyAdapter extends BaseAdapter {
 		public ImageView icon;
 		public TextView info;
 		private ProgressView progress_view;
+		private ImageView ivOprateState;
 	}
 
 	static class ViewHolder1 {
@@ -559,13 +563,13 @@ public class MyAdapter extends BaseAdapter {
 		this.cnt.startActivity(intent);
 	}
 
-	private void setImagePosition(int resId, ImageView banner) {
+	/*private void setImagePosition(int resId, ImageView banner) {
 		Bitmap bm = BitmapFactory.decodeResource(cnt.getResources(), resId);
 		Bitmap newbitmap = Bitmap.createBitmap((width - gapPy),
 				(int) ((width - gapPy) / 3.87), bm.getConfig());
 		getNewBitMapPos(bm, newbitmap);
 		banner.setImageBitmap(newbitmap);
-	}
+	}*/
 
 	// 处理图片
 	private void getNewBitMapPos(Bitmap bm, Bitmap newbitmap) {

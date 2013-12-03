@@ -87,7 +87,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	// 我的游戏和内置游戏栏
 	private RelativeLayout mygamebar;
 	private static SDGameAdapter sdAdapter;
-	private TextView onkey_text;
 
 	// 设置按钮
 	private ImageButton setting;
@@ -373,7 +372,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		}
 		boolean onkey = sp.getBoolean("onkey", false);
 		if (onkey) {
-			onkey_text.setText("装机必备");
+			//onkey_text.setText("装机必备");
 		}
 		if (appManaInfos_temp != null && adapter != null) 
 			for (AppInfo ai : appManaInfos_temp) {
