@@ -196,8 +196,12 @@ public class NewRankAdapter extends BaseAdapter {
 		switch (type) {
 		case TYPE_1:
 			final ViewHolder v1 = ((ViewHolder) convertvView.getTag());
+			if((position+1)<10){
+				v1.topname.setText("0"+(position+1));
+				}else{
+					v1.topname.setText(position+1+"");
+				}
 		
-			v1.topname.setText(position+1+"");
 			fillData(position, v1);
 			break;
 		case TYPE_2:

@@ -131,6 +131,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private DownStateBroadcastRank dsbRank;
 	private View errorview;
 	private LayoutInflater inflater;
+	private TextView findgameTv;
+	private TextView rankTv;
 
 	@Override
 	public void onCreate(Bundle arg0) {
@@ -153,6 +155,10 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		findgame = (ImageView) findViewById(R.id.findgame);
 		findApp=(RelativeLayout) findViewById(R.id.rl_findapp_main_bottom);
 		localgame = (TextView) findViewById(R.id.localgame);
+		localgame.setTextColor(getResources().getColor(R.color.focus));
+		
+		findgameTv = (TextView)findViewById(R.id.tv_mainbottom_findgame);
+		rankTv = (TextView)findViewById(R.id.tv_mainbottom_rank);
 		rankgame = (ImageView) findViewById(R.id.rankgame);
 		rankApp=(RelativeLayout) findViewById(R.id.rl_rankapp_main_bottom);
 		inflater = LayoutInflater.from(this);
@@ -615,15 +621,21 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			ft.show(mf);
 			ft.commit();
 			findgame.setImageResource(R.drawable.findgame_focus);
+			findgameTv.setTextColor(getResources().getColor(R.color.focus));
 			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					local_normal, null, null);
+			localgame.setTextColor(getResources().getColor(R.color.normal));
 			rankgame.setImageResource(R.drawable.rank);
+			rankTv.setTextColor(getResources().getColor(R.color.normal));
 			break;
 		case R.id.fl_localapp_main_bottom:
 			findgame.setImageResource(R.drawable.findgame);
+			findgameTv.setTextColor(getResources().getColor(R.color.normal));
 			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					local_focue, null, null);
+			localgame.setTextColor(getResources().getColor(R.color.focus));
 			rankgame.setImageResource(R.drawable.rank);
+			rankTv.setTextColor(getResources().getColor(R.color.normal));
 			FragmentTransaction ft2 = fm.beginTransaction();
 			// ft2.replace(R.id.tabcontent, lf);
 			// ft2.addToBackStack(null);
@@ -638,9 +650,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			break;
 		case R.id.rl_rankapp_main_bottom:
 			findgame.setImageResource(R.drawable.findgame);
+			findgameTv.setTextColor(getResources().getColor(R.color.normal));
 			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
 					local_normal, null, null);
+			localgame.setTextColor(getResources().getColor(R.color.normal));
 			rankgame.setImageResource(R.drawable.rank_selected);
+			rankTv.setTextColor(getResources().getColor(R.color.focus));
 			FragmentTransaction ft1 = fm.beginTransaction();
 			// ft1.replace(R.id.tabcontent, f1);
 			// ft1.addToBackStack(null);
