@@ -2,7 +2,6 @@ package me.key.appmarket.tool;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
@@ -15,7 +14,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import me.key.appmarket.MainActivity;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.utils.AppInfo;
@@ -78,6 +76,7 @@ public class DownloadService extends Service {
 	static Drawable image;
 	private static FinalDb db;
 	private static AsyncImageLoader asyncImageLoader = new AsyncImageLoader();
+	private CancalNotifiBroadcast cnb;
 
 	// 存储image的集合;
 
@@ -105,11 +104,34 @@ public class DownloadService extends Service {
 		context = this;
 		db = FinalDb.create(context);
 
+		IntentFilter notifitionIf = new IntentFilter(
+				"duobaohui.cancalnotifition");
+		this.cnb = new CancalNotifiBroadcast();
+		context.registerReceiver(cnb, notifitionIf);
+
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		unregisterReceiver(cnb);
+
+	}
+
+	// 用来关闭通知栏的广播接受者
+	class CancalNotifiBroadcast extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			LogUtils.d("Main", "我接收到了关闭通知广播");
+			nm.cancelAll();
+			for (Activity activity : MarketApplication.getInstance()
+					.getAppLication()) {
+				activity.finish();
+			}
+			android.os.Process.killProcess(android.os.Process.myPid());
+			System.exit(0);
+		}
 
 	}
 
@@ -311,23 +333,6 @@ public class DownloadService extends Service {
 
 		}
 
-		// 用来关闭通知栏的广播接受者
-		class CancalNotifiBroadcast extends BroadcastReceiver {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				LogUtils.d("Main", "我接收到了关闭通知广播");
-				nm.cancelAll();
-				for (Activity activity : MarketApplication.getInstance()
-						.getAppLication()) {
-					activity.finish();
-				}
-				android.os.Process.killProcess(android.os.Process.myPid());
-				System.exit(0);
-			}
-
-		}
-
 		class MyHandler extends Handler {
 			private Context context;
 
@@ -437,10 +442,7 @@ public class DownloadService extends Service {
 			IntentFilter filter = new IntentFilter(tempFile.getAbsolutePath());
 			PauseBroadcast receiver = new PauseBroadcast();
 			context.registerReceiver(receiver, filter);
-			IntentFilter notifitionIf = new IntentFilter(
-					"duobaohui.cancalnotifition");
-			CancalNotifiBroadcast cnb = new CancalNotifiBroadcast();
-			context.registerReceiver(cnb, notifitionIf);
+
 			// try {
 			LogUtils.d("Main", "我注册了取消通知广播");
 			download.put(notificationId, 0l);
@@ -697,15 +699,16 @@ public class DownloadService extends Service {
 	// }
 
 	public static File CreatFileName(String name) {
-		File marketDir = new File(LocalUtils.getRoot(context)+"market");
+		File marketDir = new File(LocalUtils.getRoot(context) + "market");
 		try {
-		if(!marketDir.exists()){
-				marketDir.mkdir();}
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (!marketDir.exists()) {
+				marketDir.mkdir();
 			}
-		File tempFile = new File(marketDir.getAbsoluteFile(),
-				"/" + name + ".apk");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		File tempFile = new File(marketDir.getAbsoluteFile(), "/" + name
+				+ ".apk");
 		return tempFile;
 	}
 

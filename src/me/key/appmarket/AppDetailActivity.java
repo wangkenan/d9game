@@ -477,7 +477,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 									is = connection.getInputStream();
 									BitmapFactory.Options options=new BitmapFactory.Options();
 									options.inJustDecodeBounds = false;
-									options.inSampleSize = 5;   //
+									options.inSampleSize = 2;   //压缩比例
 									Bitmap bitmap =BitmapFactory.decodeStream(is,null,options);
 									/*Bitmap bitmap = BitmapFactory
 											.decodeStream(is);*/

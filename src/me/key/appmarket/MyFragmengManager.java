@@ -676,7 +676,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			LogUtils.d("Main", "我发出了取消广播");
 
 			stopService(new Intent(this, DownloadService.class));
-//			finish();
+	//		finish();
 //			System.exit(0);
 //			android.os.Process.killProcess(android.os.Process.myPid());
 

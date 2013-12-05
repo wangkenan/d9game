@@ -525,11 +525,13 @@ testView.setOnClickListener(new OnClickListener() {
 			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
 			break;
 		case R.id.downandupdata:
+			pw.dismiss();
 			Intent intent = new Intent();
 			intent.setClass(getActivity(), DownLoadManagerActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.checkupdata_pop:
+			pw.dismiss();
 			updateSelf(true);
 			break;
 		case R.id.getout_pop:
@@ -540,6 +542,7 @@ testView.setOnClickListener(new OnClickListener() {
 			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
+			pw.dismiss();
 			Intent mysc = new Intent();
 			mysc.setClass(getActivity(), MyScoreActivity.class);
 			startActivity(mysc);
