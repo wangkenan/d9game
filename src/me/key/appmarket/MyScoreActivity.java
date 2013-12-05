@@ -22,6 +22,7 @@ public class MyScoreActivity extends FinalActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.acticvity_myscore);
+		MarketApplication.getInstance().getAppLication().add(this);
 		tableView = (UITableView) findViewById(R.id.tableView);
 		 createList();        
 	        tableView.commit();

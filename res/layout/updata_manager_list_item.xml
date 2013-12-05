@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/top_bar"
     android:layout_width="fill_parent"
-    android:layout_height="75dip"
+    android:layout_height="75dp"
     android:background="@drawable/bg" >
 
     <ImageView
@@ -108,8 +108,8 @@
             android:gravity="center_vertical"
             android:text="2.14MB"
             android:textColor="@color/dark_gray"
+       style="@style/topbar_title" 
             android:textSize="12sp" />
-        <!-- style="@style/topbar_title" -->
     </LinearLayout>
 
 </RelativeLayout>

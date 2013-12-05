@@ -2,6 +2,7 @@ package me.key.appmarket.tool;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
@@ -19,6 +20,7 @@ import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.LocalAppInfo;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.MyTableHost;
 import net.tsz.afinal.FinalDb;
@@ -82,6 +84,11 @@ public class DownloadService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
+	}
+
+	public void stop() {
+		stopSelf();
+
 	}
 
 	@Override
@@ -197,8 +204,9 @@ public class DownloadService extends Service {
 		private MyHandler handler;
 		private Drawable loadImageFromUrl;
 		private FinalHttp fh;
-		//控制下载用
+		// 控制下载用
 		private HttpHandler<File> handler1;
+
 		public DownFiles(AppInfo appInfo, long startOff, long endOff) {
 			super();
 			this.url = appInfo.getAppUrl();
@@ -218,8 +226,8 @@ public class DownloadService extends Service {
 		public void startDown(final File tempFile, final Editor edit) {
 			fh = new FinalHttp();
 			// 调用download方法开始下载
-			handler1 = fh.download(url,
-					tempFile.getAbsolutePath(), true, new AjaxCallBack<File>() {
+			handler1 = fh.download(url, tempFile.getAbsolutePath(), true,
+					new AjaxCallBack<File>() {
 						@Override
 						public void onLoading(long count, long current) {
 							// textView.setText("下载进度："+current+"/"+count);
@@ -244,7 +252,7 @@ public class DownloadService extends Service {
 								handler.sendMessage(message);
 
 							}
-						} 	
+						}
 
 						@Override
 						public void onSuccess(File t) {
@@ -265,9 +273,11 @@ public class DownloadService extends Service {
 
 						@Override
 						public void onFailure(Throwable t, String strMsg) {
-							/*Message message = handler.obtainMessage(4, name + "下载失败:网络异常");
-							 message.arg1 = notificationId; 
-							 handler.sendMessage(message);*/
+							/*
+							 * Message message = handler.obtainMessage(4, name +
+							 * "下载失败:网络异常"); message.arg1 = notificationId;
+							 * handler.sendMessage(message);
+							 */
 							super.onFailure(t, strMsg);
 						}
 
@@ -287,7 +297,7 @@ public class DownloadService extends Service {
 				Editor edit = sp.edit();
 				edit.putLong(tempFile.getAbsolutePath() + "precent", precent);
 				edit.commit();
-				if(isPause) {
+				if (isPause) {
 					handler1.stop();
 					appInfo.setIspause(isPause);
 					db.update(appInfo);
@@ -296,8 +306,7 @@ public class DownloadService extends Service {
 					appInfo.setIspause(isPause);
 					db.update(appInfo);
 				}
-			
-				
+
 			}
 
 		}
@@ -309,9 +318,9 @@ public class DownloadService extends Service {
 			public void onReceive(Context context, Intent intent) {
 				LogUtils.d("Main", "我接收到了关闭通知广播");
 				nm.cancelAll();
-				for (Activity activity : MainActivity.activities) {
+				for (Activity activity : MarketApplication.getInstance()
+						.getAppLication()) {
 					activity.finish();
-
 				}
 				android.os.Process.killProcess(android.os.Process.myPid());
 				System.exit(0);
@@ -450,21 +459,19 @@ public class DownloadService extends Service {
 					R.layout.custom_notification);
 			notification.contentView = contentView;
 			// 异步下载图标
-/*			new AsyncTask<Void, Void, Void>() {
-
-				@Override
-				protected Void doInBackground(Void... params) {
-					loadImageFromUrl = asyncImageLoader
-							.loadImageFromUrl(appInfo.getIconUrl()); 
-					return null;
-				}
-
-				protected void onPostExecute(Void result) {
-					notification.contentView.setImageViewBitmap(R.id.image,
-							drawable2Bitmap(loadImageFromUrl));
-				};
-
-			}.execute();*/
+			/*
+			 * new AsyncTask<Void, Void, Void>() {
+			 * 
+			 * @Override protected Void doInBackground(Void... params) {
+			 * loadImageFromUrl = asyncImageLoader
+			 * .loadImageFromUrl(appInfo.getIconUrl()); return null; }
+			 * 
+			 * protected void onPostExecute(Void result) {
+			 * notification.contentView.setImageViewBitmap(R.id.image,
+			 * drawable2Bitmap(loadImageFromUrl)); };
+			 * 
+			 * }.execute();
+			 */
 			if (loadImageFromUrl == null) {
 				notification.contentView
 						.setImageViewBitmap(
@@ -690,8 +697,15 @@ public class DownloadService extends Service {
 	// }
 
 	public static File CreatFileName(String name) {
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File marketDir = new File(LocalUtils.getRoot(context)+"market");
+		try {
+		if(!marketDir.exists()){
+				marketDir.mkdir();}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		File tempFile = new File(marketDir.getAbsoluteFile(),
+				"/" + name + ".apk");
 		return tempFile;
 	}
 
@@ -720,7 +734,7 @@ public class DownloadService extends Service {
 		}
 		long temp = sp.getLong(tempFile.getAbsolutePath(), -1);
 		if (temp != -1) {
-			LogUtils.d("DownLoadService", "temp"+temp);
+			LogUtils.d("DownLoadService", "temp" + temp);
 			result = false;
 		}
 		return result;
@@ -747,7 +761,7 @@ public class DownloadService extends Service {
 			intent.setDataAndType(Uri.fromFile(tempFile),
 					"application/vnd.android.package-archive");
 			context.startActivity(intent);
-			
+
 		}
 	}
 

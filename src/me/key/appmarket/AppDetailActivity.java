@@ -235,10 +235,6 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					DownloadService.Instanll(appInfo.getAppName(),
 							AppDetailActivity.this);
 				} else if (!appInfo.isInstalled()) {
-					Log.e("tag",
-							"appurl = " + Global.MAIN_URL + appInfo.getAppUrl());
-					Log.e("tag",
-							"appIdx = " + Integer.parseInt(appInfo.getIdx()));
 					/*
 					 * Log.e("tag", "appname = " +
 					 * appInfos.get(position).getAppName());
@@ -697,13 +693,11 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		public void run() {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 					+ Global.APPCOMMENT + "?appid=" + appid);
-			Log.e("tag", "result =" + str);
 			if (str.equals("null")) {
 				mHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 			} else if (str.equals("-1")) {
 				mHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 			} else {
-				Log.e("tag", "--------------1-------------");
 				ParseCommentJson(str);
 			}
 		}
@@ -712,7 +706,6 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			Log.e("tag", "--------------4--------");
 			switch (msg.what) {
 			case Global.DOWN_DATA_HOME_FAILLY: {
 			}
@@ -745,7 +738,6 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 			}
 			mHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 		} catch (Exception ex) {
-			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
 			// homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 		}
 	}

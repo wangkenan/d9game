@@ -363,7 +363,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 					v1.tvdown.setVisibility(View.VISIBLE);
 				}
 			} else {
-			//	v1.tvdown.setText("下载中");
+				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+				v1.tvdown.setVisibility(View.VISIBLE);
 				LogUtils.d("new", "我是暂停中下载"
 						+ appInfos.get(position).getAppName());
 				if (!isDownLoaded) {
@@ -739,12 +740,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 					DownloadService.Instanll(sdappInfoRight.getAppName(),
 							mContext);
 				} else if (!sdappInfoRight.isInstalled()) {
-					Log.e("tag",
-							"appurl = " + Global.MAIN_URL
-									+ sdappInfoRight.getAppUrl());
-					Log.e("tag",
-							"appIdx = "
-									+ Integer.parseInt(sdappInfoRight.getIdx()));
 					/*
 					 * Log.e("tag", "appname = " +
 					 * appInfos.get(position).getAppName());

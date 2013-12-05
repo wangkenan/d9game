@@ -112,7 +112,6 @@ public class MenuFragment extends Fragment {
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
-				Log.e("tag", "runCategoryData result =" + str);
 				if (str == null) {
 					errorview.setVisibility(View.VISIBLE);
 				} else {
@@ -195,7 +194,6 @@ public class MenuFragment extends Fragment {
 
 	private void ParseCategoryJson(String str) {
 		try {
-			Log.e("tag", "--------------ParseCategoryJson--------");
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -209,13 +207,11 @@ public class MenuFragment extends Fragment {
 						type2, Global.MAIN_URL + appUrl);
 				categoryInfoList.add(mCategoryInfo);
 			}
-			Log.e("tag", "--------------ParseCategoryJson 2--------");
 			/*
 			 * categoryDataHandler
 			 * .sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 			 */
 		} catch (Exception ex) {
-			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
 		}
 	}
 
@@ -258,7 +254,6 @@ public class MenuFragment extends Fragment {
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + type);
-				Log.e("Menu", "runCategoryData result =" + str);
 				ParseCategoryJson(str);
 				CategoryInfo cif = categoryInfoList.get(type);
 				int type1 = Integer.parseInt(cif.getType1());
@@ -360,7 +355,6 @@ public class MenuFragment extends Fragment {
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
-				Log.e("tag", "runCategoryData result =" + str);
 				if (str == null) {
 					errorview.setVisibility(View.VISIBLE);
 				} else {

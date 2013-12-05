@@ -458,13 +458,6 @@ public class NewRankAdapter extends BaseAdapter {
 					DownloadService.Instanll(appInfos.get(position)
 							.getAppName(), mContext);
 				} else if (!appInfos.get(position).isInstalled()) {
-					Log.e("tag",
-							"appurl = " + Global.MAIN_URL
-									+ appInfos.get(position).getAppUrl());
-					Log.e("tag",
-							"appIdx = "
-									+ Integer.parseInt(appInfos.get(position)
-											.getIdx()));
 					/*
 					 * Log.e("tag", "appname = " +
 					 * appInfos.get(position).getAppName());

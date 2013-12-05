@@ -455,7 +455,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			if (intent.getAction()
 					.equals("android.intent.action.PACKAGE_ADDED")) {
 				String packageName = intent.getDataString().substring(8);
-				LogUtils.d("LocalGmae", "安装了:" + packageName + "包名的程序");
 				// List<AppInfo> down_temp = new ArrayList<AppInfo>();
 				// down_temp = db.findAll(AppInfo.class);
 				/*
@@ -706,15 +705,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-
-			ArrayList<Activity> appLication = MarketApplication.getInstance()
-					.getAppLication();
-			for (Activity at : appLication) {
-				at.finish();
-			}
-			getActivity().stopService(new Intent(getActivity(), LocalGameFragment.class));
-			System.exit(0);
-			android.os.Process.killProcess(android.os.Process.myPid());
+			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
 			Intent mysc = new Intent();

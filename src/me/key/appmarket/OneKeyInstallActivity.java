@@ -70,6 +70,7 @@ public class OneKeyInstallActivity extends FinalActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.onkeyinstall);
+		MarketApplication.getInstance().getAppLication().add(this);
 		packages = OneKeyInstallActivity.this.getPackageManager()
 				.getInstalledPackages(0);
 		fillData("0");
