@@ -71,7 +71,7 @@ public class UpdataAdapter extends BaseAdapter {
 		final AppInfo sdappInfo = updataList.get(position);;
 		if(convertView == null) {
 			holder = new ViewHolder();
-			convertView = mInflater.inflate(R.layout.list_item, null);
+			convertView = mInflater.inflate(R.layout.updata_manager_list_item, null);
 			holder.info = (TextView) convertView.findViewById(R.id.info);
 			holder.icon = (ImageView) convertView.findViewById(R.id.icon);
 			holder.operate = (ImageView) convertView.findViewById(R.id.iv_oprate_state);
