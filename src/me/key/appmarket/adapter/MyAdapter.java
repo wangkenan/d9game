@@ -619,6 +619,7 @@ public class MyAdapter extends BaseAdapter {
 				if((position+1)!=lv.getAdapter().getCount()){
 				// TODO Auto-generated method stub
 				AppInfo mAppInfo = (AppInfo) appManaInfos.get(position-3);
+				Drawable appIcon = mAppInfo.getAppIcon();
 				mAppInfo.setAppIcon(null);
 				LogUtils.d("Local", "mAppInfo"+mAppInfo.getIdx());
 				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
@@ -627,6 +628,7 @@ public class MyAdapter extends BaseAdapter {
 				intent.putExtra("appid", mAppInfo.getIdx());
 				intent.putExtra("appinfo", mAppInfo);
 				cnt.startActivity(intent);
+				mAppInfo.setAppIcon(appIcon);
 				}
 			}
 			

@@ -333,10 +333,10 @@ public class NewRecommnAdapter extends BaseAdapter {
 						+ sdappInfoRight.getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
-		boolean isDownLoaded = DownloadService.isDownLoaded(sdappInfo
-				.getAppName());
-		boolean isDownLoadedRight = DownloadService.isDownLoaded(sdappInfoRight
-				.getAppName());
+		boolean isDownLoaded = DownloadService.isDownLoaded(sdappInfo.getApkName()
+				);
+		boolean isDownLoadedRight = DownloadService.isDownLoaded(sdappInfoRight.getApkName()
+				);
 		int idx = Integer.parseInt(sdappInfo.getIdx());
 		int idxRight = Integer.parseInt(sdappInfoRight.getIdx());
 		isDownLoading = DownloadService.isDownLoading(idx);
@@ -503,7 +503,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
 					sdappInfo.setIspause(!sdappInfo.isIspause());
 					LogUtils.d("test", appInfos.get(position).isIspause() + "2");
-				} else if (DownloadService.isDownLoaded(sdappInfo.getAppName())) {
+				} else if (DownloadService.isDownLoaded(sdappInfo.getApkName())) {
 					// 已经下载
 					DownloadService.Instanll(sdappInfo.getAppName(), mContext);
 				} else if (!sdappInfo.isInstalled()) {
@@ -734,8 +734,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
 					sdappInfoRight.setIspause(!sdappInfoRight.isIspause());
 					LogUtils.d("test", sdappInfoRight.isIspause() + "2");
-				} else if (DownloadService.isDownLoaded(sdappInfoRight
-						.getAppName())) {
+				} else if (DownloadService.isDownLoaded(sdappInfoRight.getApkName()
+						)) {
 					// 已经下载
 					DownloadService.Instanll(sdappInfoRight.getAppName(),
 							mContext);

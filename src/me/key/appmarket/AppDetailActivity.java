@@ -231,7 +231,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					}
 					appInfo.setIspause(!appInfo.isIspause());
 					LogUtils.d("APPDETAIL", "我现在是" + appInfo.isIspause() + "状态");
-				} else if (DownloadService.isDownLoaded(appInfo.getAppName())) {
+				} else if (DownloadService.isDownLoaded(appInfo.getApkName())) {
 					// 已经下载
 					DownloadService.Instanll(appInfo.getAppName(),
 							AppDetailActivity.this);
@@ -357,7 +357,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					isInstalled = AppUtils.isInstalled(response
 							.getAppPackageName());
 					// 是否已经下载完
-					isDowned = DownloadService.isDownLoaded(name);
+					isDowned = DownloadService.isDownLoaded(appInfo.getApkName());
 					// 是否正在下载
 					isDowning = DownloadService.isDownLoading(Integer
 							.parseInt(idx));
@@ -428,8 +428,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 							+ appInfo.getAppName() + ".apk");
 					SharedPreferences sp = getSharedPreferences("down",
 							MODE_PRIVATE);
-					boolean isDownLoaded = DownloadService.isDownLoaded(appInfo
-							.getAppName());
+					boolean isDownLoaded = DownloadService.isDownLoaded(appInfo.getApkName()
+							);
 					int idx = Integer.parseInt(appInfo.getIdx());
 					isDownLoading = DownloadService.isDownLoading(idx);
 					/*
@@ -797,7 +797,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					// tvOperate.setText("下载");
 					ivOperate.setImageResource(R.drawable.install_btn);
 				}
-				if (DownloadService.isDownLoaded(appInfo.getAppName())) {
+				if (DownloadService.isDownLoaded(appInfo.getApkName())) {
 					tvOperate.setText("安装");
 					ivOperate.setImageResource(R.drawable.install_btn);
 				}
@@ -830,8 +830,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						+ appInfo.getAppName() + ".apk");
 		count = sp.getLong(tempFile.getAbsolutePath() + "precent", 0);
 
-		boolean isDownLoaded = DownloadService.isDownLoaded(appInfo
-				.getAppName());
+		boolean isDownLoaded = DownloadService.isDownLoaded(appInfo.getApkName()
+				);
 		int idx = Integer.parseInt(appInfo.getIdx());
 		isDownLoading = DownloadService.isDownLoading(idx);
 		if (appInfo.isIspause()) {

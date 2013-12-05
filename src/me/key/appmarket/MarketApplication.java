@@ -1,10 +1,12 @@
 package me.key.appmarket;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Activity;
 import android.app.Application;
@@ -114,6 +116,23 @@ public class MarketApplication extends Application {
 		crashHandler.init(getApplicationContext());
 		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
 				.cacheInMemory(true).cacheOnDisc(true).build();
+        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+
+                @Override
+                public void uncaughtException(Thread thread, Throwable ex) {
+                        // TODO Auto-generated method stub
+                        ex.printStackTrace();
+
+                        for (Activity activity : activitys) {
+							activity.finish();
+						}
+                        // 退出程序
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        System.exit(1);
+                        LogUtils.d("Local", "我被结束了");
+                        
+                }
+        });
 		// 配置imageLoager初始化
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				this).defaultDisplayImageOptions(defaultOptions)
