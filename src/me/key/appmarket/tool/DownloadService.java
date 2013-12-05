@@ -2,6 +2,7 @@ package me.key.appmarket.tool;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
@@ -19,6 +20,7 @@ import me.key.appmarket.MarketApplication;
 import me.key.appmarket.ImageNet.AsyncImageLoader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.LocalAppInfo;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.MyTableHost;
 import net.tsz.afinal.FinalDb;
@@ -695,8 +697,16 @@ public class DownloadService extends Service {
 	// }
 
 	public static File CreatFileName(String name) {
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File marketDir = new File(LocalUtils.getRoot(context)+"market");
+		try {
+		if(!marketDir.exists()){
+				marketDir.mkdir();}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		File tempFile = new File(marketDir.getAbsoluteFile(),
+				"/" + name + ".apk");
+		LogUtils.i("download---------", tempFile.getAbsolutePath());
 		return tempFile;
 	}
 
