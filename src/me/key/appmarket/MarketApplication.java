@@ -10,6 +10,7 @@ import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
@@ -122,11 +123,10 @@ public class MarketApplication extends Application {
                 public void uncaughtException(Thread thread, Throwable ex) {
                         // TODO Auto-generated method stub
                         ex.printStackTrace();
-
-                        for (Activity activity : activitys) {
-							activity.finish();
-						}
                         LogUtils.d("Local", "我被结束了");
+                        for(Activity activity : activitys) {
+                        	activity.finish();
+                        }
                         
                 }
         });
