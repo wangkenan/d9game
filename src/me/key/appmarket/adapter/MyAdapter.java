@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.key.appmarket.AppDetailActivity;
 import me.key.appmarket.LocalGameFragment;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.OneKeyInstallActivity;
@@ -40,7 +41,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView.ScaleType;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
@@ -74,6 +78,7 @@ public class MyAdapter extends BaseAdapter {
 	private List<AppInfo> temp = new ArrayList<AppInfo>();
 	private FinalDb db;
 	public TabHolder tabHolder;
+	private ListView lv;
 	// 是我的游戏还是sd卡
 	private boolean isLeft = true;
 	private DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -84,7 +89,7 @@ public class MyAdapter extends BaseAdapter {
 			.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 	public MyAdapter(Context context, List<AppInfo> appManaInfos,
-			List<AppInfo> mAppInfos) {
+			List<AppInfo> mAppInfos,ListView lv) {
 		this.mInflater = LayoutInflater.from(context);
 		this.cnt = context;
 		this.appManaInfos = appManaInfos;
@@ -99,6 +104,7 @@ public class MyAdapter extends BaseAdapter {
 		bigImHeight = (int) ((width - gapPy) / 2 / 1.27f);
 		ROOT = LocalUtils.getRoot(context);
 		db = FinalDb.create(context);
+		this.lv = lv;
 	}
 
 	@Override
@@ -605,6 +611,26 @@ public class MyAdapter extends BaseAdapter {
 		mAppInfos = temp;
 		notifyDataSetChanged();
 		isLeft = true;
+		lv.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				if((position+1)!=lv.getAdapter().getCount()){
+				// TODO Auto-generated method stub
+				AppInfo mAppInfo = (AppInfo) appManaInfos.get(position-3);
+				mAppInfo.setAppIcon(null);
+				LogUtils.d("Local", "mAppInfo"+mAppInfo.getIdx());
+				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
+				Intent intent = new Intent(cnt,
+						AppDetailActivity.class);
+				intent.putExtra("appid", mAppInfo.getIdx());
+				intent.putExtra("appinfo", mAppInfo);
+				cnt.startActivity(intent);
+				}
+			}
+			
+		});
 		}
 	}
 
@@ -619,6 +645,14 @@ public class MyAdapter extends BaseAdapter {
 		appManaInfos = temp;
 		notifyDataSetChanged();
 		isLeft = false;
+		lv.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+			}
+			
+		});
 	}
 	}
 }

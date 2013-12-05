@@ -293,7 +293,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				fragmentTransaction.replace(R.id.slide_content, menuFragment);
 				// fragmentTransaction.replace(R.id.content, new
 				// ContentFragment());
-				fragmentTransaction.commit();
+				fragmentTransaction.commitAllowingStateLoss();
 
 				LogUtils.d("Main", "我已经被加载了哟");
 				lv = (ListView) findViewById(R.id.category_lv);
@@ -676,7 +676,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			LogUtils.d("Main", "我发出了取消广播");
 
 			stopService(new Intent(this, DownloadService.class));
-//			finish();
+	//		finish();
 //			System.exit(0);
 //			android.os.Process.killProcess(android.os.Process.myPid());
 

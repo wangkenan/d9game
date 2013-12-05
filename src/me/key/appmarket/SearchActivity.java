@@ -278,7 +278,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 			case Global.DOWN_DATA_SEARCH_EMPTY: {
 				if (page == 0) {
-					ll_searcherror.setVisibility(View.VISIBLE);
+					ll_searcherror.setVisibility(View.GONE);
 					mSearchListView.setVisibility(View.GONE);
 					total_size.setText("找到0项符合的软件");
 					total_size.setVisibility(View.VISIBLE);

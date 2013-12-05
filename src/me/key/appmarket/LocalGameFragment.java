@@ -36,6 +36,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -260,7 +261,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				}
 				mAppInfos.addAll(sortTemp);
 				adapter = new MyAdapter(getActivity(),
-						appManaInfos_temp,mAppInfos);
+						appManaInfos_temp,mAppInfos,mListReco);
 				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);
 				footView = inflate.inflate(getActivity(), R.layout.list_item, null);
 				footView.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
@@ -315,7 +316,30 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					}
 				};
 				timer.schedule(task, 1000, 3000);
+				mListReco.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						if((position+1)!=mListReco.getAdapter().getCount()){
+							// TODO Auto-generated method stub
+							AppInfo mAppInfo = (AppInfo) appManaInfos_temp.get(position-3);
+							Drawable appIcon = mAppInfo.getAppIcon();
+							mAppInfo.setAppIcon(null);
+							LogUtils.d("Local", "mAppInfo"+mAppInfo.getIdx());
+							//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
+							Intent intent = new Intent(getActivity(),
+									AppDetailActivity.class);
+							intent.putExtra("appid", mAppInfo.getIdx());
+							intent.putExtra("appinfo", mAppInfo);
+							getActivity().startActivity(intent);
+							mAppInfo.setAppIcon(appIcon);
+							}
+					}
+					
+				});
 			}
+			
 
 		}.execute();
 		for (AppInfo appInfo : appManagerUpdateInfos) {
@@ -337,25 +361,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		LogUtils.d("Local", width + "Local");
 		
 		//添加选项点击监听
-		mListReco.setOnItemClickListener(new OnItemClickListener(){
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				if((position+1)!=mListReco.getAdapter().getCount()){
-				// TODO Auto-generated method stub
-				AppInfo mAppInfo = (AppInfo) mListReco.getAdapter()
-						.getItem(position);
-				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
-				Intent intent = new Intent(getActivity(),
-						AppDetailActivity.class);
-				intent.putExtra("appid", mAppInfo.getIdx());
-				intent.putExtra("appinfo", mAppInfo);
-				startActivity(intent);
-				}
-			}
-			
-		});
+	
 		
 		mListReco.setOnScrollListener(new OnScrollListener() {
 			

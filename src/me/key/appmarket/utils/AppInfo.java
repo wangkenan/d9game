@@ -2,6 +2,7 @@ package me.key.appmarket.utils;
 
 import java.io.Serializable;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 public class AppInfo implements Serializable{
 
@@ -15,7 +16,6 @@ public class AppInfo implements Serializable{
 	private String id;
 	private Long lastTime;
 	private boolean canUpdate;
-	
 	public Long getLastTime() {
 		return lastTime;
 	}
@@ -36,7 +36,6 @@ public class AppInfo implements Serializable{
 	}
 
 	private boolean isInstalled;
-
 	private String version;
 	private String packageName;
 	private Drawable appIcon = null;
