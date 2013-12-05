@@ -453,7 +453,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			if (intent.getAction()
 					.equals("android.intent.action.PACKAGE_ADDED")) {
 				String packageName = intent.getDataString().substring(8);
-				LogUtils.d("LocalGmae", "安装了:" + packageName + "包名的程序");
 				// List<AppInfo> down_temp = new ArrayList<AppInfo>();
 				// down_temp = db.findAll(AppInfo.class);
 				/*

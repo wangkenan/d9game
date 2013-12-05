@@ -236,7 +236,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				Collections.reverse(downApplist);
 				String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
-				Log.e("tag", "runCategoryData result =" + str);
 				LogUtils.d("Local", "runCategoryData" + str4);
 				if (str4.isEmpty()) {
 					gcategoryInfoList_temp = null;
@@ -396,7 +395,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	// 解析Rank
 	private void ParseRankJson(String str) {
 		try {
-			Log.e("tag", "--------------2--------");
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -416,12 +414,9 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				appInfo.setLastTime(Long.MAX_VALUE);
 				appRankInfos.add(appInfo);
 				// appRankInfos.add(appInfo);
-				Log.e("tag", "info = " + appInfo.toString());
 			}
-			Log.e("tag", "--------------2--------");
 			// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
 		}
 	}
 
@@ -494,7 +489,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			}
 			// Log.e("tag", "--------------2--------");
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
 		}
 	}
 
@@ -546,7 +540,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 	private void ParseCategoryJson(String str) {
 		try {
-			Log.e("tag", "--------------ParseCategoryJson--------");
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -567,13 +560,11 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						"2", Global.MAIN_URL + "no");
 				gcategoryInfoList_temp.add(mCategoryInfo);
 			}
-			Log.e("tag", "--------------ParseCategoryJson 2--------");
 			/*
 			 * categoryDataHandler
 			 * .sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
 			 */
 		} catch (Exception ex) {
-			Log.e("tag", "ParseBannerJson error = " + ex.getMessage());
 		}
 	}
 
@@ -758,7 +749,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		Collections.reverse(downApplist);
 		String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
 				+ Global.APP_CATEGORY + "?type=" + 2);
-		Log.e("tag", "runCategoryData result =" + str);
 		LogUtils.d("Local", "runCategoryData" + str4);
 		if (str4.isEmpty()) {
 			gcategoryInfoList_temp = null;

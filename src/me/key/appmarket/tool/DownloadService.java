@@ -706,7 +706,6 @@ public class DownloadService extends Service {
 			}
 		File tempFile = new File(marketDir.getAbsoluteFile(),
 				"/" + name + ".apk");
-		LogUtils.i("download---------", tempFile.getAbsolutePath());
 		return tempFile;
 	}
 

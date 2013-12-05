@@ -740,12 +740,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 					DownloadService.Instanll(sdappInfoRight.getAppName(),
 							mContext);
 				} else if (!sdappInfoRight.isInstalled()) {
-					Log.e("tag",
-							"appurl = " + Global.MAIN_URL
-									+ sdappInfoRight.getAppUrl());
-					Log.e("tag",
-							"appIdx = "
-									+ Integer.parseInt(sdappInfoRight.getIdx()));
 					/*
 					 * Log.e("tag", "appname = " +
 					 * appInfos.get(position).getAppName());
