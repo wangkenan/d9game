@@ -684,16 +684,10 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			this.sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
 
-			this.finish();
-			ArrayList<Activity> appLication = MarketApplication.getInstance()
-					.getAppLication();
-			for (Activity at : appLication) {
-				at.finish();
-			}
 			stopService(new Intent(this, DownloadService.class));
-			finish();
-			System.exit(0);
-			android.os.Process.killProcess(android.os.Process.myPid());
+//			finish();
+//			System.exit(0);
+//			android.os.Process.killProcess(android.os.Process.myPid());
 
 		}
 		return super.onKeyDown(keyCode, event);
