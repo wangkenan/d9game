@@ -554,22 +554,22 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 
 							});
 					// Gallery OnItemClick
-					picGridview
-							.setOnItemClickListener(new OnItemClickListener() {
-
-								@Override
-								public void onItemClick(AdapterView<?> parent,
-										View view, int position, long id) {
-									// TODO Auto-generated method stub
-									// 设置当前选中的Index
-									currentIndex = position;
-									// 改变GridView显示
-									gridviewAdapter.notifyDataSetInvalidated();
-									// 改变Gallery显示
-									picGallery.setSelection(currentIndex);
-								}
-
-							});
+					// picGridview
+					// .setOnItemClickListener(new OnItemClickListener() {
+					//
+					// @Override
+					// public void onItemClick(AdapterView<?> parent,
+					// View view, int position, long id) {
+					// // TODO Auto-generated method stub
+					// // 设置当前选中的Index
+					// currentIndex = position;
+					// // 改变GridView显示
+					// gridviewAdapter.notifyDataSetInvalidated();
+					// // 改变Gallery显示
+					// picGallery.setSelection(currentIndex);
+					// }
+					//
+					//		});
 					// 释放图片资源
 					if (bmp != null && !bmp.isRecycled()) {
 						bmp.recycle();
