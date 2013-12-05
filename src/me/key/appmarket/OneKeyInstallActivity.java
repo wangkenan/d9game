@@ -38,7 +38,7 @@ import com.market.d9game.R;
  */
 public class OneKeyInstallActivity extends FinalActivity {
 	// 返回键
-	@ViewInject(id = R.id.back_onkey, click = "onClick")
+	@ViewInject(id = R.id.iv_back_onkeyinstall, click = "onClick")
 	private ImageView back_onkey;
 	// 标题
 	// @ViewInject(id=R.id.titlename_onekey)
@@ -160,7 +160,7 @@ public class OneKeyInstallActivity extends FinalActivity {
 				finish();
 			}
 			break;
-		case R.id.back_onkey:
+		case R.id.iv_back_onkeyinstall:
 			// switch (tag) {
 			// case 0:
 			finish();
