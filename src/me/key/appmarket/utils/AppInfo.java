@@ -16,7 +16,6 @@ public class AppInfo implements Serializable{
 	private String id;
 	private Long lastTime;
 	private boolean canUpdate;
-	
 	public Long getLastTime() {
 		return lastTime;
 	}
