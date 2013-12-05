@@ -294,7 +294,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				fragmentTransaction.replace(R.id.slide_content, menuFragment);
 				// fragmentTransaction.replace(R.id.content, new
 				// ContentFragment());
-				fragmentTransaction.commit();
+				fragmentTransaction.commitAllowingStateLoss();
 
 				LogUtils.d("Main", "我已经被加载了哟");
 				lv = (ListView) findViewById(R.id.category_lv);

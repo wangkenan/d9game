@@ -344,8 +344,10 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					long id) {
 				if((position+1)!=mListReco.getAdapter().getCount()){
 				// TODO Auto-generated method stub
-				AppInfo mAppInfo = (AppInfo) mListReco.getAdapter()
-						.getItem(position);
+				AppInfo mAppInfo = (AppInfo) appManaInfos_temp.get(position-3);
+				mAppInfo.setAppIcon(null);
+				
+				LogUtils.d("Local", "mAppInfo"+mAppInfo.getIdx());
 				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
 				Intent intent = new Intent(getActivity(),
 						AppDetailActivity.class);

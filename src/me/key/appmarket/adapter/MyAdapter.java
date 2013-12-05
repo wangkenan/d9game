@@ -108,7 +108,7 @@ public class MyAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int arg0) {
-		return null;
+		return mAppInfos.get(arg0);
 	}
 
 	@Override

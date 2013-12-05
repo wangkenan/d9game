@@ -143,7 +143,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		filter.addDataScheme("package");
 		this.registerReceiver(installedReceiver, filter);
 		appid = getIntent().getStringExtra("appid");
-		LogUtils.i("appid", appid);
+		LogUtils.d("appid", appid);
 		appInfo = (AppInfo) getIntent().getSerializableExtra("appinfo");
 		if (appInfo == null) {
 			appInfo = new AppInfo();
@@ -479,10 +479,15 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 									HttpURLConnection connection = (HttpURLConnection) url
 											.openConnection();
 									is = connection.getInputStream();
-									Bitmap bitmap = BitmapFactory
-											.decodeStream(is);
+									BitmapFactory.Options options=new BitmapFactory.Options();
+									options.inJustDecodeBounds = false;
+									options.inSampleSize = 5;   //
+									Bitmap bitmap =BitmapFactory.decodeStream(is,null,options);
+									/*Bitmap bitmap = BitmapFactory
+											.decodeStream(is);*/
 									int width = bitmap.getWidth();
 									int height = bitmap.getHeight();
+									
 									Matrix matrix = new Matrix();
 									if (height > width) {
 										matrix.setRotate(-90);
