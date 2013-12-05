@@ -260,7 +260,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				}
 				mAppInfos.addAll(sortTemp);
 				adapter = new MyAdapter(getActivity(),
-						appManaInfos_temp,mAppInfos,mListReco);
+						appManaInfos_temp,mAppInfos);
 				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);
 				footView = inflate.inflate(getActivity(), R.layout.list_item, null);
 				footView.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
@@ -674,13 +674,11 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
 			break;
 		case R.id.downandupdata:
-			pw.dismiss();
 			Intent intent = new Intent();
 			intent.setClass(getActivity(), DownLoadManagerActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.checkupdata_pop:
-			pw.dismiss();
 			updateSelf(true);
 			break;
 		case R.id.getout_pop:
@@ -691,7 +689,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
-			pw.dismiss();
 			Intent mysc = new Intent();
 			mysc.setClass(getActivity(), MyScoreActivity.class);
 			startActivity(mysc);
