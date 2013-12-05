@@ -363,7 +363,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 					v1.tvdown.setVisibility(View.VISIBLE);
 				}
 			} else {
-			//	v1.tvdown.setText("下载中");
+				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+				v1.tvdown.setVisibility(View.VISIBLE);
 				LogUtils.d("new", "我是暂停中下载"
 						+ appInfos.get(position).getAppName());
 				if (!isDownLoaded) {

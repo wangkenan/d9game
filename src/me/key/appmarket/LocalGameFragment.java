@@ -11,7 +11,6 @@ import java.util.TimerTask;
 import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.adapter.SDGameAdapter;
-import me.key.appmarket.network.NetworkUtils;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
@@ -51,13 +50,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -335,6 +335,27 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		setting = (ImageButton) inflate.findViewById(R.id.setting);
 		setting.setOnClickListener(this);
 		LogUtils.d("Local", width + "Local");
+		
+		//添加选项点击监听
+		mListReco.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				if((position+1)!=mListReco.getAdapter().getCount()){
+				// TODO Auto-generated method stub
+				AppInfo mAppInfo = (AppInfo) mListReco.getAdapter()
+						.getItem(position);
+				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
+				Intent intent = new Intent(getActivity(),
+						AppDetailActivity.class);
+				intent.putExtra("appid", mAppInfo.getIdx());
+				intent.putExtra("appinfo", mAppInfo);
+				startActivity(intent);
+				}
+			}
+			
+		});
 		
 		mListReco.setOnScrollListener(new OnScrollListener() {
 			
