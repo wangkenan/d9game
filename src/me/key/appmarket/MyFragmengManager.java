@@ -700,6 +700,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		unRegister();
+	}
+
+	private void unRegister() {
+		this.unregisterReceiver(dsb);
+		this.unregisterReceiver(dsbRank);
 	}
 
 	public void getData() {

@@ -129,6 +129,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 	};
 	private ArrayList<Activity> appLication;
 	private View tabRank2;
+	private View advertBanner2;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -199,6 +200,10 @@ testView.setOnClickListener(new OnClickListener() {
 		setting.setOnClickListener(this);
 		mRankListView.addHeaderView(testView,null,false);
 		mRankListView.addHeaderView(advertBanner,null,false);
+		//添加底部不可见项目
+		advertBanner2 = inflate.inflate(getActivity(), R.layout.advert_banner, null);
+		advertBanner2.setVisibility(View.INVISIBLE);
+		mRankListView.addFooterView(advertBanner2);
 		// 搜索按钮点击事件
 		search_btn = (ImageButton) inflate.findViewById(R.id.search_btn);
 		search_btn.setOnClickListener(new OnClickListener() {
@@ -305,6 +310,7 @@ testView.setOnClickListener(new OnClickListener() {
 		}
 		appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), cache);
 		mRankListView.setAdapter(appRankAdapter);
+		int last = mRankListView.getFooterViewsCount();
 		
 		// 注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
