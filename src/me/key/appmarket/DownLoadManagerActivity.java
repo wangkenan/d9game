@@ -58,6 +58,7 @@ public class DownLoadManagerActivity extends FinalActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_downmanager);
+		MarketApplication.getInstance().getAppLication().add(this);
 		db = FinalDb.create(this);
 		init();
 		IntentFilter filter = new IntentFilter();
