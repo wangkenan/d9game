@@ -122,6 +122,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 
 	private GridView picGridview;
 	private ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();;
+	private MyInstalledReceiver installedReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +137,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		setupView();
 		addListener();
 
-		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+		installedReceiver = new MyInstalledReceiver();
 		IntentFilter filter = new IntentFilter();
 
 		filter.addAction("android.intent.action.PACKAGE_ADDED");
@@ -754,11 +755,20 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		unregisterPrecent();
+		
 		MobclickAgent.onPause(this);
+	}
+	
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		this.unregisterReceiver(installedReceiver);
 	}
 
 	PrecentReceiver mPrecentReceiver;
+
 
 	private void registerPrecent() {
 		mPrecentReceiver = new PrecentReceiver();

@@ -229,6 +229,9 @@ public class NewRankAdapter extends BaseAdapter {
 			break;
 		}
 	
+//		if(position==(getCount()-1)){
+//			convertvView.setVisibility(View.INVISIBLE);
+//		}
 		return convertvView;
 	}
 
