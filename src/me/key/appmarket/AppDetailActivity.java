@@ -755,7 +755,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		
+		unregisterPrecent();
 		MobclickAgent.onPause(this);
 	}
 	
