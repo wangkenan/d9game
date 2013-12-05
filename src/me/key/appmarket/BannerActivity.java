@@ -88,7 +88,6 @@ public class BannerActivity extends Activity implements OnScrollListener {
 				protected Void doInBackground(Void... params) {
 					String str = ToolHelper.donwLoadToString(Global.BANNER
 							);
-					Log.e("tag", "indexDetaile result = " + str);
 					if (str.equals("null")) {
 						mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
 					} else if (str.equals("-1")) {
@@ -295,7 +294,6 @@ public class BannerActivity extends Activity implements OnScrollListener {
 						@Override
 						protected Void doInBackground(Void... params) {
 							String str = ToolHelper.donwLoadToString(Global.BANNER);
-							Log.e("tag", "indexDetaile result = " + str);
 							if (str.equals("null")) {
 								mHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
 							} else if (str.equals("-1")) {
@@ -425,7 +423,6 @@ public class BannerActivity extends Activity implements OnScrollListener {
 		public void run() {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 					+ Global.TAGLIST + "?tagid=" + tagid);
-			Log.e("tag", "indexDetaile recoTagRunnable = " + str);
 			if (str.equals("null")) {
 				recomHandler.sendEmptyMessage(Global.DOWN_DATA_EMPTY);
 			} else if (str.equals("-1")) {

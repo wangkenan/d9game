@@ -266,12 +266,6 @@ public class DownManagerAdapter extends BaseAdapter {
 					// 已经下载
 					DownloadService.Instanll(sdappInfo.getAppName(), context);
 				} else {
-					Log.e("tag",
-							"appurl = " + Global.MAIN_URL
-									+ sdappInfo.getAppUrl());
-					Log.e("tag",
-							"appIdx = "
-									+ Integer.parseInt(sdappInfo.getIdx()));
 					/*
 					 * Log.e("tag", "appname = " +
 					 * appInfos.get(position).getAppName());

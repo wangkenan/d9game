@@ -243,7 +243,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.SEARCH + "?searchKey="
 						+ URLEncoder.encode(search_text) + "&page=" + page);
-				Log.e("SearchActivity", "search result =" + str);
 				System.out.println("search result =" + str);
 				if (str.equals("null")) {
 					searchHandler
@@ -254,7 +253,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 				} else {
 					searchHandler
 					.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
-					Log.e("tag", "--------------ParseSearchJson 1-------------");
 					ParseSearchJson(str);
 				}
 			} else {
@@ -325,7 +323,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 				String idx = jsonObject.getString("idx");
 				String appurl = jsonObject.getString("appurl");
 				String apppkgname = jsonObject.getString("apppkgname");
-				Log.e("SearchActivity", "pkg=" + apppkgname);
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
 						Global.MAIN_URL + appiconurl, appurl, "", "", apppkgname);
 				appInfo.setId(apppkgname);
@@ -333,7 +330,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 				appInfo.setLastTime(Long.MAX_VALUE);
 				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appSearchInfos_temp.add(appInfo);
-				Log.e("SearchActivity", "info = " + appInfo.toString());
 				
 			}
 			StringBuilder apknamelist = new StringBuilder();
@@ -386,7 +382,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 					}
 				}
 			}
-			Log.e("tag", "--------------2--------");
 			if (totalCount == 0 || len == 0) {
 				searchHandler.sendEmptyMessage(Global.DOWN_DATA_SEARCH_EMPTY);
 			} else {
@@ -394,7 +389,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 						.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
 			}
 		} catch (Exception ex) {
-			Log.e("SearchActivity", "error = " + ex.getMessage());
 			searchHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_FAILLY);
 		}
 	}
@@ -426,7 +420,6 @@ public class SearchActivity extends Activity implements OnClickListener {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 					+ Global.HOTSEARCH);
 
-			Log.e("tag", "runHotData result =" + str);
 			if (str.equals("null")) {
 				homeHotHandler
 						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);

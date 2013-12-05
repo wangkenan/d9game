@@ -69,7 +69,6 @@ public class ToolHelper {
 		StringBuffer sb = new StringBuffer();
 		BufferedReader bReader = null;
 		String line = null;
-		Log.e("tag", "url = " + urlStr);
 		try {
 			InputStream inputStream = getIsFromUrl(urlStr);
 			if (inputStream == null) {
@@ -83,7 +82,6 @@ public class ToolHelper {
 			bReader.close();
 			return sb.toString();
 		} catch (Exception e) {
-			Log.e("tag", "error = " + e.getMessage());
 			return "";
 		}
 	}
@@ -112,7 +110,6 @@ public class ToolHelper {
 			urlConnection.setRequestMethod("POST");
 			return urlConnection.getInputStream();
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
 			return null;
 		}
 	}
@@ -126,7 +123,6 @@ public class ToolHelper {
 			urlConnection.setRequestMethod("GET");
 			return urlConnection.getInputStream();
 		} catch (Exception ex) {
-			Log.e("tag", "error = " + ex.getMessage());
 			return null;
 		}
 	}
