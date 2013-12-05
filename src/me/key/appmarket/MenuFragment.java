@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -39,7 +40,7 @@ import android.widget.ListView;
 import com.market.d9game.R;
 
 //分类
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment implements OnClickListener {
 	private View view;
 	private ClassifyAdapter cAdapter;
 	private ListView classLv;
@@ -60,6 +61,8 @@ public class MenuFragment extends Fragment {
 	private int page = 0;
 	private boolean isLoading = false;
 	private boolean isFirst = false;
+	//刷新
+	private View btnRefsh;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -103,9 +106,9 @@ public class MenuFragment extends Fragment {
 		classLv.addFooterView(loadMoreView);
 		loadmore_btn = (Button) loadMoreView.findViewById(R.id.loadMoreButton);
 		MarketApplication.getInstance().getAppLication().add(getActivity());
-
 		errorview = view.findViewById(R.id.error);
-
+		btnRefsh = errorview.findViewById(R.id.btn_Refsh);
+		btnRefsh.setOnClickListener(this);
 		new MyAsynTask(context, errorview) {
 
 			@Override
@@ -163,12 +166,6 @@ public class MenuFragment extends Fragment {
 					public void onScrollStateChanged(AbsListView view,
 							int scrollState) {
 						// TODO Auto-generated method stub
-						int itemsLastIndex = cAdapter.getCount() - 1;
-						int lastIndex = itemsLastIndex + 1;
-						if (scrollState == OnScrollListener.SCROLL_STATE_IDLE
-								&& visibleLast == lastIndex) {
-							doUpdate();
-						}
 					}
 
 					@Override
@@ -178,6 +175,17 @@ public class MenuFragment extends Fragment {
 						// TODO Auto-generated method stub
 						visibleCount = visibleItemCount;
 						visibleLast = firstVisibleItem + visibleItemCount - 1;
+						if ((firstVisibleItem + visibleItemCount == totalItemCount)
+								&& (totalItemCount != 0)) {
+							if (!isLoading && !isFirst) {
+								isLoading = true;
+								loadmore_btn.setText("正在加载中...");
+								loadmore_btn.setVisibility(View.VISIBLE);
+								page = page + 1;
+								loadData();
+							}
+							isFirst = false;
+						}
 					}
 				});
 			}
@@ -422,5 +430,14 @@ public class MenuFragment extends Fragment {
 				 */
 			}
 		}.exe();
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_Refsh:
+			
+			break;
+		}
 	}
 }

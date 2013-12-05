@@ -272,11 +272,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				mListReco.setAdapter(adapter);
 				updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
 				TextView tv = (TextView) inflate.findViewById(R.id.wushju);
-				if (mAppInfos.size() == 0) {
-					tv.setVisibility(View.VISIBLE);
-				} else {
-					tv.setVisibility(View.GONE);
-				}
 				pBar.setVisibility(View.GONE);
 				for (AppInfo ai : appManaInfos_temp) {
 					LocalAppInfo findById = db.findById(ai.getId(),

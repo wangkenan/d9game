@@ -126,9 +126,6 @@ public class MarketApplication extends Application {
                         for (Activity activity : activitys) {
 							activity.finish();
 						}
-                        // 退出程序
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        System.exit(1);
                         LogUtils.d("Local", "我被结束了");
                         
                 }
