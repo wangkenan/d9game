@@ -1,6 +1,7 @@
 package me.key.appmarket;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,9 +13,9 @@ import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.HttpClientUtil;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
-import me.key.appmarket.utils.MyAsynTask;
 import me.key.appmarket.utils.ToastUtils;
 import net.tsz.afinal.FinalDb;
 
@@ -74,7 +75,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private RelativeLayout findApp;
 	// 管理游戏
 	private TextView localgame;
-	
+
 	// 排行游戏
 	private ImageView rankgame;
 	private RelativeLayout rankApp;
@@ -85,7 +86,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	// SD卡游戏
 	private List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
 	// Rank
-	private List<AppInfo> appRankInfos;
+	private ArrayList<AppInfo> appRankInfos;
 	// Home
 	private List<AppInfo> appHomeInfos_temp;
 	// 本机已安装
@@ -95,6 +96,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private ArrayList<AppInfo> downApplist = new ArrayList<AppInfo>();
 	private List<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
+	//本地游戏派讯
+	private List<AppInfo> localtopList;
 	private RankFragment f1;
 	public SlidingMenu menu;
 	private Handler myHandler = new Handler() {
@@ -153,14 +156,14 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		appHomeInfos_temp = MarketApplication.getInstance().getHomeAppInfos();
 		db = FinalDb.create(this);
 		findgame = (ImageView) findViewById(R.id.findgame);
-		findApp=(RelativeLayout) findViewById(R.id.rl_findapp_main_bottom);
+		findApp = (RelativeLayout) findViewById(R.id.rl_findapp_main_bottom);
 		localgame = (TextView) findViewById(R.id.localgame);
 		localgame.setTextColor(getResources().getColor(R.color.focus));
-		
-		findgameTv = (TextView)findViewById(R.id.tv_mainbottom_findgame);
-		rankTv = (TextView)findViewById(R.id.tv_mainbottom_rank);
+
+		findgameTv = (TextView) findViewById(R.id.tv_mainbottom_findgame);
+		rankTv = (TextView) findViewById(R.id.tv_mainbottom_rank);
 		rankgame = (ImageView) findViewById(R.id.rankgame);
-		rankApp=(RelativeLayout) findViewById(R.id.rl_rankapp_main_bottom);
+		rankApp = (RelativeLayout) findViewById(R.id.rl_rankapp_main_bottom);
 		inflater = LayoutInflater.from(this);
 		errorview = findViewById(R.id.errorview);
 		localApp = (FrameLayout) findViewById(R.id.fl_localapp_main_bottom);
@@ -171,18 +174,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		// 获取sd卡地址
 		root = LocalUtils.getRoot(this);
 		fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		findGame_normal = getResources().getDrawable(
-				R.drawable.findgame);
-		findGame_focue = getResources().getDrawable(
-				R.drawable.findgame_focus);
-		local_focue = getResources().getDrawable(
-				R.drawable.localgame_fouce);
-		local_normal = getResources().getDrawable(
-				R.drawable.local);
-		manager_focue = getResources().getDrawable(
-				R.drawable.rank_selected);
-		manager_normal = getResources().getDrawable(
-				R.drawable.rank);
+		findGame_normal = getResources().getDrawable(R.drawable.findgame);
+		findGame_focue = getResources().getDrawable(R.drawable.findgame_focus);
+		local_focue = getResources().getDrawable(R.drawable.localgame_fouce);
+		local_normal = getResources().getDrawable(R.drawable.local);
+		manager_focue = getResources().getDrawable(R.drawable.rank_selected);
+		manager_normal = getResources().getDrawable(R.drawable.rank);
 		localgame.setCompoundDrawablesWithIntrinsicBounds(null, local_focue,
 				null, null);
 		// 预加载内容
@@ -248,6 +245,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				} else {
 					ParseCategoryJson(str4);
 				}
+				loadLocaltopList();
 				return null;
 			}
 
@@ -363,7 +361,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				} else {
 					menuCategoryAdapter = new MenuCategoryAdapter(
 							MyFragmengManager.this, gcategoryInfoList_temp, lv);
-					
+
 					lv.setAdapter(menuCategoryAdapter);
 
 					// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
@@ -383,7 +381,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 									continue;
 								}
 								LogUtils.d("Main", i + "");
-								lv.getChildAt(i).setBackgroundResource(R.drawable.slidingmenu_left_background);
+								lv.getChildAt(i).setBackgroundResource(
+										R.drawable.slidingmenu_left_background);
 							}
 						}
 					});
@@ -406,7 +405,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				String appiconurl = jsonObject.getString("appiconurl");
 				String appSize = jsonObject.getString("appsize");
 				String idx = jsonObject.getString("idx");
-				String appurl = jsonObject.getString("appurl"); 
+				String appurl = jsonObject.getString("appurl");
 				String appDownCount = jsonObject.getString("appdowncount");
 				String apppkgname = jsonObject.getString("apppkgname");
 				AppInfo appInfo = new AppInfo(idx, appName, appSize,
@@ -717,4 +716,93 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	protected void onDestroy() {
 		super.onDestroy();
 	}
+
+	public void getData() {
+		String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+				+ Global.RANK_PAGE);
+		if (str.isEmpty()) {
+			appRankInfos = new ArrayList<AppInfo>();
+		} else {
+			ParseRankJson(str);
+		}
+		String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+				+ Global.HOME_PAGE);
+		if (str2.isEmpty()) {
+			appHomeInfos_temp = new ArrayList<AppInfo>();
+		} else {
+			ParseHomeJson(str2);
+		}
+		appManaInfos_temp = AppUtils.getUserApps(MyFragmengManager.this, 4000);
+		List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
+		List<PackageInfo> packages = getPackageManager()
+				.getInstalledPackages(0);
+		mAppInfos_temp = LocalUtils.InitHomePager("0", MyFragmengManager.this,
+				root, packages);
+		mAppInfos.addAll(mAppInfos_temp);
+		ArrayList<AppInfo> userApps = AppUtils.getUserApps(
+				MyFragmengManager.this, 4000);
+		apknamelist = AppUtils.getInstallAppPackage(MyFragmengManager.this);
+		if (apknamelist == null) {
+			appManagerUpdateInfos_t = new ArrayList<AppInfo>();
+		} else {
+			String str3 = ToolHelper.donwLoadToString(Global.MAIN_URL
+					+ Global.UPGRADEVERSION + "?apknamelist=" + apknamelist);
+			ParseUpdateJson(str3);
+		}
+		if (userApps == null) {
+			appManagerUpdateInfos = new ArrayList<AppInfo>();
+		} else {
+			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(userApps,
+					appManagerUpdateInfos_t);
+			appManagerUpdateInfos.clear();
+			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+		}
+		List<AppInfo> down_temp = new ArrayList<AppInfo>();
+		down_temp = db.findAll(AppInfo.class);
+		downApplist.clear();
+		downApplist.addAll(down_temp);
+		Collections.reverse(downApplist);
+		String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
+				+ Global.APP_CATEGORY + "?type=" + 2);
+		Log.e("tag", "runCategoryData result =" + str);
+		LogUtils.d("Local", "runCategoryData" + str4);
+		if (str4.isEmpty()) {
+			gcategoryInfoList_temp = null;
+			LogUtils.d("Local", "runCategoryData" + str4 + "str4");
+
+		} else {
+			ParseCategoryJson(str4);
+		}
+	}
+
+
+
+
+	public void setLocaltopList(ArrayList<AppInfo> localtopList) {
+		this.localtopList = localtopList;
+	}
+
+	public void loadLocaltopList() {
+		try {
+			
+			InputStream is = HttpClientUtil.getInputStream(null,
+					Global.LOCALTOPLISTURL);
+			String body = HttpClientUtil.getString(is);
+			if (body == null || body == "") {
+			} else {
+				localtopList =MarketApplication.getInstance().getLocaltopList();
+				JSONArray jsonObjs = new JSONArray(body);
+				for (int i = 0; i < jsonObjs.length(); i++) {
+					AppInfo appInfo = new AppInfo();
+					JSONObject jsonObj = jsonObjs.getJSONObject(i);
+					appInfo.setPackageName(jsonObj.getString("apppkgname"));
+					appInfo.setIdx(jsonObj.getString("idx"));
+					localtopList.add(appInfo);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

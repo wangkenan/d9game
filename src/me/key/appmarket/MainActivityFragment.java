@@ -28,6 +28,7 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.MyAsynTask;
 import me.key.appmarket.widgets.GalleryFlow;
 import net.tsz.afinal.FinalDb;
 
@@ -54,6 +55,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
@@ -721,7 +723,40 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	Runnable runHomeData = new Runnable() {
 		@Override
 		public void run() {
-			appHome = MarketApplication.getInstance().getHomeAppInfos();
+			//appHomeInfos.clear();
+			
+			if(MarketApplication.getInstance().getHomeAppInfos().size() == 0) {
+				//MyFragmengManager fragmentManager = new MyFragmengManager();
+				//fragmentManager.getData();
+				LogUtils.d("Local", "MarketApplication.getInstance().getHomeAppInfos().size() == 0");
+				new MyAsynTask(context, null) {
+
+					@Override
+					protected Void doInBackground(Void... params) {
+					
+						MyFragmengManager manager = (MyFragmengManager) getActivity();
+						manager.getData();
+						return super.doInBackground(params);
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						// TODO Auto-generated method stub
+						super.onPostExecute(result);
+						List<AppInfo> appHome = new ArrayList<AppInfo>();
+						appHome = MarketApplication.getInstance().getHomeAppInfos();
+						appHomeInfos.addAll(appHome);
+						appHomeAdapter.notifyDataSetChanged();
+					}
+					
+				}.exe();
+			} else {
+				List<AppInfo> appHome = new ArrayList<AppInfo>();
+				appHome = MarketApplication.getInstance().getHomeAppInfos();
+				appHomeInfos.addAll(appHome);
+				appHomeAdapter.notifyDataSetChanged();
+			}
+			
 		/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 					+ Global.HOME_PAGE);
 			// Log.e("tag", "result =" + str);
@@ -892,15 +927,13 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		appHomeInfos.clear();
 		List<AppInfo> appHome = new ArrayList<AppInfo>();
 		appHome = MarketApplication.getInstance().getHomeAppInfos();
+		LogUtils.d("Local", "appHome.size()"+appHome.size());
 		if(appHome.size() == 0) {
 			ll_homeerror.setVisibility(View.VISIBLE);
 		} else {
 		updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 		appHomeInfos.addAll(appHome);
-		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, getActivity(),
-				cache, mHomeListView);
-		mHomeListView.setAdapter(appHomeAdapter);
-		appHomeAdapter.notifyDataSetChanged();
+	
 		
 		
 		
@@ -1017,6 +1050,10 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		 * mBanner.getAppID()); startActivity(intent); } } });
 		 */
 		}
+		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, getActivity(),
+				cache, mHomeListView);
+		mHomeListView.setAdapter(appHomeAdapter);
+		appHomeAdapter.notifyDataSetChanged();
 	}
 	@Override
 	public void onClick(View v) {

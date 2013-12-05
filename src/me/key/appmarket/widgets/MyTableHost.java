@@ -1,6 +1,7 @@
 package me.key.appmarket.widgets;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import me.key.appmarket.LocalGameFragment;
@@ -103,7 +104,7 @@ public class MyTableHost extends TabActivity {
 	private int width;
 	private int height;
 	// Rank
-	private List<AppInfo> appRankInfos;
+	private ArrayList<AppInfo> appRankInfos;
 	// Home
 	private List<AppInfo> appHomeInfos_temp;
 

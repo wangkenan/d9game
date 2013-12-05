@@ -30,9 +30,18 @@ public class MarketApplication extends Application {
 	private List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
 	private List<AppInfo> appManaInfos_temp = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
+	private List<AppInfo> localtopList = new ArrayList<AppInfo>();
 	
 	public List<AppInfo> getAppManaInfos_temp() {
 		return appManaInfos_temp;
+	}
+
+	public List<AppInfo> getLocaltopList() {
+		return localtopList;
+	}
+
+	public void setLocaltopList(List<AppInfo> localtopList) {
+		this.localtopList = localtopList;
 	}
 
 	public void setAppManaInfos_temp(List<AppInfo> appManaInfos_temp) {
@@ -55,16 +64,16 @@ public class MarketApplication extends Application {
 		this.mAppInfos = mAppInfos;
 	}
 
-	public static List<AppInfo> getRankAppInfos() {
+	public static ArrayList<AppInfo> getRankAppInfos() {
 		return rankAppInfos;
 	}
 
-	public static void setRankAppInfos(List<AppInfo> rankAppInfos) {
+	public static void setRankAppInfos(ArrayList<AppInfo> rankAppInfos) {
 		MarketApplication.rankAppInfos = rankAppInfos;
 	}
 
 	// Rank
-	private static List<AppInfo> rankAppInfos = new ArrayList<AppInfo>();
+	private static ArrayList<AppInfo> rankAppInfos = new ArrayList<AppInfo>();
 	private static List<AppInfo> homeAppInfos = new ArrayList<AppInfo>();
 
 	public static List<AppInfo> getHomeAppInfos() {
@@ -79,7 +88,7 @@ public class MarketApplication extends Application {
 		return mInstance;
 	}
 
-	public static List<AppInfo> getRankappinfos() {
+	public static ArrayList<AppInfo> getRankappinfos() {
 		return rankAppInfos;
 	}
 

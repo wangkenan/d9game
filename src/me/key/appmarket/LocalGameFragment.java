@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.adapter.SDGameAdapter;
+import me.key.appmarket.network.NetworkUtils;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
@@ -80,6 +81,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private LocalInstallBroadcast receiver;
 	private String root;
 	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
+	private List<AppInfo> localtopList;
 	private SlidingMenu menu;
 	private MenuCategoryAdapter menuCategoryAdapter;
 	private String apknamelist;
@@ -102,6 +104,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private static List<AppInfo> downApplist = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
+	private List<AppInfo> sortTemp = new ArrayList<AppInfo>();
 	//private ImageView banner_local;
 	private int width;
 	private int height;
@@ -222,19 +225,19 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				mAppInfos = MarketApplication.getInstance().getmAppInfos();
+				sortTemp = MarketApplication.getInstance().getmAppInfos();
 				appManaInfos_temp = MarketApplication.getInstance()
 						.getAppManaInfos_temp();
 				downApplist = MarketApplication.getInstance().getDownApplist();
 				appManagerUpdateInfos = MarketApplication.getInstance()
 						.getAppManagerUpdateInfos();
-		
+				localtopList = MarketApplication.getInstance().getLocaltopList();
 				return null;
 			}
 
 			protected void onPostExecute(Void result) {
 				//如果没有网络或者本地没有游戏
-				if(appManaInfos_temp.size() == 0) {
+				if(appManaInfos_temp.size() == 0 ) {
 					List<AppInfo> localList = AppUtils.getAppList(getActivity());
 					List<AppInfo> readGameList = LocalUtils.readGameList(getActivity());
 					for(AppInfo gameListAppInfo : readGameList) {
@@ -247,6 +250,15 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					}
 					LogUtils.d("Local", localList.size()+"localList");
 				}
+				for(int i = 0;i<localtopList.size();i++) {
+					for(int j = 0;j<sortTemp.size();j++) {
+						if(sortTemp.get(j).getPackageName().equals(localtopList.get(i).getPackageName())) {
+							mAppInfos.add(sortTemp.get(j));
+							sortTemp.remove(sortTemp.get(j));
+						}
+					}
+				}
+				mAppInfos.addAll(sortTemp);
 				adapter = new MyAdapter(getActivity(),
 						appManaInfos_temp,mAppInfos);
 				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);

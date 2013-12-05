@@ -24,6 +24,7 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.MyAsynTask;
 
 import com.market.d9game.R;
 import com.slidingmenu.lib2.SlidingMenu;
@@ -175,6 +176,7 @@ testView.setOnClickListener(new OnClickListener() {
 		appRankInfos = new ArrayList<AppInfo>();
 		ll_rankerror = (LinearLayout) inflate.findViewById(R.id.ll_error);
 		Button btn_refresh = (Button) ll_rankerror.findViewById(R.id.btn_Refsh);
+		btn_refresh.setOnClickListener(this);
 		View contentView = View.inflate(getActivity(), R.layout.popup_item,
 				null);
 		db = FinalDb.create(getActivity());
@@ -195,6 +197,8 @@ testView.setOnClickListener(new OnClickListener() {
 		about.setOnClickListener(this);
 		setting = (ImageButton) inflate.findViewById(R.id.setting);
 		setting.setOnClickListener(this);
+		mRankListView.addHeaderView(testView,null,false);
+		mRankListView.addHeaderView(advertBanner,null,false);
 		// 搜索按钮点击事件
 		search_btn = (ImageButton) inflate.findViewById(R.id.search_btn);
 		search_btn.setOnClickListener(new OnClickListener() {
@@ -289,14 +293,16 @@ testView.setOnClickListener(new OnClickListener() {
 				if(appRankInfos.size() == 0) {
 					ll_rankerror.setVisibility(View.VISIBLE);
 				} else {
-					mRankListView.addHeaderView(testView,null,false);
-					mRankListView.addHeaderView(advertBanner,null,false);
 				}
 				appRankAdapter.notifyDataSetChanged();
 				updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 				// rank_pb.setVisibility(View.INVISIBLE);
 			};
 		}.execute();
+		if(appRankInfos.size() == 0) {
+			//ll_rankerror.setVisibility(View.VISIBLE);
+		} else {
+		}
 		appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), cache);
 		mRankListView.setAdapter(appRankAdapter);
 		
@@ -460,6 +466,18 @@ testView.setOnClickListener(new OnClickListener() {
 	public void onResume() {
 		super.onResume();
 		registerPrecent();
+		if(appRankInfos.size() == 0) {
+			List<AppInfo> temp = new ArrayList<AppInfo>();
+			temp = MarketApplication.getInstance().getRankAppInfos();
+			appRankInfos.addAll(temp);
+			
+		} else {
+			appRankAdapter.notifyDataSetChanged();
+		}
+		
+		if(appRankInfos.size() != 0) {
+			ll_rankerror.setVisibility(View.INVISIBLE);
+		}
 		appRankAdapter.notifyDataSetChanged();
 		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
 		downList_temp = db.findAll(AppInfo.class);
@@ -476,6 +494,30 @@ testView.setOnClickListener(new OnClickListener() {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.btn_Refsh:
+			new MyAsynTask(getActivity(), null) {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+				
+					MyFragmengManager manager = (MyFragmengManager) getActivity();
+					manager.getData();
+					return super.doInBackground(params);
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					// TODO Auto-generated method stub
+					super.onPostExecute(result);
+					List<AppInfo> appHome = new ArrayList<AppInfo>();
+					appHome = MarketApplication.getInstance().getHomeAppInfos();
+					appRankInfos.addAll(appHome);
+					appRankAdapter.notifyDataSetChanged();
+					ll_rankerror.setVisibility(View.INVISIBLE);
+				}
+				
+			}.exe();
+			break;
 		case R.id.setting:
 			// 获取view在当前窗体的位置
 			int location[] = new int[2];

@@ -56,5 +56,6 @@ public class Global {
 	.delayBeforeLoading(50).cacheInMemory(true).cacheOnDisc(true)
 	.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 	.bitmapConfig(Bitmap.Config.RGB_565).build();
+	public static final String LOCALTOPLISTURL = "http://www.d9app.com/index/appsort";
 
 }
