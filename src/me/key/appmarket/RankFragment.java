@@ -336,7 +336,6 @@ testView.setOnClickListener(new OnClickListener() {
 
 			}
 		});
-		Log.d("YTL", "mAppInfo.getIdx() = ");
 		mRankListView.setOnItemClickListener(new OnItemClickListener() {
 			
 			@Override
@@ -344,7 +343,6 @@ testView.setOnClickListener(new OnClickListener() {
 					int position, long id) {
 				AppInfo mAppInfo = (AppInfo) mRankListView.getAdapter()
 						.getItem(position);
-				Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
 				Intent intent = new Intent(getActivity(),
 						AppDetailActivity.class);
 				intent.putExtra("appid", mAppInfo.getIdx());
