@@ -537,15 +537,7 @@ testView.setOnClickListener(new OnClickListener() {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-
-			ArrayList<Activity> appLication = MarketApplication.getInstance()
-					.getAppLication();
-			for (Activity at : appLication) {
-				at.finish();
-			}
-			getActivity().stopService(new Intent(getActivity(), LocalGameFragment.class));
-			System.exit(0);
-			android.os.Process.killProcess(android.os.Process.myPid());
+			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
 			Intent mysc = new Intent();
