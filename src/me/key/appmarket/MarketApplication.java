@@ -1,5 +1,6 @@
 package me.key.appmarket;
 
+
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,6 @@ import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
-import android.media.AudioManager;
-import android.media.SoundPool;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
