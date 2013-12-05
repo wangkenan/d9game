@@ -704,7 +704,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-			getActivity().stopService(new Intent(getActivity(), LocalGameFragment.class));
+			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
 			Intent mysc = new Intent();
