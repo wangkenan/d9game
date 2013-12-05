@@ -310,7 +310,6 @@ testView.setOnClickListener(new OnClickListener() {
 		}
 		appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), cache);
 		mRankListView.setAdapter(appRankAdapter);
-		int last = mRankListView.getFooterViewsCount();
 		
 		// 注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
