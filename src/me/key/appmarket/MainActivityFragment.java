@@ -1067,11 +1067,13 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
 			break;
 		case R.id.downandupdata:
+			pw.dismiss();
 			Intent intent = new Intent();
 			intent.setClass(getActivity(), DownLoadManagerActivity.class);
 			startActivity(intent);
 			break;
 		case R.id.checkupdata_pop:
+			pw.dismiss();
 			updateSelf(true);
 			break;
 		case R.id.getout_pop:
@@ -1079,17 +1081,10 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-
-			ArrayList<Activity> appLication = MarketApplication.getInstance()
-					.getAppLication();
-			for (Activity at : appLication) {
-				at.finish();
-			}
-			getActivity().stopService(new Intent(getActivity(), LocalGameFragment.class));
-			System.exit(0);
-			android.os.Process.killProcess(android.os.Process.myPid());
+			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
+			pw.dismiss();
 			Intent mysc = new Intent();
 			mysc.setClass(getActivity(), MyScoreActivity.class);
 			startActivity(mysc);
