@@ -10,6 +10,13 @@ public class LocalAppInfo {
 	private String appDownCount;
 	private String id;
 	private Long lastTime;
+	private String pkgname;
+	public String getPkgname() {
+		return pkgname;
+	}
+	public void setPkgname(String pkgname) {
+		this.pkgname = pkgname;
+	}
 	public String getIdx() {
 		return idx;
 	}

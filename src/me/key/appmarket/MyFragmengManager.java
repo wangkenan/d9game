@@ -14,6 +14,7 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.HttpClientUtil;
+import me.key.appmarket.utils.InstallAppInfo;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
@@ -28,7 +29,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -97,7 +101,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private ArrayList<AppInfo> downApplist = new ArrayList<AppInfo>();
 	private List<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
 	//本地游戏派讯
-	private List<AppInfo> localtopList;
+	private List<AppInfo> localtopList = new ArrayList<AppInfo>();
 	private RankFragment f1;
 	public SlidingMenu menu;
 	private Handler myHandler = new Handler() {
@@ -204,15 +208,47 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				} else {
 					ParseHomeJson(str2);
 				}*/
-				appManaInfos_temp = AppUtils.getUserApps(
-						MyFragmengManager.this, 4000);
+				SharedPreferences sp = getSharedPreferences("firstinstall", MODE_PRIVATE);
+				boolean firstinstall = sp.getBoolean("firstinstall", false);
+//				if(!firstinstall) {
+					appManaInfos_temp = AppUtils.getUserApps( 
+							MyFragmengManager.this, 4000);
+//					Editor edit = sp.edit();
+//					edit.putBoolean("firstinstall", true);
+//					for(AppInfo appInfo : appManaInfos_temp) {
+//						InstallAppInfo installAppInfo = new InstallAppInfo(appInfo);
+//						LogUtils.d("Local", installAppInfo.getIdx()+"idx");
+//						db.save(installAppInfo);
+//					}
+//					edit.commit();
+				/*} else {
+					List<InstallAppInfo> installAppInfos = db.findAll(InstallAppInfo.class);
+					LogUtils.d("Local", installAppInfos.get(0).getAppName()+"installAppInfossize");
+					appManaInfos_temp = new ArrayList<AppInfo>();
+					for(InstallAppInfo installAppInfo :installAppInfos) {
+						LogUtils.d("Local", installAppInfo.getIdx()+"appInfoidx");
+						AppInfo appInfo = new AppInfo(installAppInfo);
+						String packageName = appInfo.getPackageName();
+						PackageManager pm = getPackageManager();
+						 ApplicationInfo info;
+						try {
+							info = pm.getApplicationInfo(packageName, 0);
+							appInfo.setAppIcon(info.loadIcon(pm));
+						} catch (NameNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}    
+					
+						appManaInfos_temp.add(appInfo);
+					}
+				}*/
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
 				mAppInfos_temp = LocalUtils.InitHomePager("0",
 						MyFragmengManager.this, root+"d9dir/", packages);
 				mAppInfos.addAll(mAppInfos_temp);
-				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
+			/*	ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
 				apknamelist = AppUtils
 						.getInstallAppPackage(MyFragmengManager.this);
@@ -224,6 +260,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 							+ apknamelist);
 					ParseUpdateJson(str3);
 				}
+				
 				if (userApps == null) {
 					appManagerUpdateInfos = new ArrayList<AppInfo>();
 				} else {
@@ -232,11 +269,13 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					appManagerUpdateInfos.clear();
 					appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
 				}
+				*/
 				List<AppInfo> down_temp = new ArrayList<AppInfo>();
 				down_temp = db.findAll(AppInfo.class);
 				downApplist.clear();
 				downApplist.addAll(down_temp);
 				Collections.reverse(downApplist);
+				
 				String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
 				LogUtils.d("Local", "runCategoryData" + str4);
@@ -261,7 +300,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						appManagerUpdateInfos);
 				MarketApplication.getInstance().setHomeAppInfos(
 						appHomeInfos_temp);
-				myHandler.sendEmptyMessage(INMAIN);
 				lf = new LocalGameFragment();
 				mf = new MainActivityFragment();
 				ft = fm.beginTransaction();
@@ -273,6 +311,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				ft.add(R.id.tabcontent, lf);
 				ft.show(lf);
 				ft.commitAllowingStateLoss();
+				myHandler.sendEmptyMessage(INMAIN);
 				if (appHomeInfos_temp != null && appRankInfos != null) {
 					for (AppInfo ai : appHomeInfos_temp) {
 						dsb = new DownStateBroadcast();
@@ -867,13 +906,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		} else {
 			ParseHomeJson(str2);
 		}
-		appManaInfos_temp = AppUtils.getUserApps(MyFragmengManager.this, 4000);
-		List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
-		List<PackageInfo> packages = getPackageManager()
-				.getInstalledPackages(0);
-		mAppInfos_temp = LocalUtils.InitHomePager("0", MyFragmengManager.this,
-				root+"d9dir/", packages);
-		mAppInfos.addAll(mAppInfos_temp);
 		ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 				MyFragmengManager.this, 4000);
 		apknamelist = AppUtils.getInstallAppPackage(MyFragmengManager.this);

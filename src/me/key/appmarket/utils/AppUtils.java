@@ -51,20 +51,20 @@ public class AppUtils {
 		}
 		for (int i = 0; i < mysize; i++) {
 			PackageInfo packageInfo = packages.get(i);
-			/*
-			 * AppInfo tmpInfo = new AppInfo();
-			 * tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
-			 * mContext.getPackageManager()).toString());
-			 * tmpInfo.setPackageName(packageInfo.packageName);
-			 * 
-			 * String dir = packageInfo.applicationInfo.publicSourceDir; int
-			 * size = Integer.valueOf((int) new File(dir).length());
-			 * tmpInfo.setAppSize(size + "");
-			 * 
-			 * tmpInfo.setVersion(packageInfo.versionName);
-			 * tmpInfo.setAppIcon(packageInfo.applicationInfo.loadIcon(mContext
-			 * .getPackageManager()));
-			 */
+			
+		/*	  AppInfo tmpInfo = new AppInfo();
+			  tmpInfo.setAppName(packageInfo.applicationInfo.loadLabel(
+			  mContext.getPackageManager()).toString());
+			  tmpInfo.setPackageName(packageInfo.packageName);
+			  
+			  String dir = packageInfo.applicationInfo.publicSourceDir; int
+			  size = Integer.valueOf((int) new File(dir).length());
+			  tmpInfo.setAppSize(size + "");
+			  
+			  tmpInfo.setVersion(packageInfo.versionName);
+			  tmpInfo.setAppIcon(packageInfo.applicationInfo.loadIcon(mContext
+			 .getPackageManager()));*/
+			 
 			if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
 				appList.add(packageInfo);// 如果非系统应用，则添加至appList
 			}

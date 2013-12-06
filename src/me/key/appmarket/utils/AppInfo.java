@@ -203,4 +203,17 @@ public class AppInfo implements Serializable{
 	public AppInfo() {
 		super();
 	}
+	public AppInfo(InstallAppInfo appInfo) {
+		super();
+		this.idx = appInfo.getIdx();
+		this.appName = appInfo.getAppName();
+		this.appSize = appInfo.getAppSize();
+		this.iconUrl = appInfo.getIconUrl();
+		this.appDescri = appInfo.getAppDescri();
+		this.appUrl = appInfo.getAppUrl();
+		this.appDownCount = appInfo.getAppDownCount();
+		this.id = appInfo.getId();
+		this.lastTime = appInfo.getLastTime();
+		this.packageName = appInfo.getPkgname();
+	}
 }

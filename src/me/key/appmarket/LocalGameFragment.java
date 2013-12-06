@@ -107,7 +107,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private List<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private List<AppInfo> sortTemp = new ArrayList<AppInfo>();
-	//private ImageView banner_local;
+	// private ImageView banner_local;
 	private int width;
 	private int height;
 	private int gapPy;
@@ -119,7 +119,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private View inflate;
 	public static TextView mygame;
 	public static TextView sdgame;
-	
+
 	private int x;
 	private int y;
 	private Handler myHandler = new Handler() {
@@ -136,19 +136,18 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	};
 	private PopupWindow pw;
 	private static PackageManager packageManager;
-	//下载和更新
+	// 下载和更新
 	private TextView downandupdata;
-	//检查更新
+	// 检查更新
 	private TextView checkupdata_pop;
-	//退出
+	// 退出
 	private TextView getout_pop;
-	//关于
+	// 关于
 	private TextView about;
 	private ImageButton search_btn;
 	private ActivityManager am;
-	
+
 	private View footView;
-	
 
 	// 拼音索引栏
 	// private DisapearThread disapearThread;
@@ -164,9 +163,10 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Context context = getActivity();
-		if(context ==null) {
-			
+		if (context == null) {
+
 		}
+		long currentTimeMillis = System.currentTimeMillis();
 		packageManager = context.getPackageManager();
 		am = (ActivityManager) context
 				.getSystemService(context.ACTIVITY_SERVICE);
@@ -181,98 +181,124 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		 */
 		pBar = (ProgressBar) inflate.findViewById(R.id.pro_bar_loacl);
 		root = LocalUtils.getRoot(getActivity());
-		pBar.setVisibility(View.VISIBLE);
+		
 		mygamebar = (RelativeLayout) inflate.findViewById(R.id.local_tab);
 		mygame = (TextView) mygamebar.findViewById(R.id.mygame);
 		sdgame = (TextView) mygamebar.findViewById(R.id.sdgame_tv);
 		mListReco = (ListView) inflate.findViewById(R.id.mlist);
 		mListReco.setDivider(null);
-//		mListReco.setDivider(getResources().getDrawable(R.drawable.driver1));
-		//banner_local = (ImageView) inflate.findViewById(R.id.banner_local);
+		// mListReco.setDivider(getResources().getDrawable(R.drawable.driver1));
+		// banner_local = (ImageView) inflate.findViewById(R.id.banner_local);
 		updata_num = (TextView) inflate.findViewById(R.id.updata_num);
-		//setImagePosition(R.drawable.a20131008174300, banner_local);
-		View contentView = View.inflate(getActivity(),
-				R.layout.popup_item, null);
+		// setImagePosition(R.drawable.a20131008174300, banner_local);
+		View contentView = View.inflate(getActivity(), R.layout.popup_item,
+				null);
 		pw = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, true);
 		ColorDrawable cd = new ColorDrawable(-0000);
 		pw.setBackgroundDrawable(cd);
 		pw.setOutsideTouchable(true);
 		downandupdata = (TextView) contentView.findViewById(R.id.downandupdata);
-		checkupdata_pop = (TextView) contentView.findViewById(R.id.checkupdata_pop);
+		checkupdata_pop = (TextView) contentView
+				.findViewById(R.id.checkupdata_pop);
 		getout_pop = (TextView) contentView.findViewById(R.id.getout_pop);
 		about = (TextView) contentView.findViewById(R.id.about);
 		downandupdata.setOnClickListener(this);
 		checkupdata_pop.setOnClickListener(this);
 		getout_pop.setOnClickListener(this);
-		about.setOnClickListener(this); 
-		mygame.setOnClickListener(this); 
-		sdgame.setOnClickListener(this); 
-		
+		about.setOnClickListener(this);
+		mygame.setOnClickListener(this);
+		sdgame.setOnClickListener(this);
+
 		// 搜索按钮点击事件
-				search_btn = (ImageButton) inflate.findViewById(R.id.search_btn);
-				search_btn.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						MyFragmengManager myFragment = (MyFragmengManager) getActivity();
-						myFragment.menu.toggle();
-					} 
-				});
+		search_btn = (ImageButton) inflate.findViewById(R.id.search_btn);
+		search_btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				MyFragmengManager myFragment = (MyFragmengManager) getActivity();
+				myFragment.menu.toggle();
+			}
+		});
 		/*
 		 * mListReco.setOnScrollListener(this);
 		 * mListReco.setOnItemClickListener(this);
 		 * mListReco.setOnItemLongClickListener(this);
 		 */
 		new AsyncTask<Void, Void, Void>() {
+			
+			@Override
+			protected void onPreExecute() {
+				// TODO Auto-generated method stub
+				super.onPreExecute();
+				pBar.setVisibility(View.VISIBLE);
+			}
 
 			@Override
 			protected Void doInBackground(Void... params) {
+				long current = System.currentTimeMillis();
 				sortTemp = MarketApplication.getInstance().getmAppInfos();
 				appManaInfos_temp = MarketApplication.getInstance()
 						.getAppManaInfos_temp();
 				downApplist = MarketApplication.getInstance().getDownApplist();
 				appManagerUpdateInfos = MarketApplication.getInstance()
 						.getAppManagerUpdateInfos();
-				localtopList = MarketApplication.getInstance().getLocaltopList();
+				localtopList = MarketApplication.getInstance()
+						.getLocaltopList();
+				long now = System.currentTimeMillis();
+				LogUtils.d("Local", "nownow"+(now-current));
 				return null;
 			}
 
 			protected void onPostExecute(Void result) {
-				//如果没有网络或者本地没有游戏
-				if(appManaInfos_temp.size() == 0 ) {
-					List<AppInfo> localList = AppUtils.getAppList(getActivity());
-					List<AppInfo> readGameList = LocalUtils.readGameList(getActivity());
-					for(AppInfo gameListAppInfo : readGameList) {
-						for(AppInfo localAppInfo : localList) {
-							if(gameListAppInfo.getPackageName().equals(localAppInfo.getPackageName())) {
+				// 如果没有网络或者本地没有游戏
+				long current = System.currentTimeMillis();
+				if (appManaInfos_temp.size() == 0) {
+					List<AppInfo> localList = AppUtils
+							.getAppList(getActivity());
+					List<AppInfo> readGameList = LocalUtils
+							.readGameList(getActivity());
+					for (AppInfo gameListAppInfo : readGameList) {
+						for (AppInfo localAppInfo : localList) {
+							if (gameListAppInfo.getPackageName().equals(
+									localAppInfo.getPackageName())) {
 								localAppInfo.setIdx(gameListAppInfo.getIdx());
 								appManaInfos_temp.add(localAppInfo);
 							}
 						}
 					}
-					LogUtils.d("Local", localList.size()+"localList");
+					LogUtils.d("Local", localList.size() + "localList");
 				}
-				for(int i = 0;i<localtopList.size();i++) {
-					for(int j = 0;j<sortTemp.size();j++) {
-						if(sortTemp.get(j).getPackageName().equals(localtopList.get(i).getPackageName())) {
-							mAppInfos.add(sortTemp.get(j));
-							sortTemp.remove(sortTemp.get(j));
+				if (localtopList.size() == 0) {
+					mAppInfos.addAll(sortTemp);
+				} else {
+					for (int i = 0; i < localtopList.size(); i++) {
+						for (int j = 0; j < sortTemp.size(); j++) {
+							if (sortTemp
+									.get(j)
+									.getPackageName()
+									.equals(localtopList.get(i)
+											.getPackageName())) {
+								mAppInfos.add(sortTemp.get(j));
+								sortTemp.remove(sortTemp.get(j));
+							}
 						}
 					}
+					mAppInfos.addAll(sortTemp);
 				}
-				mAppInfos.addAll(sortTemp);
-				adapter = new MyAdapter(getActivity(),
-						appManaInfos_temp,mAppInfos,mListReco);
-				sdAdapter = new SDGameAdapter(getActivity(), mAppInfos);
-				footView = inflate.inflate(getActivity(), R.layout.list_item, null);
+				adapter = new MyAdapter(getActivity(), appManaInfos_temp,
+						mAppInfos, mListReco);
+				footView = inflate.inflate(getActivity(), R.layout.list_item,
+						null);
 				footView.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
 				footView.findViewById(R.id.info).setVisibility(View.INVISIBLE);
-				footView.findViewById(R.id.appsize).setVisibility(View.INVISIBLE);
-				footView.findViewById(R.id.state_btn).setVisibility(View.INVISIBLE);
+				footView.findViewById(R.id.appsize).setVisibility(
+						View.INVISIBLE);
+				footView.findViewById(R.id.state_btn).setVisibility(
+						View.INVISIBLE);
 				mListReco.addFooterView(footView);
 				mListReco.setAdapter(adapter);
-				updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
-				TextView tv = (TextView) inflate.findViewById(R.id.wushju);
+				long now = System.currentTimeMillis();
+			LogUtils.d("Local", current - now+"");
 				pBar.setVisibility(View.GONE);
 				for (AppInfo ai : appManaInfos_temp) {
 					LocalAppInfo findById = db.findById(ai.getId(),
@@ -304,7 +330,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				// 按照玩的时间进行排序
 				sort2lastTime();
 				java.util.Timer timer = new java.util.Timer(true);
-				
+
 				TimerTask task = new TimerTask() {
 					public void run() {
 						DownloadService.watchDog(appManaInfos_temp, am);
@@ -312,30 +338,34 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					}
 				};
 				timer.schedule(task, 1000, 3000);
-				if(NetworkUtils.isNetworkConnected(getActivity())) {
-				mListReco.setOnItemClickListener(new OnItemClickListener() {
+				if (NetworkUtils.isNetworkConnected(getActivity())) {
+					mListReco.setOnItemClickListener(new OnItemClickListener() {
 
-					@Override
-					public void onItemClick(AdapterView<?> parent, View view,
-							int position, long id) {
-						if((position+1)!=mListReco.getAdapter().getCount() && position >2){
-							// TODO Auto-generated method stub
-							AppInfo mAppInfo = (AppInfo) appManaInfos_temp.get(position-3);
-							Drawable appIcon = mAppInfo.getAppIcon();
-							mAppInfo.setAppIcon(null);
-							LogUtils.d("Local", "mAppInfo"+mAppInfo.getIdx());
-							//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
-							Intent intent = new Intent(getActivity(),
-									AppDetailActivity.class);
-							intent.putExtra("appid", mAppInfo.getIdx());
-							intent.putExtra("appinfo", mAppInfo);
-							getActivity().startActivity(intent);
-							mAppInfo.setAppIcon(appIcon);
+						@Override
+						public void onItemClick(AdapterView<?> parent,
+								View view, int position, long id) {
+							if ((position + 1) != mListReco.getAdapter()
+									.getCount() && position > 2) {
+								// TODO Auto-generated method stub
+								AppInfo mAppInfo = (AppInfo) appManaInfos_temp
+										.get(position - 3);
+								Drawable appIcon = mAppInfo.getAppIcon();
+								mAppInfo.setAppIcon(null);
+								LogUtils.d("Local",
+										"mAppInfo" + mAppInfo.getIdx());
+								// Log.d("YTL", "mAppInfo.getIdx() = " +
+								// mAppInfo.getIdx());
+								Intent intent = new Intent(getActivity(),
+										AppDetailActivity.class);
+								intent.putExtra("appid", mAppInfo.getIdx());
+								intent.putExtra("appinfo", mAppInfo);
+								getActivity().startActivity(intent);
+								mAppInfo.setAppIcon(appIcon);
 							}
-					}
-					
-				});
-			}
+						}
+
+					});
+				}
 			}
 
 		}.execute();
@@ -348,7 +378,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			}
 		}
 		Log.v("nano", "nano" + mListReco);
-		 
+
 		LogUtils.d("LocaBro", "我注册了一次广播");
 		gapPx = convertDipOrPx(getActivity(), 5);
 		gapPy = convertDipOrPx(getActivity(), 10);
@@ -356,34 +386,34 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		setting = (ImageButton) inflate.findViewById(R.id.setting);
 		setting.setOnClickListener(this);
 		LogUtils.d("Local", width + "Local");
-		
-		//添加选项点击监听
-	
-		
+
+		// 添加选项点击监听
+
 		mListReco.setOnScrollListener(new OnScrollListener() {
-			
+
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				if(firstVisibleItem >= 2) {
+				if (firstVisibleItem >= 2) {
 					mygamebar.setVisibility(View.VISIBLE);
-					
+
 				} else {
 					mygamebar.setVisibility(View.INVISIBLE);
 				}
 			}
 		});
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		IntentFilter filter = new IntentFilter();
 
 		filter.addAction("android.intent.action.PACKAGE_ADDED");
@@ -392,7 +422,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		receiver = new LocalInstallBroadcast();
 		getActivity().registerReceiver(receiver, filter);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -401,17 +431,18 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		downList_temp = db.findAll(AppInfo.class);
 		downApplist.addAll(downList_temp);
 		Collections.reverse(downApplist);
-		registerPrecent(); 
+		registerPrecent();
 		SharedPreferences sp = getActivity().getSharedPreferences("onkey",
 				getActivity().MODE_PRIVATE);
-		if(appManagerUpdateInfos != null) {
-			updata_num.setText(downApplist.size()+appManagerUpdateInfos.size()+"");
+		if (appManagerUpdateInfos != null) {
+			updata_num.setText(downApplist.size()
+					+ appManagerUpdateInfos.size() + "");
 		}
 		boolean onkey = sp.getBoolean("onkey", false);
 		if (onkey) {
-			//onkey_text.setText("装机必备");
+			// onkey_text.setText("装机必备");
 		}
-		if (appManaInfos_temp != null && adapter != null) 
+		if (appManaInfos_temp != null && adapter != null)
 			for (AppInfo ai : appManaInfos_temp) {
 				LocalAppInfo findById = db.findById(ai.getId(),
 						LocalAppInfo.class);
@@ -438,7 +469,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					adapter.notifyDataSetChanged();
 				}
 			}
-			sort2lastTime();
+		sort2lastTime();
 		for (AppInfo ai : downApplist) {
 			DownStateBroadcast dsb = new DownStateBroadcast();
 			IntentFilter filter = new IntentFilter();
@@ -449,7 +480,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	public  class LocalInstallBroadcast extends BroadcastReceiver {
+	public class LocalInstallBroadcast extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// 接收安装广播
@@ -462,7 +493,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				 * downApplist.clear(); downApplist.addAll(down_temp);
 				 */
 				MarketApplication.getInstance().reflashAppList();
-			
 
 				for (int i = 0; i < downApplist.size(); i++) {
 					LogUtils.d("wojieshou2", downApplist.get(i)
@@ -494,7 +524,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 							&& packageName.equals(appManaInfos_temp.get(i)
 									.getPackageName())) {
 						// appManaInfos_temp.add(mAppInfos.get(i));
-						LogUtils.d("Local", "我删除了"+appManaInfos_temp.get(i).getAppName());
+						LogUtils.d("Local", "我删除了"
+								+ appManaInfos_temp.get(i).getAppName());
 						appManaInfos_temp.remove(appManaInfos_temp.get(i));
 						sort2lastTime();
 						break;
@@ -512,9 +543,11 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					appInfo.setId(packageName);
 					appInfo.setLastTime(Long.MAX_VALUE);
 					appManaInfos_temp.add(appInfo);
-					MarketApplication.getInstance().setAppManaInfos_temp(appManaInfos_temp);
+					MarketApplication.getInstance().setAppManaInfos_temp(
+							appManaInfos_temp);
 					sort2lastTime();
-					LogUtils.d("Local", "我已经安装了"+appInfo.getAppName()+"regedit"+appManaInfos_temp.size());
+					LogUtils.d("Local", "我已经安装了" + appInfo.getAppName()
+							+ "regedit" + appManaInfos_temp.size());
 					File tempFile = new File(
 							Environment.getExternalStorageDirectory(),
 							"/market/" + appInfo.getAppName() + ".apk");
@@ -526,7 +559,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
-			
+
 				for (int i = 0; i < appManaInfos_temp.size(); i++) {
 					LogUtils.d("wojieshou", appManaInfos_temp.get(i)
 							.getPackageName() + "");
@@ -539,8 +572,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					}
 				}
 				adapter.notifyDataSetChanged();
-				sdAdapter.notifyDataSetChanged();
-				LogUtils.d("Local", "我更新了adapter"+adapter.getCount());
+				LogUtils.d("Local", "我更新了adapter" + adapter.getCount());
 				// 接受卸载广播
 			}
 			if (intent.getAction().equals(
@@ -660,19 +692,19 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	}
 
 	public static void sort2lastTime() {
-		if(appManaInfos_temp != null) {
-		Collections.sort(appManaInfos_temp, new Comparator<AppInfo>() {
+		if (appManaInfos_temp != null) {
+			Collections.sort(appManaInfos_temp, new Comparator<AppInfo>() {
 
-			@Override
-			public int compare(AppInfo app1, AppInfo app2) {
-				if (app1.getLastTime().compareTo(app2.getLastTime()) == 0) {
-					return -1;
-				} else {
-					return app1.getLastTime().compareTo(app2.getLastTime());
+				@Override
+				public int compare(AppInfo app1, AppInfo app2) {
+					if (app1.getLastTime().compareTo(app2.getLastTime()) == 0) {
+						return -1;
+					} else {
+						return app1.getLastTime().compareTo(app2.getLastTime());
+					}
 				}
-			}
 
-		});
+			});
 		}
 	}
 
@@ -689,8 +721,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			// 获取view在当前窗体的位置
 			int location[] = new int[2];
 			setting.getLocationInWindow(location);
-			x= location[0] + px2dip(getActivity(), 60);
-			y = location[1]+ px2dip(getActivity(), 120);
+			x = location[0] + px2dip(getActivity(), 60);
+			y = location[1] + px2dip(getActivity(), 120);
 			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
 			break;
 		case R.id.downandupdata:
@@ -706,7 +738,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
+			getActivity().stopService(
+					new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
 			Intent mysc = new Intent();
@@ -733,6 +766,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		}
 		return result;
 	}
+
 	/*
 	 * private class DisapearThread implements Runnable { public void run() { //
 	 * 避免在1.5s内，用户再次拖动时提示框又执行隐藏命令。 if (scrollState ==
@@ -780,29 +814,30 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	 * Info>(); for(AppInfo appInfo : mAppInfos) { map.put(appInfo.getAppName(),
 	 * new Info(false, appInfo.getPackageName())); } return map; }
 	 */
-	 public static int px2dip(Context context, float pxValue){ 
-         final float scale = context.getResources().getDisplayMetrics().density; 
-         return (int)(pxValue / scale + 0.5f); 
- } 
-	 /**
-		 * 检查更新
-		 * 
-		 * @param showToast
-		 */
-		private void updateSelf(boolean showToast) {
-			Calendar c = Calendar.getInstance();
-			int mDay = c.get(Calendar.MILLISECOND);// 获取当前月份的日期号码
-			SharedPreferences sp = PreferenceManager.
-					getDefaultSharedPreferences(getActivity());
-			int lastDay = sp.getInt("day", 0); 
-			if (lastDay != mDay) {
-				try { 
-					UpdateApk.checkUpdate(getActivity(), showToast, true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+	public static int px2dip(Context context, float pxValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (pxValue / scale + 0.5f);
+	}
+
+	/**
+	 * 检查更新
+	 * 
+	 * @param showToast
+	 */
+	private void updateSelf(boolean showToast) {
+		Calendar c = Calendar.getInstance();
+		int mDay = c.get(Calendar.MILLISECOND);// 获取当前月份的日期号码
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+		int lastDay = sp.getInt("day", 0);
+		if (lastDay != mDay) {
+			try {
+				UpdateApk.checkUpdate(getActivity(), showToast, true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			sp.edit().putInt("day", mDay).commit();
 		}
-	
+		sp.edit().putInt("day", mDay).commit();
+	}
+
 }

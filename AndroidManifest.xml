@@ -73,11 +73,16 @@
         </activity>
         <activity
             android:name="me.key.appmarket.DownLoadManagerActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+         
+            >
         </activity>
         <activity
             android:name="me.key.appmarket.MyFragmengManager"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+                android:configChanges="orientation|keyboardHidden|navigation"
+            android:windowSoftInputMode="adjustPan"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -163,6 +168,15 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+          <receiver
+            android:name="me.key.appmarket.receiver.InstallReceiver"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+      <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>

@@ -120,7 +120,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 				} else {
 					ParseCategoryJson(str);
 					if (categoryInfoList.size() > 0) {
-						CategoryInfo cif = categoryInfoList.get(2);
+						CategoryInfo cif = categoryInfoList.get(0);
 						int type1 = Integer.parseInt(cif.getType1());
 						int type2 = Integer.parseInt(cif.getType2());
 						String str1 = ToolHelper

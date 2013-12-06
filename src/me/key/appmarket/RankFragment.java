@@ -244,11 +244,6 @@ testView.setOnClickListener(new OnClickListener() {
 				} else {
 					ParseRankJson(strRank);
 				}
-				appRankInfos.clear();
-				List<AppInfo> appRankInfos_temp = new ArrayList<AppInfo>();
-				appRankInfos_temp = MarketApplication.getInstance()
-						.getRankappinfos();
-				appRankInfos.addAll(appRankInfos_temp);
 				StringBuilder apknamelist = new StringBuilder();
 				for (AppInfo ai : appRankInfos) {
 					DownStateBroadcast dsb = new DownStateBroadcast();
