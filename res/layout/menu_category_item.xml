@@ -19,7 +19,7 @@
     <TextView
         android:id="@+id/category_menu"
         android:layout_width="90dip"
-        android:layout_height="20dip"
+        android:layout_height="22dip"
         android:gravity="center"
          android:layout_gravity="center"
         android:text="asf"
@@ -29,7 +29,7 @@
      <TextView
         android:id="@+id/game_num"
         android:layout_width="90dip"
-        android:layout_height="20dip"
+        android:layout_height="18dip"
         android:gravity="center"
          android:layout_gravity="center"
         android:text="4000个游戏"
