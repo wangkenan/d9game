@@ -751,8 +751,15 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 					
 				}.exe();
 			} else {
+				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ Global.HOME_PAGE);
+				if (str2.isEmpty()) {
+					appHomeInfos_temp = new ArrayList<AppInfo>();
+				} else {
+					ParseHomeJson(str2);
+				}
 				List<AppInfo> appHome = new ArrayList<AppInfo>();
-				appHome = MarketApplication.getInstance().getHomeAppInfos();
+				appHome = appHomeInfos_temp;
 				appHomeInfos.addAll(appHome);
 				appHomeAdapter.notifyDataSetChanged();
 			}
@@ -1095,4 +1102,43 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
          final float scale = context.getResources().getDisplayMetrics().density; 
          return (int)(pxValue / scale + 0.5f); 
  } 
+		private void ParseHomeJson(String str) {
+			try {
+				// Log.e("tag", "--------2--------");
+				JSONArray jsonArray = new JSONArray(str);
+				LogUtils.d("descr", str);
+				int len = jsonArray.length();
+				LogUtils.d("len", len + "ge");
+				for (int i = 0; i < len; i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					String appName = jsonObject.getString("appname");
+					String appiconurl = jsonObject.getString("appiconurl");
+					String appSize = jsonObject.getString("appsize");
+					String idx = jsonObject.getString("idx");
+					String appurl = jsonObject.getString("appurl");
+					String appdes = jsonObject.getString("appdes");
+					String recoPic = jsonObject.getString("recoPic");
+					String apppkgname = jsonObject.getString("apppkgname");
+					AppInfo appInfo = new AppInfo(idx, appName, appSize,
+							Global.MAIN_URL + appiconurl, appurl, "", appdes,
+							apppkgname);
+					appInfo.setPackageName(apppkgname);
+					appInfo.setLastTime(Long.MAX_VALUE);
+					if (recoPic == null) {
+						String appimgurl = jsonObject.getString("appimgurl");
+						String[] appImgurls = appimgurl.split(",");
+						appInfo.setAppimgurl(appImgurls);
+					}
+
+					appInfo.setRecoPic(recoPic);
+					appInfo.setInstalled(AppUtils.isInstalled(jsonObject
+							.getString("apppkgname")));
+					appHomeInfos_temp.add(appInfo);
+
+					// Log.e("tag", "info = " + appInfo.toString());
+				}
+				// Log.e("tag", "--------------2--------");
+			} catch (Exception ex) {
+			}
+		}
 }

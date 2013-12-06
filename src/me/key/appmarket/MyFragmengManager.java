@@ -352,7 +352,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						// TODO Auto-generated method stub
 						Intent intent = new Intent();
 						intent.putExtra("Search", etSearcher.getText().toString());
-						etSearcher.setText("");
 						intent.setClass(MyFragmengManager.this,
 								SearchActivity.class);
 						startActivity(intent);
@@ -360,6 +359,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						MyFragmengManager.this.overridePendingTransition(
 								R.anim.left_anim, R.anim.right_anim);
 						LogUtils.d("MAIN", "动画后");
+						etSearcher.setText(null);
 						return false;
 					}
 					

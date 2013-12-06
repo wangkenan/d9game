@@ -106,16 +106,16 @@ public class AppAdapter extends BaseAdapter {
 		Drawable mDrawable;
 		if (convertvView == null) {
 			viewHolder = new ViewHolder();
-			convertvView = lay.inflate(R.layout.app_list_item, null);
-			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon2);
+			convertvView = lay.inflate(R.layout.list_item, null);
+			viewHolder.icon = (ImageView) convertvView.findViewById(R.id.icon);
 			viewHolder.name = (TextView) convertvView
-					.findViewById(R.id.app_name2);
+					.findViewById(R.id.info);
 			viewHolder.size = (TextView) convertvView
-					.findViewById(R.id.appsize2);
-			viewHolder.tvtopnum = (TextView) convertvView
-					.findViewById(R.id.topnum_applist_item_tv);
+					.findViewById(R.id.appsize);
+			/*viewHolder.tvtopnum = (TextView) convertvView
+					.findViewById(R.id.topnum_applist_item_tv);*/
 			viewHolder.tvdown = (TextView) convertvView
-					.findViewById(R.id.tv_down2);
+					.findViewById(R.id.install);
 //			viewHolder.progress_view = (ProgressView) convertvView
 //					.findViewById(R.id.progress_view2);
 			convertvView.setTag(viewHolder);
@@ -124,7 +124,7 @@ public class AppAdapter extends BaseAdapter {
 		}
 		sdappInfo = appInfos.get(position);
 		viewHolder.name.setText(sdappInfo.getAppName());
-		viewHolder.tvtopnum .setVisibility(View.GONE);
+//		viewHolder.tvtopnum .setVisibility(View.GONE);
 		viewHolder.size.setText(ToolHelper.Kb2Mb(sdappInfo
 				.getAppSize()));
 		ImageLoader.getInstance().displayImage(sdappInfo
@@ -138,7 +138,7 @@ public class AppAdapter extends BaseAdapter {
 		private TextView name;
 		private TextView size;
 		private TextView tvdown;
-		private TextView tvtopnum;
+//		private TextView tvtopnum;
 		//private ProgressView progress_view;
 	}
 
@@ -242,12 +242,12 @@ public class AppAdapter extends BaseAdapter {
 				v1.tvdown.setVisibility(View.VISIBLE);
 			}
 		} else {
-			v1.tvdown.setText("下载中");
 			LogUtils.d("new", "我是暂停中下载"+appInfos.get(position).getAppName());
 			if (!isDownLoaded) {
+				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
 				LogUtils.d("new", "我执行了暂停中下载"+appInfos.get(position).getAppName());
 			//	v1.progress_view.setVisibility(View.VISIBLE);
-				v1.tvdown.setVisibility(View.INVISIBLE);
+//				v1.tvdown.setVisibility(View.INVISIBLE);
 				//v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 				LogUtils.d("ture", isDownLoading + "isDown");
 				LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());

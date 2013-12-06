@@ -106,6 +106,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private ImageView iv_operate_search;
 	
 	private String searchStr;
+	private MyInstalledReceiver installedReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +120,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 		}
 
 		initSearchView();
-		MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+		installedReceiver = new MyInstalledReceiver();
 		IntentFilter filter = new IntentFilter();
 
 		filter.addAction("android.intent.action.PACKAGE_ADDED");
@@ -686,6 +687,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 		if (mPrecentReceiver != null) {
 			this.unregisterReceiver(mPrecentReceiver);
 		}
+		this.unregisterReceiver(installedReceiver);
 	}
 
 	class PrecentReceiver extends BroadcastReceiver {
