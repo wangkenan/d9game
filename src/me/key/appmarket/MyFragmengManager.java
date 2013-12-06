@@ -190,23 +190,17 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 			@Override
 			protected Void doInBackground(Void... params) {
-		/*		String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-						+ Global.RANK_PAGE);
-				if (str.isEmpty()) {
-					appRankInfos = new ArrayList<AppInfo>();
-				} else {
-					ParseRankJson(str);
-				}
+				
 				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.HOME_PAGE);
 				if (str2.isEmpty()) {
 					appHomeInfos_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseHomeJson(str2);
-				}*/
+				}
 				appManaInfos_temp = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
-				/*List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
+				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
 				mAppInfos_temp = LocalUtils.InitHomePager("0",
@@ -247,7 +241,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				} else {
 					ParseCategoryJson(str4);
 				}
-				loadLocaltopList();*/
+				loadLocaltopList();
 				return null;
 			}
 

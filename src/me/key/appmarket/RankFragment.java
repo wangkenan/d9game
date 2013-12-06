@@ -229,6 +229,7 @@ testView.setOnClickListener(new OnClickListener() {
 			@Override
 			protected void onPreExecute() {
 				// rank_pb.setVisibility(View.VISIBLE);
+		
 			};
 
 			protected Void doInBackground(Void... params) {
@@ -236,6 +237,13 @@ testView.setOnClickListener(new OnClickListener() {
 				 * String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 				 * + Global.RANK_PAGE); ParseRankJson(str);
 				 */
+				String strRank = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ Global.RANK_PAGE);
+				if (strRank.isEmpty()) {
+					appRankInfos = new ArrayList<AppInfo>();
+				} else {
+					ParseRankJson(strRank);
+				}
 				appRankInfos.clear();
 				List<AppInfo> appRankInfos_temp = new ArrayList<AppInfo>();
 				appRankInfos_temp = MarketApplication.getInstance()
@@ -579,5 +587,32 @@ testView.setOnClickListener(new OnClickListener() {
 			}
 		}
 		sp.edit().putInt("day", mDay).commit();
+	}
+	// 解析Rank
+	private void ParseRankJson(String str) {
+		try {
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				String appDownCount = jsonObject.getString("appdowncount");
+				String apppkgname = jsonObject.getString("apppkgname");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",
+						apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
+				appInfo.setLastTime(Long.MAX_VALUE);
+				appRankInfos.add(appInfo);
+				// appRankInfos.add(appInfo);
+			}
+			// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+		} catch (Exception ex) {
+		}
 	}
 }

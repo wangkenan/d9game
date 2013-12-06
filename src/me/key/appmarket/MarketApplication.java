@@ -116,15 +116,6 @@ public class MarketApplication extends Application {
 		crashHandler.init(getApplicationContext());
 		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
 				.cacheInMemory(true).cacheOnDisc(true).build();
-        Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-
-                @Override
-                public void uncaughtException(Thread thread, Throwable ex) {
-                        // TODO Auto-generated method stub
-                        ex.printStackTrace();
-                        LogUtils.d("Local", "我被结束了");
-                }
-        });
 		// 配置imageLoager初始化
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				this).defaultDisplayImageOptions(defaultOptions)
