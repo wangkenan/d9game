@@ -135,6 +135,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 	private void startSearch() {
 		search_text = getIntent().getStringExtra("Search");
+		edit_search.setText(search_text);
 		new Thread(searchData).start();
 		appSearchAdapter.notifyDataSetChanged();
 	}
