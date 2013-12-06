@@ -350,7 +350,7 @@ public class AppAdapter extends BaseAdapter {
 			public void onClick(View arg0) {
 				if (appInfos.get(position).isInstalled()) {
 					AppUtils.launchApp(mContext, appInfos.get(position)
-							.getAppName());
+							.getPackageName());
 				} else if (DownloadService.isDownLoading(Integer
 						.parseInt(appInfos.get(position).getIdx()))) {
 					LogUtils.d("test", "暂停");

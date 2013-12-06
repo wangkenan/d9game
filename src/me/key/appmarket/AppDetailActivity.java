@@ -413,6 +413,8 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						appInfo.setIdx(response.getIdx());
 					}
 					if (response.getAppPackageName() != null) {
+						appInfo.setPackageName(response.getAppPackageName());
+						appInfo.setInstalled(AppUtils.isInstalled(appInfo.getPackageName()));
 						if (appInfo.getId() == null) {
 							appInfo.setId(response.getAppPackageName());
 						}

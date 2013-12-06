@@ -138,6 +138,11 @@ public class DownLoadManagerActivity extends FinalActivity {
 			downLv.setAdapter(dmAdapter);
 			downlist.setBackgroundResource(R.drawable.bk_navigate_tv_appdetail);
 			updatalist.setBackgroundResource(0);
+			List<AppInfo> down_temp = new ArrayList<AppInfo>();
+			down_temp = db.findAll(AppInfo.class);
+			downApplist.clear();
+			downApplist.addAll(down_temp);
+			dmAdapter.notifyDataSetChanged();
 			break;
 		case R.id.tv_update_downmanager:
 			downLv.setAdapter(upAdapter);
