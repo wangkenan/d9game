@@ -122,9 +122,9 @@ public class MarketApplication extends Application {
                         // TODO Auto-generated method stub
                         ex.printStackTrace();
                         LogUtils.d("Local", "我被结束了");
-                        for(Activity activity : activitys) {
-                        	activity.finish();
-                        }
+//                        for(Activity activity : activitys) {
+//                        	activity.finish();
+//                        }
                         
                 }
         });
