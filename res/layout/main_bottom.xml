@@ -76,8 +76,8 @@
                             android:id="@+id/tv_mainbottom_findgame"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:gravity="center"
                             android:text="找游戏"
@@ -115,15 +115,14 @@
                     android:layout_weight="2"
                     android:paddingBottom="12dp"
                     android:paddingTop="6dp" >
-                    
-                    
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_centerInParent="true" >
 
                         <ImageView
-                             android:id="@+id/rankgame"
+                            android:id="@+id/rankgame"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
@@ -134,15 +133,14 @@
                             android:id="@+id/tv_mainbottom_rank"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
                             android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:gravity="center"
                             android:text="排行榜"
                             android:textColor="@color/white"
                             android:textSize="12sp" />
                     </LinearLayout>
-                    
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
