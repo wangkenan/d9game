@@ -9,6 +9,7 @@ import me.key.appmarket.AppDetailActivity;
 import me.key.appmarket.LocalGameFragment;
 import me.key.appmarket.MarketApplication;
 import me.key.appmarket.OneKeyInstallActivity;
+import me.key.appmarket.network.NetworkUtils;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.tool.TxtReader;
@@ -89,7 +90,7 @@ public class MyAdapter extends BaseAdapter {
 			.bitmapConfig(Bitmap.Config.RGB_565).build();
 
 	public MyAdapter(Context context, List<AppInfo> appManaInfos,
-			List<AppInfo> mAppInfos,ListView lv) {
+			List<AppInfo> mAppInfos, ListView lv) {
 		this.mInflater = LayoutInflater.from(context);
 		this.cnt = context;
 		this.appManaInfos = appManaInfos;
@@ -174,7 +175,8 @@ public class MyAdapter extends BaseAdapter {
 
 				holder.appsize = (TextView) convertView
 						.findViewById(R.id.appsize);
-				holder.ivOprateState = (ImageView) convertView.findViewById(R.id.iv_oprate_state);
+				holder.ivOprateState = (ImageView) convertView
+						.findViewById(R.id.iv_oprate_state);
 				convertView.setTag(holder);
 				break;
 			case 2:
@@ -208,9 +210,9 @@ public class MyAdapter extends BaseAdapter {
 
 		case 0:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
-//			setImagePosition(R.drawable.bannaer, v3.banner);
+			// setImagePosition(R.drawable.bannaer, v3.banner);
 			v3.banner.setOnClickListener(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent();
@@ -569,13 +571,13 @@ public class MyAdapter extends BaseAdapter {
 		this.cnt.startActivity(intent);
 	}
 
-	/*private void setImagePosition(int resId, ImageView banner) {
-		Bitmap bm = BitmapFactory.decodeResource(cnt.getResources(), resId);
-		Bitmap newbitmap = Bitmap.createBitmap((width - gapPy),
-				(int) ((width - gapPy) / 3.87), bm.getConfig());
-		getNewBitMapPos(bm, newbitmap);
-		banner.setImageBitmap(newbitmap);
-	}*/
+	/*
+	 * private void setImagePosition(int resId, ImageView banner) { Bitmap bm =
+	 * BitmapFactory.decodeResource(cnt.getResources(), resId); Bitmap newbitmap
+	 * = Bitmap.createBitmap((width - gapPy), (int) ((width - gapPy) / 3.87),
+	 * bm.getConfig()); getNewBitMapPos(bm, newbitmap);
+	 * banner.setImageBitmap(newbitmap); }
+	 */
 
 	// 处理图片
 	private void getNewBitMapPos(Bitmap bm, Bitmap newbitmap) {
@@ -601,60 +603,66 @@ public class MyAdapter extends BaseAdapter {
 	}
 
 	public void setLeft(final TabHolder th) {
-		if(!isLeft) {
-		th.mygame.setBackgroundResource(R.drawable.mygame_btn);
-		th.sdgame.setBackgroundResource(0);
-		LocalGameFragment.mygame.setBackgroundResource(R.drawable.mygame_btn);
-		LocalGameFragment.sdgame.setBackgroundResource(0);
-		temp = appManaInfos;
-		appManaInfos = mAppInfos;
-		mAppInfos = temp;
-		notifyDataSetChanged();
-		isLeft = true;
-		lv.setOnItemClickListener(new OnItemClickListener(){
+		if (!isLeft) {
+			th.mygame.setBackgroundResource(R.drawable.mygame_btn);
+			th.sdgame.setBackgroundResource(0);
+			LocalGameFragment.mygame
+					.setBackgroundResource(R.drawable.mygame_btn);
+			LocalGameFragment.sdgame.setBackgroundResource(0);
+			temp = appManaInfos;
+			appManaInfos = mAppInfos;
+			mAppInfos = temp;
+			notifyDataSetChanged();
+			isLeft = true;
+			if (NetworkUtils.isNetworkConnected(cnt)) {
+				lv.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				if((position+1)!=lv.getAdapter().getCount()){
-				// TODO Auto-generated method stub
-				AppInfo mAppInfo = (AppInfo) appManaInfos.get(position-3);
-				Drawable appIcon = mAppInfo.getAppIcon();
-				mAppInfo.setAppIcon(null);
-				LogUtils.d("Local", "mAppInfo"+mAppInfo.getIdx());
-				//Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
-				Intent intent = new Intent(cnt,
-						AppDetailActivity.class);
-				intent.putExtra("appid", mAppInfo.getIdx());
-				intent.putExtra("appinfo", mAppInfo);
-				cnt.startActivity(intent);
-				mAppInfo.setAppIcon(appIcon);
-				}
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						if ((position + 1) != lv.getAdapter().getCount()) {
+							// TODO Auto-generated method stub
+							AppInfo mAppInfo = (AppInfo) appManaInfos
+									.get(position - 3);
+							Drawable appIcon = mAppInfo.getAppIcon();
+							mAppInfo.setAppIcon(null);
+							LogUtils.d("Local", "mAppInfo" + mAppInfo.getIdx());
+							// Log.d("YTL", "mAppInfo.getIdx() = " +
+							// mAppInfo.getIdx());
+							Intent intent = new Intent(cnt,
+									AppDetailActivity.class);
+							intent.putExtra("appid", mAppInfo.getIdx());
+							intent.putExtra("appinfo", mAppInfo);
+							cnt.startActivity(intent);
+							mAppInfo.setAppIcon(appIcon);
+						}
+					}
+
+				});
 			}
-			
-		});
 		}
 	}
 
 	public void setRight(final TabHolder th) {
-		if(isLeft){
-		th.sdgame.setBackgroundResource(R.drawable.mygame_btn);
-		th.mygame.setBackgroundResource(0);
-		LocalGameFragment.sdgame.setBackgroundResource(R.drawable.mygame_btn);
-		LocalGameFragment.mygame.setBackgroundResource(0);
-		temp = mAppInfos;
-		mAppInfos = appManaInfos;
-		appManaInfos = temp;
-		notifyDataSetChanged();
-		isLeft = false;
-		lv.setOnItemClickListener(new OnItemClickListener(){
+		if (isLeft) {
+			th.sdgame.setBackgroundResource(R.drawable.mygame_btn);
+			th.mygame.setBackgroundResource(0);
+			LocalGameFragment.sdgame
+					.setBackgroundResource(R.drawable.mygame_btn);
+			LocalGameFragment.mygame.setBackgroundResource(0);
+			temp = mAppInfos;
+			mAppInfos = appManaInfos;
+			appManaInfos = temp;
+			notifyDataSetChanged();
+			isLeft = false;
+			lv.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-			}
-			
-		});
-	}
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+				}
+
+			});
+		}
 	}
 }

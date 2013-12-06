@@ -24,7 +24,7 @@
             android:layout_gravity="center" >
 
             <ImageView
-                android:id="@+id/ivlog_app_detail"
+                android:id="@+id/ivlog_search"
                 android:layout_width="80dip"
                 android:layout_height="30dip"
                 android:layout_gravity="center_vertical"
@@ -55,7 +55,7 @@
             android:layout_marginRight="3dp">
 
             <ImageView
-                android:id="@+id/iv_operate_app_detail"
+                android:id="@+id/iv_operate_search"
                 android:layout_width="65dip"
                 android:layout_height="28dip"
                 android:layout_marginRight="10dip"
@@ -68,7 +68,7 @@
                 android:textSize="13sp" />
 
             <TextView
-                android:id="@+id/tv_operate_app_detail"
+                android:id="@+id/tv_operate_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

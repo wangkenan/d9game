@@ -47,7 +47,7 @@ public class LocalIndexDetaileActivity extends Activity {
 		Root = LocalUtils.getRoot(this);
 //		InitHomePager();
 		List<PackageInfo> packages = LocalIndexDetaileActivity.this.getPackageManager().getInstalledPackages(0);
-		List<AppInfo> mAppInfos = LocalUtils.InitHomePager(ItemId, this, Root,packages);
+		List<AppInfo> mAppInfos = LocalUtils.InitHomePager(ItemId, this, Root+"d9dir/",packages);
 		mListReco = (ListView) this.findViewById(R.id.mlist);
 		TextView tv = (TextView) this.findViewById(R.id.wushju);
 		if(mAppInfos.size() == 0) {

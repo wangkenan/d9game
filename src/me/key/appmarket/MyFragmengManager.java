@@ -136,6 +136,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private LayoutInflater inflater;
 	private TextView findgameTv;
 	private TextView rankTv;
+	private View btnRefsh;
 
 	@Override
 	public void onCreate(Bundle arg0) {
@@ -166,6 +167,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		rankApp = (RelativeLayout) findViewById(R.id.rl_rankapp_main_bottom);
 		inflater = LayoutInflater.from(this);
 		errorview = findViewById(R.id.errorview);
+		btnRefsh = errorview.findViewById(R.id.btn_Refsh);
+		btnRefsh.setOnClickListener(this);
 		localApp = (FrameLayout) findViewById(R.id.fl_localapp_main_bottom);
 		findApp.setOnClickListener(this);
 		rankApp.setOnClickListener(this);
@@ -207,7 +210,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
 				mAppInfos_temp = LocalUtils.InitHomePager("0",
-						MyFragmengManager.this, root, packages);
+						MyFragmengManager.this, root+"d9dir/", packages);
 				mAppInfos.addAll(mAppInfos_temp);
 				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
@@ -658,6 +661,132 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			ft1.show(f1);
 			ft1.commit();
 			break;
+		case R.id.btn_Refsh :
+			new AsyncTask<Void, Void, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
+							+ Global.APP_CATEGORY + "?type=" + 2);
+					LogUtils.d("Local", "runCategoryData" + str4);
+					if (str4.isEmpty()) {
+						gcategoryInfoList_temp = null;
+						LogUtils.d("Local", "runCategoryData" + str4 + "str4");
+						
+					} else {
+						gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
+						ParseCategoryJson(str4);
+					}
+					return null;
+				}
+
+				protected void onPostExecute(Void result) {
+					errorview.setVisibility(View.INVISIBLE);
+					final MenuFragment menuFragment = new MenuFragment();
+					fragmentTransaction = getSupportFragmentManager().beginTransaction();
+					fragmentTransaction.replace(R.id.slide_content, menuFragment);
+					fragmentTransaction.commitAllowingStateLoss();
+					// fragmentTransaction.replace(R.id.content, new
+					// ContentFragment());
+
+					LogUtils.d("Main", "我已经被加载了哟");
+					lv = (ListView) findViewById(R.id.category_lv);
+					lv.setDividerHeight(0);
+					LogUtils.d("Main", lv + "");
+					/*
+					 * ImageButton search_btn = (ImageButton)
+					 * findViewById(R.id.search_btn);
+					 * search_btn.setOnClickListener(new OnClickListener() {
+					 * 
+					 * @Override public void onClick(View v) { menu.toggle(); } });
+					 */
+					MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+					IntentFilter filter = new IntentFilter();
+
+					filter.addAction("android.intent.action.PACKAGE_ADDED");
+					filter.addDataScheme("package");
+					registerReceiver(installedReceiver, filter);
+					LogUtils.d("Main1", menuCategoryAdapter + "");
+					menu = getSlidingMenu();
+					menu.setMode(SlidingMenu.LEFT);
+					menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+					/*
+					 * menu.setShadowWidthRes(R.dimen.shadow_width);
+					 * menu.setShadowDrawable(R.drawable.shadow);
+					 */
+					menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+					menu.setFadeDegree(0.35f);
+					menu.setOnCloseListener(new OnCloseListener() {
+
+						@Override
+						public void onClose() {
+							LogUtils.d("Main", "close");
+						}
+					});
+					menu.setOnOpenedListener(new OnOpenedListener() {
+
+						@Override
+						public void onOpened() {
+							LogUtils.d("Main", "open");
+							/*
+							 * Intent intent = new Intent();
+							 * intent.setAction("open.menu"); sendBroadcast(intent);
+							 */
+						}
+					});
+					LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
+					etSeacher.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent();
+							intent.setClass(MyFragmengManager.this,
+									SearchActivity.class);
+							startActivity(intent);
+							LogUtils.d("MAIN", "动画前");
+							MyFragmengManager.this.overridePendingTransition(
+									R.anim.left_anim, R.anim.right_anim);
+							LogUtils.d("MAIN", "动画后");
+						}
+					});
+					if (gcategoryInfoList_temp == null) {
+						errorview.setVisibility(View.VISIBLE);
+						LogUtils.d("Main",  "gcategoryInfoList_temp我还是空的");
+					} else {
+						menuCategoryAdapter = new MenuCategoryAdapter(
+								
+								MyFragmengManager.this, gcategoryInfoList_temp, lv);
+
+						lv.setAdapter(menuCategoryAdapter);
+						menuCategoryAdapter.notifyDataSetChanged();
+						// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+						// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+						LogUtils.d("Main", lv.getChildCount() + "lv.getChildCount()"+gcategoryInfoList_temp.size());
+
+						lv.setOnItemClickListener(new OnItemClickListener() {
+
+							@Override
+							public void onItemClick(AdapterView<?> parent,
+									View view, int position, long id) {
+
+								menuFragment.updata(position);
+								view.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
+								for (int i = 0; i < lv.getChildCount(); i++) {
+									if (i == position) {
+										continue;
+									}
+									LogUtils.d("Main", i + "");
+									lv.getChildAt(i).setBackgroundResource(
+											R.drawable.slidingmenu_left_background);
+								}
+							}
+						});
+					}
+				};
+
+			}.execute();
+
+			break;
 		}
 	}
 
@@ -728,7 +857,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		List<PackageInfo> packages = getPackageManager()
 				.getInstalledPackages(0);
 		mAppInfos_temp = LocalUtils.InitHomePager("0", MyFragmengManager.this,
-				root, packages);
+				root+"d9dir/", packages);
 		mAppInfos.addAll(mAppInfos_temp);
 		ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 				MyFragmengManager.this, 4000);

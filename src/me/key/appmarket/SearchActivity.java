@@ -34,7 +34,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -74,10 +73,10 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private AppAdapter appSearchAdapter;
 	private ProgressBar searchBar;
-	private LinearLayout ll_searcherror;
+	// private LinearLayout ll_searcherror;
 
-//	private ImageView back_icon;
-//	private ImageView logo_title;
+	// private ImageView back_icon;
+	// private ImageView logo_title;
 	private ImageView ivBack;
 
 	private int page = 0; // 最后的可视项索引
@@ -96,14 +95,15 @@ public class SearchActivity extends Activity implements OnClickListener {
 	private HotSearchAdapter mHotSearchAdapter;
 	private HotSearchAdapter mHistoryAdapter;
 
-//	private LinearLayout search_linear;
-//	private Button searchHot;
-//	private Button searchHistory;
-	//private ListView search_HotList;
+	// private LinearLayout search_linear;
+	// private Button searchHot;
+	// private Button searchHistory;
+	// private ListView search_HotList;
 	private boolean isShowingHot = true;
+	private boolean isLoadedAllData;
 
 	private TextView text_delete;
-	private ImageView iv_operate_app_detail;
+	private ImageView iv_operate_search;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,35 +125,35 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 		this.registerReceiver(installedReceiver, filter);
 		new Thread(runHotData).start();
-		//添加下载状态广播，遗迹增添应用更新信息
-		
+		// 添加下载状态广播，遗迹增添应用更新信息
+
 	}
 
 	private void initSearchView() {
-//		back_icon = (ImageView) findViewById(R.id.back_icon);
-	//	logo_title = (ImageView) findViewById(R.id.logo_title);
+		// back_icon = (ImageView) findViewById(R.id.back_icon);
+		// logo_title = (ImageView) findViewById(R.id.logo_title);
 
-//		search_linear = (LinearLayout) findViewById(R.id.search_linear);
-//		searchHot = (Button) findViewById(R.id.search_hot);
-//		searchHistory = (Button) findViewById(R.id.search_history);
-		//search_HotList = (ListView) findViewById(R.id.search_history_list);
-//		searchHot.setOnClickListener(this);
-//		searchHistory.setOnClickListener(this);
+		// search_linear = (LinearLayout) findViewById(R.id.search_linear);
+		// searchHot = (Button) findViewById(R.id.search_hot);
+		// searchHistory = (Button) findViewById(R.id.search_history);
+		// search_HotList = (ListView) findViewById(R.id.search_history_list);
+		// searchHot.setOnClickListener(this);
+		// searchHistory.setOnClickListener(this);
 		;
-//		back_icon.setOnClickListener(this);
-//		logo_title.setOnClickListener(this);
-		
-		ivBack=(ImageView) findViewById(R.id.iv_back_search);
+		// back_icon.setOnClickListener(this);
+		// logo_title.setOnClickListener(this);
 
-		//btn_search = (Button) findViewById(R.id.btn_search);
-		search=(FrameLayout) findViewById(R.id.search_btn_search);
+		ivBack = (ImageView) findViewById(R.id.iv_back_search);
+
+		// btn_search = (Button) findViewById(R.id.btn_search);
+		search = (FrameLayout) findViewById(R.id.search_btn_search);
 		edit_search = (EditText) findViewById(R.id.edit_search);
 		total_size = (TextView) findViewById(R.id.total_size);
 
 		mSearchListView = (ListView) findViewById(R.id.list);
 		searchBar = (ProgressBar) findViewById(R.id.pro_bar);
 		appSearchInfos = new ArrayList<AppInfo>();
-		ll_searcherror = (LinearLayout) findViewById(R.id.ll_error);
+		// ll_searcherror = (LinearLayout) findViewById(R.id.ll_error);
 
 		mHotSearchAdapter = new HotSearchAdapter(hotList, this, cache);
 		mHistoryAdapter = new HotSearchAdapter(historyList, this, cache);
@@ -162,26 +162,22 @@ public class SearchActivity extends Activity implements OnClickListener {
 		text_delete = (TextView) findViewById(R.id.text_delete);
 		text_delete.setOnClickListener(this);
 		ivBack.setOnClickListener(this);
-		iv_operate_app_detail = (ImageView) findViewById(R.id.iv_operate_app_detail);
-		iv_operate_app_detail.setOnClickListener(this);
-	/*	search_HotList.setAdapter(mHotSearchAdapter);
-		search_HotList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				if (isShowingHot) {
-					HotSearchInfo mHotSearchInfo = hotList.get(arg2);
-					edit_search.setText(mHotSearchInfo.getWord());
-				} else {
-					HotSearchInfo mHotSearchInfo = historyList.get(arg2);
-					edit_search.setText(mHotSearchInfo.getWord());
-				}
-				search.performClick();
-			}
-		});*/
+		iv_operate_search = (ImageView) findViewById(R.id.iv_operate_search);
+		iv_operate_search.setOnClickListener(this);
+		/*
+		 * search_HotList.setAdapter(mHotSearchAdapter);
+		 * search_HotList.setOnItemClickListener(new OnItemClickListener() {
+		 * 
+		 * @Override public void onItemClick(AdapterView<?> arg0, View arg1, int
+		 * arg2, long arg3) { if (isShowingHot) { HotSearchInfo mHotSearchInfo =
+		 * hotList.get(arg2); edit_search.setText(mHotSearchInfo.getWord()); }
+		 * else { HotSearchInfo mHotSearchInfo = historyList.get(arg2);
+		 * edit_search.setText(mHotSearchInfo.getWord()); }
+		 * search.performClick(); } });
+		 */
 
-//		searchHot.setPadding(40, 0, 40, 0);
-//		searchHistory.setPadding(40, 0, 40, 0);
+		// searchHot.setPadding(40, 0, 40, 0);
+		// searchHistory.setPadding(40, 0, 40, 0);
 
 		search.setOnClickListener(this);
 
@@ -206,11 +202,16 @@ public class SearchActivity extends Activity implements OnClickListener {
 						&& (totalItemCount != 0)) {
 					if (!isLoading && !isFirst && totalCount > 0) {
 						isLoading = true;
-						loadMoreButton.setText("正在加载中...");
-						loadMoreButton.setVisibility(View.VISIBLE);
-						page = page + 1;
-
-						new Thread(searchData).start();
+						if(isLoadedAllData){
+							loadMoreButton.setText("已加载完毕");
+						}else{
+							
+							loadMoreButton.setText("正在加载中...");
+							loadMoreButton.setVisibility(View.VISIBLE);
+							page = page + 1;
+							
+							new Thread(searchData).start();
+						}
 					}
 
 					isFirst = false;
@@ -252,7 +253,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 							.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
 				} else {
 					searchHandler
-					.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+							.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+					LogUtils.i("search", "获得了搜索数据");
 					ParseSearchJson(str);
 				}
 			} else {
@@ -269,16 +271,17 @@ public class SearchActivity extends Activity implements OnClickListener {
 			isLoading = false;
 			switch (msg.what) {
 			case Global.DOWN_DATA_RANK_FAILLY: {
+				isLoadedAllData=true;
 				loadMoreButton.setVisibility(View.GONE);
-				ll_searcherror.setVisibility(View.VISIBLE);
-				mSearchListView.setVisibility(View.GONE);
+				// ll_searcherror.setVisibility(View.VISIBLE);
+				//mSearchListView.setVisibility(View.GONE);
 				LogUtils.d("SearchActivity", "网络出错了吗？");
 			}
 				break;
 
 			case Global.DOWN_DATA_SEARCH_EMPTY: {
 				if (page == 0) {
-					ll_searcherror.setVisibility(View.GONE);
+					// ll_searcherror.setVisibility(View.GONE);
 					mSearchListView.setVisibility(View.GONE);
 					total_size.setText("找到0项符合的软件");
 					total_size.setVisibility(View.VISIBLE);
@@ -298,7 +301,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 				total_size.setText("找到" + totalCount + "项符合的软件");
 				total_size.setVisibility(View.VISIBLE);
 				mSearchListView.setVisibility(View.VISIBLE);
-				ll_searcherror.setVisibility(View.GONE);
+				// ll_searcherror.setVisibility(View.GONE);
 				loadMoreButton.setVisibility(View.VISIBLE);
 				appSearchAdapter.notifyDataSetChanged();
 			}
@@ -315,81 +318,88 @@ public class SearchActivity extends Activity implements OnClickListener {
 			totalCount = jsonObjcet.getInt("totalCount");
 			JSONArray jsonArray = jsonObjcet.getJSONArray("list");
 			int len = jsonArray.length();
-			for (int i = 0; i < len; i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				String appName = jsonObject.getString("appname");
-				String appiconurl = jsonObject.getString("appiconurl");
-				String appSize = jsonObject.getString("appsize");
-				String idx = jsonObject.getString("idx");
-				String appurl = jsonObject.getString("appurl");
-				String apppkgname = jsonObject.getString("apppkgname");
-				AppInfo appInfo = new AppInfo(idx, appName, appSize,
-						Global.MAIN_URL + appiconurl, appurl, "", "", apppkgname);
-				appInfo.setId(apppkgname);
-				appInfo.setPackageName(apppkgname);
-				appInfo.setLastTime(Long.MAX_VALUE);
-				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
-				appSearchInfos_temp.add(appInfo);
-				
-			}
-			StringBuilder apknamelist = new StringBuilder();
-			for (AppInfo ai : appSearchInfos) {
-				DownStateBroadcast dsb = new DownStateBroadcast();
-				IntentFilter filter = new IntentFilter();
-				String fileName = DownloadService.CreatFileName(
-						ai.getAppName()).getAbsolutePath();
-				filter.addAction(fileName + "down");
-				registerReceiver(dsb, filter);
-				apknamelist.append(ai.getPackageName() + ",");
-				try {
-					PackageManager pm = getPackageManager();
-					if (ai.isInstalled()) {
-						PackageInfo packInfo = pm.getPackageInfo(
-								ai.getPackageName(), 0);
-						String name = packInfo.versionName;
-						ai.setVersion(name);
-					} else {
-						ai.setVersion("9999999999999");
-					}
+			if (len > 0) {
 
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
+				for (int i = 0; i < len; i++) {
+					JSONObject jsonObject = jsonArray.getJSONObject(i);
+					String appName = jsonObject.getString("appname");
+					String appiconurl = jsonObject.getString("appiconurl");
+					String appSize = jsonObject.getString("appsize");
+					String idx = jsonObject.getString("idx");
+					String appurl = jsonObject.getString("appurl");
+					String apppkgname = jsonObject.getString("apppkgname");
+					AppInfo appInfo = new AppInfo(idx, appName, appSize,
+							Global.MAIN_URL + appiconurl, appurl, "", "",
+							apppkgname);
+					appInfo.setId(apppkgname);
+					appInfo.setPackageName(apppkgname);
+					appInfo.setLastTime(Long.MAX_VALUE);
+					appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
+					appSearchInfos_temp.add(appInfo);
+
 				}
-			}
-			String uris = apknamelist.toString();
-			if (uris.length() > 0) {
-				uris = uris.substring(0, uris.length() - 1);
-			}
-			/**
-			 * 检查应用是否能更新
-			 */
-			String strList = ToolHelper.donwLoadToString(Global.MAIN_URL
-					+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
-			ParseUpdateJson(strList);
-			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
-					appSearchInfos, appManagerUpdateInfos_t);
-			appManagerUpdateInfos.clear();
-			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
-			LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
-			for (AppInfo appInfo : appManagerUpdateInfos) {
-				LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
-				for (AppInfo appManaInfo : appSearchInfos) {
-					if (appManaInfo.getPackageName().equals(
-							appInfo.getPackageName())) {
-						appManaInfo.setCanUpdate(true);
-						LogUtils.d("Main",
-								"我可以升级" + appManaInfo.getPackageName());
+				StringBuilder apknamelist = new StringBuilder();
+				for (AppInfo ai : appSearchInfos) {
+					DownStateBroadcast dsb = new DownStateBroadcast();
+					IntentFilter filter = new IntentFilter();
+					String fileName = DownloadService.CreatFileName(
+							ai.getAppName()).getAbsolutePath();
+					filter.addAction(fileName + "down");
+					registerReceiver(dsb, filter);
+					apknamelist.append(ai.getPackageName() + ",");
+					try {
+						PackageManager pm = getPackageManager();
+						if (ai.isInstalled()) {
+							PackageInfo packInfo = pm.getPackageInfo(
+									ai.getPackageName(), 0);
+							String name = packInfo.versionName;
+							ai.setVersion(name);
+						} else {
+							ai.setVersion("9999999999999");
+						}
+
+					} catch (NameNotFoundException e) {
+						e.printStackTrace();
 					}
 				}
+				String uris = apknamelist.toString();
+				if (uris.length() > 0) {
+					uris = uris.substring(0, uris.length() - 1);
+				}
+				/**
+				 * 检查应用是否能更新
+				 */
+				String strList = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
+				ParseUpdateJson(strList);
+				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
+						appSearchInfos, appManagerUpdateInfos_t);
+				appManagerUpdateInfos.clear();
+				appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+				LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
+				for (AppInfo appInfo : appManagerUpdateInfos) {
+					LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
+					for (AppInfo appManaInfo : appSearchInfos) {
+						if (appManaInfo.getPackageName().equals(
+								appInfo.getPackageName())) {
+							appManaInfo.setCanUpdate(true);
+							LogUtils.d("Main",
+									"我可以升级" + appManaInfo.getPackageName());
+						}
+					}
+				}
+				if (totalCount == 0 || len == 0) {
+					searchHandler
+							.sendEmptyMessage(Global.DOWN_DATA_SEARCH_EMPTY);
+				} else {
+					searchHandler
+							.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+				}
+			}else{
+				searchHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_FAILLY);
 			}
-			if (totalCount == 0 || len == 0) {
-				searchHandler.sendEmptyMessage(Global.DOWN_DATA_SEARCH_EMPTY);
-			} else {
-				searchHandler
-						.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
-			}
-		} catch (Exception ex) {
-			searchHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_FAILLY);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -513,15 +523,15 @@ public class SearchActivity extends Activity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.iv_back_search:
 			finish();
-//		case R.id.logo_title:
-//			SearchActivity.this.finish();
-//			break;
-		case R.id.iv_operate_app_detail:
+			// case R.id.logo_title:
+			// SearchActivity.this.finish();
+			// break;
+		case R.id.iv_operate_search:
 			search_text = edit_search.getText().toString();
 			appSearchInfos.clear();
 			appSearchAdapter.notifyDataSetChanged();
 			total_size.setText("找到0项符合的软件");
-		
+
 			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			inputMethodManager.hideSoftInputFromWindow(SearchActivity.this
 					.getCurrentFocus().getWindowToken(),
@@ -534,64 +544,67 @@ public class SearchActivity extends Activity implements OnClickListener {
 				loadMoreButton.setVisibility(View.GONE);
 
 				searchBar.setVisibility(View.VISIBLE);
-				ll_searcherror.setVisibility(View.GONE);
+				// ll_searcherror.setVisibility(View.GONE);
 				page = 0;
 				totalCount = 0;
 				total_size.setVisibility(View.GONE);
 
 				text_delete.setVisibility(View.GONE);
 
-//				search_linear.setVisibility(View.GONE);
-				//search_HotList.setVisibility(View.GONE);
+				// search_linear.setVisibility(View.GONE);
+				// search_HotList.setVisibility(View.GONE);
 				new Thread(searchData).start();
 			} else {
 				loadMoreButton.setVisibility(View.GONE);
 				Toast.makeText(getApplicationContext(), "输入关键字",
 						Toast.LENGTH_SHORT).show();
 			}
-			new AsyncTask<Void,Void, Void>() {
+			new AsyncTask<Void, Void, Void>() {
 
 				@Override
 				protected Void doInBackground(Void... params) {
-					
-				
+
 					return null;
 				}
-				
+
 			}.execute();
 			break;
 		case R.id.loadMoreButton:
-			loadMoreButton.setText("正在加载中...");
-			page = page + 1;
-			new Thread(searchData).start();
+			if(isLoadedAllData){
+				loadMoreButton.setText("已加载完毕");
+			}else{
+				loadMoreButton.setText("正在加载中...");
+				page = page + 1;
+				new Thread(searchData).start();
+			}
 			break;
-//		case R.id.search_hot:
-//			if (!isShowingHot) {
-//				isShowingHot = true;
-//				search_HotList.setAdapter(mHotSearchAdapter);
-//				text_delete.setVisibility(View.GONE);
-//
-//				searchHot.setBackgroundResource(R.drawable.btn_bar_2);
-//				searchHot.setPadding(40, 0, 40, 0);
-//				searchHistory.setBackgroundResource(0);
-//			}
-//			break;
-//		case R.id.search_history:
-//			if (isShowingHot) {
-//				isShowingHot = false;
-//
-//				text_delete.setVisibility(View.VISIBLE);
-//
-//				ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
-//				historyList.clear();
-//				historyList.addAll(historyList_temp);
-//				search_HotList.setAdapter(mHistoryAdapter);
-//
-//				searchHistory.setBackgroundResource(R.drawable.btn_bar_2);
-//				searchHistory.setPadding(40, 0, 40, 0);
-//				searchHot.setBackgroundResource(0);
-//			}
-//			break;
+		// case R.id.search_hot:
+		// if (!isShowingHot) {
+		// isShowingHot = true;
+		// search_HotList.setAdapter(mHotSearchAdapter);
+		// text_delete.setVisibility(View.GONE);
+		//
+		// searchHot.setBackgroundResource(R.drawable.btn_bar_2);
+		// searchHot.setPadding(40, 0, 40, 0);
+		// searchHistory.setBackgroundResource(0);
+		// }
+		// break;
+		// case R.id.search_history:
+		// if (isShowingHot) {
+		// isShowingHot = false;
+		//
+		// text_delete.setVisibility(View.VISIBLE);
+		//
+		// ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
+		// historyList.clear();
+		// historyList.addAll(historyList_temp);
+		// search_HotList.setAdapter(mHistoryAdapter);
+		//
+		// searchHistory.setBackgroundResource(R.drawable.btn_bar_2);
+		// searchHistory.setPadding(40, 0, 40, 0);
+		// searchHot.setBackgroundResource(0);
+		// }
+		// break;
 		case R.id.text_delete:
 			SharedPreferences sp = PreferenceManager
 					.getDefaultSharedPreferences(this);
@@ -604,33 +617,32 @@ public class SearchActivity extends Activity implements OnClickListener {
 		}
 	}
 
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		if (keyCode == KeyEvent.KEYCODE_BACK) {
-////			if (search_linear.getVisibility() == View.GONE) {
-////				edit_search.setText("");
-////				search_linear.setVisibility(View.VISIBLE);
-//				search_HotList.setVisibility(View.VISIBLE);
-//
-//				if (!isShowingHot) {
-//					ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
-//					historyList.clear();
-//					historyList.addAll(historyList_temp);
-//					search_HotList.setAdapter(mHistoryAdapter);
-//
-//					text_delete.setVisibility(View.VISIBLE);
-//				}
-//
-//				total_size.setVisibility(View.GONE);
-//				mSearchListView.setVisibility(View.GONE);
-//				ll_searcherror.setVisibility(View.GONE);
-//				loadMoreButton.setVisibility(View.GONE);
-//				return true;
-////			}
-//		}
-//		return super.onKeyDown(keyCode, event);
-//	}
-	
+	// @Override
+	// public boolean onKeyDown(int keyCode, KeyEvent event) {
+	// if (keyCode == KeyEvent.KEYCODE_BACK) {
+	// // if (search_linear.getVisibility() == View.GONE) {
+	// // edit_search.setText("");
+	// // search_linear.setVisibility(View.VISIBLE);
+	// search_HotList.setVisibility(View.VISIBLE);
+	//
+	// if (!isShowingHot) {
+	// ArrayList<HotSearchInfo> historyList_temp = getHistoryList();
+	// historyList.clear();
+	// historyList.addAll(historyList_temp);
+	// search_HotList.setAdapter(mHistoryAdapter);
+	//
+	// text_delete.setVisibility(View.VISIBLE);
+	// }
+	//
+	// total_size.setVisibility(View.GONE);
+	// mSearchListView.setVisibility(View.GONE);
+	// ll_searcherror.setVisibility(View.GONE);
+	// loadMoreButton.setVisibility(View.GONE);
+	// return true;
+	// // }
+	// }
+	// return super.onKeyDown(keyCode, event);
+	// }
 
 	@Override
 	protected void onResume() {
@@ -645,11 +657,13 @@ public class SearchActivity extends Activity implements OnClickListener {
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterPrecent();
 	};
+
 	PrecentReceiver mPrecentReceiver;
 
 	private void registerPrecent() {
@@ -695,7 +709,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 							&& packageName.equals(mAppInfo.getPackageName())) {
 						mAppInfo.setInstalled(true);
 						mAppInfo.setCanUpdate(false);
-						LogUtils.d("Search", "我接收到了安装"+packageName);
+						LogUtils.d("Search", "我接收到了安装" + packageName);
 						break;
 					}
 				}
@@ -704,6 +718,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 			}
 		}
 	}
+
 	private void ParseUpdateJson(String str) {
 		try {
 
@@ -735,6 +750,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 			// Log.e("tag", "error = " + ex.getMessage());
 		}
 	}
+
 	class DownStateBroadcast extends BroadcastReceiver {
 
 		@Override

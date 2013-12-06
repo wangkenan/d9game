@@ -11,6 +11,7 @@ import java.util.TimerTask;
 import me.key.appmarket.adapter.MenuCategoryAdapter;
 import me.key.appmarket.adapter.MyAdapter;
 import me.key.appmarket.adapter.SDGameAdapter;
+import me.key.appmarket.network.NetworkUtils;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
@@ -311,6 +312,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					}
 				};
 				timer.schedule(task, 1000, 3000);
+				if(NetworkUtils.isNetworkConnected(getActivity())) {
 				mListReco.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
@@ -334,7 +336,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					
 				});
 			}
-			
+			}
 
 		}.execute();
 		for (AppInfo appInfo : appManagerUpdateInfos) {

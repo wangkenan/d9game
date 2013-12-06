@@ -89,8 +89,8 @@ public class OneKeyInstallActivity extends FinalActivity {
 			@Override
 			protected Void doInBackground(Void... params) {
 
-				recomApp = LocalUtils.InitHomePager(tag,
-						OneKeyInstallActivity.this, root, packages);
+				recomApp = LocalUtils.InitHomePager("1",
+						OneKeyInstallActivity.this, root+"d9dir/", packages);
 				return null;
 			}
 
@@ -188,7 +188,7 @@ public class OneKeyInstallActivity extends FinalActivity {
 	 */
 	private void installApp(AppInfo mAppInfo) {
 		String str = mAppInfo.getApkName();
-		String fileName = root + str;
+		String fileName = root+"d9dir/" + str;
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		Log.v("tag", "nano ROOT" + fileName);
 		intent.setDataAndType(Uri.fromFile(new File(fileName)),
