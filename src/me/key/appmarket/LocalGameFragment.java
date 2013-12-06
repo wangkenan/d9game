@@ -804,4 +804,5 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			}
 			sp.edit().putInt("day", mDay).commit();
 		}
+	
 }
