@@ -620,7 +620,7 @@ public class MyAdapter extends BaseAdapter {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
-						if ((position + 1) != lv.getAdapter().getCount()) {
+						if ((position + 1) != lv.getAdapter().getCount() && position >2) {
 							// TODO Auto-generated method stub
 							AppInfo mAppInfo = (AppInfo) appManaInfos
 									.get(position - 3);

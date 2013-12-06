@@ -318,7 +318,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
-						if((position+1)!=mListReco.getAdapter().getCount()){
+						if((position+1)!=mListReco.getAdapter().getCount() && position >2){
 							// TODO Auto-generated method stub
 							AppInfo mAppInfo = (AppInfo) appManaInfos_temp.get(position-3);
 							Drawable appIcon = mAppInfo.getAppIcon();
