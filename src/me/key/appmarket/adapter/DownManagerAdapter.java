@@ -12,6 +12,7 @@ import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
 import android.content.Context;
@@ -118,8 +119,8 @@ public class DownManagerAdapter extends BaseAdapter {
 		final ViewHolder1 v1 = ((ViewHolder1) convertView.getTag());
 		ImageLoader.getInstance().displayImage(sdappInfo.getIconUrl(),
 				v1.icon_dm, options);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + sdappInfo.getAppName() + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(context),
+				"market/" + sdappInfo.getAppName() + ".apk");
 		SharedPreferences sp = context.getSharedPreferences("down",
 				context.MODE_PRIVATE);
 		boolean isDownLoaded = DownloadService.isDownLoaded(sdappInfo

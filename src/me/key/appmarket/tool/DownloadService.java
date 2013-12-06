@@ -729,8 +729,8 @@ public class DownloadService extends Service {
 		boolean result = false;
 		SharedPreferences sp = context.getSharedPreferences("down",
 				MODE_PRIVATE);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(context),
+				"market/" + name + ".apk");
 
 		if (tempFile.exists()) {
 			result = true;
@@ -745,8 +745,8 @@ public class DownloadService extends Service {
 
 	public static boolean isExist(String name) {
 		boolean result = false;
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(context),
+				"market/" + name + ".apk");
 		if (tempFile.exists()) {
 			result = true;
 		}
@@ -754,8 +754,8 @@ public class DownloadService extends Service {
 	}
 
 	public static void Instanll(String name, Context context) {
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(context),
+				"market/" + name + ".apk");
 
 		if (tempFile.exists()) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);

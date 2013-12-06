@@ -194,6 +194,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 			@Override
 			protected Void doInBackground(Void... params) {
+				Long current = System.currentTimeMillis();
 			/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.RANK_PAGE);
 				if (str.isEmpty()) {
@@ -201,15 +202,14 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				} else {
 					ParseRankJson(str);
 				}
+			
 				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.HOME_PAGE);
 				if (str2.isEmpty()) {
 					appHomeInfos_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseHomeJson(str2);
-				}*/
-				SharedPreferences sp = getSharedPreferences("firstinstall", MODE_PRIVATE);
-				boolean firstinstall = sp.getBoolean("firstinstall", false);
+				}	*/
 //				if(!firstinstall) {
 					appManaInfos_temp = AppUtils.getUserApps( 
 							MyFragmengManager.this, 4000);
@@ -248,7 +248,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				mAppInfos_temp = LocalUtils.InitHomePager("0",
 						MyFragmengManager.this, root+"d9dir/", packages);
 				mAppInfos.addAll(mAppInfos_temp);
-			/*	ArrayList<AppInfo> userApps = AppUtils.getUserApps(
+				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
 				apknamelist = AppUtils
 						.getInstallAppPackage(MyFragmengManager.this);
@@ -269,7 +269,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					appManagerUpdateInfos.clear();
 					appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
 				}
-				*/
+				
 				List<AppInfo> down_temp = new ArrayList<AppInfo>();
 				down_temp = db.findAll(AppInfo.class);
 				downApplist.clear();
@@ -287,6 +287,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					ParseCategoryJson(str4);
 				}
 				loadLocaltopList();
+				Long now = System.currentTimeMillis();
+				LogUtils.d("Local", (now-current)+"nownownownow");
 				return null;
 			}
 
@@ -517,6 +519,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 	private void ParseHomeJson(String str) {
 		try {
+			appHomeInfos_temp.clear();
 			// Log.e("tag", "--------2--------");
 			JSONArray jsonArray = new JSONArray(str);
 			LogUtils.d("descr", str);
@@ -898,39 +901,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		this.unregisterReceiver(dsbRank);
 	}
 
-	public void getData() {
-		String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-				+ Global.HOME_PAGE);
-		if (str2.isEmpty()) {
-			appHomeInfos_temp = new ArrayList<AppInfo>();
-		} else {
-			ParseHomeJson(str2);
-		}
-		ArrayList<AppInfo> userApps = AppUtils.getUserApps(
-				MyFragmengManager.this, 4000);
-		apknamelist = AppUtils.getInstallAppPackage(MyFragmengManager.this);
-		if (apknamelist == null) {
-			appManagerUpdateInfos_t = new ArrayList<AppInfo>();
-		} else {
-			String str3 = ToolHelper.donwLoadToString(Global.MAIN_URL
-					+ Global.UPGRADEVERSION + "?apknamelist=" + apknamelist);
-			ParseUpdateJson(str3);
-		}
-		if (userApps == null) {
-			appManagerUpdateInfos = new ArrayList<AppInfo>();
-		} else {
-			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(userApps,
-					appManagerUpdateInfos_t);
-			appManagerUpdateInfos.clear();
-			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
-		}
-		List<AppInfo> down_temp = new ArrayList<AppInfo>();
-		down_temp = db.findAll(AppInfo.class);
-		downApplist.clear();
-		downApplist.addAll(down_temp);
-		Collections.reverse(downApplist);
-	
-	}
 
 
 
@@ -952,8 +922,8 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				for (int i = 0; i < jsonObjs.length(); i++) {
 					AppInfo appInfo = new AppInfo();
 					JSONObject jsonObj = jsonObjs.getJSONObject(i);
-					appInfo.setPackageName(jsonObj.getString("apppkgname"));
-					appInfo.setIdx(jsonObj.getString("idx"));
+					appInfo.setPackageName(jsonObj.getString("pkgname"));
+					appInfo.setIdx(jsonObj.getString("appid"));
 					localtopList.add(appInfo);
 				}
 			}

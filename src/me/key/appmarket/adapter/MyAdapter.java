@@ -561,9 +561,11 @@ public class MyAdapter extends BaseAdapter {
 	 * @param mAppInfo
 	 */
 	private void installApp(AppInfo mAppInfo) {
-		Uri packageURI = Uri.parse("package:" + mAppInfo.getPackageName());
-		Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);
-		cnt.startActivity(uninstallIntent);
+		String fileName = LocalUtils.getRoot(cnt)+ "d9dir/"+mAppInfo.getApkName();
+		LogUtils.d("Local", fileName+"fileName");
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setDataAndType(Uri.fromFile(new File(fileName)), "application/vnd.android.package-archive");
+		cnt.startActivity(intent);
 	}
 
 	/*

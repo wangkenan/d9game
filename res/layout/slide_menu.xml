@@ -6,11 +6,7 @@
     android:orientation="vertical" 
          android:background="@drawable/bg"
     >
-     <include
-         android:id="@+id/errorview"
-        layout="@layout/error_layout" 
-        android:visibility="gone"
-        />
+    
        <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -57,7 +53,13 @@
         android:id="@+id/slide_content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
-        ></FrameLayout>
+        >
+         <include
+         android:id="@+id/errorview"
+        layout="@layout/error_layout" 
+        android:visibility="gone"
+        />
+    </FrameLayout>
    
      </LinearLayout>
 </LinearLayout>

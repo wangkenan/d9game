@@ -141,7 +141,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 						.getApplicationContext(), list, classLv,
 						categoryInfoList);
 				classLv.setAdapter(cAdapter);
-
+				LogUtils.d("Local", "listcategoryInfoList"+categoryInfoList.size()+list.size());
 				classLv.setOnItemClickListener(new OnItemClickListener() {
 
 					@Override
@@ -277,6 +277,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
 				LogUtils.d("Menu", list.size() + "sss");
+				errorview.setVisibility(View.INVISIBLE);
 				cAdapter = new ClassifyAdapter(context, list, classLv,
 						categoryInfoList);
 				classLv.setAdapter(cAdapter);
@@ -437,88 +438,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 		LogUtils.d("Local", "我刷新了阿");
 		switch (v.getId()) {
 		case R.id.btn_Refsh:
-			new MyAsynTask(context, errorview) {
-
-				@Override
-				protected Void doInBackground(Void... params) {
-					String str = ToolHelper.donwLoadToString(Global.MAIN_URL
-							+ Global.APP_CATEGORY + "?type=" + 2);
-					if (str == null) {
-						errorview.setVisibility(View.VISIBLE);
-					} else {
-						ParseCategoryJson(str);
-						if (categoryInfoList.size() > 0) {
-							CategoryInfo cif = categoryInfoList.get(2);
-							int type1 = Integer.parseInt(cif.getType1());
-							int type2 = Integer.parseInt(cif.getType2());
-							String str1 = ToolHelper
-									.donwLoadToString(Global.MAIN_URL
-											+ Global.INDEX_PAGE + "?type1=" + type1
-											+ "&type2=" + type2 + "&page=" + 0);
-							ParseJson(str1);
-						}
-					}
-					return null;
-				}
-
-				@Override
-				protected void onPostExecute(Void result) {
-					super.onPostExecute(result);
-					errorview.setVisibility(View.INVISIBLE);
-					cAdapter = new ClassifyAdapter(getActivity()
-							.getApplicationContext(), list, classLv,
-							categoryInfoList);
-					classLv.setAdapter(cAdapter);
-
-					classLv.setOnItemClickListener(new OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> parent, View view,
-								int position, long id) {
-							AppInfo mAppInfo = (AppInfo) classLv.getAdapter()
-									.getItem(position);
-							// Log.d("YTL", "mAppInfo.getIdx() = " +
-							// mAppInfo.getIdx());
-							Intent intent = new Intent(getActivity()
-									.getApplicationContext(),
-									AppDetailActivity.class);
-							// LogUtils.d("error", position+"");
-							intent.putExtra("appid", mAppInfo.getIdx());
-							intent.putExtra("appinfo", mAppInfo);
-							startActivity(intent);
-						}
-					});
-					classLv.setOnScrollListener(new OnScrollListener() {
-
-						@Override
-						public void onScrollStateChanged(AbsListView view,
-								int scrollState) {
-							// TODO Auto-generated method stub
-						}
-
-						@Override
-						public void onScroll(AbsListView view,
-								int firstVisibleItem, int visibleItemCount,
-								int totalItemCount) {
-							// TODO Auto-generated method stub
-							visibleCount = visibleItemCount;
-							visibleLast = firstVisibleItem + visibleItemCount - 1;
-							if ((firstVisibleItem + visibleItemCount == totalItemCount)
-									&& (totalItemCount != 0)) {
-								if (!isLoading && !isFirst) {
-									isLoading = true;
-									loadmore_btn.setText("正在加载中...");
-									loadmore_btn.setVisibility(View.VISIBLE);
-									page = page + 1;
-									loadData();
-								}
-								isFirst = false;
-							}
-						}
-					});
-				}
-			}.exe();
-			break;
+			updata(2);
 		}
 	}
 }

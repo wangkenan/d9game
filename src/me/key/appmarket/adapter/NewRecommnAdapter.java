@@ -333,9 +333,9 @@ public class NewRecommnAdapter extends BaseAdapter {
 						+ sdappInfoRight.getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
-		boolean isDownLoaded = DownloadService.isDownLoaded(sdappInfo.getApkName()
+		boolean isDownLoaded = DownloadService.isDownLoaded(sdappInfo.getAppName()
 				);
-		boolean isDownLoadedRight = DownloadService.isDownLoaded(sdappInfoRight.getApkName()
+		boolean isDownLoadedRight = DownloadService.isDownLoaded(sdappInfoRight.getAppName()
 				);
 		int idx = Integer.parseInt(sdappInfo.getIdx());
 		int idxRight = Integer.parseInt(sdappInfoRight.getIdx());
@@ -503,7 +503,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
 					sdappInfo.setIspause(!sdappInfo.isIspause());
 					LogUtils.d("test", appInfos.get(position).isIspause() + "2");
-				} else if (DownloadService.isDownLoaded(sdappInfo.getApkName())) {
+				} else if (DownloadService.isDownLoaded(sdappInfo.getAppName())) {
 					// 已经下载
 					DownloadService.Instanll(sdappInfo.getAppName(), mContext);
 				} else if (!sdappInfo.isInstalled()) {
@@ -583,11 +583,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 				// v1.progress_view.setVisibility(View.INVISIBLE);
 				v1.tvdownRight.setVisibility(View.VISIBLE);
 				// v1.progress_view.setProgress(DownloadService.getPrecent(idx));
-				LogUtils.d("new", "我是下载中暂停"
-						+ appInfos.get(position).getAppName());
 				if (!isDownLoadedRight) {
-					LogUtils.d("new", "我执行了下载中暂停"
-							+ appInfos.get(position).getAppName());
 					// v1.progress_view.setVisibility(View.INVISIBLE);
 					v1.tvdownRight.setVisibility(View.VISIBLE);
 				}
@@ -734,7 +730,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
 					sdappInfoRight.setIspause(!sdappInfoRight.isIspause());
 					LogUtils.d("test", sdappInfoRight.isIspause() + "2");
-				} else if (DownloadService.isDownLoaded(sdappInfoRight.getApkName()
+				} else if (DownloadService.isDownLoaded(sdappInfoRight.getAppName()
 						)) {
 					// 已经下载
 					DownloadService.Instanll(sdappInfoRight.getAppName(),

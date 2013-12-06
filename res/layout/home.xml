@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="@color/gray_hint" 
     >
-
 <!-- 	<me.key.appmarket.widgets.GalleryFlow
         android:id="@+id/tuijian_gallery"
         android:layout_width="fill_parent"
@@ -17,7 +16,10 @@
 		android:fadingEdge="none"
         />  -->
 
-
+      <include
+            layout="@layout/error_layout"
+            android:visibility="gone" 
+            />
       
           
         <ListView
@@ -38,12 +40,5 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="gone" /> 
-              <include
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_centerInParent="true"
-            layout="@layout/error_layout"
-            android:visibility="gone" 
-            />
-
-</RelativeLayout>
+   
+</LinearLayout>

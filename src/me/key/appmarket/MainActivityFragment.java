@@ -88,7 +88,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private List<View> listViews;
 	private TextView t1, t2, t3, t4, t5;
 	private View homeView, gameView, rankView, managerView, logcalGmaeView;
-	
+
 	private boolean mPreparedQuit = false;
 	private int headContentWidth;
 	private int headContentHeight;
@@ -97,6 +97,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private int firstItemIndex;
 	private OnLoadMoreListener loadMoreListener;
 	private int state;
+
 
 	private boolean isBack;
 	private ImageButton search_btn;
@@ -115,22 +116,21 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private GalleryFlow tuijian_gallery;
 	private TuiJianImageAdapter tuiJianAdapter;
 	// game
-	private boolean isLoading = false;
-	private boolean isFirst = true;
+	
 	private int x;
 	private int y;
 	private FinalDb db;
 	private TextView updata_num;
 	// 设置按钮
-		private ImageButton setting;
+	private ImageButton setting;
 	private PopupWindow pw;
-	//下载和更新
-		private TextView downandupdata;
-		//检查更新
-		private TextView checkupdata_pop;
-		//退出
-		private TextView getout_pop;
-		private TextView about;
+	// 下载和更新
+	private TextView downandupdata;
+	// 检查更新
+	private TextView checkupdata_pop;
+	// 退出
+	private TextView getout_pop;
+	private TextView about;
 	private SlidingMenu menu;
 	private MyListView mGameListView;
 	private ProgressBar pGameBar;
@@ -202,40 +202,47 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		}
 	};
 
-	public View onCreateView(android.view.LayoutInflater inflater, android.view.ViewGroup container, android.os.Bundle savedInstanceState) {
-		inflate = inflater.inflate(R.layout.main, container,false);
+	public View onCreateView(android.view.LayoutInflater inflater,
+			android.view.ViewGroup container,
+			android.os.Bundle savedInstanceState) {
+		inflate = inflater.inflate(R.layout.main, container, false);
 		return inflate;
 	};
+
 	public void onActivityCreated(android.os.Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		context = getActivity();
 		db = FinalDb.create(context);
 		// 自动升级，不能删
-				updateSelf(true);
-				InitViewPager();
-				initHomeView();
-				// initGameView();
-				// initRankView();
-				// initManagerView();
-				// initLocalGameView();
-				new Thread(runHomeData).start();
-				// new Thread(runRankData).start();
-				// new Thread(runBannerData).start();
-				registerInstall();
-			
+		updateSelf(true);
+		InitViewPager();
+		initHomeView();
+		// initGameView();
+		// initRankView();
+		// initManagerView();
+		// initLocalGameView();
+		new Thread(runHomeData).start();
+		// new Thread(runRankData).start();
+		// new Thread(runBannerData).start();
+		registerInstall();
+
 	};
+
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
 		registerPrecent();
-		if(appHomeAdapter != null) {
-		appHomeAdapter.notifyDataSetChanged();
-		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
-		downList_temp = db.findAll(AppInfo.class);
-		updata_num.setText(downList_temp.size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
+		if (appHomeAdapter != null) {
+			appHomeAdapter.notifyDataSetChanged();
+			List<AppInfo> downList_temp = new ArrayList<AppInfo>();
+			downList_temp = db.findAll(AppInfo.class);
+			updata_num.setText(downList_temp.size()
+					+ MarketApplication.getInstance()
+							.getAppManagerUpdateInfos().size() + "");
 		}
 	}
+
 	/**
 	 * 检查更新
 	 * 
@@ -244,11 +251,11 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private void updateSelf(boolean showToast) {
 		Calendar c = Calendar.getInstance();
 		int mDay = c.get(Calendar.DAY_OF_MONTH);// 获取当前月份的日期号码
-		SharedPreferences sp = PreferenceManager.
-				getDefaultSharedPreferences(getActivity());
-		int lastDay = sp.getInt("day", 0); 
+		SharedPreferences sp = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+		int lastDay = sp.getInt("day", 0);
 		if (lastDay != mDay) {
-			try { 
+			try {
 				UpdateApk.checkUpdate(getActivity(), showToast, true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -256,7 +263,9 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		}
 		sp.edit().putInt("day", mDay).commit();
 	}
+
 	MyInstalledReceiver installedReceiver;
+
 	private void registerInstall() {
 		installedReceiver = new MyInstalledReceiver();
 		IntentFilter filter = new IntentFilter();
@@ -267,6 +276,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 
 		getActivity().registerReceiver(installedReceiver, filter);
 	}
+
 	private void InitViewPager() {
 		// TODO Auto-generated method stub\
 
@@ -282,7 +292,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		// t4.setOnClickListener(new MyOnClickListener(3));
 		// t5.setOnClickListener(new MyOnClickListener(4));
 
-		mPager = (ViewPager)  inflate.findViewById(R.id.vPager);
+		mPager = (ViewPager) inflate.findViewById(R.id.vPager);
 		listViews = new ArrayList<View>();
 		LayoutInflater mInflater = getActivity().getLayoutInflater();
 		homeView = mInflater.inflate(R.layout.home, null);
@@ -377,6 +387,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		}
 		return true;
 	}
+
 	class MyInstalledReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -392,8 +403,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 
 				// 刷新管理界面
 				appManagerInfos.clear();
-				ArrayList<AppInfo> appManagerInfos1 = AppUtils.getUserApps(context
-						, 4000);
+				ArrayList<AppInfo> appManagerInfos1 = AppUtils.getUserApps(
+						context, 4000);
 				appManagerInfos.addAll(appManagerInfos1);
 				appManagerInfos1.clear();
 				if (mManagerAdapter != null) {
@@ -509,6 +520,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			}
 		}
 	};
+
 	private void ParseUpdateJson(String str) {
 		try {
 
@@ -540,6 +552,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			// Log.e("tag", "error = " + ex.getMessage());
 		}
 	}
+
 	Handler homeUpdateHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -721,62 +734,43 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		}
 
 	}
+
 	Runnable runHomeData = new Runnable() {
 		@Override
 		public void run() {
-			//appHomeInfos.clear();
-			
-			if(MarketApplication.getInstance().getHomeAppInfos().size() == 0) {
-				//MyFragmengManager fragmentManager = new MyFragmengManager();
-				//fragmentManager.getData();
-				LogUtils.d("Local", "MarketApplication.getInstance().getHomeAppInfos().size() == 0");
-				new MyAsynTask(context, null) {
+			// appHomeInfos.clear();
 
-					@Override
-					protected Void doInBackground(Void... params) {
-					
-						MyFragmengManager manager = (MyFragmengManager) getActivity();
-						manager.getData();
-						return super.doInBackground(params);
-					}
+			if (MarketApplication.getInstance().getHomeAppInfos().size() == 0) {
+				// MyFragmengManager fragmentManager = new MyFragmengManager();
+				// fragmentManager.getData();
+				LogUtils.d("Local",
+						"MarketApplication.getInstance().getHomeAppInfos().size() == 0");
 
-					@Override
-					protected void onPostExecute(Void result) {
-						// TODO Auto-generated method stub
-						super.onPostExecute(result);
-						List<AppInfo> appHome = new ArrayList<AppInfo>();
-						appHome = MarketApplication.getInstance().getHomeAppInfos();
-						appHomeInfos.addAll(appHome);
-						appHomeAdapter.notifyDataSetChanged();
-					}
-					
-				}.exe();
 			} else {
-		/*		List<AppInfo> appHome = new ArrayList<AppInfo>();
-				appHome = appHomeInfos_temp;
-				appHomeInfos.addAll(appHome);
-				appHomeAdapter.notifyDataSetChanged();*/
+				/*
+				 * List<AppInfo> appHome = new ArrayList<AppInfo>(); appHome =
+				 * appHomeInfos_temp; appHomeInfos.addAll(appHome);
+				 * appHomeAdapter.notifyDataSetChanged();
+				 */
 			}
-			
-		/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-					+ Global.HOME_PAGE);
-			// Log.e("tag", "result =" + str);
-			if (str.equals("null")) {
-				homeDataHandler
-						.sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
-			} else if (str.equals("-1")) {
-				homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY);
-			} else {
-				// Log.e("tag", "--------------1-------------");
-				ParseHomeJson(str);
-			}*/
+
+			/*
+			 * String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL +
+			 * Global.HOME_PAGE); // Log.e("tag", "result =" + str); if
+			 * (str.equals("null")) { homeDataHandler
+			 * .sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL); } else if
+			 * (str.equals("-1")) {
+			 * homeDataHandler.sendEmptyMessage(Global.DOWN_DATA_HOME_FAILLY); }
+			 * else { // Log.e("tag", "--------------1-------------");
+			 * ParseHomeJson(str); }
+			 */
 			pHomeBar.setVisibility(View.INVISIBLE);
 			StringBuilder apknamelist = new StringBuilder();
 			for (AppInfo ai : appHomeInfos) {
 				DownStateBroadcast dsb = new DownStateBroadcast();
 				IntentFilter filter = new IntentFilter();
-				String fileName = DownloadService.CreatFileName(
-						ai.getAppName()).getAbsolutePath();
+				String fileName = DownloadService
+						.CreatFileName(ai.getAppName()).getAbsolutePath();
 				filter.addAction(fileName + "down");
 				getActivity().registerReceiver(dsb, filter);
 				apknamelist.append(ai.getPackageName() + ",");
@@ -805,8 +799,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 					+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
 			ParseUpdateJson(str);
-			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
-					appHomeInfos, appManagerUpdateInfos_t);
+			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(appHomeInfos,
+					appManagerUpdateInfos_t);
 			appManagerUpdateInfos.clear();
 			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
 			LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
@@ -824,9 +818,39 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		}
 	};
 	private View recomnView;
+
 	private void initHomeView() {
 		mHomeListView = (ListView) homeView.findViewById(R.id.list_home);
-		View view = inflate.inflate(context, R.layout.app_list_recomm_item, null);
+	
+		new MyAsynTask(context, null) {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+
+				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ Global.HOME_PAGE);
+				if (str2.isEmpty()) {
+					appHomeInfos_temp = new ArrayList<AppInfo>();
+				} else {
+					ParseHomeJson(str2);
+				}
+				return super.doInBackground(params);
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+				appHomeInfos.clear();
+				appHomeInfos.addAll(appHomeInfos_temp);
+				appHomeAdapter.notifyDataSetChanged();
+				
+			}
+
+		}.exe();
+	
+		View view = inflate.inflate(context, R.layout.app_list_recomm_item,
+				null);
 		View icon2 = view.findViewById(R.id.icon2);
 		View app_name2 = view.findViewById(R.id.app_name2);
 		View appsize2 = view.findViewById(R.id.appsize2);
@@ -835,6 +859,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		View app_nameRight = view.findViewById(R.id.app_name_right);
 		View appsizeRight = view.findViewById(R.id.appsize_right);
 		View imageViewRight = view.findViewById(R.id.imageView2);
+		View tvDownRight = view.findViewById(R.id.tv_down_right);
+		View tvDown = view.findViewById(R.id.tv_down2);
 		icon2.setVisibility(View.INVISIBLE);
 		app_name2.setVisibility(View.INVISIBLE);
 		appsize2.setVisibility(View.INVISIBLE);
@@ -843,14 +869,18 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		app_nameRight.setVisibility(View.INVISIBLE);
 		appsizeRight.setVisibility(View.INVISIBLE);
 		imageViewRight.setVisibility(View.INVISIBLE);
-		//添加广告、导航栏等
+		tvDown.setVisibility(View.INVISIBLE);
+		tvDownRight.setVisibility(View.INVISIBLE);
+		// 添加广告、导航栏等
 		mHomeListView.addFooterView(view);
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
 		testView.setPadding(0, 1, 0, 1);
-		View advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
-//		View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame, null);
+		View advertBanner = inflate.inflate(getActivity(),
+				R.layout.advert_banner, null);
+		// View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame,
+		// null);
 		testView.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent();
@@ -858,27 +888,28 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				startActivity(intent);
 			}
 		});
-//		recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
-		//tabRank.setPadding(0, 5, 0, 10);
+		// recomnView = (View)inflate.findViewById(R.id.tab_recomn2);
+		// tabRank.setPadding(0, 5, 0, 10);
 		advertBanner.setPadding(0, 6, 0, 6);
-		mHomeListView.addHeaderView(testView,null,false);
-		mHomeListView.addHeaderView(advertBanner,null,false);
-//		mHomeListView.addHeaderView(tabRank,null,false);
-//		 mHomeListView.setDividerHeight(20);
+		mHomeListView.addHeaderView(testView, null, false);
+		mHomeListView.addHeaderView(advertBanner, null, false);
+		// mHomeListView.addHeaderView(tabRank,null,false);
+		// mHomeListView.setDividerHeight(20);
 		pHomeBar = (ProgressBar) homeView.findViewById(R.id.pro_bar_home);
 		pHomeBar.setVisibility(View.VISIBLE);
 		ll_homeerror = (LinearLayout) homeView.findViewById(R.id.ll_error);
 		appHomeInfos = new ArrayList<AppInfo>();
-		View contentView = View.inflate(getActivity(),
-				R.layout.popup_item, null);
+		View contentView = View.inflate(getActivity(), R.layout.popup_item,
+				null);
 		pw = new PopupWindow(contentView, LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT, true);
 		ColorDrawable cd = new ColorDrawable(-0000);
 		pw.setBackgroundDrawable(cd);
 		pw.setOutsideTouchable(true);
-		
+
 		downandupdata = (TextView) contentView.findViewById(R.id.downandupdata);
-		checkupdata_pop = (TextView) contentView.findViewById(R.id.checkupdata_pop);
+		checkupdata_pop = (TextView) contentView
+				.findViewById(R.id.checkupdata_pop);
 		getout_pop = (TextView) contentView.findViewById(R.id.getout_pop);
 		about = (TextView) contentView.findViewById(R.id.about);
 		downandupdata.setOnClickListener(this);
@@ -902,9 +933,15 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 
 					@Override
 					protected Void doInBackground(Void... params) {
-					
-						MyFragmengManager manager = (MyFragmengManager) getActivity();
-						manager.getData();
+
+						String str2 = ToolHelper
+								.donwLoadToString(Global.GAME_MAIN_URL
+										+ Global.HOME_PAGE);
+						if (str2.isEmpty()) {
+							appHomeInfos_temp = new ArrayList<AppInfo>();
+						} else {
+							ParseHomeJson(str2);
+						}
 						return super.doInBackground(params);
 					}
 
@@ -914,11 +951,11 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 						super.onPostExecute(result);
 						pHomeBar.setVisibility(View.INVISIBLE);
 						List<AppInfo> appHome = new ArrayList<AppInfo>();
-						appHome = MarketApplication.getInstance().getHomeAppInfos();
-						appHomeInfos.addAll(appHome);
+						appHomeInfos.clear();
+						appHomeInfos.addAll(appHomeInfos_temp);
 						appHomeAdapter.notifyDataSetChanged();
 					}
-					
+
 				}.exe();
 
 			}
@@ -931,7 +968,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		tuijian_gallery = (GalleryFlow) inflater.inflate(
 				R.layout.home_head_banner, null);
-		//mHomeListView.addHeaderView(tuijian_gallery);
+		// mHomeListView.addHeaderView(tuijian_gallery);
 
 		tuijian_gallery.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -949,134 +986,125 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		appHomeInfos.clear();
 		List<AppInfo> appHome = new ArrayList<AppInfo>();
 		appHome = MarketApplication.getInstance().getHomeAppInfos();
-		LogUtils.d("Local", "appHome.size()"+appHome.size());
-		if(!NetworkUtils.isNetworkConnected(getActivity())) {
+		LogUtils.d("Local", "appHome.size()" + appHome.size());
+		if (!NetworkUtils.isNetworkConnected(getActivity())) {
 			ll_homeerror.setVisibility(View.VISIBLE);
 		} else {
-		updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
-		appHomeInfos.addAll(appHome);
-	
-		
-		
-		
-		  // 注册滑动监听事件 
-		
-		mHomeListView.setOnScrollListener(new OnScrollListener() {
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				// TODO Auto-generated method stub
-//				switch (scrollState) {
-//				case SCROLL_STATE_FLING:
-//					appRankAdapter.isAsyn = true;
-//					break;
-//				case SCROLL_STATE_IDLE:
-//					appRankAdapter.isAsyn = false;
-//					appRankAdapter.notifyDataSetChanged();
-//					break;
-//				case SCROLL_STATE_TOUCH_SCROLL:
-//					appRankAdapter.isAsyn = false;
-//					break;
-//				}
-				
-			}
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				/*// TODO Auto-generated method stub
-				if(firstVisibleItem>=2){
-					recomnView.setVisibility(View.VISIBLE);
-				}else{
-					recomnView.setVisibility(View.INVISIBLE);
-				}*/
-				
-			}
-		});
-		/* 
-		 * mHomeListView.setOnScrollListener(new OnScrollListener()
-		 * {
-		  
-		 @Override public void onScrollStateChanged(AbsListView view, int
-		 scrollState) { switch (scrollState) { case SCROLL_STATE_FLING:
-		 appHomeAdapter.isAsyn = true; break; case SCROLL_STATE_IDLE:
-		 appHomeAdapter.isAsyn = false; appHomeAdapter.notifyDataSetChanged();
-		 break; case SCROLL_STATE_TOUCH_SCROLL: appHomeAdapter.isAsyn = false;
-		 break;
-		 
-		 }
-		  
-		  }
-		 
-		  @Override public void onScroll(AbsListView view, int
-		 firstVisibleItem, int visibleItemCount, int totalItemCount) {
-		 
-		 } });*/
-		 
-		/*
-		 * mHomeListView.setonRefreshListener(new OnRefreshListener() {
-		 * 
-		 * @Override public void onRefresh() {
-		 * myHandler.removeMessages(SHOWNEXT); appHomeInfos.clear(); new
-		 * Thread(runHomeData).start(); // new Thread(runBannerData).start(); }
-		 });
-		 
+			updata_num.setText(MarketApplication.getInstance().getDownApplist()
+					.size()
+					+ MarketApplication.getInstance()
+							.getAppManagerUpdateInfos().size() + "");
+			appHomeInfos.addAll(appHome);
 
-		mHomeListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				if (position == 1) {
-					Intent intent = new Intent(getActivity(),
-							BannerActivity.class);
-					startActivity(intent);
+			// 注册滑动监听事件
 
-				} else {
-					AppInfo mAppInfo = (AppInfo) mHomeListView.getAdapter()
-							.getItem(position);
-					// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
-					Intent intent = new Intent(getActivity(),
-							AppDetailActivity.class);
-					// LogUtils.d("error", position+"");
-					intent.putExtra("appid", mAppInfo.getIdx());
-					intent.putExtra("appinfo", mAppInfo);
-					startActivity(intent);
+			mHomeListView.setOnScrollListener(new OnScrollListener() {
+				@Override
+				public void onScrollStateChanged(AbsListView view,
+						int scrollState) {
+					// TODO Auto-generated method stub
+					// switch (scrollState) {
+					// case SCROLL_STATE_FLING:
+					// appRankAdapter.isAsyn = true;
+					// break;
+					// case SCROLL_STATE_IDLE:
+					// appRankAdapter.isAsyn = false;
+					// appRankAdapter.notifyDataSetChanged();
+					// break;
+					// case SCROLL_STATE_TOUCH_SCROLL:
+					// appRankAdapter.isAsyn = false;
+					// break;
+					// }
+
 				}
-				// if(appHomeInfos != null && appHomeInfos.size() > position){
-				// AppInfo mAppInfo = appHomeInfos.get(position);
-				// Log.d("YTL", "mAppInfo.getIdx() = " + mAppInfo.getIdx());
-				// Intent intent = new Intent(MainActivity.this,
-				// AppDetailActivity.class);
-				// intent.putExtra("appid", mAppInfo.getIdx());
-				// startActivity(intent);
-				// }
-			}
-		});
 
-		// 　创建用于描述图像数据的ImageAdapter对象
-		/*
-		 * tuiJianAdapter = new TuiJianImageAdapter(this, bannerList, cache);
-		 * tuijian_gallery.setAdapter(tuiJianAdapter);
-		 * tuijian_gallery.setmPager(mPager); tuijian_gallery
-		 * .setOnItemClickListener(new GalleryFlow.IOnItemClickListener() {
-		 * 
-		 * @Override public void onItemClick(int position) { int tempPos =
-		 * position % bannerList.size(); BannerInfo mBanner =
-		 * bannerList.get(tempPos); if (mBanner.getLinkurl() != null &&
-		 * !mBanner.getLinkurl().equals("") &&
-		 * !mBanner.getLinkurl().equals("null")) { try { Intent intent = new
-		 * Intent(); intent.setAction("android.intent.action.VIEW"); Uri
-		 * content_url = Uri.parse(mBanner .getLinkurl());
-		 * intent.setData(content_url); startActivity(intent); } catch
-		 * (Exception e) { e.printStackTrace(); ToastUtils.show("请先安装浏览器"); } }
-		 * else { Intent intent = new Intent(MainActivity.this,
-		 * AppDetailActivity.class); intent.putExtra("appid",
-		 * mBanner.getAppID()); startActivity(intent); } } });
-		 */
+				@Override
+				public void onScroll(AbsListView view, int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+					/*
+					 * // TODO Auto-generated method stub
+					 * if(firstVisibleItem>=2){
+					 * recomnView.setVisibility(View.VISIBLE); }else{
+					 * recomnView.setVisibility(View.INVISIBLE); }
+					 */
+
+				}
+			});
+			/*
+			 * mHomeListView.setOnScrollListener(new OnScrollListener() {
+			 * 
+			 * @Override public void onScrollStateChanged(AbsListView view, int
+			 * scrollState) { switch (scrollState) { case SCROLL_STATE_FLING:
+			 * appHomeAdapter.isAsyn = true; break; case SCROLL_STATE_IDLE:
+			 * appHomeAdapter.isAsyn = false;
+			 * appHomeAdapter.notifyDataSetChanged(); break; case
+			 * SCROLL_STATE_TOUCH_SCROLL: appHomeAdapter.isAsyn = false; break;
+			 * 
+			 * }
+			 * 
+			 * }
+			 * 
+			 * @Override public void onScroll(AbsListView view, int
+			 * firstVisibleItem, int visibleItemCount, int totalItemCount) {
+			 * 
+			 * } });
+			 */
+
+			/*
+			 * mHomeListView.setonRefreshListener(new OnRefreshListener() {
+			 * 
+			 * @Override public void onRefresh() {
+			 * myHandler.removeMessages(SHOWNEXT); appHomeInfos.clear(); new
+			 * Thread(runHomeData).start(); // new
+			 * Thread(runBannerData).start(); } });
+			 * 
+			 * 
+			 * mHomeListView.setOnItemClickListener(new OnItemClickListener() {
+			 * 
+			 * @Override public void onItemClick(AdapterView<?> parent, View
+			 * view, int position, long id) { if (position == 1) { Intent intent
+			 * = new Intent(getActivity(), BannerActivity.class);
+			 * startActivity(intent);
+			 * 
+			 * } else { AppInfo mAppInfo = (AppInfo) mHomeListView.getAdapter()
+			 * .getItem(position); // Log.d("YTL", "mAppInfo.getIdx() = " +
+			 * mAppInfo.getIdx()); Intent intent = new Intent(getActivity(),
+			 * AppDetailActivity.class); // LogUtils.d("error", position+"");
+			 * intent.putExtra("appid", mAppInfo.getIdx());
+			 * intent.putExtra("appinfo", mAppInfo); startActivity(intent); } //
+			 * if(appHomeInfos != null && appHomeInfos.size() > position){ //
+			 * AppInfo mAppInfo = appHomeInfos.get(position); // Log.d("YTL",
+			 * "mAppInfo.getIdx() = " + mAppInfo.getIdx()); // Intent intent =
+			 * new Intent(MainActivity.this, // AppDetailActivity.class); //
+			 * intent.putExtra("appid", mAppInfo.getIdx()); //
+			 * startActivity(intent); // } } });
+			 * 
+			 * // 　创建用于描述图像数据的ImageAdapter对象 /* tuiJianAdapter = new
+			 * TuiJianImageAdapter(this, bannerList, cache);
+			 * tuijian_gallery.setAdapter(tuiJianAdapter);
+			 * tuijian_gallery.setmPager(mPager); tuijian_gallery
+			 * .setOnItemClickListener(new GalleryFlow.IOnItemClickListener() {
+			 * 
+			 * @Override public void onItemClick(int position) { int tempPos =
+			 * position % bannerList.size(); BannerInfo mBanner =
+			 * bannerList.get(tempPos); if (mBanner.getLinkurl() != null &&
+			 * !mBanner.getLinkurl().equals("") &&
+			 * !mBanner.getLinkurl().equals("null")) { try { Intent intent = new
+			 * Intent(); intent.setAction("android.intent.action.VIEW"); Uri
+			 * content_url = Uri.parse(mBanner .getLinkurl());
+			 * intent.setData(content_url); startActivity(intent); } catch
+			 * (Exception e) { e.printStackTrace(); ToastUtils.show("请先安装浏览器");
+			 * } } else { Intent intent = new Intent(MainActivity.this,
+			 * AppDetailActivity.class); intent.putExtra("appid",
+			 * mBanner.getAppID()); startActivity(intent); } } });
+			 */
 		}
 		appHomeAdapter = new NewRecommnAdapter(appHomeInfos, getActivity(),
 				cache, mHomeListView);
 		mHomeListView.setAdapter(appHomeAdapter);
 		appHomeAdapter.notifyDataSetChanged();
 	}
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -1084,8 +1112,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			// 获取view在当前窗体的位置
 			int location[] = new int[2];
 			setting.getLocationInWindow(location);
-			x= location[0] + px2dip(getActivity(), 60);
-			y = location[1]+ px2dip(getActivity(), 120);
+			x = location[0] + px2dip(getActivity(), 60);
+			y = location[1] + px2dip(getActivity(), 120);
 			pw.showAtLocation(inflate, Gravity.LEFT | Gravity.TOP, x, y);
 			break;
 		case R.id.downandupdata:
@@ -1103,7 +1131,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
+			getActivity().stopService(
+					new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
 			pw.dismiss();
@@ -1113,47 +1142,52 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			break;
 		}
 	}
-	 public static int px2dip(Context context, float pxValue){ 
-         final float scale = context.getResources().getDisplayMetrics().density; 
-         return (int)(pxValue / scale + 0.5f); 
- } 
-		private void ParseHomeJson(String str) {
-			try {
-				// Log.e("tag", "--------2--------");
-				JSONArray jsonArray = new JSONArray(str);
-				LogUtils.d("descr", str);
-				int len = jsonArray.length();
-				LogUtils.d("len", len + "ge");
-				for (int i = 0; i < len; i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					String appName = jsonObject.getString("appname");
-					String appiconurl = jsonObject.getString("appiconurl");
-					String appSize = jsonObject.getString("appsize");
-					String idx = jsonObject.getString("idx");
-					String appurl = jsonObject.getString("appurl");
-					String appdes = jsonObject.getString("appdes");
-					String recoPic = jsonObject.getString("recoPic");
-					String apppkgname = jsonObject.getString("apppkgname");
-					AppInfo appInfo = new AppInfo(idx, appName, appSize,
-							Global.MAIN_URL + appiconurl, appurl, "", appdes,
-							apppkgname);
-					appInfo.setPackageName(apppkgname);
-					appInfo.setLastTime(Long.MAX_VALUE);
-					if (recoPic == null) {
-						String appimgurl = jsonObject.getString("appimgurl");
-						String[] appImgurls = appimgurl.split(",");
-						appInfo.setAppimgurl(appImgurls);
-					}
 
-					appInfo.setRecoPic(recoPic);
-					appInfo.setInstalled(AppUtils.isInstalled(jsonObject
-							.getString("apppkgname")));
-					appHomeInfos_temp.add(appInfo);
+	public static int px2dip(Context context, float pxValue) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (pxValue / scale + 0.5f);
+	}
 
-					// Log.e("tag", "info = " + appInfo.toString());
+	private void ParseHomeJson(String str) {
+		appHomeInfos_temp.clear();
+		try {
+			// Log.e("tag", "--------2--------");
+			JSONArray jsonArray = new JSONArray(str);
+			LogUtils.d("descr", str);
+			int len = jsonArray.length();
+			LogUtils.d("len", len + "ge");
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				String appdes = jsonObject.getString("appdes");
+				String recoPic = jsonObject.getString("recoPic");
+				String apppkgname = jsonObject.getString("apppkgname");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,
+						apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setLastTime(Long.MAX_VALUE);
+				if (recoPic == null) {
+					String appimgurl = jsonObject.getString("appimgurl");
+					String[] appImgurls = appimgurl.split(",");
+					appInfo.setAppimgurl(appImgurls);
 				}
-				// Log.e("tag", "--------------2--------");
-			} catch (Exception ex) {
+
+				appInfo.setRecoPic(recoPic);
+				appInfo.setInstalled(AppUtils.isInstalled(jsonObject
+						.getString("apppkgname")));
+				appHomeInfos_temp.add(appInfo);
+
+				// Log.e("tag", "info = " + appInfo.toString());
 			}
+			// Log.e("tag", "--------------2--------");
+		} catch (Exception ex) {
 		}
+	}
+
+
 }

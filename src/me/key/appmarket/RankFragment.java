@@ -82,6 +82,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 	private ListView mRankListView;
 	private MenuCategoryAdapter menuCategoryAdapter;
 	private ArrayList<AppInfo> appRankInfos;
+	private ArrayList<AppInfo> appRankInfos_temp;
 	private NewRankAdapter appRankAdapter;
 	private ProgressBar rank_pb;
 	private LinearLayout ll_rankerror;
@@ -115,6 +116,15 @@ public class RankFragment extends Fragment implements OnClickListener {
 	private TextView updata_num;
 	private View testView;
 	private View advertBanner;
+	
+	private boolean isLoading = false;
+	private boolean isFirst = true;
+	private View loadMoreView;
+	private int visibleLast = 0;
+	private int visibleCount;
+	private Button loadmore_btn;
+	// 每次获取的数量
+	private int page = 0;
 	private Handler myHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -200,6 +210,9 @@ testView.setOnClickListener(new OnClickListener() {
 		setting.setOnClickListener(this);
 		mRankListView.addHeaderView(testView,null,false);
 		mRankListView.addHeaderView(advertBanner,null,false);
+		loadMoreView = inflate.inflate(getActivity(), R.layout.loadmore, null);
+		mRankListView.addFooterView(loadMoreView);
+		loadmore_btn = (Button) loadMoreView.findViewById(R.id.loadMoreButton);
 		//添加底部不可见项目
 		advertBanner2 = inflate.inflate(getActivity(), R.layout.advert_banner, null);
 		advertBanner2.setVisibility(View.INVISIBLE);
@@ -240,10 +253,11 @@ testView.setOnClickListener(new OnClickListener() {
 				String strRank = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.RANK_PAGE);
 				if (strRank.isEmpty()) {
-					appRankInfos = new ArrayList<AppInfo>();
+					appRankInfos_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseRankJson(strRank);
 				}
+			
 				StringBuilder apknamelist = new StringBuilder();
 				for (AppInfo ai : appRankInfos) {
 					DownStateBroadcast dsb = new DownStateBroadcast();
@@ -298,12 +312,44 @@ testView.setOnClickListener(new OnClickListener() {
 			}
 
 			protected void onPostExecute(Void result) {
+				
+				appRankInfos.clear();
+				appRankInfos.addAll(appRankInfos_temp);
 				if(appRankInfos.size() == 0) {
 					ll_rankerror.setVisibility(View.VISIBLE);
 				} else {
 				}
 				appRankAdapter.notifyDataSetChanged();
 				updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
+				mRankListView.setOnScrollListener(new OnScrollListener() {
+
+					@Override
+					public void onScrollStateChanged(AbsListView view,
+							int scrollState) {
+						// TODO Auto-generated method stub
+						int itemsLastIndex = appRankAdapter.getCount() - 1;
+						int lastIndex = itemsLastIndex + 1;
+
+					}
+
+					@Override
+					public void onScroll(AbsListView view,
+							int firstVisibleItem, int visibleItemCount,
+							int totalItemCount) {
+						// TODO Auto-generated method stub
+						if ((firstVisibleItem + visibleItemCount == totalItemCount)
+								&& (totalItemCount != 0)) {
+							if (!isLoading && !isFirst) {
+								isLoading = true;
+								loadmore_btn.setText("正在加载中...");
+								loadmore_btn.setVisibility(View.VISIBLE);
+								page = page + 1;
+								loadData();
+							}
+							isFirst = false;
+						}
+					}
+				});
 				// rank_pb.setVisibility(View.INVISIBLE);
 			};
 		}.execute();
@@ -362,7 +408,7 @@ testView.setOnClickListener(new OnClickListener() {
 
 	private void ParseUpdateJson(String str) {
 		try {
-
+			appManagerUpdateInfos_t.clear();
 			ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
@@ -384,7 +430,6 @@ testView.setOnClickListener(new OnClickListener() {
 				tempList.add(appInfo);
 			}
 			LogUtils.d("Mana", "temp:" + tempList.size());
-			appManagerUpdateInfos_t.clear();
 			appManagerUpdateInfos_t.addAll(tempList);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -472,22 +517,11 @@ testView.setOnClickListener(new OnClickListener() {
 	public void onResume() {
 		super.onResume();
 		registerPrecent();
-		if(appRankInfos.size() == 0) {
-			List<AppInfo> temp = new ArrayList<AppInfo>();
-			temp = MarketApplication.getInstance().getRankAppInfos();
-			appRankInfos.addAll(temp);
-			
-		} else {
-			appRankAdapter.notifyDataSetChanged();
-		}
 		
 		if(appRankInfos.size() != 0) {
 			ll_rankerror.setVisibility(View.INVISIBLE);
 		}
 		appRankAdapter.notifyDataSetChanged();
-		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
-		downList_temp = db.findAll(AppInfo.class);
-		updata_num.setText(downList_temp.size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
 	}
 
 	@Override
@@ -501,6 +535,8 @@ testView.setOnClickListener(new OnClickListener() {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_Refsh:
+			isLoading = false;
+			isFirst = true;
 			new MyAsynTask(getActivity(), ll_rankerror) {
 
 				@Override
@@ -521,9 +557,40 @@ testView.setOnClickListener(new OnClickListener() {
 				protected void onPostExecute(Void result) {
 					// TODO Auto-generated method stub
 					super.onPostExecute(result);
+					appRankInfos.clear();
+					appRankInfos.addAll(appRankInfos_temp);
 					appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), null);
 					mRankListView.setAdapter(appRankAdapter);
 					ll_rankerror.setVisibility(View.INVISIBLE);
+					mRankListView.setOnScrollListener(new OnScrollListener() {
+
+						@Override
+						public void onScrollStateChanged(AbsListView view,
+								int scrollState) {
+							// TODO Auto-generated method stub
+							int itemsLastIndex = appRankAdapter.getCount() - 1;
+							int lastIndex = itemsLastIndex + 1;
+
+						}
+
+						@Override
+						public void onScroll(AbsListView view,
+								int firstVisibleItem, int visibleItemCount,
+								int totalItemCount) {
+							// TODO Auto-generated method stub
+							if ((firstVisibleItem + visibleItemCount == totalItemCount)
+									&& (totalItemCount != 0)) {
+								if (!isLoading && !isFirst) {
+									isLoading = true;
+									loadmore_btn.setText("正在加载中...");
+									loadmore_btn.setVisibility(View.VISIBLE);
+									page = page + 1;
+									loadData();
+								}
+								isFirst = false;
+							}
+						}
+					});
 				}
 				
 			}.exe();
@@ -589,6 +656,7 @@ testView.setOnClickListener(new OnClickListener() {
 	}
 	// 解析Rank
 	private void ParseRankJson(String str) {
+		appRankInfos_temp = new ArrayList<AppInfo>();
 		try {
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
@@ -607,11 +675,57 @@ testView.setOnClickListener(new OnClickListener() {
 				appInfo.setPackageName(apppkgname);
 				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				appInfo.setLastTime(Long.MAX_VALUE);
-				appRankInfos.add(appInfo);
+				appRankInfos_temp.add(appInfo);
 				// appRankInfos.add(appInfo);
 			}
 			// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
 		} catch (Exception ex) {
 		}
+	}
+	/**
+	 * 获取数据
+	 */
+	private void loadData() {
+		new MyAsynTask(getActivity(), ll_rankerror) {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				String str = ToolHelper
+						.donwLoadToString(Global.GAME_MAIN_URL
+								+ Global.RANK_PAGE+"?page="+page);
+				if (str == null) {
+					ll_rankerror.setVisibility(View.VISIBLE);
+					appRankInfos = new ArrayList<AppInfo>();
+				} else {
+						ParseRankJson(str);
+				}
+
+				return null;
+			}
+
+			
+
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				loadmore_btn.setVisibility(View.GONE);
+				appRankInfos.addAll(appRankInfos_temp);
+				appRankAdapter.notifyDataSetChanged();
+				isLoading = false;
+				/*
+				 * classLv.setOnItemClickListener(new OnItemClickListener() {
+				 * 
+				 * @Override public void onItemClick(AdapterView<?> parent, View
+				 * view, int position, long id) { AppInfo mAppInfo = (AppInfo)
+				 * classLv.getAdapter() .getItem(position); // Log.d("YTL",
+				 * "mAppInfo.getIdx() = " + // mAppInfo.getIdx()); Intent intent
+				 * = new Intent(getActivity() .getApplicationContext(),
+				 * AppDetailActivity.class); // LogUtils.d("error",
+				 * position+""); intent.putExtra("appid", mAppInfo.getIdx());
+				 * intent.putExtra("appinfo", mAppInfo); startActivity(intent);
+				 * } });
+				 */
+			}
+		}.exe();
 	}
 }

@@ -223,7 +223,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		 * mListReco.setOnScrollListener(this);
 		 * mListReco.setOnItemClickListener(this);
 		 * mListReco.setOnItemLongClickListener(this);
-		 */
+		 */long now = System.currentTimeMillis();
+		 LogUtils.d("Local", "time"+(now-currentTimeMillis));
 		new AsyncTask<Void, Void, Void>() {
 			
 			@Override
