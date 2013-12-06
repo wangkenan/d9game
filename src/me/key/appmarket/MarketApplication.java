@@ -110,7 +110,8 @@ public class MarketApplication extends Application {
 		super.onCreate();
 		mInstance = this;
 		ToastUtils.init(this);
-		// 注册未捕获异常处理方式
+		// 注册未捕获异常处理方式SZAcvxz
+		
 		CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(getApplicationContext());
 		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
@@ -122,9 +123,6 @@ public class MarketApplication extends Application {
                         // TODO Auto-generated method stub
                         ex.printStackTrace();
                         LogUtils.d("Local", "我被结束了");
-                        for(Activity activity : activitys) {
-                        	activity.finish();
-                        }
                         
                 }
         });
