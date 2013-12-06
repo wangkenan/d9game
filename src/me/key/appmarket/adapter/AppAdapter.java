@@ -245,6 +245,7 @@ public class AppAdapter extends BaseAdapter {
 			LogUtils.d("new", "我是暂停中下载"+appInfos.get(position).getAppName());
 			if (!isDownLoaded) {
 				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+				v1.tvdown.setVisibility(View.VISIBLE);
 				LogUtils.d("new", "我执行了暂停中下载"+appInfos.get(position).getAppName());
 			//	v1.progress_view.setVisibility(View.VISIBLE);
 //				v1.tvdown.setVisibility(View.INVISIBLE);
@@ -265,6 +266,8 @@ public class AppAdapter extends BaseAdapter {
 			 * mDrawableicon, null, null);
 			 */
 		} else if (appInfos.get(position).isDown()) {
+			v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+			v1.tvdown.setVisibility(View.VISIBLE);
 		//	v1.progress_view.setProgress(DownloadService.getPrecent(idx));
 			LogUtils.d("ture", isDownLoading + "isDown");
 			LogUtils.d("newdowndown", "我变成下载中了"+appInfos.get(position).getAppName());
@@ -369,10 +372,10 @@ public class AppAdapter extends BaseAdapter {
 						v1.tvdown.setText("暂停");
 						appInfos.get(position).setDown(false);
 					} else {
-						v1.tvdown.setText("下载中");
+						v1.tvdown.setText(DownloadService.getPrecent(Integer.parseInt(appInfos.get(position).getIdx()))+"%");
 						appInfos.get(position).setDown(true);
 					//	v1.progress_view.setVisibility(View.VISIBLE);
-						v1.tvdown.setVisibility(View.INVISIBLE);
+						v1.tvdown.setVisibility(View.VISIBLE);
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");

@@ -368,7 +368,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 						} else {
 							ai.setVersion("9999999999999");
 						}
-
+						unregisterReceiver(dsb);
 					} catch (NameNotFoundException e) {
 						e.printStackTrace();
 					}
