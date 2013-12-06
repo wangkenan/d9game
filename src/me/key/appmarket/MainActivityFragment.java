@@ -20,6 +20,7 @@ import me.key.appmarket.adapter.NewRankAdapter;
 import me.key.appmarket.adapter.NewRecommnAdapter;
 import me.key.appmarket.adapter.TabPageAdapter;
 import me.key.appmarket.adapter.TuiJianImageAdapter;
+import me.key.appmarket.network.NetworkUtils;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.update.UpdateApk;
@@ -751,17 +752,10 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 					
 				}.exe();
 			} else {
-				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-						+ Global.HOME_PAGE);
-				if (str2.isEmpty()) {
-					appHomeInfos_temp = new ArrayList<AppInfo>();
-				} else {
-					ParseHomeJson(str2);
-				}
-				List<AppInfo> appHome = new ArrayList<AppInfo>();
+		/*		List<AppInfo> appHome = new ArrayList<AppInfo>();
 				appHome = appHomeInfos_temp;
 				appHomeInfos.addAll(appHome);
-				appHomeAdapter.notifyDataSetChanged();
+				appHomeAdapter.notifyDataSetChanged();*/
 			}
 			
 		/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
@@ -904,7 +898,28 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				appHomeInfos.clear();
 				pHomeBar.setVisibility(View.VISIBLE);
 				ll_homeerror.setVisibility(View.GONE);
-				new Thread(runHomeData).start();
+				new MyAsynTask(context, null) {
+
+					@Override
+					protected Void doInBackground(Void... params) {
+					
+						MyFragmengManager manager = (MyFragmengManager) getActivity();
+						manager.getData();
+						return super.doInBackground(params);
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						// TODO Auto-generated method stub
+						super.onPostExecute(result);
+						pHomeBar.setVisibility(View.INVISIBLE);
+						List<AppInfo> appHome = new ArrayList<AppInfo>();
+						appHome = MarketApplication.getInstance().getHomeAppInfos();
+						appHomeInfos.addAll(appHome);
+						appHomeAdapter.notifyDataSetChanged();
+					}
+					
+				}.exe();
 
 			}
 		});
@@ -935,7 +950,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		List<AppInfo> appHome = new ArrayList<AppInfo>();
 		appHome = MarketApplication.getInstance().getHomeAppInfos();
 		LogUtils.d("Local", "appHome.size()"+appHome.size());
-		if(appHome.size() == 0) {
+		if(!NetworkUtils.isNetworkConnected(getActivity())) {
 			ll_homeerror.setVisibility(View.VISIBLE);
 		} else {
 		updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");

@@ -561,14 +561,9 @@ public class MyAdapter extends BaseAdapter {
 	 * @param mAppInfo
 	 */
 	private void installApp(AppInfo mAppInfo) {
-		String str = mAppInfo.getApkName();
-		String fileName = ROOT + str;
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		Log.v("tag", "nano ROOT" + fileName);
-		intent.setDataAndType(Uri.fromFile(new File(fileName)),
-				"application/vnd.android.package-archive");
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		this.cnt.startActivity(intent);
+		Uri packageURI = Uri.parse("package:" + mAppInfo.getPackageName());
+		Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);
+		cnt.startActivity(uninstallIntent);
 	}
 
 	/*

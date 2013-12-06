@@ -506,13 +506,19 @@ testView.setOnClickListener(new OnClickListener() {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_Refsh:
-			new MyAsynTask(getActivity(), null) {
+			new MyAsynTask(getActivity(), ll_rankerror) {
 
 				@Override
 				protected Void doInBackground(Void... params) {
 				
 					MyFragmengManager manager = (MyFragmengManager) getActivity();
-					manager.getData();
+					String strRank = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+							+ Global.RANK_PAGE);
+					if (strRank.isEmpty()) {
+						appRankInfos = new ArrayList<AppInfo>();
+					} else {
+						ParseRankJson(strRank);
+					}
 					return super.doInBackground(params);
 				}
 
@@ -520,10 +526,8 @@ testView.setOnClickListener(new OnClickListener() {
 				protected void onPostExecute(Void result) {
 					// TODO Auto-generated method stub
 					super.onPostExecute(result);
-					List<AppInfo> appHome = new ArrayList<AppInfo>();
-					appHome = MarketApplication.getInstance().getHomeAppInfos();
-					appRankInfos.addAll(appHome);
-					appRankAdapter.notifyDataSetChanged();
+					appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), null);
+					mRankListView.setAdapter(appRankAdapter);
 					ll_rankerror.setVisibility(View.INVISIBLE);
 				}
 				

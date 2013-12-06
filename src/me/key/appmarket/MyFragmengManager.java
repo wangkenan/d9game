@@ -190,7 +190,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+			/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.RANK_PAGE);
 				if (str.isEmpty()) {
 					appRankInfos = new ArrayList<AppInfo>();
@@ -203,7 +203,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					appHomeInfos_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseHomeJson(str2);
-				}
+				}*/
 				appManaInfos_temp = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
@@ -564,6 +564,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 	private void ParseCategoryJson(String str) {
 		try {
+			gcategoryInfoList_temp.clear();
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
 			for (int i = 0; i < len; i++) {
@@ -859,13 +860,6 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	}
 
 	public void getData() {
-		String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-				+ Global.RANK_PAGE);
-		if (str.isEmpty()) {
-			appRankInfos = new ArrayList<AppInfo>();
-		} else {
-			ParseRankJson(str);
-		}
 		String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 				+ Global.HOME_PAGE);
 		if (str2.isEmpty()) {
@@ -903,16 +897,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		downApplist.clear();
 		downApplist.addAll(down_temp);
 		Collections.reverse(downApplist);
-		String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
-				+ Global.APP_CATEGORY + "?type=" + 2);
-		LogUtils.d("Local", "runCategoryData" + str4);
-		if (str4.isEmpty()) {
-			gcategoryInfoList_temp = null;
-			LogUtils.d("Local", "runCategoryData" + str4 + "str4");
-
-		} else {
-			ParseCategoryJson(str4);
-		}
+	
 	}
 
 
