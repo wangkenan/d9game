@@ -104,6 +104,8 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 	private TextView text_delete;
 	private ImageView iv_operate_search;
+	
+	private String searchStr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,9 +126,16 @@ public class SearchActivity extends Activity implements OnClickListener {
 		filter.addDataScheme("package");
 
 		this.registerReceiver(installedReceiver, filter);
+		startSearch();
 		new Thread(runHotData).start();
 		// 添加下载状态广播，遗迹增添应用更新信息
 
+	}
+
+	private void startSearch() {
+		search_text = getIntent().getStringExtra("Search");
+		new Thread(searchData).start();
+		appSearchAdapter.notifyDataSetChanged();
 	}
 
 	private void initSearchView() {

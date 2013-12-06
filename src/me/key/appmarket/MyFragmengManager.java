@@ -22,7 +22,6 @@ import net.tsz.afinal.FinalDb;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,19 +36,20 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewSwitcher;
 
 import com.market.d9game.R;
@@ -190,7 +190,13 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				
+				String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ Global.RANK_PAGE);
+				if (str.isEmpty()) {
+					appRankInfos = new ArrayList<AppInfo>();
+				} else {
+					ParseRankJson(str);
+				}
 				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 						+ Global.HOME_PAGE);
 				if (str2.isEmpty()) {
@@ -337,7 +343,28 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						 */
 					}
 				});
-				LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
+				final EditText etSearcher = (EditText)findViewById(R.id.et_search);
+				etSearcher.setOnEditorActionListener(new OnEditorActionListener(){
+
+					@Override
+					public boolean onEditorAction(TextView tv, int antionId,
+							KeyEvent event) {
+						// TODO Auto-generated method stub
+						Intent intent = new Intent();
+						intent.putExtra("Search", etSearcher.getText().toString());
+						etSearcher.setText("");
+						intent.setClass(MyFragmengManager.this,
+								SearchActivity.class);
+						startActivity(intent);
+						LogUtils.d("MAIN", "动画前");
+						MyFragmengManager.this.overridePendingTransition(
+								R.anim.left_anim, R.anim.right_anim);
+						LogUtils.d("MAIN", "动画后");
+						return false;
+					}
+					
+				});
+				/*LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
 				etSeacher.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -351,7 +378,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 								R.anim.left_anim, R.anim.right_anim);
 						LogUtils.d("MAIN", "动画后");
 					}
-				});
+				});*/
 				if (gcategoryInfoList_temp == null) {
 					errorview.setVisibility(View.VISIBLE);
 				} else {
