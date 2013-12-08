@@ -22,6 +22,7 @@
           android:background="@drawable/search_background" >
 
           <ImageView
+              android:id="@+id/iv_search_slide_menu"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center_vertical"

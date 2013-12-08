@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="1dip"
-                android:layout_marginRight="15dip"
+                android:layout_marginRight="10dp"
                 android:text="@string/main_search"
                 android:textColor="#ffffff" />
         </FrameLayout>
