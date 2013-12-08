@@ -112,6 +112,10 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 
 				// MarketApplication.getInstance().reflashAppList();
 				ViewSwitcher vs = (ViewSwitcher) findViewById(R.id.main_bottom_vs);
+				//为ViewSwitcher的组件显示过程设置动画
+				vs.setInAnimation(MyFragmengManager.this,android.R.anim.fade_in);
+	            //为ViewSwitcher的组件隐藏过程设置动画
+				vs.setOutAnimation(MyFragmengManager.this,android.R.anim.fade_out);
 				vs.showNext();
 				break;
 			case RESETQUIT:
