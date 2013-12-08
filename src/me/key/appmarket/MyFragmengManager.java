@@ -67,7 +67,7 @@ import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
  * 
  */
 public class MyFragmengManager extends SlidingFragmentActivity implements
-OnClickListener {
+		OnClickListener {
 	private static final int RESETQUIT = 0;
 	private static final int INMAIN = 2;
 	private boolean mPreparedQuit = false;
@@ -98,7 +98,7 @@ OnClickListener {
 	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private ArrayList<AppInfo> downApplist = new ArrayList<AppInfo>();
 	private List<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
-	//本地游戏派讯
+	// 本地游戏派讯
 	private List<AppInfo> localtopList = new ArrayList<AppInfo>();
 	private RankFragment f1;
 	public SlidingMenu menu;
@@ -110,10 +110,12 @@ OnClickListener {
 
 				// MarketApplication.getInstance().reflashAppList();
 				ViewSwitcher vs = (ViewSwitcher) findViewById(R.id.main_bottom_vs);
-				//为ViewSwitcher的组件显示过程设置动画
-				vs.setInAnimation(MyFragmengManager.this,android.R.anim.fade_in);
-				//为ViewSwitcher的组件隐藏过程设置动画
-				vs.setOutAnimation(MyFragmengManager.this,android.R.anim.fade_out);
+				// 为ViewSwitcher的组件显示过程设置动画
+				vs.setInAnimation(MyFragmengManager.this,
+						android.R.anim.fade_in);
+				// 为ViewSwitcher的组件隐藏过程设置动画
+				vs.setOutAnimation(MyFragmengManager.this,
+						android.R.anim.fade_out);
 				vs.showNext();
 				break;
 			case RESETQUIT:
@@ -143,6 +145,7 @@ OnClickListener {
 	private TextView findgameTv;
 	private TextView rankTv;
 	private View btnRefsh;
+	private ImageView btnSearch;
 
 	@Override
 	public void onCreate(Bundle arg0) {
@@ -166,6 +169,8 @@ OnClickListener {
 		findApp = (RelativeLayout) findViewById(R.id.rl_findapp_main_bottom);
 		localgame = (TextView) findViewById(R.id.localgame);
 		localgame.setTextColor(getResources().getColor(R.color.focus));
+
+		btnSearch = (ImageView) findViewById(R.id.iv_search_slide_menu);
 
 		findgameTv = (TextView) findViewById(R.id.tv_mainbottom_findgame);
 		rankTv = (TextView) findViewById(R.id.tv_mainbottom_rank);
@@ -197,58 +202,49 @@ OnClickListener {
 			@Override
 			protected Void doInBackground(Void... params) {
 				Long current = System.currentTimeMillis();
-				/*	String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-						+ Global.RANK_PAGE);
-				if (str.isEmpty()) {
-					appRankInfos = new ArrayList<AppInfo>();
-				} else {
-					ParseRankJson(str);
-				}
-
-				String str2 = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-						+ Global.HOME_PAGE);
-				if (str2.isEmpty()) {
-					appHomeInfos_temp = new ArrayList<AppInfo>();
-				} else {
-					ParseHomeJson(str2);
-				}	*/
-				//				if(!firstinstall) {
-				appManaInfos_temp = AppUtils.getUserApps( 
+				/*
+				 * String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+				 * + Global.RANK_PAGE); if (str.isEmpty()) { appRankInfos = new
+				 * ArrayList<AppInfo>(); } else { ParseRankJson(str); }
+				 * 
+				 * String str2 =
+				 * ToolHelper.donwLoadToString(Global.GAME_MAIN_URL +
+				 * Global.HOME_PAGE); if (str2.isEmpty()) { appHomeInfos_temp =
+				 * new ArrayList<AppInfo>(); } else { ParseHomeJson(str2); }
+				 */
+				// if(!firstinstall) {
+				appManaInfos_temp = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
-				//					Editor edit = sp.edit();
-				//					edit.putBoolean("firstinstall", true);
-				//					for(AppInfo appInfo : appManaInfos_temp) {
-				//						InstallAppInfo installAppInfo = new InstallAppInfo(appInfo);
-				//						LogUtils.d("Local", installAppInfo.getIdx()+"idx");
-				//						db.save(installAppInfo);
-				//					}
-				//					edit.commit();
-				/*} else {
-					List<InstallAppInfo> installAppInfos = db.findAll(InstallAppInfo.class);
-					LogUtils.d("Local", installAppInfos.get(0).getAppName()+"installAppInfossize");
-					appManaInfos_temp = new ArrayList<AppInfo>();
-					for(InstallAppInfo installAppInfo :installAppInfos) {
-						LogUtils.d("Local", installAppInfo.getIdx()+"appInfoidx");
-						AppInfo appInfo = new AppInfo(installAppInfo);
-						String packageName = appInfo.getPackageName();
-						PackageManager pm = getPackageManager();
-						 ApplicationInfo info;
-						try {
-							info = pm.getApplicationInfo(packageName, 0);
-							appInfo.setAppIcon(info.loadIcon(pm));
-						} catch (NameNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}    
-
-						appManaInfos_temp.add(appInfo);
-					}
-				}*/
+				// Editor edit = sp.edit();
+				// edit.putBoolean("firstinstall", true);
+				// for(AppInfo appInfo : appManaInfos_temp) {
+				// InstallAppInfo installAppInfo = new InstallAppInfo(appInfo);
+				// LogUtils.d("Local", installAppInfo.getIdx()+"idx");
+				// db.save(installAppInfo);
+				// }
+				// edit.commit();
+				/*
+				 * } else { List<InstallAppInfo> installAppInfos =
+				 * db.findAll(InstallAppInfo.class); LogUtils.d("Local",
+				 * installAppInfos.get(0).getAppName()+"installAppInfossize");
+				 * appManaInfos_temp = new ArrayList<AppInfo>();
+				 * for(InstallAppInfo installAppInfo :installAppInfos) {
+				 * LogUtils.d("Local", installAppInfo.getIdx()+"appInfoidx");
+				 * AppInfo appInfo = new AppInfo(installAppInfo); String
+				 * packageName = appInfo.getPackageName(); PackageManager pm =
+				 * getPackageManager(); ApplicationInfo info; try { info =
+				 * pm.getApplicationInfo(packageName, 0);
+				 * appInfo.setAppIcon(info.loadIcon(pm)); } catch
+				 * (NameNotFoundException e) { // TODO Auto-generated catch
+				 * block e.printStackTrace(); }
+				 * 
+				 * appManaInfos_temp.add(appInfo); } }
+				 */
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
 				mAppInfos_temp = LocalUtils.InitHomePager("0",
-						MyFragmengManager.this, root+"d9dir/", packages);
+						MyFragmengManager.this, root + "d9dir/", packages);
 				mAppInfos.addAll(mAppInfos_temp);
 				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
@@ -290,7 +286,7 @@ OnClickListener {
 				}
 				loadLocaltopList();
 				Long now = System.currentTimeMillis();
-				LogUtils.d("Local", (now-current)+"nownownownow");
+				LogUtils.d("Local", (now - current) + "nownownownow");
 				return null;
 			}
 
@@ -387,30 +383,48 @@ OnClickListener {
 					}
 				});
 
-				final EditText etSearcher = (EditText)findViewById(R.id.et_search);
-						/*etSearcher.setOnTouchListener(new OnTouchListener(){
+				final EditText etSearcher = (EditText) findViewById(R.id.et_search);
+				/*
+				 * etSearcher.setOnTouchListener(new OnTouchListener(){
+				 * 
+				 * @Override public boolean onTouch(View arg0, MotionEvent arg1)
+				 * { etSearcher.setHint(""); return false; }
+				 * 
+				 * });
+				 */
+				btnSearch.setOnClickListener(new OnClickListener() {
 
-							@Override
-							public boolean onTouch(View arg0, MotionEvent arg1) {
-								etSearcher.setHint("");
-								return false;
-							}
-
-						});*/
-				etSearcher.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-					
 					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						// TODO Auto-generated method stub
-						if(hasFocus){
-							etSearcher.setHint("");
-						}else{
-							etSearcher.setHint("搜索");
-						}
+					public void onClick(View v) {
+						Intent intent = new Intent();
+						intent.putExtra("Search", etSearcher.getText()
+								.toString());
+						intent.setClass(MyFragmengManager.this,
+								SearchActivity.class);
+						startActivity(intent);
+						LogUtils.d("MAIN", "动画前");
+						MyFragmengManager.this.overridePendingTransition(
+								R.anim.left_anim, R.anim.right_anim);
+						LogUtils.d("MAIN", "动画后");
+						etSearcher.setText(null);
+
 					}
 				});
-				
-				etSearcher.addTextChangedListener(new TextWatcher(){
+				etSearcher
+						.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+							@Override
+							public void onFocusChange(View v, boolean hasFocus) {
+								// TODO Auto-generated method stub
+								if (hasFocus) {
+									etSearcher.setHint("");
+								} else {
+									etSearcher.setHint("搜索");
+								}
+							}
+						});
+
+				etSearcher.addTextChangedListener(new TextWatcher() {
 					private CharSequence temp;
 					private int selectionStart;
 					private int selectionEnd;
@@ -419,10 +433,10 @@ OnClickListener {
 					public void afterTextChanged(Editable s) {
 						// TODO Auto-generated method stub
 						int number = s.length();
-						if(number==0){
+						if (number == 0) {
 							etSearcher.setHint("搜索");
 						}
-						
+
 					}
 
 					@Override
@@ -441,562 +455,569 @@ OnClickListener {
 					}
 
 				});
-						etSearcher.setOnEditorActionListener(new OnEditorActionListener(){
+				etSearcher
+						.setOnEditorActionListener(new OnEditorActionListener() {
 
 							@Override
-							public boolean onEditorAction(TextView tv, int antionId,
-									KeyEvent event) {
+							public boolean onEditorAction(TextView tv,
+									int antionId, KeyEvent event) {
 								// TODO Auto-generated method stub
 								Intent intent = new Intent();
-								intent.putExtra("Search", etSearcher.getText().toString());
+								intent.putExtra("Search", etSearcher.getText()
+										.toString());
 								intent.setClass(MyFragmengManager.this,
 										SearchActivity.class);
 								startActivity(intent);
 								LogUtils.d("MAIN", "动画前");
-								MyFragmengManager.this.overridePendingTransition(
-										R.anim.left_anim, R.anim.right_anim);
+								MyFragmengManager.this
+										.overridePendingTransition(
+												R.anim.left_anim,
+												R.anim.right_anim);
 								LogUtils.d("MAIN", "动画后");
 								etSearcher.setText(null);
-								//						etSearcher.setHint("搜索");
+								// etSearcher.setHint("搜索");
 								return false;
 							}
 
 						});
-						/*LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
-				etSeacher.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent();
-						intent.setClass(MyFragmengManager.this,
-								SearchActivity.class);
-						startActivity(intent);
-						LogUtils.d("MAIN", "动画前");
-						MyFragmengManager.this.overridePendingTransition(
-								R.anim.left_anim, R.anim.right_anim);
-						LogUtils.d("MAIN", "动画后");
-					}
-				});*/
-						if (gcategoryInfoList_temp == null) {
-							errorview.setVisibility(View.VISIBLE);
-						} else {
-							menuCategoryAdapter = new MenuCategoryAdapter(
-									MyFragmengManager.this, gcategoryInfoList_temp, lv);
-
-							lv.setAdapter(menuCategoryAdapter);
-
-							// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
-							// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
-							LogUtils.d("Main", lv.getChildCount() + "");
-
-							lv.setOnItemClickListener(new OnItemClickListener() {
-
-								@Override
-								public void onItemClick(AdapterView<?> parent,
-										View view, int position, long id) {
-
-									menuFragment.updata(position);
-									view.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
-									for (int i = 0; i < lv.getChildCount(); i++) {
-										if (i == position) {
-											continue;
-										}
-										LogUtils.d("Main", i + "");
-										lv.getChildAt(i).setBackgroundResource(
-												R.drawable.slidingmenu_left_background);
-									}
-								}
-							});
-						}
-				};
-
-			}.execute();
-
-		}
-
-		// 解析Rank
-		private void ParseRankJson(String str) {
-			try {
-				JSONArray jsonArray = new JSONArray(str);
-				int len = jsonArray.length();
-				for (int i = 0; i < len; i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					String appName = jsonObject.getString("appname");
-					String appiconurl = jsonObject.getString("appiconurl");
-					String appSize = jsonObject.getString("appsize");
-					String idx = jsonObject.getString("idx");
-					String appurl = jsonObject.getString("appurl");
-					String appDownCount = jsonObject.getString("appdowncount");
-					String apppkgname = jsonObject.getString("apppkgname");
-					AppInfo appInfo = new AppInfo(idx, appName, appSize,
-							Global.MAIN_URL + appiconurl, appurl, appDownCount, "",
-							apppkgname);
-					appInfo.setPackageName(apppkgname);
-					appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
-					appInfo.setLastTime(Long.MAX_VALUE);
-					appRankInfos.add(appInfo);
-					// appRankInfos.add(appInfo);
-				}
-				// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
-			} catch (Exception ex) {
-			}
-		}
-
-		private void ParseUpdateJson(String str) {
-			try {
-
-				ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
-				JSONArray jsonArray = new JSONArray(str);
-				int len = jsonArray.length();
-				for (int i = 0; i < len; i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					String idx = jsonObject.getString("idx");
-					String appName = jsonObject.getString("appname");
-					String appiconurl = jsonObject.getString("appiconurl");
-					String appSize = jsonObject.getString("appsize");
-
-					String appurl = jsonObject.getString("appurl");
-					AppInfo appInfo = new AppInfo(idx, appName, appSize,
-							Global.MAIN_URL + appiconurl, appurl, "", "", appName);
-
-					appInfo.setPackageName(jsonObject.getString("apppkgname"));
-					appInfo.setVersion(jsonObject.getString("version"));
-
-					appInfo.setInstalled(AppUtils.isInstalled(appName));
-					tempList.add(appInfo);
-				}
-				LogUtils.d("Mana", "temp:" + tempList.size());
-				appManagerUpdateInfos_t.clear();
-				appManagerUpdateInfos_t.addAll(tempList);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				// Log.e("tag", "error = " + ex.getMessage());
-			}
-		}
-
-		private void ParseHomeJson(String str) {
-			try {
-				appHomeInfos_temp.clear();
-				// Log.e("tag", "--------2--------");
-				JSONArray jsonArray = new JSONArray(str);
-				LogUtils.d("descr", str);
-				int len = jsonArray.length();
-				LogUtils.d("len", len + "ge");
-				for (int i = 0; i < len; i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					String appName = jsonObject.getString("appname");
-					String appiconurl = jsonObject.getString("appiconurl");
-					String appSize = jsonObject.getString("appsize");
-					String idx = jsonObject.getString("idx");
-					String appurl = jsonObject.getString("appurl");
-					String appdes = jsonObject.getString("appdes");
-					String recoPic = jsonObject.getString("recoPic");
-					String apppkgname = jsonObject.getString("apppkgname");
-					AppInfo appInfo = new AppInfo(idx, appName, appSize,
-							Global.MAIN_URL + appiconurl, appurl, "", appdes,
-							apppkgname);
-					appInfo.setPackageName(apppkgname);
-					appInfo.setLastTime(Long.MAX_VALUE);
-					if (recoPic == null) {
-						String appimgurl = jsonObject.getString("appimgurl");
-						String[] appImgurls = appimgurl.split(",");
-						appInfo.setAppimgurl(appImgurls);
-					}
-
-					appInfo.setRecoPic(recoPic);
-					appInfo.setInstalled(AppUtils.isInstalled(jsonObject
-							.getString("apppkgname")));
-					appHomeInfos_temp.add(appInfo);
-
-					// Log.e("tag", "info = " + appInfo.toString());
-				}
-				// Log.e("tag", "--------------2--------");
-			} catch (Exception ex) {
-			}
-		}
-
-		class DownStateBroadcast extends BroadcastReceiver {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				String fileName = null;
-				LogUtils.d("MAINActivity", "我接受到了暂停广播");
-				for (AppInfo ai : appHomeInfos_temp) {
-					fileName = DownloadService.CreatFileName(ai.getAppName())
-							.getAbsolutePath() + "down";
-					if (fileName.equals(intent.getAction())) {
-						boolean downState = intent
-								.getBooleanExtra("isPause", false);
-						ai.setIspause(downState);
-						// appHomeAdapter.notifyDataSetChanged();
-						LogUtils.d("Mainctivity",
-								"我更新了ui" + ai.getAppName() + ai.isIspause());
-						break;
-					}
-				}
-			}
-
-		}
-
-		class DownStateBroadcastRank extends BroadcastReceiver {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				String fileName = null;
-				LogUtils.d("MAINActivity", "我接受到了暂停广播");
-				for (AppInfo ai : appRankInfos) {
-					fileName = DownloadService.CreatFileName(ai.getAppName())
-							.getAbsolutePath() + "down";
-					if (fileName.equals(intent.getAction())) {
-						boolean downState = intent
-								.getBooleanExtra("isPause", false);
-						ai.setIspause(downState);
-						// appHomeAdapter.notifyDataSetChanged();
-						LogUtils.d("Mainctivity",
-								"我更新了ui" + ai.getAppName() + ai.isIspause());
-						break;
-					}
-				}
-			}
-
-		}
-
-		private void ParseCategoryJson(String str) {
-			try {
-				gcategoryInfoList_temp.clear();
-				JSONArray jsonArray = new JSONArray(str);
-				int len = jsonArray.length();
-				for (int i = 0; i < len; i++) {
-					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					String id = jsonObject.getString("id");
-					String name = jsonObject.getString("name");
-					String type1 = jsonObject.getString("type1");
-					String type2 = jsonObject.getString("type2");
-					String appUrl = jsonObject.getString("appiconurl");
-					String totalNum = jsonObject.getString("total_num");
-					CategoryInfo mCategoryInfo = new CategoryInfo(id, name, type1,
-							type2, Global.MAIN_URL + appUrl);
-					mCategoryInfo.setTotalNum(totalNum);
-					gcategoryInfoList_temp.add(mCategoryInfo);
-				}
-				if (len == 0) {
-					CategoryInfo mCategoryInfo = new CategoryInfo("1", "失误", "1",
-							"2", Global.MAIN_URL + "no");
-					gcategoryInfoList_temp.add(mCategoryInfo);
-				}
 				/*
-				 * categoryDataHandler
-				 * .sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+				 * LinearLayout etSeacher = (LinearLayout)
+				 * findViewById(R.id.menu_search);
+				 * etSeacher.setOnClickListener(new OnClickListener() {
+				 * 
+				 * @Override public void onClick(View v) { Intent intent = new
+				 * Intent(); intent.setClass(MyFragmengManager.this,
+				 * SearchActivity.class); startActivity(intent);
+				 * LogUtils.d("MAIN", "动画前");
+				 * MyFragmengManager.this.overridePendingTransition(
+				 * R.anim.left_anim, R.anim.right_anim); LogUtils.d("MAIN",
+				 * "动画后"); } });
 				 */
-			} catch (Exception ex) {
-			}
-		}
-
-		class MyInstalledReceiver extends BroadcastReceiver {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				// 接收安装广播
-				if (intent.getAction()
-						.equals("android.intent.action.PACKAGE_ADDED")) {
-					String packageName = intent.getDataString().substring(8);
-					LogUtils.d("Search", "安装了:" + packageName + "包名的程序");
-
-					MarketApplication.getInstance().reflashAppList();
-					String installAppName = AppUtils.getAppName(context,
-							packageName);
-
-					for (AppInfo mAppInfo : appRankInfos) {
-						if (packageName != null
-								&& packageName.equals(mAppInfo.getPackageName())) {
-							mAppInfo.setInstalled(true);
-							mAppInfo.setCanUpdate(false);
-							LogUtils.d("Search", "我接收到了安装" + packageName);
-							break;
-						}
-					}
-
-				}
-			}
-		}
-
-		@Override
-		public void onClick(View v) {
-			switch (v.getId()) {
-			case R.id.rl_findapp_main_bottom:
-				FragmentTransaction ft = fm.beginTransaction();
-				// ft.replace(R.id.tabcontent, mf);
-				// ft.addToBackStack(null);
-				if (lf.isAdded()) {
-					ft.hide(lf);
-				}
-				if (f1.isAdded()) {
-					ft.hide(f1);
-				}
-				ft.show(mf);
-				ft.commit();
-				findgame.setImageResource(R.drawable.findgame_focus);
-				findgameTv.setTextColor(getResources().getColor(R.color.focus));
-				localgame.setCompoundDrawablesWithIntrinsicBounds(null,
-						local_normal, null, null);
-				localgame.setTextColor(getResources().getColor(R.color.normal));
-				rankgame.setImageResource(R.drawable.rank);
-				rankTv.setTextColor(getResources().getColor(R.color.normal));
-				break;
-			case R.id.fl_localapp_main_bottom:
-				findgame.setImageResource(R.drawable.findgame);
-				findgameTv.setTextColor(getResources().getColor(R.color.normal));
-				localgame.setCompoundDrawablesWithIntrinsicBounds(null,
-						local_focue, null, null);
-				localgame.setTextColor(getResources().getColor(R.color.focus));
-				rankgame.setImageResource(R.drawable.rank);
-				rankTv.setTextColor(getResources().getColor(R.color.normal));
-				FragmentTransaction ft2 = fm.beginTransaction();
-				// ft2.replace(R.id.tabcontent, lf);
-				// ft2.addToBackStack(null);
-				if (f1.isAdded()) {
-					ft2.hide(f1);
-				}
-				if (mf.isAdded()) {
-					ft2.hide(mf);
-				}
-				ft2.show(lf);
-				ft2.commit();
-				break;
-			case R.id.rl_rankapp_main_bottom:
-				findgame.setImageResource(R.drawable.findgame);
-				findgameTv.setTextColor(getResources().getColor(R.color.normal));
-				localgame.setCompoundDrawablesWithIntrinsicBounds(null,
-						local_normal, null, null);
-				localgame.setTextColor(getResources().getColor(R.color.normal));
-				rankgame.setImageResource(R.drawable.rank_selected);
-				rankTv.setTextColor(getResources().getColor(R.color.focus));
-				FragmentTransaction ft1 = fm.beginTransaction();
-				// ft1.replace(R.id.tabcontent, f1);
-				// ft1.addToBackStack(null);
-				if (lf.isAdded()) {
-					ft1.hide(lf);
-				}
-				if (mf.isAdded()) {
-					ft1.hide(mf);
-				}
-				ft1.show(f1);
-				ft1.commit();
-				break;
-			case R.id.btn_Refsh :
-				new AsyncTask<Void, Void, Void>() {
-
-					@Override
-					protected Void doInBackground(Void... params) {
-						String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
-								+ Global.APP_CATEGORY + "?type=" + 2);
-						LogUtils.d("Local", "runCategoryData" + str4);
-						if (str4.isEmpty()) {
-							gcategoryInfoList_temp = null;
-							LogUtils.d("Local", "runCategoryData" + str4 + "str4");
-
-						} else {
-							gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
-							ParseCategoryJson(str4);
-						}
-						return null;
-					}
-
-					protected void onPostExecute(Void result) {
-						errorview.setVisibility(View.INVISIBLE);
-						final MenuFragment menuFragment = new MenuFragment();
-						fragmentTransaction = getSupportFragmentManager().beginTransaction();
-						fragmentTransaction.replace(R.id.slide_content, menuFragment);
-						fragmentTransaction.commitAllowingStateLoss();
-						// fragmentTransaction.replace(R.id.content, new
-						// ContentFragment());
-
-						LogUtils.d("Main", "我已经被加载了哟");
-						lv = (ListView) findViewById(R.id.category_lv);
-						lv.setDividerHeight(0);
-						LogUtils.d("Main", lv + "");
-						/*
-						 * ImageButton search_btn = (ImageButton)
-						 * findViewById(R.id.search_btn);
-						 * search_btn.setOnClickListener(new OnClickListener() {
-						 * 
-						 * @Override public void onClick(View v) { menu.toggle(); } });
-						 */
-						MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
-						IntentFilter filter = new IntentFilter();
-
-						filter.addAction("android.intent.action.PACKAGE_ADDED");
-						filter.addDataScheme("package");
-						registerReceiver(installedReceiver, filter);
-						LogUtils.d("Main1", menuCategoryAdapter + "");
-						menu = getSlidingMenu();
-						menu.setMode(SlidingMenu.LEFT);
-						menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-						/*
-						 * menu.setShadowWidthRes(R.dimen.shadow_width);
-						 * menu.setShadowDrawable(R.drawable.shadow);
-						 */
-						menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-						menu.setFadeDegree(0.35f);
-						menu.setOnCloseListener(new OnCloseListener() {
-
-							@Override
-							public void onClose() {
-								LogUtils.d("Main", "close");
-							}
-						});
-						menu.setOnOpenedListener(new OnOpenedListener() {
-
-							@Override
-							public void onOpened() {
-								LogUtils.d("Main", "open");
-								/*
-								 * Intent intent = new Intent();
-								 * intent.setAction("open.menu"); sendBroadcast(intent);
-								 */
-							}
-						});
-						LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
-						etSeacher.setOnClickListener(new OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								Intent intent = new Intent();
-								intent.setClass(MyFragmengManager.this,
-										SearchActivity.class);
-								startActivity(intent);
-								LogUtils.d("MAIN", "动画前");
-								MyFragmengManager.this.overridePendingTransition(
-										R.anim.left_anim, R.anim.right_anim);
-								LogUtils.d("MAIN", "动画后");
-							}
-						});
-						if (gcategoryInfoList_temp == null) {
-							errorview.setVisibility(View.VISIBLE);
-							LogUtils.d("Main",  "gcategoryInfoList_temp我还是空的");
-						} else {
-							menuCategoryAdapter = new MenuCategoryAdapter(
-
-									MyFragmengManager.this, gcategoryInfoList_temp, lv);
-
-							lv.setAdapter(menuCategoryAdapter);
-							menuCategoryAdapter.notifyDataSetChanged();
-							// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
-							// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
-							LogUtils.d("Main", lv.getChildCount() + "lv.getChildCount()"+gcategoryInfoList_temp.size());
-
-							lv.setOnItemClickListener(new OnItemClickListener() {
-
-								@Override
-								public void onItemClick(AdapterView<?> parent,
-										View view, int position, long id) {
-
-									menuFragment.updata(position);
-									view.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
-									for (int i = 0; i < lv.getChildCount(); i++) {
-										if (i == position) {
-											continue;
-										}
-										LogUtils.d("Main", i + "");
-										lv.getChildAt(i).setBackgroundResource(
-												R.drawable.slidingmenu_left_background);
-									}
-								}
-							});
-						}
-					};
-
-				}.execute();
-
-				break;
-			}
-		}
-
-		@Override
-		public boolean onKeyDown(int keyCode, KeyEvent event) {
-			if (keyCode == KeyEvent.KEYCODE_BACK) {
-				if (!mPreparedQuit) {
-					ToastUtils.show(R.string.quit_alert);
-					mPreparedQuit = true;
-					myHandler.sendEmptyMessageDelayed(RESETQUIT, 3000);
-					return true;
-				}
-				Intent cancalNt = new Intent();
-				cancalNt.setAction("duobaohui.cancalnotifition");
-				this.sendBroadcast(cancalNt);
-				LogUtils.d("Main", "我发出了取消广播");
-
-				stopService(new Intent(this, DownloadService.class));
-				//		finish();
-				//			System.exit(0);
-				//			android.os.Process.killProcess(android.os.Process.myPid());
-
-			}
-			return super.onKeyDown(keyCode, event);
-		}
-
-		private static void deleteFilesByDirectory(File directory) {
-			if (directory != null && directory.exists() && directory.isDirectory()) {
-				for (File item : directory.listFiles()) {
-					item.delete();
-				}
-			}
-		}
-
-		public static void cleanDatabases(Context context) {
-			deleteFilesByDirectory(new File("/data/data/"
-					+ context.getPackageName() + "/databases"));
-		}
-
-		@Override
-		protected void onDestroy() {
-			super.onDestroy();
-			unRegister();
-			LogUtils.d("Local", "Fragment也被清楚了");
-		}
-
-		private void unRegister() {
-			if(dsb != null) {
-				this.unregisterReceiver(dsb);
-			}
-			if(dsbRank != null) {
-				this.unregisterReceiver(dsbRank);
-			}
-		}
-
-
-
-
-
-		@Override
-		public void onLowMemory() {
-			super.onLowMemory();
-			LogUtils.d("Local", "frgment被杀了");
-		}
-		public void setLocaltopList(ArrayList<AppInfo> localtopList) {
-			this.localtopList = localtopList;
-		}
-
-		public void loadLocaltopList() {
-			try {
-
-				InputStream is = HttpClientUtil.getInputStream(null,
-						Global.LOCALTOPLISTURL);
-				String body = HttpClientUtil.getString(is);
-				if (body == null || body == "") {
+				if (gcategoryInfoList_temp == null) {
+					errorview.setVisibility(View.VISIBLE);
 				} else {
-					localtopList =MarketApplication.getInstance().getLocaltopList();
-					JSONArray jsonObjs = new JSONArray(body);
-					for (int i = 0; i < jsonObjs.length(); i++) {
-						AppInfo appInfo = new AppInfo();
-						JSONObject jsonObj = jsonObjs.getJSONObject(i);
-						appInfo.setPackageName(jsonObj.getString("pkgname"));
-						appInfo.setIdx(jsonObj.getString("appid"));
-						localtopList.add(appInfo);
-					}
+					menuCategoryAdapter = new MenuCategoryAdapter(
+							MyFragmengManager.this, gcategoryInfoList_temp, lv);
+
+					lv.setAdapter(menuCategoryAdapter);
+
+					// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+					// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+					LogUtils.d("Main", lv.getChildCount() + "");
+
+					lv.setOnItemClickListener(new OnItemClickListener() {
+
+						@Override
+						public void onItemClick(AdapterView<?> parent,
+								View view, int position, long id) {
+
+							menuFragment.updata(position);
+							view.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
+							for (int i = 0; i < lv.getChildCount(); i++) {
+								if (i == position) {
+									continue;
+								}
+								LogUtils.d("Main", i + "");
+								lv.getChildAt(i).setBackgroundResource(
+										R.drawable.slidingmenu_left_background);
+							}
+						}
+					});
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			};
+
+		}.execute();
+
+	}
+
+	// 解析Rank
+	private void ParseRankJson(String str) {
+		try {
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				String appDownCount = jsonObject.getString("appdowncount");
+				String apppkgname = jsonObject.getString("apppkgname");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, appDownCount, "",
+						apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
+				appInfo.setLastTime(Long.MAX_VALUE);
+				appRankInfos.add(appInfo);
+				// appRankInfos.add(appInfo);
+			}
+			// rankHandler.sendEmptyMessage(Global.DOWN_DATA_RANK_SUCCESSFUL);
+		} catch (Exception ex) {
+		}
+	}
+
+	private void ParseUpdateJson(String str) {
+		try {
+
+			ArrayList<AppInfo> tempList = new ArrayList<AppInfo>();
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String idx = jsonObject.getString("idx");
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+
+				String appurl = jsonObject.getString("appurl");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, "", "", appName);
+
+				appInfo.setPackageName(jsonObject.getString("apppkgname"));
+				appInfo.setVersion(jsonObject.getString("version"));
+
+				appInfo.setInstalled(AppUtils.isInstalled(appName));
+				tempList.add(appInfo);
+			}
+			LogUtils.d("Mana", "temp:" + tempList.size());
+			appManagerUpdateInfos_t.clear();
+			appManagerUpdateInfos_t.addAll(tempList);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			// Log.e("tag", "error = " + ex.getMessage());
+		}
+	}
+
+	private void ParseHomeJson(String str) {
+		try {
+			appHomeInfos_temp.clear();
+			// Log.e("tag", "--------2--------");
+			JSONArray jsonArray = new JSONArray(str);
+			LogUtils.d("descr", str);
+			int len = jsonArray.length();
+			LogUtils.d("len", len + "ge");
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String appName = jsonObject.getString("appname");
+				String appiconurl = jsonObject.getString("appiconurl");
+				String appSize = jsonObject.getString("appsize");
+				String idx = jsonObject.getString("idx");
+				String appurl = jsonObject.getString("appurl");
+				String appdes = jsonObject.getString("appdes");
+				String recoPic = jsonObject.getString("recoPic");
+				String apppkgname = jsonObject.getString("apppkgname");
+				AppInfo appInfo = new AppInfo(idx, appName, appSize,
+						Global.MAIN_URL + appiconurl, appurl, "", appdes,
+						apppkgname);
+				appInfo.setPackageName(apppkgname);
+				appInfo.setLastTime(Long.MAX_VALUE);
+				if (recoPic == null) {
+					String appimgurl = jsonObject.getString("appimgurl");
+					String[] appImgurls = appimgurl.split(",");
+					appInfo.setAppimgurl(appImgurls);
+				}
+
+				appInfo.setRecoPic(recoPic);
+				appInfo.setInstalled(AppUtils.isInstalled(jsonObject
+						.getString("apppkgname")));
+				appHomeInfos_temp.add(appInfo);
+
+				// Log.e("tag", "info = " + appInfo.toString());
+			}
+			// Log.e("tag", "--------------2--------");
+		} catch (Exception ex) {
+		}
+	}
+
+	class DownStateBroadcast extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("MAINActivity", "我接受到了暂停广播");
+			for (AppInfo ai : appHomeInfos_temp) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					// appHomeAdapter.notifyDataSetChanged();
+					LogUtils.d("Mainctivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
+					break;
+				}
 			}
 		}
 
 	}
+
+	class DownStateBroadcastRank extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = null;
+			LogUtils.d("MAINActivity", "我接受到了暂停广播");
+			for (AppInfo ai : appRankInfos) {
+				fileName = DownloadService.CreatFileName(ai.getAppName())
+						.getAbsolutePath() + "down";
+				if (fileName.equals(intent.getAction())) {
+					boolean downState = intent
+							.getBooleanExtra("isPause", false);
+					ai.setIspause(downState);
+					// appHomeAdapter.notifyDataSetChanged();
+					LogUtils.d("Mainctivity",
+							"我更新了ui" + ai.getAppName() + ai.isIspause());
+					break;
+				}
+			}
+		}
+
+	}
+
+	private void ParseCategoryJson(String str) {
+		try {
+			gcategoryInfoList_temp.clear();
+			JSONArray jsonArray = new JSONArray(str);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String id = jsonObject.getString("id");
+				String name = jsonObject.getString("name");
+				String type1 = jsonObject.getString("type1");
+				String type2 = jsonObject.getString("type2");
+				String appUrl = jsonObject.getString("appiconurl");
+				String totalNum = jsonObject.getString("total_num");
+				CategoryInfo mCategoryInfo = new CategoryInfo(id, name, type1,
+						type2, Global.MAIN_URL + appUrl);
+				mCategoryInfo.setTotalNum(totalNum);
+				gcategoryInfoList_temp.add(mCategoryInfo);
+			}
+			if (len == 0) {
+				CategoryInfo mCategoryInfo = new CategoryInfo("1", "失误", "1",
+						"2", Global.MAIN_URL + "no");
+				gcategoryInfoList_temp.add(mCategoryInfo);
+			}
+			/*
+			 * categoryDataHandler
+			 * .sendEmptyMessage(Global.DOWN_DATA_HOME_SUCCESSFULL);
+			 */
+		} catch (Exception ex) {
+		}
+	}
+
+	class MyInstalledReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// 接收安装广播
+			if (intent.getAction()
+					.equals("android.intent.action.PACKAGE_ADDED")) {
+				String packageName = intent.getDataString().substring(8);
+				LogUtils.d("Search", "安装了:" + packageName + "包名的程序");
+
+				MarketApplication.getInstance().reflashAppList();
+				String installAppName = AppUtils.getAppName(context,
+						packageName);
+
+				for (AppInfo mAppInfo : appRankInfos) {
+					if (packageName != null
+							&& packageName.equals(mAppInfo.getPackageName())) {
+						mAppInfo.setInstalled(true);
+						mAppInfo.setCanUpdate(false);
+						LogUtils.d("Search", "我接收到了安装" + packageName);
+						break;
+					}
+				}
+
+			}
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.rl_findapp_main_bottom:
+			FragmentTransaction ft = fm.beginTransaction();
+			// ft.replace(R.id.tabcontent, mf);
+			// ft.addToBackStack(null);
+			if (lf.isAdded()) {
+				ft.hide(lf);
+			}
+			if (f1.isAdded()) {
+				ft.hide(f1);
+			}
+			ft.show(mf);
+			ft.commit();
+			findgame.setImageResource(R.drawable.findgame_focus);
+			findgameTv.setTextColor(getResources().getColor(R.color.focus));
+			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					local_normal, null, null);
+			localgame.setTextColor(getResources().getColor(R.color.normal));
+			rankgame.setImageResource(R.drawable.rank);
+			rankTv.setTextColor(getResources().getColor(R.color.normal));
+			break;
+		case R.id.fl_localapp_main_bottom:
+			findgame.setImageResource(R.drawable.findgame);
+			findgameTv.setTextColor(getResources().getColor(R.color.normal));
+			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					local_focue, null, null);
+			localgame.setTextColor(getResources().getColor(R.color.focus));
+			rankgame.setImageResource(R.drawable.rank);
+			rankTv.setTextColor(getResources().getColor(R.color.normal));
+			FragmentTransaction ft2 = fm.beginTransaction();
+			// ft2.replace(R.id.tabcontent, lf);
+			// ft2.addToBackStack(null);
+			if (f1.isAdded()) {
+				ft2.hide(f1);
+			}
+			if (mf.isAdded()) {
+				ft2.hide(mf);
+			}
+			ft2.show(lf);
+			ft2.commit();
+			break;
+		case R.id.rl_rankapp_main_bottom:
+			findgame.setImageResource(R.drawable.findgame);
+			findgameTv.setTextColor(getResources().getColor(R.color.normal));
+			localgame.setCompoundDrawablesWithIntrinsicBounds(null,
+					local_normal, null, null);
+			localgame.setTextColor(getResources().getColor(R.color.normal));
+			rankgame.setImageResource(R.drawable.rank_selected);
+			rankTv.setTextColor(getResources().getColor(R.color.focus));
+			FragmentTransaction ft1 = fm.beginTransaction();
+			// ft1.replace(R.id.tabcontent, f1);
+			// ft1.addToBackStack(null);
+			if (lf.isAdded()) {
+				ft1.hide(lf);
+			}
+			if (mf.isAdded()) {
+				ft1.hide(mf);
+			}
+			ft1.show(f1);
+			ft1.commit();
+			break;
+		case R.id.btn_Refsh:
+			new AsyncTask<Void, Void, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					String str4 = ToolHelper.donwLoadToString(Global.MAIN_URL
+							+ Global.APP_CATEGORY + "?type=" + 2);
+					LogUtils.d("Local", "runCategoryData" + str4);
+					if (str4.isEmpty()) {
+						gcategoryInfoList_temp = null;
+						LogUtils.d("Local", "runCategoryData" + str4 + "str4");
+
+					} else {
+						gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
+						ParseCategoryJson(str4);
+					}
+					return null;
+				}
+
+				protected void onPostExecute(Void result) {
+					errorview.setVisibility(View.INVISIBLE);
+					final MenuFragment menuFragment = new MenuFragment();
+					fragmentTransaction = getSupportFragmentManager()
+							.beginTransaction();
+					fragmentTransaction.replace(R.id.slide_content,
+							menuFragment);
+					fragmentTransaction.commitAllowingStateLoss();
+					// fragmentTransaction.replace(R.id.content, new
+					// ContentFragment());
+
+					LogUtils.d("Main", "我已经被加载了哟");
+					lv = (ListView) findViewById(R.id.category_lv);
+					lv.setDividerHeight(0);
+					LogUtils.d("Main", lv + "");
+					/*
+					 * ImageButton search_btn = (ImageButton)
+					 * findViewById(R.id.search_btn);
+					 * search_btn.setOnClickListener(new OnClickListener() {
+					 * 
+					 * @Override public void onClick(View v) { menu.toggle(); }
+					 * });
+					 */
+					MyInstalledReceiver installedReceiver = new MyInstalledReceiver();
+					IntentFilter filter = new IntentFilter();
+
+					filter.addAction("android.intent.action.PACKAGE_ADDED");
+					filter.addDataScheme("package");
+					registerReceiver(installedReceiver, filter);
+					LogUtils.d("Main1", menuCategoryAdapter + "");
+					menu = getSlidingMenu();
+					menu.setMode(SlidingMenu.LEFT);
+					menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+					/*
+					 * menu.setShadowWidthRes(R.dimen.shadow_width);
+					 * menu.setShadowDrawable(R.drawable.shadow);
+					 */
+					menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+					menu.setFadeDegree(0.35f);
+					menu.setOnCloseListener(new OnCloseListener() {
+
+						@Override
+						public void onClose() {
+							LogUtils.d("Main", "close");
+						}
+					});
+					menu.setOnOpenedListener(new OnOpenedListener() {
+
+						@Override
+						public void onOpened() {
+							LogUtils.d("Main", "open");
+							/*
+							 * Intent intent = new Intent();
+							 * intent.setAction("open.menu");
+							 * sendBroadcast(intent);
+							 */
+						}
+					});
+					LinearLayout etSeacher = (LinearLayout) findViewById(R.id.menu_search);
+					etSeacher.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent();
+							intent.setClass(MyFragmengManager.this,
+									SearchActivity.class);
+							startActivity(intent);
+							LogUtils.d("MAIN", "动画前");
+							MyFragmengManager.this.overridePendingTransition(
+									R.anim.left_anim, R.anim.right_anim);
+							LogUtils.d("MAIN", "动画后");
+						}
+					});
+					if (gcategoryInfoList_temp == null) {
+						errorview.setVisibility(View.VISIBLE);
+						LogUtils.d("Main", "gcategoryInfoList_temp我还是空的");
+					} else {
+						menuCategoryAdapter = new MenuCategoryAdapter(
+
+						MyFragmengManager.this, gcategoryInfoList_temp, lv);
+
+						lv.setAdapter(menuCategoryAdapter);
+						menuCategoryAdapter.notifyDataSetChanged();
+						// lv.getChildAt(0).setBackgroundColor(getResources().getColor(R.color.classiv_cloor));
+						// lv.getChildAt(0).findViewById(R.id.click_menu).setVisibility(View.VISIBLE);
+						LogUtils.d("Main",
+								lv.getChildCount() + "lv.getChildCount()"
+										+ gcategoryInfoList_temp.size());
+
+						lv.setOnItemClickListener(new OnItemClickListener() {
+
+							@Override
+							public void onItemClick(AdapterView<?> parent,
+									View view, int position, long id) {
+
+								menuFragment.updata(position);
+								view.setBackgroundResource(R.drawable.slidingmenu_left_background_focus);
+								for (int i = 0; i < lv.getChildCount(); i++) {
+									if (i == position) {
+										continue;
+									}
+									LogUtils.d("Main", i + "");
+									lv.getChildAt(i)
+											.setBackgroundResource(
+													R.drawable.slidingmenu_left_background);
+								}
+							}
+						});
+					}
+				};
+
+			}.execute();
+
+			break;
+		}
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if (!mPreparedQuit) {
+				ToastUtils.show(R.string.quit_alert);
+				mPreparedQuit = true;
+				myHandler.sendEmptyMessageDelayed(RESETQUIT, 3000);
+				return true;
+			}
+			Intent cancalNt = new Intent();
+			cancalNt.setAction("duobaohui.cancalnotifition");
+			this.sendBroadcast(cancalNt);
+			LogUtils.d("Main", "我发出了取消广播");
+
+			stopService(new Intent(this, DownloadService.class));
+			// finish();
+			// System.exit(0);
+			// android.os.Process.killProcess(android.os.Process.myPid());
+
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	private static void deleteFilesByDirectory(File directory) {
+		if (directory != null && directory.exists() && directory.isDirectory()) {
+			for (File item : directory.listFiles()) {
+				item.delete();
+			}
+		}
+	}
+
+	public static void cleanDatabases(Context context) {
+		deleteFilesByDirectory(new File("/data/data/"
+				+ context.getPackageName() + "/databases"));
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unRegister();
+		LogUtils.d("Local", "Fragment也被清楚了");
+	}
+
+	private void unRegister() {
+		if (dsb != null) {
+			this.unregisterReceiver(dsb);
+		}
+		if (dsbRank != null) {
+			this.unregisterReceiver(dsbRank);
+		}
+	}
+
+	@Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		LogUtils.d("Local", "frgment被杀了");
+	}
+
+	public void setLocaltopList(ArrayList<AppInfo> localtopList) {
+		this.localtopList = localtopList;
+	}
+
+	public void loadLocaltopList() {
+		try {
+
+			InputStream is = HttpClientUtil.getInputStream(null,
+					Global.LOCALTOPLISTURL);
+			String body = HttpClientUtil.getString(is);
+			if (body == null || body == "") {
+			} else {
+				localtopList = MarketApplication.getInstance()
+						.getLocaltopList();
+				JSONArray jsonObjs = new JSONArray(body);
+				for (int i = 0; i < jsonObjs.length(); i++) {
+					AppInfo appInfo = new AppInfo();
+					JSONObject jsonObj = jsonObjs.getJSONObject(i);
+					appInfo.setPackageName(jsonObj.getString("pkgname"));
+					appInfo.setIdx(jsonObj.getString("appid"));
+					localtopList.add(appInfo);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
