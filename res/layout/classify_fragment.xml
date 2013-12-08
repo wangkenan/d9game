@@ -11,10 +11,17 @@
         android:background="#F1F0ED" >
     </ListView>
 
+    <ProgressBar
+        android:id="@+id/pb_classify_fragment"
+        style="@style/circle_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
     <include
-        android:id="@+id/error" 
+        android:id="@+id/error"
         layout="@layout/error_layout"
-        android:visibility="invisible" 
-        />
+        android:visibility="invisible" />
 
 </RelativeLayout>

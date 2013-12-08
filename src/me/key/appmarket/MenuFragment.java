@@ -63,6 +63,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 	private boolean isFirst = false;
 	//刷新
 	private View btnRefsh;
+	private ProgressBar progressBar;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +100,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 		super.onActivityCreated(savedInstanceState);
 		context = getActivity().getApplicationContext();
 		classLv = (ListView) view.findViewById(R.id.clasifys_lv);
+		progressBar=(ProgressBar) view.findViewById(R.id.pb_classify_fragment);
 		classLv.setDivider(null);
 		classLv.setDividerHeight(0);
 		inflater = LayoutInflater.from(context);
@@ -259,6 +261,10 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			at.cancel(true);
 		}
 		at = new AsyncTask<Void, Void, Void>() {
+			
+			protected void onPreExecute() {
+				progressBar.setVisibility(View.VISIBLE);
+			};
 
 			@Override
 			protected Void doInBackground(Void... params) {
@@ -282,6 +288,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 				list.addAll(list_temp);
 				LogUtils.d("Local", "list.size"+list.size());
 				LogUtils.d("Menu", list.size() + "sss");
+				progressBar.setVisibility(View.GONE);
 				errorview.setVisibility(View.INVISIBLE);
 				cAdapter = new ClassifyAdapter(context, list, classLv,
 						categoryInfoList);
