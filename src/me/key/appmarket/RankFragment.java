@@ -21,12 +21,14 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Banner;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.MyAsynTask;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.slidingmenu.lib2.SlidingMenu;
 import com.slidingmenu.lib2.SlidingMenu.OnCloseListener;
 import com.slidingmenu.lib2.SlidingMenu.OnOpenedListener;
@@ -62,6 +64,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -92,11 +95,12 @@ public class RankFragment extends Fragment implements OnClickListener {
 	private static final int SHOWNEXT = 1;
 	private static final int INMAIN = 2;
 	private PrecentReceiver mPrecentReceiver;
+	private List<Banner> banners;
 	private ListView lv;
 	private ArrayList<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
 	private ArrayList<AppInfo> appManagerUpdateInfos_t = new ArrayList<AppInfo>();
-	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>(); 
-	
+	private ArrayList<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
+
 	private SlidingMenu menu;
 	private View inflate;
 	private int x;
@@ -116,7 +120,7 @@ public class RankFragment extends Fragment implements OnClickListener {
 	private TextView updata_num;
 	private View testView;
 	private View advertBanner;
-	
+
 	private boolean isLoading = false;
 	private boolean isFirst = true;
 	private View loadMoreView;
@@ -152,19 +156,46 @@ public class RankFragment extends Fragment implements OnClickListener {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		FragmentActivity factivity = getActivity();
-		if(factivity == null) {
-			for(Activity activity :appLication) {
+		if (factivity == null) {
+			for (Activity activity : appLication) {
 				activity.finish();
 			}
 		}
-		MarketApplication marketApplecation = (MarketApplication) getActivity().getApplication();
-		appLication = marketApplecation.getAppLication();
+		MarketApplication marketApplecation = (MarketApplication) getActivity()
+				.getApplication();
+		banners = MarketApplication.getInstance().getBanners();
 		mRankListView = (ListView) inflate.findViewById(R.id.list_rank);
-		//在rankListView中添加广告栏、导航栏等
 		testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
-		advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner, null);
-testView.setOnClickListener(new OnClickListener() {
+		advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner,
+				null);
+		if(banners.size() != 0) {
+			ImageView bannerView = (ImageView) testView.findViewById(R.id.iv_rank_test);
+			ImageLoader.getInstance().displayImage(banners.get(0).getPicurl(),bannerView, Global.options);
 			
+			ImageView adver1 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert1);
+			ImageView adver2 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert2);
+			ImageView adver3 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert3);
+
+			ImageLoader.getInstance().displayImage(banners.get(1).getPicurl(),
+					adver1, Global.options);
+			ImageLoader.getInstance().displayImage(banners.get(2).getPicurl(),
+					adver2, Global.options);
+			ImageLoader.getInstance().displayImage(banners.get(3).getPicurl(),
+					adver3, Global.options);
+			adver1.setOnClickListener(this);
+			adver2.setOnClickListener(this);
+			adver3.setOnClickListener(this);
+		}
+		appLication = marketApplecation.getAppLication();
+		
+		// 在rankListView中添加广告栏、导航栏等
+
+		
+		testView.setOnClickListener(new OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent();
@@ -173,16 +204,16 @@ testView.setOnClickListener(new OnClickListener() {
 			}
 		});
 		testView.setPadding(0, 1, 0, 1);
-	
+
 		advertBanner.setPadding(0, 6, 0, 6);
-//		View tabRank = inflate.inflate(getActivity(), R.layout.tab_rank_layout, null);
-		//tabRank.setPadding(0, 5, 0, 10);
-//		tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
-		
-//		mRankListView.addHeaderView(tabRank,null,false);
-		
-		
-		//////////////
+		// View tabRank = inflate.inflate(getActivity(),
+		// R.layout.tab_rank_layout, null);
+		// tabRank.setPadding(0, 5, 0, 10);
+		// tabRank2 = (View)inflate.findViewById(R.id.ranktab2);
+
+		// mRankListView.addHeaderView(tabRank,null,false);
+
+		// ////////////
 		rank_pb = (ProgressBar) inflate.findViewById(R.id.rank_pb);
 		appRankInfos = new ArrayList<AppInfo>();
 		ll_rankerror = (LinearLayout) inflate.findViewById(R.id.ll_error);
@@ -208,13 +239,14 @@ testView.setOnClickListener(new OnClickListener() {
 		about.setOnClickListener(this);
 		setting = (ImageButton) inflate.findViewById(R.id.setting);
 		setting.setOnClickListener(this);
-		mRankListView.addHeaderView(testView,null,false);
-		mRankListView.addHeaderView(advertBanner,null,false);
+		mRankListView.addHeaderView(testView, null, false);
+		mRankListView.addHeaderView(advertBanner, null, false);
 		loadMoreView = inflate.inflate(getActivity(), R.layout.loadmore, null);
 		mRankListView.addFooterView(loadMoreView);
 		loadmore_btn = (Button) loadMoreView.findViewById(R.id.loadMoreButton);
-		//添加底部不可见项目
-		advertBanner2 = inflate.inflate(getActivity(), R.layout.advert_banner, null);
+		// 添加底部不可见项目
+		advertBanner2 = inflate.inflate(getActivity(), R.layout.advert_banner,
+				null);
 		advertBanner2.setVisibility(View.INVISIBLE);
 		mRankListView.addFooterView(advertBanner2);
 		// 搜索按钮点击事件
@@ -242,7 +274,7 @@ testView.setOnClickListener(new OnClickListener() {
 			@Override
 			protected void onPreExecute() {
 				// rank_pb.setVisibility(View.VISIBLE);
-		
+
 			};
 
 			protected Void doInBackground(Void... params) {
@@ -250,14 +282,15 @@ testView.setOnClickListener(new OnClickListener() {
 				 * String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
 				 * + Global.RANK_PAGE); ParseRankJson(str);
 				 */
-				String strRank = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-						+ Global.RANK_PAGE);
+				String strRank = ToolHelper
+						.donwLoadToString(Global.GAME_MAIN_URL
+								+ Global.RANK_PAGE);
 				if (strRank.isEmpty()) {
 					appRankInfos_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseRankJson(strRank);
 				}
-			
+
 				StringBuilder apknamelist = new StringBuilder();
 				for (AppInfo ai : appRankInfos) {
 					DownStateBroadcast dsb = new DownStateBroadcast();
@@ -312,15 +345,18 @@ testView.setOnClickListener(new OnClickListener() {
 			}
 
 			protected void onPostExecute(Void result) {
-				
+
 				appRankInfos.clear();
 				appRankInfos.addAll(appRankInfos_temp);
-				if(appRankInfos.size() == 0) {
+				if (appRankInfos.size() == 0) {
 					ll_rankerror.setVisibility(View.VISIBLE);
 				} else {
 				}
 				appRankAdapter.notifyDataSetChanged();
-				updata_num.setText(MarketApplication.getInstance().getDownApplist().size()+MarketApplication.getInstance().getAppManagerUpdateInfos().size()+"");
+				updata_num.setText(MarketApplication.getInstance()
+						.getDownApplist().size()
+						+ MarketApplication.getInstance()
+								.getAppManagerUpdateInfos().size() + "");
 				mRankListView.setOnScrollListener(new OnScrollListener() {
 
 					@Override
@@ -353,13 +389,13 @@ testView.setOnClickListener(new OnClickListener() {
 				// rank_pb.setVisibility(View.INVISIBLE);
 			};
 		}.execute();
-		if(appRankInfos.size() == 0) {
-			//ll_rankerror.setVisibility(View.VISIBLE);
+		if (appRankInfos.size() == 0) {
+			// ll_rankerror.setVisibility(View.VISIBLE);
 		} else {
 		}
 		appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), cache);
 		mRankListView.setAdapter(appRankAdapter);
-		
+
 		// 注册滑动监听事件，快速滑动时，不异步加载图片，而是从缓存中获取
 		mRankListView.setOnScrollListener(new OnScrollListener() {
 
@@ -382,16 +418,16 @@ testView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-//				if(firstVisibleItem >= 2) {
-//					tabRank2.setVisibility(View.VISIBLE);
-//				} else {
-//					tabRank2.setVisibility(View.INVISIBLE);
-//				}
+				// if(firstVisibleItem >= 2) {
+				// tabRank2.setVisibility(View.VISIBLE);
+				// } else {
+				// tabRank2.setVisibility(View.INVISIBLE);
+				// }
 
 			}
 		});
 		mRankListView.setOnItemClickListener(new OnItemClickListener() {
-			
+
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -517,8 +553,8 @@ testView.setOnClickListener(new OnClickListener() {
 	public void onResume() {
 		super.onResume();
 		registerPrecent();
-		
-		if(appRankInfos.size() != 0) {
+
+		if (appRankInfos.size() != 0) {
 			ll_rankerror.setVisibility(View.INVISIBLE);
 		}
 		appRankAdapter.notifyDataSetChanged();
@@ -528,12 +564,30 @@ testView.setOnClickListener(new OnClickListener() {
 	public void onDestroy() {
 		super.onDestroy();
 		unregisterPrecent();
-	
+
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.iv_advert1:
+			Intent advert1intent = new Intent();
+			advert1intent.setClass(getActivity(), AppDetailActivity.class);
+			advert1intent.putExtra("appid", banners.get(1).getAppid());
+			startActivity(advert1intent);
+			break;
+		case R.id.iv_advert2:
+			Intent advert2intent = new Intent();
+			advert2intent.setClass(getActivity(), AppDetailActivity.class);
+			advert2intent.putExtra("appid", banners.get(2).getAppid());
+			startActivity(advert2intent);
+			break;
+		case R.id.iv_advert3:
+			Intent advert3intent = new Intent();
+			advert3intent.setClass(getActivity(), AppDetailActivity.class);
+			advert3intent.putExtra("appid", banners.get(3).getAppid());
+			startActivity(advert3intent);
+			break;
 		case R.id.btn_Refsh:
 			isLoading = false;
 			isFirst = true;
@@ -541,10 +595,11 @@ testView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				protected Void doInBackground(Void... params) {
-				
+
 					MyFragmengManager manager = (MyFragmengManager) getActivity();
-					String strRank = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
-							+ Global.RANK_PAGE);
+					String strRank = ToolHelper
+							.donwLoadToString(Global.GAME_MAIN_URL
+									+ Global.RANK_PAGE);
 					if (strRank.isEmpty()) {
 						appRankInfos = new ArrayList<AppInfo>();
 					} else {
@@ -559,7 +614,8 @@ testView.setOnClickListener(new OnClickListener() {
 					super.onPostExecute(result);
 					appRankInfos.clear();
 					appRankInfos.addAll(appRankInfos_temp);
-					appRankAdapter = new NewRankAdapter(appRankInfos, getActivity(), null);
+					appRankAdapter = new NewRankAdapter(appRankInfos,
+							getActivity(), null);
 					mRankListView.setAdapter(appRankAdapter);
 					ll_rankerror.setVisibility(View.INVISIBLE);
 					mRankListView.setOnScrollListener(new OnScrollListener() {
@@ -592,7 +648,7 @@ testView.setOnClickListener(new OnClickListener() {
 						}
 					});
 				}
-				
+
 			}.exe();
 			break;
 		case R.id.setting:
@@ -618,7 +674,8 @@ testView.setOnClickListener(new OnClickListener() {
 			cancalNt.setAction("duobaohui.cancalnotifition");
 			getActivity().sendBroadcast(cancalNt);
 			LogUtils.d("Main", "我发出了取消广播");
-			getActivity().stopService(new Intent(getActivity(), DownloadService.class));
+			getActivity().stopService(
+					new Intent(getActivity(), DownloadService.class));
 			break;
 		case R.id.about:
 			pw.dismiss();
@@ -654,6 +711,7 @@ testView.setOnClickListener(new OnClickListener() {
 		}
 		sp.edit().putInt("day", mDay).commit();
 	}
+
 	// 解析Rank
 	private void ParseRankJson(String str) {
 		appRankInfos_temp = new ArrayList<AppInfo>();
@@ -682,6 +740,7 @@ testView.setOnClickListener(new OnClickListener() {
 		} catch (Exception ex) {
 		}
 	}
+
 	/**
 	 * 获取数据
 	 */
@@ -690,20 +749,17 @@ testView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				String str = ToolHelper
-						.donwLoadToString(Global.GAME_MAIN_URL
-								+ Global.RANK_PAGE+"?page="+page);
+				String str = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ Global.RANK_PAGE + "?page=" + page);
 				if (str == null) {
 					ll_rankerror.setVisibility(View.VISIBLE);
 					appRankInfos = new ArrayList<AppInfo>();
 				} else {
-						ParseRankJson(str);
+					ParseRankJson(str);
 				}
 
 				return null;
 			}
-
-			
 
 			@Override
 			protected void onPostExecute(Void result) {

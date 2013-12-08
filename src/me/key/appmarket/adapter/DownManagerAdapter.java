@@ -120,7 +120,7 @@ public class DownManagerAdapter extends BaseAdapter {
 		ImageLoader.getInstance().displayImage(sdappInfo.getIconUrl(),
 				v1.icon_dm, options);
 		File tempFile = new File(LocalUtils.getRoot(context),
-				"market/" + sdappInfo.getAppName() + ".apk");
+				"d9dir/" + sdappInfo.getAppName() + ".apk");
 		SharedPreferences sp = context.getSharedPreferences("down",
 				context.MODE_PRIVATE);
 		boolean isDownLoaded = DownloadService.isDownLoaded(sdappInfo
@@ -273,8 +273,7 @@ public class DownManagerAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = context.getSharedPreferences("down",
 							context.MODE_PRIVATE);
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(context), "d9dir/"
 							+ sdappInfo.getAppName() + ".apk");
 					v1.install_dm.setText("下载");
 

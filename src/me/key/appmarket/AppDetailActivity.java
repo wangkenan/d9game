@@ -153,7 +153,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 
 		sp = getSharedPreferences("down", MODE_PRIVATE);
 		tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + appInfo.getAppName() + ".apk");
+				"/d9dir/" + appInfo.getAppName() + ".apk");
 
 		appDesc.setSelected(true);
 
@@ -174,8 +174,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 			@Override
 			public void onClick(View arg0) {
 				if (appInfo.isCanUpdate()) {
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(AppDetailActivity.this), "d9dir/"
 							+ appInfo.getAppName() + ".apk");
 					List<AppInfo> down_temp = new ArrayList<AppInfo>();
 					if (tempFile.exists()) {
@@ -421,8 +420,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						}
 					}
 					appInfo.setLastTime(Long.MAX_VALUE);
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(AppDetailActivity.this), "d9dir/"
 							+ appInfo.getAppName() + ".apk");
 					SharedPreferences sp = getSharedPreferences("down",
 							MODE_PRIVATE);
@@ -824,7 +822,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		// v1.progress_view.setProgress(0);
 		// v1.progress_view.setVisibility(View.VISIBLE);
 		final File tempFile = new File(
-				LocalUtils.getRoot(this), "market/"
+				LocalUtils.getRoot(this), "d9dir/"
 						+ appInfo.getAppName() + ".apk");
 		count = sp.getLong(tempFile.getAbsolutePath() + "precent", 0);
 

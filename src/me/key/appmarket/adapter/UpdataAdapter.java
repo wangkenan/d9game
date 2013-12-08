@@ -8,6 +8,7 @@ import me.key.appmarket.MarketApplication;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.widgets.ProgressView;
 
 import com.market.d9game.R;
@@ -119,8 +120,7 @@ public class UpdataAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				List<AppInfo> down_temp = new ArrayList<AppInfo>();
-				File tempFile = new File(Environment
-						.getExternalStorageDirectory(), "/market/"
+				File tempFile = new File(LocalUtils.getRoot(context), "d9dir/"
 						+ sdappInfo.getAppName() + ".apk");
 				if (tempFile.exists()) {
 					tempFile.delete();

@@ -7,6 +7,7 @@ import java.util.List;
 
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Banner;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ShortcutUtil;
 import me.key.appmarket.utils.ToastUtils;
@@ -37,7 +38,16 @@ public class MarketApplication extends Application {
 	private List<AppInfo> appManaInfos_temp = new ArrayList<AppInfo>();
 	private List<AppInfo> appManagerUpdateInfos = new ArrayList<AppInfo>();
 	private List<AppInfo> localtopList = new ArrayList<AppInfo>();
+	private List<Banner> banners = new ArrayList<Banner>();
 	
+	public List<Banner> getBanners() {
+		return banners;
+	}
+
+	public void setBanners(List<Banner> banners) {
+		this.banners = banners;
+	}
+
 	public List<AppInfo> getAppManaInfos_temp() {
 		return appManaInfos_temp;
 	}

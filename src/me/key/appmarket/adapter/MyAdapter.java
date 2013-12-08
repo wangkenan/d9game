@@ -15,6 +15,7 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.tool.TxtReader;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Banner;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
@@ -34,6 +35,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.sax.StartElementListener;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,6 +90,7 @@ public class MyAdapter extends BaseAdapter {
 			.delayBeforeLoading(100).cacheInMemory(true).cacheOnDisc(true)
 			.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 			.bitmapConfig(Bitmap.Config.RGB_565).build();
+	private List<Banner> banners;
 
 	public MyAdapter(Context context, List<AppInfo> appManaInfos,
 			List<AppInfo> mAppInfos, ListView lv) {
@@ -149,6 +152,7 @@ public class MyAdapter extends BaseAdapter {
 		final int newposition = position - 3;
 		final ViewHolder holder;
 		final ViewHolder2 viewHolder2;
+		final BannerHolder bannerHolder;
 
 		int type = getItemViewType(position);
 		Drawable mDrawable;
@@ -161,6 +165,7 @@ public class MyAdapter extends BaseAdapter {
 				convertView = mInflater.inflate(R.layout.ranktest, null);
 				viewHolder2.banner = (ImageView) convertView
 						.findViewById(R.id.iv_rank_test);
+				
 				viewHolder2.banner.setPadding(0, 1, 0, 1);
 				convertView.setTag(viewHolder2);
 				break;
@@ -189,8 +194,13 @@ public class MyAdapter extends BaseAdapter {
 				convertView.setTag(tabHolder);
 				break;
 			case 3:
+				bannerHolder = new BannerHolder();
 				convertView = mInflater.inflate(R.layout.advert_banner, null);
+				bannerHolder.iv1 = (ImageView) convertView.findViewById(R.id.iv_advert1);
+				bannerHolder.iv2 = (ImageView) convertView.findViewById(R.id.iv_advert2);
+				bannerHolder.iv3 = (ImageView) convertView.findViewById(R.id.iv_advert3);
 				convertView.setPadding(0, 6, 0, 6);
+				convertView.setTag(bannerHolder);
 				break;
 			}
 		} else {
@@ -210,7 +220,10 @@ public class MyAdapter extends BaseAdapter {
 
 		case 0:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
-			// setImagePosition(R.drawable.bannaer, v3.banner);
+			banners = MarketApplication.getInstance().getBanners();
+			if(banners.size() != 0) {
+				ImageLoader.getInstance().displayImage(banners.get(0).getPicurl(), v3.banner, options);
+			}
 			v3.banner.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -433,8 +446,7 @@ public class MyAdapter extends BaseAdapter {
 						@Override
 						public void onClick(View v) {
 							List<AppInfo> down_temp = new ArrayList<AppInfo>();
-							File tempFile = new File(Environment
-									.getExternalStorageDirectory(), "/market/"
+							File tempFile = new File(LocalUtils.getRoot(cnt), "d9dir/"
 									+ sdappInfo.getAppName() + ".apk");
 							if (tempFile.exists()) {
 								tempFile.delete();
@@ -521,6 +533,43 @@ public class MyAdapter extends BaseAdapter {
 
 			});
 			break;
+		case 3:
+			if(banners.size() != 0) {
+			final BannerHolder bannerHolderFinal = (BannerHolder) convertView.getTag();
+			ImageLoader.getInstance().displayImage(banners.get(1).getPicurl(), bannerHolderFinal.iv1,options);
+			bannerHolderFinal.iv1.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.setClass(cnt, AppDetailActivity.class);
+					intent.putExtra("appid", banners.get(1).getAppid());
+					cnt.startActivity(intent);
+				}
+			});
+			ImageLoader.getInstance().displayImage(banners.get(2).getPicurl(), bannerHolderFinal.iv2,options);
+			bannerHolderFinal.iv2.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.setClass(cnt, AppDetailActivity.class);
+					intent.putExtra("appid", banners.get(2).getAppid());
+					cnt.startActivity(intent);
+				}
+			});	ImageLoader.getInstance().displayImage(banners.get(3).getPicurl(), bannerHolderFinal.iv3,options);
+			bannerHolderFinal.iv3.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent();
+					intent.setClass(cnt, AppDetailActivity.class);
+					intent.putExtra("appid", banners.get(3).getAppid());
+					cnt.startActivity(intent);
+				}
+			});
+			}
+			break;
 		}
 		return convertView;
 
@@ -553,6 +602,11 @@ public class MyAdapter extends BaseAdapter {
 	static class TabHolder {
 		TextView mygame;
 		TextView sdgame;
+	}
+	static class BannerHolder {
+		ImageView iv1;
+		ImageView iv2;
+		ImageView iv3;
 	}
 
 	/**

@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -62,8 +63,8 @@ public class OneKeyInstallActivity extends FinalActivity {
 	private final static int APP = 0;
 	private final static int GAME = 1;
 	private final static int MOBILE = 2;
-	
-
+	@ViewInject(id=R.id.allselect,click="onClick")
+	private CheckBox allselect;
 	private ArrayList<AppInfo> checkApp = new ArrayList<AppInfo>();
 	private List<PackageInfo> packages;
 
@@ -75,7 +76,6 @@ public class OneKeyInstallActivity extends FinalActivity {
 		packages = OneKeyInstallActivity.this.getPackageManager()
 				.getInstalledPackages(0);
 		fillData("0");
-
 	}
 
 	// 获得数据
@@ -122,6 +122,11 @@ public class OneKeyInstallActivity extends FinalActivity {
 							}
 
 						});
+				for(int i =0;i < onekAdapter.getCount();i++) {
+					onekAdapter.checkState.set(i, true);
+					checkApp.add((AppInfo) onekAdapter
+							.getItem(i));
+				}
 				super.onPostExecute(result);
 			}
 		}.execute();
@@ -178,6 +183,25 @@ public class OneKeyInstallActivity extends FinalActivity {
 			// fillData(String.valueOf(tag));
 			// break;
 			// }
+			break;
+		case R.id.allselect :
+			if(allselect.isChecked()) {
+			for(int i =0;i < onekAdapter.getCount();i++) {
+				onekAdapter.checkState.set(i, true);
+				
+					checkApp.add((AppInfo) onekAdapter
+							.getItem(i));
+				}
+			} else {
+				for(int i =0;i < onekAdapter.getCount();i++) {
+					onekAdapter.checkState.set(i, false);
+					
+						checkApp.remove((AppInfo) onekAdapter
+								.getItem(i));
+					}
+			}
+				
+			onekAdapter.notifyDataSetChanged();
 			break;
 		}
 	}

@@ -30,6 +30,10 @@ public class MyScoreActivity extends FinalActivity {
 	   private void createList() {
 	        tableView.addBasicItem("版本号", "v1.9");
 	        tableView.addBasicItem("开发日期", "2013/3/1");
+	        tableView.addBasicItem("开发公司", "北京格尚科技有限公司");
+	        tableView.addBasicItem("联系人", "王科楠");
+	        tableView.addBasicItem("联系邮箱", "service@geshangtech.com");
+	        tableView.addBasicItem("联系电话", "18701450306");
 	    }
 	   
 	   public void onClick(View v){

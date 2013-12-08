@@ -14,6 +14,7 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
 import android.content.Context;
@@ -218,8 +219,8 @@ public class AppAdapter extends BaseAdapter {
 		Drawable mDrawable;
 		//v1.progress_view.setProgress(0);
 		// v1.progress_view.setVisibility(View.VISIBLE);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + appInfos.get(position).getAppName() + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(mContext),
+				"d9dir/" + appInfos.get(position).getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
 		boolean isDownLoaded = DownloadService.isDownLoaded(appInfos.get(
@@ -394,8 +395,7 @@ public class AppAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ appInfos.get(position).getAppName() + ".apk");
 					Intent downState = new Intent();
 					downState.setAction(tempFile.getAbsolutePath() + "down");
@@ -431,8 +431,8 @@ public class AppAdapter extends BaseAdapter {
 			v1.tvdown.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					File tempFile = new File(Environment.getExternalStorageDirectory(),
-							"/market/" + sdappInfo.getAppName() + ".apk");
+					File tempFile = new File(LocalUtils.getRoot(mContext),
+							"d9dir/" + sdappInfo.getAppName() + ".apk");
 					List<AppInfo> down_temp = new ArrayList<AppInfo>();
 					if(tempFile.exists()) {
 						tempFile.delete();

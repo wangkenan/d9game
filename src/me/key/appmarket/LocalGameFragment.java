@@ -556,8 +556,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 					LogUtils.d("Local", "我已经安装了" + appInfo.getAppName()
 							+ "regedit" + appManaInfos_temp.size());
 					File tempFile = new File(
-							Environment.getExternalStorageDirectory(),
-							"/market/" + appInfo.getAppName() + ".apk");
+							LocalUtils.getRoot(getActivity()),
+							"d9dir/" + appInfo.getAppName() + ".apk");
 
 					if (tempFile.exists()) {
 						tempFile.delete();
@@ -763,8 +763,8 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		boolean result = false;
 		SharedPreferences sp = getActivity().getSharedPreferences("down",
 				getActivity().MODE_PRIVATE);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(getActivity()),
+				"d9dir/" + name + ".apk");
 
 		if (tempFile.exists()) {
 			result = true;

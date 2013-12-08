@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/bannar1"
         android:layout_weight="1"
+        android:scaleType="fitXY"
         android:layout_marginLeft="4dip"
         android:adjustViewBounds="true" />
 
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/bannar2"
         android:layout_weight="1"
+         android:scaleType="fitXY"
         android:layout_marginLeft="4dip"
         android:layout_marginRight="4dip"
         android:adjustViewBounds="true" />
@@ -30,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/bannar3"
+         android:scaleType="fitXY"
         android:layout_weight="1"
         android:layout_marginRight="4dip"
         android:adjustViewBounds="true" />

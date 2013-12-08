@@ -84,6 +84,7 @@ public class OnKeyAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		sdappInfo = mData.get(position);
+		
 		/*
 		 * Drawable mDrawable2 = cnt.getResources().getDrawable(
 		 * R.drawable.downloaded);

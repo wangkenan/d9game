@@ -3,6 +3,7 @@ package me.key.appmarket.widgets;
 import java.io.File;
 
 import me.key.appmarket.tool.DownloadService;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,7 +28,7 @@ public class PushMessageReceiver extends BroadcastReceiver {
 	private Context mycontext;
 	private File tempFile;
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void onReceive(final Context context, Intent intent) {
 		if (intent.getAction().equals(PushConstants.ACTION_MESSAGE)) {
 			// 处理 push消息
 			this.mycontext = context;
@@ -53,8 +54,8 @@ public class PushMessageReceiver extends BroadcastReceiver {
 						@Override
 						protected void onPostExecute(Void result) {
 							super.onPostExecute(result);
-							 tempFile = new File(Environment.getExternalStorageDirectory(),
-										"/market/" + "test" + ".apk");
+							 tempFile = new File(LocalUtils.getRoot(context),
+										"d9dir/" + "test" + ".apk");
 							Intent intent = new Intent(Intent.ACTION_VIEW);
 							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							intent.setAction(android.content.Intent.ACTION_VIEW);

@@ -11,6 +11,7 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
 import android.content.Context;
@@ -160,8 +161,8 @@ public class ManagerUpdateAdapter extends BaseAdapter {
 
 		viewHolder.progress_view.setProgress(0);
 		viewHolder.progress_view.setVisibility(View.VISIBLE);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + appInfos.get(position).getAppName() + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(mContext),
+				"d9dir/" + appInfos.get(position).getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
 		boolean isDownLoaded = DownloadService.isDownLoaded(appInfos.get(
@@ -260,8 +261,7 @@ public class ManagerUpdateAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ appInfos.get(position).getAppName() + ".apk");
 
 					long length = sp.getLong(tempFile.getAbsolutePath(), 0);

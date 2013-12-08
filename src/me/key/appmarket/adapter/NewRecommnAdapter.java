@@ -328,9 +328,9 @@ public class NewRecommnAdapter extends BaseAdapter {
 		// v1.progress_view.setProgress(0);
 		// v1.progress_view.setVisibility(View.VISIBLE);
 		File tempFile = new File(LocalUtils.getRoot(mContext),
-				"market/" + sdappInfo.getAppName() + ".apk");
+				"d9dir/" + sdappInfo.getAppName() + ".apk");
 		File tempFileRight = new File(
-				LocalUtils.getRoot(mContext), "market/"
+				LocalUtils.getRoot(mContext), "d9dir/"
 						+ sdappInfoRight.getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
@@ -517,7 +517,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ sdappInfo.getAppName() + ".apk");
 					Intent downState = new Intent();
 					downState.setAction(tempFile.getAbsolutePath() + "down");
@@ -551,7 +551,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 			v1.tvdown.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ sdappInfo.getAppName() + ".apk");
 					List<AppInfo> down_temp = new ArrayList<AppInfo>();
 					if (tempFile.exists()) {
@@ -744,7 +744,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ sdappInfoRight.getAppName() + ".apk");
 					Intent downState = new Intent();
 					downState.setAction(tempFile.getAbsolutePath() + "down");
@@ -778,7 +778,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 			v1.tvdownRight.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ sdappInfoRight.getAppName() + ".apk");
 					List<AppInfo> down_temp = new ArrayList<AppInfo>();
 					if (tempFile.exists()) {

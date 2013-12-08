@@ -145,8 +145,8 @@ public class RankAdapter extends BaseAdapter {
 
 		viewHolder.progress_view.setProgress(0);
 		viewHolder.progress_view.setVisibility(View.VISIBLE);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + appInfos.get(position).getAppName() + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(mContext),
+				"d9dir/" + appInfos.get(position).getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
 		boolean isDownLoaded = DownloadService.isDownLoaded(appInfos.get(
@@ -257,7 +257,7 @@ public class RankAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "d9dir/"
 							+ appInfos.get(position).getAppName() + ".apk");
 
 					long length = sp.getLong(tempFile.getAbsolutePath(), 0);

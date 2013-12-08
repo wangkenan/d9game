@@ -41,12 +41,15 @@
                 android:textSize="20sp" />
         </LinearLayout>
     </FrameLayout>
-	<Button
+	<CheckBox
 	    android:id="@+id/allselect"
 	    android:layout_below="@+id/topbar_onekeyinstall"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="全选" 
+	    android:text="全选/全不选" 
+	    android:textColor="@color/white"
+	    android:checked="true"
+	    android:layout_marginLeft="10dip"
 	    />
     <FrameLayout
         android:layout_width="fill_parent"
@@ -82,7 +85,7 @@
         android:layout_height="50dip"
         android:layout_alignParentBottom="true"
         android:layout_margin="5dip"
-        android:background="@drawable/app_detail_download_btn"
+        android:background="#fea900"
         android:gravity="center"
         android:text="一键安装"
         android:textStyle="bold"

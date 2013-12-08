@@ -699,7 +699,7 @@ public class DownloadService extends Service {
 	// }
 
 	public static File CreatFileName(String name) {
-		File marketDir = new File(LocalUtils.getRoot(context) + "market");
+		File marketDir = new File(LocalUtils.getRoot(context) + "d9dir");
 		try {
 			if (!marketDir.exists()) {
 				marketDir.mkdir();
@@ -730,7 +730,7 @@ public class DownloadService extends Service {
 		SharedPreferences sp = context.getSharedPreferences("down",
 				MODE_PRIVATE);
 		File tempFile = new File(LocalUtils.getRoot(context),
-				"market/" + name + ".apk");
+				"d9dir/" + name + ".apk");
 
 		if (tempFile.exists()) {
 			result = true;
@@ -746,7 +746,7 @@ public class DownloadService extends Service {
 	public static boolean isExist(String name) {
 		boolean result = false;
 		File tempFile = new File(LocalUtils.getRoot(context),
-				"market/" + name + ".apk");
+				"d9dir/" + name + ".apk");
 		if (tempFile.exists()) {
 			result = true;
 		}
@@ -755,7 +755,7 @@ public class DownloadService extends Service {
 
 	public static void Instanll(String name, Context context) {
 		File tempFile = new File(LocalUtils.getRoot(context),
-				"market/" + name + ".apk");
+				"d9dir/" + name + ".apk");
 
 		if (tempFile.exists()) {
 			Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -892,8 +892,8 @@ public class DownloadService extends Service {
 	}
 
 	public static void quiesceDownFile(String url, String name) {
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + name + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(context),
+				"d9dir/" + name + ".apk");
 		URL urls;
 		try {
 			urls = new URL(url);
@@ -913,7 +913,7 @@ public class DownloadService extends Service {
 
 			if (is != null) {
 				File rootFile = new File(
-						Environment.getExternalStorageDirectory(), "/market");
+						LocalUtils.getRoot(context), "d9dir");
 				if (!rootFile.exists() && !rootFile.isDirectory())
 					rootFile.mkdir();
 				/*

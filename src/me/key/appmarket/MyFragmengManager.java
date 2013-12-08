@@ -11,6 +11,7 @@ import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Banner;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.HttpClientUtil;
@@ -21,6 +22,7 @@ import me.key.appmarket.utils.ToastUtils;
 import net.tsz.afinal.FinalDb;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.BroadcastReceiver;
@@ -102,6 +104,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	private List<CategoryInfo> gcategoryInfoList_temp = new ArrayList<CategoryInfo>();
 	// 本地游戏派讯
 	private List<AppInfo> localtopList = new ArrayList<AppInfo>();
+	private List<Banner> banners = new ArrayList<Banner>();
 	private RankFragment f1;
 	public SlidingMenu menu;
 	private Handler myHandler = new Handler() {
@@ -226,6 +229,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				// if(!firstinstall) {
 				appManaInfos_temp = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
+				
 				// Editor edit = sp.edit();
 				// edit.putBoolean("firstinstall", true);
 				// for(AppInfo appInfo : appManaInfos_temp) {
@@ -254,8 +258,12 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				List<AppInfo> mAppInfos_temp = new ArrayList<AppInfo>();
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
+				Long currentMapp  = System.currentTimeMillis();
 				mAppInfos_temp = LocalUtils.InitHomePager("0",
 						MyFragmengManager.this, root + "d9dir/", packages);
+				Long currentMappnow  = System.currentTimeMillis();
+				LogUtils.d("Local", (currentMappnow - currentMapp)+"currentMappnow - currentMapp");
+				LogUtils.d("Local", "mAppInfos_tempmAppInfos_temp"+mAppInfos_temp.size());
 				mAppInfos.addAll(mAppInfos_temp);
 				ArrayList<AppInfo> userApps = AppUtils.getUserApps(
 						MyFragmengManager.this, 4000);
@@ -295,10 +303,42 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				} else {
 					ParseCategoryJson(str4);
 				}
-				loadLocaltopList();
 				Long now = System.currentTimeMillis();
-				LogUtils.d("Local", (now - current) + "nownownownow");
+				loadLocaltopList();
+				Long bannertime = System.currentTimeMillis();
+				LogUtils.d("Local", (bannertime - now) + "nownownownow");
+			
+				String banner = ToolHelper.donwLoadToString(Global.GAME_MAIN_URL
+						+ "/recommednBanner.php");
+				Long bannertimenow = System.currentTimeMillis();
+				LogUtils.d("Local", bannertimenow-bannertime+"bannertimenow");
+				if(banner.isEmpty()) {
+					//TODO 
+				} else {
+					ParseBanner(banner);
+				}
 				return null;
+			}
+
+			private void ParseBanner(String bannerstr) {
+					JSONArray jsonArray;
+					banners.clear();
+					try {
+						jsonArray = new JSONArray(bannerstr);
+						int len = jsonArray.length();
+						for (int i = 0; i < len; i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							String picurl = jsonObject.getString("picurl");
+							String appid = jsonObject.getString("appid");
+							Banner banner =  new Banner();
+							banner.setAppid(appid);
+							banner.setPicurl(picurl);
+							banners.add(banner);
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
 			}
 
 			protected void onPostExecute(Void result) {
@@ -311,6 +351,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 						appManagerUpdateInfos);
 				MarketApplication.getInstance().setHomeAppInfos(
 						appHomeInfos_temp);
+				MarketApplication.getInstance().setBanners(banners);
 				lf = new LocalGameFragment();
 				mf = new MainActivityFragment();
 				ft = fm.beginTransaction();

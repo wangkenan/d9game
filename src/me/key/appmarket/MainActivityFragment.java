@@ -26,6 +26,7 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Banner;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LogUtils;
@@ -81,6 +82,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.slidingmenu.lib2.SlidingMenu;
 
 public class MainActivityFragment extends Fragment implements OnClickListener {
@@ -97,7 +99,6 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private int firstItemIndex;
 	private OnLoadMoreListener loadMoreListener;
 	private int state;
-
 
 	private boolean isBack;
 	private ImageButton search_btn;
@@ -116,7 +117,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	private GalleryFlow tuijian_gallery;
 	private TuiJianImageAdapter tuiJianAdapter;
 	// game
-	
+
 	private int x;
 	private int y;
 	private FinalDb db;
@@ -764,14 +765,15 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			 * else { // Log.e("tag", "--------------1-------------");
 			 * ParseHomeJson(str); }
 			 */
-		
+
 		}
 	};
 	private View recomnView;
+	private List<Banner> banners;
 
 	private void initHomeView() {
 		mHomeListView = (ListView) homeView.findViewById(R.id.list_home);
-	
+
 		new MyAsynTask(context, null) {
 
 			@Override
@@ -799,8 +801,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				for (AppInfo ai : appHomeInfos) {
 					DownStateBroadcast dsb = new DownStateBroadcast();
 					IntentFilter filter = new IntentFilter();
-					String fileName = DownloadService
-							.CreatFileName(ai.getAppName()).getAbsolutePath();
+					String fileName = DownloadService.CreatFileName(
+							ai.getAppName()).getAbsolutePath();
 					filter.addAction(fileName + "down");
 					getActivity().registerReceiver(dsb, filter);
 					apknamelist.append(ai.getPackageName() + ",");
@@ -829,8 +831,8 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
 				ParseUpdateJson(str);
-				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(appHomeInfos,
-						appManagerUpdateInfos_t);
+				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
+						appHomeInfos, appManagerUpdateInfos_t);
 				appManagerUpdateInfos.clear();
 				appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
 				LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
@@ -848,7 +850,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			}
 
 		}.exe();
-	
+
 		View view = inflate.inflate(context, R.layout.app_list_recomm_item,
 				null);
 		View icon2 = view.findViewById(R.id.icon2);
@@ -873,10 +875,33 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		tvDownRight.setVisibility(View.INVISIBLE);
 		// 添加广告、导航栏等
 		mHomeListView.addFooterView(view);
+		banners = MarketApplication.getInstance().getBanners();
 		View testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
-		testView.setPadding(0, 1, 0, 1);
 		View advertBanner = inflate.inflate(getActivity(),
 				R.layout.advert_banner, null);
+		ImageView bannerView = (ImageView) testView.findViewById(R.id.iv_rank_test);
+		if(banners.size() != 0) {
+			ImageLoader.getInstance().displayImage(banners.get(0).getPicurl(),bannerView, Global.options);
+			testView.setPadding(0, 1, 0, 1);
+			ImageView adver1 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert1);
+			ImageView adver2 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert2);
+			ImageView adver3 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert3);
+
+			ImageLoader.getInstance().displayImage(banners.get(1).getPicurl(),
+					adver1, Global.options);
+			ImageLoader.getInstance().displayImage(banners.get(2).getPicurl(),
+					adver2, Global.options);
+			ImageLoader.getInstance().displayImage(banners.get(3).getPicurl(),
+					adver3, Global.options);
+			adver1.setOnClickListener(this);
+			adver2.setOnClickListener(this);
+			adver3.setOnClickListener(this);
+		}
+		
+		
 		// View tabRank = inflate.inflate(getActivity(), R.layout.tab_localgame,
 		// null);
 		testView.setOnClickListener(new OnClickListener() {
@@ -1108,6 +1133,24 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+		case R.id.iv_advert1:
+			Intent advert1intent = new Intent();
+			advert1intent.setClass(getActivity(), AppDetailActivity.class);
+			advert1intent.putExtra("appid", banners.get(1).getAppid());
+			startActivity(advert1intent);
+			break;
+		case R.id.iv_advert2:
+			Intent advert2intent = new Intent();
+			advert2intent.setClass(getActivity(), AppDetailActivity.class);
+			advert2intent.putExtra("appid", banners.get(2).getAppid());
+			startActivity(advert2intent);
+			break;
+		case R.id.iv_advert3:
+			Intent advert3intent = new Intent();
+			advert3intent.setClass(getActivity(), AppDetailActivity.class);
+			advert3intent.putExtra("appid", banners.get(3).getAppid());
+			startActivity(advert3intent);
+			break;
 		case R.id.setting:
 			// 获取view在当前窗体的位置
 			int location[] = new int[2];
@@ -1188,6 +1231,5 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 		} catch (Exception ex) {
 		}
 	}
-
 
 }
