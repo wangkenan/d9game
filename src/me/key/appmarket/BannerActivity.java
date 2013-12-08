@@ -112,7 +112,7 @@ public class BannerActivity extends Activity implements OnScrollListener {
 								String name = packInfo.versionName;
 								ai.setVersion(name);
 							} else {
-								ai.setVersion("9999999999999");
+								ai.setVersion(ai.getVersion());
 							}
 
 						} catch (NameNotFoundException e) {
