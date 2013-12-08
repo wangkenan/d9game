@@ -14,7 +14,6 @@ import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CategoryInfo;
 import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.HttpClientUtil;
-import me.key.appmarket.utils.InstallAppInfo;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
@@ -29,10 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,8 +38,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -385,6 +383,16 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 					}
 				});
 				final EditText etSearcher = (EditText)findViewById(R.id.et_search);
+				
+				etSearcher.setOnTouchListener(new OnTouchListener(){
+
+					@Override
+					public boolean onTouch(View arg0, MotionEvent arg1) {
+						etSearcher.setHint("");
+						return false;
+					}
+					
+				});
 				etSearcher.setOnEditorActionListener(new OnEditorActionListener(){
 
 					@Override
@@ -401,6 +409,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 								R.anim.left_anim, R.anim.right_anim);
 						LogUtils.d("MAIN", "动画后");
 						etSearcher.setText(null);
+//						etSearcher.setHint("搜索");
 						return false;
 					}
 					
