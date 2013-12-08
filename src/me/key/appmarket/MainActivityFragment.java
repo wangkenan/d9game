@@ -764,57 +764,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 			 * else { // Log.e("tag", "--------------1-------------");
 			 * ParseHomeJson(str); }
 			 */
-			pHomeBar.setVisibility(View.INVISIBLE);
-			StringBuilder apknamelist = new StringBuilder();
-			for (AppInfo ai : appHomeInfos) {
-				DownStateBroadcast dsb = new DownStateBroadcast();
-				IntentFilter filter = new IntentFilter();
-				String fileName = DownloadService
-						.CreatFileName(ai.getAppName()).getAbsolutePath();
-				filter.addAction(fileName + "down");
-				getActivity().registerReceiver(dsb, filter);
-				apknamelist.append(ai.getPackageName() + ",");
-				try {
-					PackageManager pm = getActivity().getPackageManager();
-					if (ai.isInstalled()) {
-						PackageInfo packInfo = pm.getPackageInfo(
-								ai.getPackageName(), 0);
-						String name = packInfo.versionName;
-						ai.setVersion(name);
-					} else {
-						ai.setVersion("9999999999999");
-					}
-
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
-				}
-			}
-			String uris = apknamelist.toString();
-			if (uris.length() > 0) {
-				uris = uris.substring(0, uris.length() - 1);
-			}
-			/**
-			 * 检查应用是否能更新
-			 */
-			String str = ToolHelper.donwLoadToString(Global.MAIN_URL
-					+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
-			ParseUpdateJson(str);
-			appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(appHomeInfos,
-					appManagerUpdateInfos_t);
-			appManagerUpdateInfos.clear();
-			appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
-			LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
-			for (AppInfo appInfo : appManagerUpdateInfos) {
-				LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
-				for (AppInfo appManaInfo : appHomeInfos) {
-					if (appManaInfo.getPackageName().equals(
-							appInfo.getPackageName())) {
-						appManaInfo.setCanUpdate(true);
-						LogUtils.d("Main",
-								"我可以升级" + appManaInfo.getPackageName());
-					}
-				}
-			}
+		
 		}
 	};
 	private View recomnView;
@@ -844,7 +794,57 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				appHomeInfos.clear();
 				appHomeInfos.addAll(appHomeInfos_temp);
 				appHomeAdapter.notifyDataSetChanged();
-				
+				pHomeBar.setVisibility(View.INVISIBLE);
+				StringBuilder apknamelist = new StringBuilder();
+				for (AppInfo ai : appHomeInfos) {
+					DownStateBroadcast dsb = new DownStateBroadcast();
+					IntentFilter filter = new IntentFilter();
+					String fileName = DownloadService
+							.CreatFileName(ai.getAppName()).getAbsolutePath();
+					filter.addAction(fileName + "down");
+					getActivity().registerReceiver(dsb, filter);
+					apknamelist.append(ai.getPackageName() + ",");
+					try {
+						PackageManager pm = getActivity().getPackageManager();
+						if (ai.isInstalled()) {
+							PackageInfo packInfo = pm.getPackageInfo(
+									ai.getPackageName(), 0);
+							String name = packInfo.versionName;
+							ai.setVersion(name);
+						} else {
+							ai.setVersion("9999999999999");
+						}
+
+					} catch (NameNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
+				String uris = apknamelist.toString();
+				if (uris.length() > 0) {
+					uris = uris.substring(0, uris.length() - 1);
+				}
+				/**
+				 * 检查应用是否能更新
+				 */
+				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
+				ParseUpdateJson(str);
+				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(appHomeInfos,
+						appManagerUpdateInfos_t);
+				appManagerUpdateInfos.clear();
+				appManagerUpdateInfos.addAll(appManagerUpdateInfos_t);
+				LogUtils.d("Main", "appUpdate" + appManagerUpdateInfos.size());
+				for (AppInfo appInfo : appManagerUpdateInfos) {
+					LogUtils.d("Main", "我可以升级" + appInfo.getPackageName());
+					for (AppInfo appManaInfo : appHomeInfos) {
+						if (appManaInfo.getPackageName().equals(
+								appInfo.getPackageName())) {
+							appManaInfo.setCanUpdate(true);
+							LogUtils.d("Main",
+									"我可以升级" + appManaInfo.getPackageName());
+						}
+					}
+				}
 			}
 
 		}.exe();

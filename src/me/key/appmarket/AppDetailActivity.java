@@ -21,6 +21,7 @@ import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.CommentInfo;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.MyAsynTask;
 import me.key.appmarket.widgets.CustomScrollView;
@@ -215,7 +216,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						// tvOperate.setText("暂停");
 						appInfo.setDown(false);
 					} else {
-						tvOperate.setText(count + "%");
+						tvOperate.setText(DownloadService.getPrecent(Integer.parseInt(appInfo.getIdx()))+"%");
 						// tvOperate.setText("下载");
 						ivOperate.setImageResource(R.drawable.install_btn);
 						appInfo.setDown(true);
@@ -783,14 +784,14 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	class PrecentReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			count = sp.getLong(tempFile.getAbsolutePath() + "precent", 0);
+			//count = sp.getLong(tempFile.getAbsolutePath() + "precent", 0);
 			if (intent.getAction().equals(MarketApplication.PRECENT)) {
 				if (appInfo.isIspause()) {
 					// tvOperate.setText("暂停" + "(" + count + "%)");
 					tvOperate.setText("暂停");
 					// ivOperate.setImageResource(resId);
 				} else {
-					tvOperate.setText(count + "%");
+					tvOperate.setText(DownloadService.getPrecent(Integer.parseInt(appInfo.getIdx()))+"%");
 					// tvOperate.setText("下载");
 					ivOperate.setImageResource(R.drawable.install_btn);
 				}
@@ -823,7 +824,7 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		// v1.progress_view.setProgress(0);
 		// v1.progress_view.setVisibility(View.VISIBLE);
 		final File tempFile = new File(
-				Environment.getExternalStorageDirectory(), "/market/"
+				LocalUtils.getRoot(this), "market/"
 						+ appInfo.getAppName() + ".apk");
 		count = sp.getLong(tempFile.getAbsolutePath() + "precent", 0);
 
@@ -842,9 +843,10 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 				LogUtils.d("new", "我执行了下载中暂停" + appInfo.getAppName());
 				// v1.progress_view.setVisibility(View.INVISIBLE);
 				// v1.tvdown.setVisibility(View.VISIBLE);
+					tvOperate.setText("暂停");
 			}
 		} else {
-			tvOperate.setText(count + "%");
+			tvOperate.setText(DownloadService.getPrecent(idx) + "%");
 			// tvOperate.setText("下载");
 			ivOperate.setImageResource(R.drawable.install_btn);
 			LogUtils.d("new", "我是暂停中下载" + appInfo.getAppName());

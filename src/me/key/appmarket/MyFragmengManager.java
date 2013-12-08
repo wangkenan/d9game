@@ -36,12 +36,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -388,7 +388,7 @@ OnClickListener {
 				});
 
 				final EditText etSearcher = (EditText)findViewById(R.id.et_search);
-						etSearcher.setOnTouchListener(new OnTouchListener(){
+						/*etSearcher.setOnTouchListener(new OnTouchListener(){
 
 							@Override
 							public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -396,7 +396,51 @@ OnClickListener {
 								return false;
 							}
 
-						});
+						});*/
+				etSearcher.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+					
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						// TODO Auto-generated method stub
+						if(hasFocus){
+							etSearcher.setHint("");
+						}else{
+							etSearcher.setHint("搜索");
+						}
+					}
+				});
+				
+				etSearcher.addTextChangedListener(new TextWatcher(){
+					private CharSequence temp;
+					private int selectionStart;
+					private int selectionEnd;
+
+					@Override
+					public void afterTextChanged(Editable s) {
+						// TODO Auto-generated method stub
+						int number = s.length();
+						if(number==0){
+							etSearcher.setHint("搜索");
+						}
+						
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start,
+							int count, int after) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int start,
+							int count, int after) {
+						// TODO Auto-generated method stub
+						temp = s;
+
+					}
+
+				});
 						etSearcher.setOnEditorActionListener(new OnEditorActionListener(){
 
 							@Override

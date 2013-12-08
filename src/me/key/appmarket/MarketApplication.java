@@ -120,6 +120,7 @@ public class MarketApplication extends Application {
 		// 配置imageLoager初始化
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			public void uncaughtException(Thread thread, Throwable ex) {
+				ex.printStackTrace();
 				LogUtils.d("Local", "我崩溃了");
 				
 				Intent i = getBaseContext().getPackageManager() 

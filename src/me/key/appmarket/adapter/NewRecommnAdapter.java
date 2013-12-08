@@ -15,6 +15,7 @@ import me.key.appmarket.tool.ToolHelper;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.Global;
+import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.widgets.ProgressView;
 import net.tsz.afinal.FinalDb;
@@ -326,10 +327,10 @@ public class NewRecommnAdapter extends BaseAdapter {
 		Drawable mDrawable;
 		// v1.progress_view.setProgress(0);
 		// v1.progress_view.setVisibility(View.VISIBLE);
-		File tempFile = new File(Environment.getExternalStorageDirectory(),
-				"/market/" + sdappInfo.getAppName() + ".apk");
+		File tempFile = new File(LocalUtils.getRoot(mContext),
+				"market/" + sdappInfo.getAppName() + ".apk");
 		File tempFileRight = new File(
-				Environment.getExternalStorageDirectory(), "/market/"
+				LocalUtils.getRoot(mContext), "market/"
 						+ sdappInfoRight.getAppName() + ".apk");
 		SharedPreferences sp = mContext.getSharedPreferences("down",
 				mContext.MODE_PRIVATE);
@@ -377,6 +378,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					LogUtils.d("ture", isDownLoading + "isDown");
 					LogUtils.d("newdowndown", "我变成下载中了"
 							+ appInfos.get(position).getAppName());
+					v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
 				}
 
 			}
@@ -396,17 +398,19 @@ public class NewRecommnAdapter extends BaseAdapter {
 				LogUtils.d("ture", isDownLoading + "isDown");
 				LogUtils.d("newdowndown", "我变成下载中了"
 						+ appInfos.get(position).getAppName());
+				LogUtils.d("Local", "我还是下载状态--------");
 				/*
 				 * //v1.tvdown.setText("下载中");
 				 * v1.progress_view.setVisibility(View.VISIBLE);
 				 * v1.tvdown.setVisibility(View.INVISIBLE);
-				 * 
+				 * v
 				 * Drawable mDrawableicon = mContext.getResources().getDrawable(
 				 * R.drawable.downloading);
 				 * v1.tvdown.setCompoundDrawablesWithIntrinsicBounds(null,
 				 * mDrawableicon, null, null);
 				 */
-				v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+				//v1.tvdown.setText(DownloadService.getPrecent(idx)+"%");
+				
 			} else if (isDownLoaded) {
 				/*
 				 * Drawable mDrawableicon = mContext.getResources().getDrawable(
@@ -491,7 +495,6 @@ public class NewRecommnAdapter extends BaseAdapter {
 					if (!sdappInfo.isIspause()) {
 						v1.tvdown.setText("暂停");
 						sdappInfo.setDown(false);
-
 					} else {
 						v1.tvdown.setText("下载中");
 						sdappInfo.setDown(true);
@@ -514,8 +517,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
 							+ sdappInfo.getAppName() + ".apk");
 					Intent downState = new Intent();
 					downState.setAction(tempFile.getAbsolutePath() + "down");
@@ -549,8 +551,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 			v1.tvdown.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
 							+ sdappInfo.getAppName() + ".apk");
 					List<AppInfo> down_temp = new ArrayList<AppInfo>();
 					if (tempFile.exists()) {
@@ -603,6 +604,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					LogUtils.d("ture", isDownLoading + "isDown");
 					LogUtils.d("newdowndown", "我变成下载中了"
 							+ appInfos.get(position).getAppName());
+					v1.tvdownRight.setText(DownloadService.getPrecent(idxRight)+"%");
 				}
 
 			}
@@ -622,7 +624,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 				LogUtils.d("ture", isDownLoading + "isDown");
 				LogUtils.d("newdowndown", "我变成下载中了"
 						+ appInfos.get(position).getAppName());
-				v1.tvdownRight.setText(DownloadService.getPrecent(idxRight)+"%");
+				//v1.tvdownRight.setText(DownloadService.getPrecent(idxRight)+"%");
 				/*
 				 * //v1.tvdown.setText("下载中");
 				 * v1.progress_view.setVisibility(View.VISIBLE);
@@ -742,8 +744,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 					 */
 					SharedPreferences sp = mContext.getSharedPreferences(
 							"down", mContext.MODE_PRIVATE);
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
 							+ sdappInfoRight.getAppName() + ".apk");
 					Intent downState = new Intent();
 					downState.setAction(tempFile.getAbsolutePath() + "down");
@@ -777,8 +778,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 			v1.tvdownRight.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					File tempFile = new File(Environment
-							.getExternalStorageDirectory(), "/market/"
+					File tempFile = new File(LocalUtils.getRoot(mContext), "market/"
 							+ sdappInfoRight.getAppName() + ".apk");
 					List<AppInfo> down_temp = new ArrayList<AppInfo>();
 					if (tempFile.exists()) {

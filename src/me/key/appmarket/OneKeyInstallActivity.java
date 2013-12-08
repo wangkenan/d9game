@@ -62,6 +62,7 @@ public class OneKeyInstallActivity extends FinalActivity {
 	private final static int APP = 0;
 	private final static int GAME = 1;
 	private final static int MOBILE = 2;
+	
 
 	private ArrayList<AppInfo> checkApp = new ArrayList<AppInfo>();
 	private List<PackageInfo> packages;
