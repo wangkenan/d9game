@@ -8,11 +8,15 @@ import java.util.List;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.ShortcutUtil;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import com.market.d9game.R;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -111,6 +115,7 @@ public class MarketApplication extends Application {
 		super.onCreate();
 		mInstance = this;
 		ToastUtils.init(this);
+		
 		// 注册未捕获异常处理方式SZAcvxz
 		
 		CrashHandler crashHandler = CrashHandler.getInstance();

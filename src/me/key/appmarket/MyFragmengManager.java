@@ -16,6 +16,7 @@ import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.HttpClientUtil;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
+import me.key.appmarket.utils.ShortcutUtil;
 import me.key.appmarket.utils.ToastUtils;
 import net.tsz.afinal.FinalDb;
 
@@ -34,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
@@ -152,6 +154,15 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 		super.onCreate(arg0);
 		setContentView(R.layout.main_bottom);
 		setBehindContentView(R.layout.slide_menu);
+		
+		//第一次启动创建桌面快捷方式
+		SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(this);
+		boolean isFirstLuncher=preferences.getBoolean("isFirstLuncher", true);
+		if(isFirstLuncher){
+			ShortcutUtil.createShortCut(this, R.drawable.d9_logo, R.string.app_name);
+			preferences.edit().putBoolean("isFirstLuncher", false).commit();
+		}
+		
 		SharedPreferences sp = getSharedPreferences("cleandb", MODE_PRIVATE);
 		boolean cleanDb = sp.getBoolean("db", false);
 		if (!cleanDb) {
