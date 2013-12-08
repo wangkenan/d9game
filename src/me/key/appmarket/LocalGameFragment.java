@@ -164,7 +164,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 		super.onActivityCreated(savedInstanceState);
 		Context context = getActivity();
 		if (context == null) {
-
+			LogUtils.d("Local", "wo gua le ");
 		}
 		long currentTimeMillis = System.currentTimeMillis();
 		packageManager = context.getPackageManager();
@@ -427,6 +427,10 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(getActivity() == null) {
+			
+		} else {
+	
 		downApplist.clear();
 		List<AppInfo> downList_temp = new ArrayList<AppInfo>();
 		downList_temp = db.findAll(AppInfo.class);
@@ -479,7 +483,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			filter.addAction(fileName + "down");
 			getActivity().registerReceiver(dsb, filter);
 		}
+		}
 	}
+	
 
 	public class LocalInstallBroadcast extends BroadcastReceiver {
 		@Override

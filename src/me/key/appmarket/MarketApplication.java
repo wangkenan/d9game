@@ -11,6 +11,7 @@ import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.ToastUtils;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -117,6 +118,18 @@ public class MarketApplication extends Application {
 		DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
 				.cacheInMemory(true).cacheOnDisc(true).build();
 		// 配置imageLoager初始化
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+			public void uncaughtException(Thread thread, Throwable ex) {
+				LogUtils.d("Local", "我崩溃了");
+				
+				Intent i = getBaseContext().getPackageManager() 
+				        .getLaunchIntentForPackage(getBaseContext().getPackageName()); 
+				i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+				startActivity(i);
+				android.os.Process.killProcess(android.os.Process.myPid());
+				System.exit(0);
+			}
+			});
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				this).defaultDisplayImageOptions(defaultOptions)
 				.threadPriority(Thread.NORM_PRIORITY - 2)
@@ -136,8 +149,19 @@ public class MarketApplication extends Application {
 		return appList;
 	}
 
+
+	@Override
+	public void onLowMemory() {
+		LogUtils.d("Local", "我被清理内存了onLowMemory");
+	}
+
 	public void reflashAppList() {
 		appList = AppUtils.getInstallApps(this);
+	}
+
+	@Override
+	public void onTrimMemory(int level) {
+		LogUtils.d("Local", "我被清理内存了");
 	}
 	
 }

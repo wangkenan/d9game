@@ -894,17 +894,27 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 	protected void onDestroy() {
 		super.onDestroy();
 		unRegister();
+		LogUtils.d("Local", "Fragment也被清楚了");
 	}
 
 	private void unRegister() {
-		this.unregisterReceiver(dsb);
-		this.unregisterReceiver(dsbRank);
+		if(dsb != null) {
+			this.unregisterReceiver(dsb);
+		}
+		if(dsbRank != null) {
+			this.unregisterReceiver(dsbRank);
+		}
 	}
 
 
 
 
 
+@Override
+public void onLowMemory() {
+	super.onLowMemory();
+	LogUtils.d("Local", "frgment被杀了");
+}
 	public void setLocaltopList(ArrayList<AppInfo> localtopList) {
 		this.localtopList = localtopList;
 	}
@@ -931,5 +941,5 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 			e.printStackTrace();
 		}
 	}
-
+	
 }

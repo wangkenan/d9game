@@ -564,6 +564,7 @@ public class MyAdapter extends BaseAdapter {
 		String fileName = LocalUtils.getRoot(cnt)+ "d9dir/"+mAppInfo.getApkName();
 		LogUtils.d("Local", fileName+"fileName");
 		Intent intent = new Intent(Intent.ACTION_VIEW);
+	
 		intent.setDataAndType(Uri.fromFile(new File(fileName)), "application/vnd.android.package-archive");
 		cnt.startActivity(intent);
 	}

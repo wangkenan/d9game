@@ -496,7 +496,8 @@ public class NewRecommnAdapter extends BaseAdapter {
 						v1.tvdown.setText("下载中");
 						sdappInfo.setDown(true);
 						// v1.progress_view.setVisibility(View.VISIBLE);
-						v1.tvdown.setVisibility(View.INVISIBLE);
+						//v1.tvdown.setVisibility(View.INVISIBLE);
+						v1.tvdown.setText(DownloadService.getPrecent(Integer.parseInt(sdappInfo.getIdx()))+"%");
 
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
@@ -539,6 +540,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 							Toast.LENGTH_SHORT).show();
 					// v1.progress_view.setVisibility(View.VISIBLE);
 					//v1.tvdown.setVisibility(View.INVISIBLE);
+				
 				}
 
 			}
@@ -724,6 +726,7 @@ public class NewRecommnAdapter extends BaseAdapter {
 						// v1.progress_view.setVisibility(View.VISIBLE);
 						//v1.tvdownRight.setVisibility(View.INVISIBLE);
 					//	v1.tvdownRight.setText(DownloadService.getPrecent(idx)+"%");
+						v1.tvdown.setText(DownloadService.getPrecent(Integer.parseInt(sdappInfo.getIdx()))+"%");
 
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");

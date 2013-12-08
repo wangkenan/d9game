@@ -449,6 +449,7 @@ public class NewRankAdapter extends BaseAdapter {
 						appInfos.get(position).setDown(true);
 //						v1.progress_view.setVisibility(View.VISIBLE);
 //						v1.tvdown.setVisibility(View.INVISIBLE);
+						v1.tvdown.setText(DownloadService.getPrecent(Integer.parseInt(appInfos.get(position).getIdx()))+"%");
 					}
 					LogUtils.d("down", appInfos.get(position).isDown() + "");
 					LogUtils.d("test", appInfos.get(position).isIspause() + "1");

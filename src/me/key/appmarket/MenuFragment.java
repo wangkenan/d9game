@@ -136,7 +136,8 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			@Override
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
-
+				list = new ArrayList<AppInfo>();
+				list.addAll(list_temp);
 				cAdapter = new ClassifyAdapter(getActivity()
 						.getApplicationContext(), list, classLv,
 						categoryInfoList);
@@ -228,6 +229,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			list_temp = new ArrayList<AppInfo>();
 			JSONArray jsonArray = new JSONArray(str);
 			int len = jsonArray.length();
+			LogUtils.d("Local", len+"len");
 			for (int i = 0; i < len; i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				String appName = jsonObject.getString("appname");
@@ -241,10 +243,10 @@ public class MenuFragment extends Fragment implements OnClickListener {
 						apppkgname);
 				appInfo.setInstalled(AppUtils.isInstalled(apppkgname));
 				list_temp.add(appInfo);
+				
 				// appDatainfos_temp.add(appInfo);
 			}
-			list = new ArrayList<AppInfo>();
-			list.addAll(list_temp);
+		
 			// mHandler.sendEmptyMessage(Global.DOWN_DATA_SUCCESSFULL);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -276,6 +278,9 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			@Override
 			protected void onPostExecute(Void result) {
 				super.onPostExecute(result);
+				list = new ArrayList<AppInfo>();
+				list.addAll(list_temp);
+				LogUtils.d("Local", "list.size"+list.size());
 				LogUtils.d("Menu", list.size() + "sss");
 				errorview.setVisibility(View.INVISIBLE);
 				cAdapter = new ClassifyAdapter(context, list, classLv,
