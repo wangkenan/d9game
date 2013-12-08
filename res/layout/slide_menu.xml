@@ -35,7 +35,10 @@
               android:hint="搜索" 
               android:background="@null"
               android:gravity="center_vertical"
-              android:singleLine="true"/>
+              android:singleLine="true"
+              android:layout_marginLeft="5dip"
+              android:textColor="#ffffff"
+              android:textCursorDrawable="@null"/>
       </LinearLayout>
     </LinearLayout>
     <LinearLayout 
