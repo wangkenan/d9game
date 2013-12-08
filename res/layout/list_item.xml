@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dip"
         android:layout_marginTop="18dip"
-        android:layout_toLeftOf="@id/divider"
+        android:layout_toLeftOf="@+id/state_btn"
         android:layout_toRightOf="@id/icon"
         android:orientation="vertical" >
 
@@ -108,7 +108,8 @@
             android:gravity="center_vertical"
             android:text="2.14MB"
             android:textColor="@color/dark_gray"
-            android:textSize="11sp" />
+            android:textSize="11sp"
+            android:singleLine="true" />
         <!-- style="@style/topbar_title" -->
     </LinearLayout>
 

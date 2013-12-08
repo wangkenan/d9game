@@ -138,6 +138,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 		edit_search.setText(search_text);
 		new Thread(searchData).start();
 		appSearchAdapter.notifyDataSetChanged();
+//		searchBar.setVisibility(View.GONE);
 	}
 
 	private void initSearchView() {
@@ -163,6 +164,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 		mSearchListView = (ListView) findViewById(R.id.list);
 		searchBar = (ProgressBar) findViewById(R.id.pro_bar);
+		searchBar.setVisibility(View.VISIBLE);
 		appSearchInfos = new ArrayList<AppInfo>();
 		// ll_searcherror = (LinearLayout) findViewById(R.id.ll_error);
 
@@ -540,6 +542,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 		case R.id.iv_operate_search:
 			search_text = edit_search.getText().toString();
 			appSearchInfos.clear();
+			
 			appSearchAdapter.notifyDataSetChanged();
 			total_size.setText("找到0项符合的软件");
 
@@ -564,6 +567,7 @@ public class SearchActivity extends Activity implements OnClickListener {
 
 				// search_linear.setVisibility(View.GONE);
 				// search_HotList.setVisibility(View.GONE);
+				isLoadedAllData = false;
 				new Thread(searchData).start();
 			} else {
 				loadMoreButton.setVisibility(View.GONE);

@@ -726,13 +726,10 @@ public class NewRecommnAdapter extends BaseAdapter {
 						// v1.progress_view.setVisibility(View.VISIBLE);
 						//v1.tvdownRight.setVisibility(View.INVISIBLE);
 					//	v1.tvdownRight.setText(DownloadService.getPrecent(idx)+"%");
-						v1.tvdown.setText(DownloadService.getPrecent(Integer.parseInt(sdappInfo.getIdx()))+"%");
+						v1.tvdownRight.setText(DownloadService.getPrecent(Integer.parseInt(sdappInfoRight.getIdx()))+"%");
 
 					}
-					LogUtils.d("down", appInfos.get(position).isDown() + "");
-					LogUtils.d("test", appInfos.get(position).isIspause() + "1");
 					sdappInfoRight.setIspause(!sdappInfoRight.isIspause());
-					LogUtils.d("test", sdappInfoRight.isIspause() + "2");
 				} else if (DownloadService.isDownLoaded(sdappInfoRight.getAppName()
 						)) {
 					// 已经下载

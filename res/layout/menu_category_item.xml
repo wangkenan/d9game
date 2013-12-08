@@ -33,7 +33,7 @@
         android:gravity="center"
          android:layout_gravity="center"
         android:text="4000个游戏"
-        android:textColor="@color/gray_hint"
+        android:textColor="#FFFFFF"
          android:textSize="10sp"
         />
   </LinearLayout>

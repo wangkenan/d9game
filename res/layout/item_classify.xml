@@ -58,7 +58,7 @@
             android:layout_marginTop="5sp"
             android:gravity="center_vertical"
             android:text="2.14MB"
-            android:textColor="@color/dark_gray"
+            android:textColor="@color/gray_hint"
             android:textSize="9sp" />
     </LinearLayout>
 
