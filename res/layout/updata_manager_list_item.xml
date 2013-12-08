@@ -16,17 +16,6 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/tempicon" />
 
-    <!--
-         <RelativeLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="10sp"
-        android:layout_marginRight="12sp" >
-    -->
-
     <me.key.appmarket.widgets.ProgressView
         android:id="@+id/progress_view_local"
         android:layout_width="30dip"
@@ -35,20 +24,6 @@
         android:layout_gravity="center"
         android:visibility="invisible" />
 
-    <!--
-             <TextView
-            android:id="@+id/install"
-             android:layout_width="60dip"
-             android:layout_height="35dip"
-             android:layout_alignParentLeft="true"
-             android:layout_centerVertical="true"
-             android:background="@drawable/install_btn"
-             android:clickable="true"
-             android:focusable="false"
-             android:gravity="center"
-             android:textColor="#0066FF"
-             android:textSize="13sp" />
-    -->
 
     <FrameLayout
         android:id="@+id/state_btn"
@@ -95,21 +70,21 @@
             android:id="@+id/info"
             android:layout_width="120dip"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="7dip"
+            android:ellipsize="end"
             android:text="@string/app_name"
             android:textColor="#ffffff"
-            android:ellipsize="end"
-            android:textSize="16sp"
-            android:layout_marginBottom="7dip" />
+            android:textSize="16sp" />
         <!--  -->
 
         <TextView
             android:id="@+id/appsize"
+            style="@style/topbar_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="2.14MB"
             android:textColor="@color/dark_gray"
-       style="@style/topbar_title" 
             android:textSize="12sp" />
     </LinearLayout>
 
