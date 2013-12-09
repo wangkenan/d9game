@@ -1,5 +1,6 @@
 package me.key.appmarket.widgets;
 
+import me.key.appmarket.utils.LogUtils;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -7,7 +8,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 public class RoundImageView extends ImageView {
@@ -46,21 +47,28 @@ public class RoundImageView extends ImageView {
 	protected void onLayout(boolean changed, int left, int top, int right,
 			int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
-		int w = getWidth();
-		int h = getHeight();
+		WindowManager wm = (WindowManager) getContext()
+				.getSystemService(Context.WINDOW_SERVICE);
+
+		int w = wm.getDefaultDisplay().getWidth();
+		w = (int)(w-16)/3;
+		LogUtils.i("wm", w+"W"+getWidth());
+		//int w = 150;//getWidth();
+		int h = getHeight()*w/getWidth();
+		LogUtils.i("wm", h+"H"+getHeight());
 		//int h = w/3*2;
 		roundRect.set(0, 0, w, h);
 	}
 
 	@Override
 	public void draw(Canvas canvas) {
-		
+
 		canvas.saveLayer(roundRect, zonePaint, Canvas.ALL_SAVE_FLAG);
 		canvas.drawRoundRect(roundRect, rect_adius, rect_adius, zonePaint);
 		canvas.saveLayer(roundRect, maskPaint, Canvas.ALL_SAVE_FLAG);
 		super.draw(canvas);
 		canvas.restore();
 	}
-	
-	
+
+
 }
