@@ -284,7 +284,6 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 							}
 						}
 					}
-					mAppInfos.addAll(sortTemp);
 				}
 				adapter = new MyAdapter(getActivity(), appManaInfos_temp,
 						mAppInfos, mListReco);
