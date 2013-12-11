@@ -13,16 +13,19 @@ import android.widget.ImageView;
 
 public class RoundImageView extends ImageView {
 	//int wmWidth;
+	private Context context;
 
 	public RoundImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
+		this.context = context;
 	}
 
 	public RoundImageView(Context context) {
 		super(context);
 		//this.wmWidth = wmWidth;
 		init();
+		this.context = context;
 	}
 
 	private final RectF roundRect = new RectF();
@@ -36,6 +39,7 @@ public class RoundImageView extends ImageView {
 		zonePaint.setAntiAlias(true);
 		float density = getResources().getDisplayMetrics().density;
 		rect_adius = rect_adius * density;
+		
 	}
 
 	public void setRectAdius(float adius) {
@@ -51,7 +55,7 @@ public class RoundImageView extends ImageView {
 				.getSystemService(Context.WINDOW_SERVICE);
 
 		int w = wm.getDefaultDisplay().getWidth();
-		w = (int)(w-16)/3;
+		w = (int)(w-convertDipOrPx(context,16))/3;
 		LogUtils.i("wm", w+"W"+getWidth());
 		//int w = 150;//getWidth();
 		int h = getHeight()*w/getWidth();
@@ -69,6 +73,9 @@ public class RoundImageView extends ImageView {
 		super.draw(canvas);
 		canvas.restore();
 	}
-
+	public int convertDipOrPx(Context context, int dip) {
+		float scale = context.getResources().getDisplayMetrics().density;
+		return (int) (dip * scale + 0.5f * (dip >= 0 ? 1 : -1));
+	}
 
 }

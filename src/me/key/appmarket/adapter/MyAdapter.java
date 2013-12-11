@@ -113,7 +113,7 @@ public class MyAdapter extends BaseAdapter {
 
 	@Override
 	public int getCount() {
-		return appManaInfos.size() + 3;
+		return appManaInfos.size() + 1;
 	}
 
 	@Override
@@ -129,13 +129,8 @@ public class MyAdapter extends BaseAdapter {
 	@Override
 	public int getItemViewType(int position) {
 
-		if (position == 0) {
+	 if (position == 0) {
 			return 0;
-		} else if (position == 1) {
-			return 3;
-
-		} else if (position == 2) {
-			return 2;
 		} else {
 			return 1;
 		}
@@ -143,13 +138,13 @@ public class MyAdapter extends BaseAdapter {
 
 	@Override
 	public int getViewTypeCount() {
-		return 4;
+		return 2;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		final int newposition = position - 3;
+		final int newposition = position - 1;
 		final ViewHolder holder;
 		final ViewHolder2 viewHolder2;
 		final BannerHolder bannerHolder;
@@ -160,15 +155,14 @@ public class MyAdapter extends BaseAdapter {
 		if (convertView == null) {
 			switch (type) {
 
-			case 0:
+		/*	case 0:
 				viewHolder2 = new ViewHolder2();
 				convertView = mInflater.inflate(R.layout.ranktest, null);
 				viewHolder2.banner = (ImageView) convertView
 						.findViewById(R.id.iv_rank_test);
-				
-				viewHolder2.banner.setPadding(0, 1, 0, 1);
+				viewHolder2.banner.setPadding(0, 2, 0, 2);
 				convertView.setTag(viewHolder2);
-				break;
+				break;*/
 			case 1:
 				holder = new ViewHolder();
 				convertView = mInflater.inflate(R.layout.list_item, null);
@@ -184,7 +178,7 @@ public class MyAdapter extends BaseAdapter {
 						.findViewById(R.id.iv_oprate_state);
 				convertView.setTag(holder);
 				break;
-			case 2:
+			case 0:
 				tabHolder = new TabHolder();
 				convertView = mInflater.inflate(R.layout.tab_localgame, null);
 				tabHolder.mygame = (TextView) convertView
@@ -193,7 +187,7 @@ public class MyAdapter extends BaseAdapter {
 						.findViewById(R.id.sdgame_tv);
 				convertView.setTag(tabHolder);
 				break;
-			case 3:
+	/*		case 3:
 				bannerHolder = new BannerHolder();
 				convertView = mInflater.inflate(R.layout.advert_banner, null);
 				bannerHolder.iv1 = (ImageView) convertView.findViewById(R.id.iv_advert1);
@@ -201,24 +195,24 @@ public class MyAdapter extends BaseAdapter {
 				bannerHolder.iv3 = (ImageView) convertView.findViewById(R.id.iv_advert3);
 				convertView.setPadding(0, 6, 0, 6);
 				convertView.setTag(bannerHolder);
-				break;
+				break;*/
 			}
 		} else {
 			switch (type) {
 			case 1:
 				holder = (ViewHolder) convertView.getTag();
 				break;
-			case 0:
+		/*	case 0:
 				viewHolder2 = (ViewHolder2) convertView.getTag();
-				break;
-			case 2:
+				break;*/
+			case 0:
 				tabHolder = (TabHolder) convertView.getTag();
 				break;
 			}
 		}
 		switch (type) {
 
-		case 0:
+		/*case 0:
 			final ViewHolder2 v3 = ((ViewHolder2) convertView.getTag());
 			banners = MarketApplication.getInstance().getBanners();
 			if(banners.size() != 0) {
@@ -233,7 +227,7 @@ public class MyAdapter extends BaseAdapter {
 					cnt.startActivity(intent);
 				}
 			});
-			break;
+			break;*/
 
 		/*
 		 * case 0: sdappInfo = downList.get(newposition);
@@ -514,7 +508,7 @@ public class MyAdapter extends BaseAdapter {
 				});
 			}
 			break;
-		case 2:
+		case 0:
 			final TabHolder th = (TabHolder) convertView.getTag();
 			th.mygame.setOnClickListener(new OnClickListener() {
 
@@ -533,7 +527,7 @@ public class MyAdapter extends BaseAdapter {
 
 			});
 			break;
-		case 3:
+	/*	case 3:
 			if(banners.size() != 0) {
 			final BannerHolder bannerHolderFinal = (BannerHolder) convertView.getTag();
 			ImageLoader.getInstance().displayImage(banners.get(1).getPicurl(), bannerHolderFinal.iv1,options);
@@ -569,7 +563,7 @@ public class MyAdapter extends BaseAdapter {
 				}
 			});
 			}
-			break;
+			break;*/
 		}
 		return convertView;
 

@@ -61,11 +61,9 @@ public class LocalUtils {
 		List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
 		JSONArray jsonArray;
 		LogUtils.d("id", ItemId);
-		LogUtils.d("Local", js+"aaaaaaaaaaaaaaaaaaaasssss");
 		try {
 			jsonArray = new JSONArray(js);
 			int len = jsonArray.length();
-			LogUtils.d("Local", len+"hahahahahahahahhaha");
 			for (int i = 0; i < len; i++) {
 				AppInfo mAppInfo = new AppInfo();
 				JSONObject jsonObject = jsonArray.getJSONObject(i);

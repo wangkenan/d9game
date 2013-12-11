@@ -16,7 +16,9 @@ import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.update.UpdateApk;
 import me.key.appmarket.utils.AppInfo;
 import me.key.appmarket.utils.AppUtils;
+import me.key.appmarket.utils.Banner;
 import me.key.appmarket.utils.CategoryInfo;
+import me.key.appmarket.utils.Global;
 import me.key.appmarket.utils.LocalAppInfo;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
@@ -67,6 +69,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.market.d9game.R;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.slidingmenu.lib2.SlidingMenu;
 
 public class LocalGameFragment extends Fragment implements OnClickListener {
@@ -88,6 +91,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 	private MenuCategoryAdapter menuCategoryAdapter;
 	private String apknamelist;
 	private TextView updata_num;
+	private View testView;
+	private View advertBanner;
+	private List<Banner> banners;
 	// 我的游戏和内置游戏栏
 	private RelativeLayout mygamebar;
 	private static SDGameAdapter sdAdapter;
@@ -203,6 +209,46 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				.findViewById(R.id.checkupdata_pop);
 		getout_pop = (TextView) contentView.findViewById(R.id.getout_pop);
 		about = (TextView) contentView.findViewById(R.id.about);
+		banners = MarketApplication.getInstance().getBanners();
+		testView = inflate.inflate(getActivity(), R.layout.ranktest, null);
+		advertBanner = inflate.inflate(getActivity(), R.layout.advert_banner,
+				
+				null);
+		testView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(getActivity(), OneKeyInstallActivity.class);
+				startActivity(intent);
+			}
+		});
+		testView.setPadding(0, 1, 0, 1);
+
+		advertBanner.setPadding(0, 7, 0, 7);
+		if(banners.size() != 0) {
+			ImageView bannerView = (ImageView) testView.findViewById(R.id.iv_rank_test);
+			ImageLoader.getInstance().displayImage(banners.get(0).getPicurl(),bannerView, Global.options);
+			
+			ImageView adver1 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert1);
+			ImageView adver2 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert2);
+			ImageView adver3 = (ImageView) advertBanner
+					.findViewById(R.id.iv_advert3);
+
+			ImageLoader.getInstance().displayImage(banners.get(1).getPicurl(),
+					adver1, Global.options);
+			ImageLoader.getInstance().displayImage(banners.get(2).getPicurl(),
+					adver2, Global.options);
+			ImageLoader.getInstance().displayImage(banners.get(3).getPicurl(),
+					adver3, Global.options);
+			adver1.setOnClickListener(this);
+			adver2.setOnClickListener(this);
+			adver3.setOnClickListener(this);
+		}
+		mListReco.addHeaderView(testView, null, false);
+		mListReco.addHeaderView(advertBanner, null, false);
 		downandupdata.setOnClickListener(this);
 		checkupdata_pop.setOnClickListener(this);
 		getout_pop.setOnClickListener(this);
@@ -287,7 +333,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				}
 				adapter = new MyAdapter(getActivity(), appManaInfos_temp,
 						mAppInfos, mListReco);
-				footView = inflate.inflate(getActivity(), R.layout.list_item,
+				footView = inflate.inflate(getActivity(), R.layout.foot_list_item,
 						null);
 				footView.findViewById(R.id.icon).setVisibility(View.INVISIBLE);
 				footView.findViewById(R.id.info).setVisibility(View.INVISIBLE);
@@ -754,6 +800,24 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 			Intent mysc = new Intent();
 			mysc.setClass(getActivity(), MyScoreActivity.class);
 			startActivity(mysc);
+			break;
+		case R.id.iv_advert1:
+			Intent advert1intent = new Intent();
+			advert1intent.setClass(getActivity(), AppDetailActivity.class);
+			advert1intent.putExtra("appid", banners.get(1).getAppid());
+			startActivity(advert1intent);
+			break;
+		case R.id.iv_advert2:
+			Intent advert2intent = new Intent();
+			advert2intent.setClass(getActivity(), AppDetailActivity.class);
+			advert2intent.putExtra("appid", banners.get(2).getAppid());
+			startActivity(advert2intent);
+			break;
+		case R.id.iv_advert3:
+			Intent advert3intent = new Intent();
+			advert3intent.setClass(getActivity(), AppDetailActivity.class);
+			advert3intent.putExtra("appid", banners.get(3).getAppid());
+			startActivity(advert3intent);
 			break;
 		}
 	}

@@ -9,7 +9,7 @@
     <me.key.appmarket.widgets.RoundImageView
         android:id="@+id/iv_advert1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="53dip"
         android:src="@drawable/bannar1"
         android:layout_weight="1"
         android:scaleType="fitXY"
@@ -19,7 +19,7 @@
     <me.key.appmarket.widgets.RoundImageView
         android:id="@+id/iv_advert2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="53dip"
         android:src="@drawable/bannar2"
         android:layout_weight="1"
          android:scaleType="fitXY"
@@ -30,7 +30,7 @@
     <me.key.appmarket.widgets.RoundImageView
         android:id="@+id/iv_advert3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="53dip"
         android:src="@drawable/bannar3"
          android:scaleType="fitXY"
         android:layout_weight="1"
