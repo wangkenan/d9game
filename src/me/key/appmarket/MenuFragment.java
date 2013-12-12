@@ -117,8 +117,10 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
-				if (str == null) {
+				LogUtils.d("Local", str+"menu");
+				if (str.isEmpty()) {
 					errorview.setVisibility(View.VISIBLE);
+					list_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseCategoryJson(str);
 					if (categoryInfoList.size() > 0) {
@@ -376,7 +378,7 @@ public class MenuFragment extends Fragment implements OnClickListener {
 			protected Void doInBackground(Void... params) {
 				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
 						+ Global.APP_CATEGORY + "?type=" + 2);
-				if (str == null) {
+				if (str.isEmpty()) {
 					errorview.setVisibility(View.VISIBLE);
 				} else {
 					ParseCategoryJson(str);

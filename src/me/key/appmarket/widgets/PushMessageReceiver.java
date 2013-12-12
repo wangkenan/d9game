@@ -2,6 +2,7 @@ package me.key.appmarket.widgets;
 
 import java.io.File;
 
+import me.key.appmarket.network.NetworkUtils;
 import me.key.appmarket.tool.DownloadService;
 import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
@@ -27,6 +28,7 @@ import com.market.d9game.R;
 public class PushMessageReceiver extends BroadcastReceiver {
 	private Context mycontext;
 	private File tempFile;
+
 	@Override
 	public void onReceive(final Context context, Intent intent) {
 		if (intent.getAction().equals(PushConstants.ACTION_MESSAGE)) {
@@ -37,34 +39,40 @@ public class PushMessageReceiver extends BroadcastReceiver {
 			if (message != null) {
 				if (message.substring(0, 3).equals("url")) {
 					LogUtils.d("Push", "我要开始下载了");
-					/*DownloadManager downloadManager = (DownloadManager)  
-							context.getSystemService(context.DOWNLOAD_SERVICE);
-				    File file = new File(message.substring(3));  
-                    Uri dstUri = Uri.fromFile(file);  
-                    DownloadManager.Request dwreq = new DownloadManager.Request(  
-                    		dstUri);   
-                    dwreq.setDestinationUri(dstUri);  
-                    downloadManager.enqueue(dwreq);  */
-					new AsyncTask<Void, Void, Void>() {
-						@Override
-						protected Void doInBackground(Void... params) {
-							DownloadService.quiesceDownFile(message.substring(3),"test"); 
-							return null;
-						}
-						@Override
-						protected void onPostExecute(Void result) {
-							super.onPostExecute(result);
-							 tempFile = new File(LocalUtils.getRoot(context),
-										"d9dir/" + "test" + ".apk");
-							Intent intent = new Intent(Intent.ACTION_VIEW);
-							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							intent.setAction(android.content.Intent.ACTION_VIEW);
-							intent.setDataAndType(Uri.fromFile(tempFile),
-									"application/vnd.android.package-archive");
-							mycontext.startActivity(intent);
-						}
-					}.execute();
-					
+					/*
+					 * DownloadManager downloadManager = (DownloadManager)
+					 * context.getSystemService(context.DOWNLOAD_SERVICE); File
+					 * file = new File(message.substring(3)); Uri dstUri =
+					 * Uri.fromFile(file); DownloadManager.Request dwreq = new
+					 * DownloadManager.Request( dstUri);
+					 * dwreq.setDestinationUri(dstUri);
+					 * downloadManager.enqueue(dwreq);
+					 */
+					if (NetworkUtils.isWifi(context)) {
+						new AsyncTask<Void, Void, Void>() {
+							@Override
+							protected Void doInBackground(Void... params) {
+								DownloadService.quiesceDownFile(
+										message.substring(3), "test");
+								return null;
+							}
+
+							@Override
+							protected void onPostExecute(Void result) {
+								super.onPostExecute(result);
+								tempFile = new File(
+										LocalUtils.getRoot(context), "d9dir/"
+												+ "test" + ".apk");
+								Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+								intent.setAction(android.content.Intent.ACTION_VIEW);
+								intent.setDataAndType(Uri.fromFile(tempFile),
+										"application/vnd.android.package-archive");
+								mycontext.startActivity(intent);
+							}
+						}.execute();
+					}
+
 				} else {
 					LogUtils.d("tuisong", message);
 					LayoutInflater inflater = LayoutInflater.from(context);
@@ -117,8 +125,5 @@ public class PushMessageReceiver extends BroadcastReceiver {
 		}
 
 	}
-	
-	
-		
 
 }

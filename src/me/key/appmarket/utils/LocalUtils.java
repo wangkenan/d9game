@@ -31,7 +31,9 @@ import com.market.d9game.R;
 
 public class LocalUtils {
 	
-	
+	private static ArrayList<String> names;
+	private static ArrayList apkNames;
+	private static ArrayList<String> pkglist;
 	private static JSONArray jsonArray;
 
 	public static List<AppInfo> InitHomePager(String ItemId,Context context,String Root,List<PackageInfo> packages ) {
@@ -256,4 +258,82 @@ LogUtils.d("pkg", pkgParserPkg+"");
 		
 		return gameList;
 	}
+	/**
+	 * 读取本地游戏
+	 * @param context
+	 * @return
+	 */
+	public static List<AppInfo> readLocalGame(Context context,String Root,List<PackageInfo> packages) {
+
+	
+		String root = getRoot(context);
+		File d9Path = new File(root+"d9dir/");
+		File[] files = d9Path.listFiles();
+		getFileName(files);
+		apkNames = new ArrayList();
+		InputStream inputStream = context.getResources().openRawResource(R.raw.category_2);
+		String js = (String) TxtReader.getString(inputStream);
+		try {
+			jsonArray = new JSONArray(js);
+			int len = jsonArray.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				String apkName = jsonObject.getString("apkName");
+				LogUtils.d("Local", "apkName"+apkName);
+				for(int j = 0;j<names.size();j++) {
+					if(apkName.equals(names.get(j))) {
+						names.remove(j);
+					}
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		pkglist = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder();
+		List<AppInfo> mAppInfos = new ArrayList<AppInfo>();
+		for(String apkpath:names){
+			LogUtils.d("Local", "names"+apkpath);
+			AppInfo mAppInfo = new AppInfo();
+			HashMap map = new HashMap();
+			map = (HashMap) showUninstallAPKIcon(root+"d9dir/"+apkpath,context);
+			File file = new File(Root + apkpath);
+			long size = file.length();
+			mAppInfo.setAppSize(size + "");
+			mAppInfo.setAppName(map.get("label").toString());
+			mAppInfo.setAppIcon((Drawable) map.get("icon"));
+			mAppInfo.setApkName(apkpath);
+			mAppInfo.setRoot(Root);
+			mAppInfo.setPackageName((String)map.get("pkgname"));
+			mAppInfo.setLastTime(Long.MAX_VALUE);
+			mAppInfo.setId((String)map.get("pkgname"));
+			boolean isIns = AppUtils.isInstalled((String)map.get("pkgname"));
+			mAppInfo.setInstalled(isIns);
+			mAppInfos.add(mAppInfo);
+			LogUtils.d("Local", "context"+context);
+			for(PackageInfo pi : packages) {
+				if(pi.packageName.equals((String)map.get("pkgname"))) {
+					mAppInfos.remove(mAppInfos.get(mAppInfos.size()-1));
+					break;
+				}
+			}
+	
+			map.clear();
+		}
+		return mAppInfos;
+	}
+	private static void getFileName(File[] files) {  
+		names=new ArrayList<String>();
+		if (files != null) {
+			for (File file : files) {  
+				if (file.isDirectory()) {  
+
+					getFileName(file.listFiles());  
+				} else {  
+					String fileName = file.getName();
+					names.add(fileName);
+					}  
+				}  
+			}  
+	}  
 }

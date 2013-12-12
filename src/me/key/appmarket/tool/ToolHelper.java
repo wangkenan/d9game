@@ -123,6 +123,7 @@ public class ToolHelper {
 			urlConnection.setRequestMethod("GET");
 			return urlConnection.getInputStream();
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			return null;
 		}
 	}

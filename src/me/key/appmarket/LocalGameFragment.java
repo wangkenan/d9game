@@ -346,7 +346,9 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 				long now = System.currentTimeMillis();
 			LogUtils.d("Local", current - now+"");
 				pBar.setVisibility(View.GONE);
+				int i = 0;
 				for (AppInfo ai : appManaInfos_temp) {
+					i++;
 					LocalAppInfo findById = db.findById(ai.getId(),
 							LocalAppInfo.class);
 					AppInfo findById2 = db.findById(ai.getId(), AppInfo.class);
@@ -354,7 +356,7 @@ public class LocalGameFragment extends Fragment implements OnClickListener {
 							&& findById2.getLastTime() != Long.MAX_VALUE) {
 						Long lastTime = findById2.getLastTime();
 						if (lastTime == Long.MAX_VALUE) {
-							ai.setLastTime(lastTime);
+							ai.setLastTime(lastTime-i);
 						} else {
 							long currentTimeMillis = System.currentTimeMillis();
 							ai.setLastTime(currentTimeMillis - lastTime);

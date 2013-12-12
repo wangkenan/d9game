@@ -786,6 +786,20 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				} else {
 					ParseHomeJson(str2);
 				}
+				StringBuilder apknamelist = new StringBuilder();
+				for(AppInfo ai : appHomeInfos_temp)	{
+					apknamelist.append(ai.getPackageName() + ",");
+				}
+				String uris = apknamelist.toString();
+				if (uris.length() > 0) {
+					uris = uris.substring(0, uris.length() - 1);
+				}
+				/**
+				 * 检查应用是否能更新
+				 */
+				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
+						+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
+				ParseUpdateJson(str);
 				return super.doInBackground(params);
 			}
 
@@ -797,7 +811,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 				appHomeInfos.addAll(appHomeInfos_temp);
 				appHomeAdapter.notifyDataSetChanged();
 				pHomeBar.setVisibility(View.INVISIBLE);
-				StringBuilder apknamelist = new StringBuilder();
+			
 				for (AppInfo ai : appHomeInfos) {
 					DownStateBroadcast dsb = new DownStateBroadcast();
 					IntentFilter filter = new IntentFilter();
@@ -805,7 +819,6 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 							ai.getAppName()).getAbsolutePath();
 					filter.addAction(fileName + "down");
 					getActivity().registerReceiver(dsb, filter);
-					apknamelist.append(ai.getPackageName() + ",");
 					try {
 						PackageManager pm = getActivity().getPackageManager();
 						if (ai.isInstalled()) {
@@ -821,16 +834,7 @@ public class MainActivityFragment extends Fragment implements OnClickListener {
 						e.printStackTrace();
 					}
 				}
-				String uris = apknamelist.toString();
-				if (uris.length() > 0) {
-					uris = uris.substring(0, uris.length() - 1);
-				}
-				/**
-				 * 检查应用是否能更新
-				 */
-				String str = ToolHelper.donwLoadToString(Global.MAIN_URL
-						+ Global.UPGRADEVERSION + "?apknamelist=" + uris);
-				ParseUpdateJson(str);
+			
 				appManagerUpdateInfos_t = AppUtils.getCanUpadateApp(
 						appHomeInfos, appManagerUpdateInfos_t);
 				appManagerUpdateInfos.clear();

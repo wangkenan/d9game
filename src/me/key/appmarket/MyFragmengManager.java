@@ -259,7 +259,7 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 				List<PackageInfo> packages = getPackageManager()
 						.getInstalledPackages(0);
 				Long currentMapp  = System.currentTimeMillis();
-				mAppInfos_temp = LocalUtils.InitHomePager("0",
+				mAppInfos_temp = LocalUtils.readLocalGame(
 						MyFragmengManager.this, root + "d9dir/", packages);
 				Long currentMappnow  = System.currentTimeMillis();
 				LogUtils.d("Local", (currentMappnow - currentMapp)+"currentMappnow - currentMapp");
