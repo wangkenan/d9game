@@ -2,39 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-      android:layout_gravity="center"
-        android:background="@drawable/slidingmenu_left_background" 
- 
-    >
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="fill_parent"
-    android:id="@+id/background_menu" 
-      
-        android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@drawable/slidingmenu_left_background"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/background_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"
         android:gravity="center"
-    >
-    <TextView
-        android:id="@+id/category_menu"
-        android:layout_width="90dip"
-        android:layout_height="22dip"
-        android:gravity="center"
-         android:layout_gravity="center"
-        android:text="asf"
-        android:textColor="@color/white"
-        android:textSize="15sp"
-        />
-     <TextView
-        android:id="@+id/game_num"
-        android:layout_width="90dip"
-        android:layout_height="18dip"
-        android:gravity="center"
-         android:layout_gravity="center"
-        android:text="4000个游戏"
-        android:textColor="#FFFFFF"
-         android:textSize="10sp"
-        />
-  </LinearLayout>
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/category_menu"
+            android:layout_width="90dip"
+            android:layout_height="22dip"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="asf"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/game_num"
+            android:layout_width="90dip"
+            android:layout_height="18dip"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="4000个游戏"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
 </LinearLayout>
