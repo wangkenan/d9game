@@ -6,13 +6,10 @@
     android:inAnimation="@android:anim/slide_in_left"
     android:outAnimation="@android:anim/slide_out_right" >
 
-   
- <!--   <ImageView
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/loding" 
-  />  -->
-  
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/loding" />
 
     <FrameLayout
         android:layout_width="fill_parent"
