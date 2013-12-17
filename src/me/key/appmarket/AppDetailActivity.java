@@ -25,6 +25,8 @@ import me.key.appmarket.utils.LocalUtils;
 import me.key.appmarket.utils.LogUtils;
 import me.key.appmarket.utils.MyAsynTask;
 import me.key.appmarket.widgets.CustomScrollView;
+import me.key.appmarket.widgets.GestureViewFliper;
+import me.key.appmarket.widgets.GestureViewFliper.FlipperFacousChangedListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,12 +49,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.Gallery;
-import android.widget.GridView;
+import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,11 +117,14 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 	private SharedPreferences sp;
 	private File tempFile;
 
-	private Gallery picGallery;
-
-	private GridView picGridview;
 	private ArrayList<Bitmap> bitmaps = new ArrayList<Bitmap>();;
 	private MyInstalledReceiver installedReceiver;
+	//画廊
+	private GestureViewFliper viewFilper;
+	//画廊点
+	private LinearLayout indicatorLayout;
+	//画廊菊花
+	private ProgressBar progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -304,8 +310,9 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 		appName = (TextView) findViewById(R.id.app_name_app_detail);
 		appDownloadCounts = (TextView) findViewById(R.id.app_download_counts_app_detail);
 
-		picGallery = (Gallery) findViewById(R.id.gallery_app_detail);
-		picGridview = (GridView) findViewById(R.id.gridview_app_detail);
+		viewFilper = (GestureViewFliper) findViewById(R.id.viewfliper_app_detail);
+		indicatorLayout = (LinearLayout) findViewById(R.id.viewfliper_indicator_app_detail);
+		progressBar=(ProgressBar) findViewById(R.id.pb_viewfliper_app_detail);
 
 		appVersion = (TextView) findViewById(R.id.app_version_app_detail);
 		appSize1 = (TextView) findViewById(R.id.app_size1_app_detail);
@@ -463,7 +470,10 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 					final String[] appImgUrl = response.getAppImgUrl();
 					new MyAsynTask(AppDetailActivity.this, null) {
 						InputStream is;
-
+						protected void onPreExecute() {
+							super.onPreExecute();
+							progressBar.setVisibility(View.VISIBLE);
+						};
 						@Override
 						protected Void doInBackground(Void... params) {
 							try {
@@ -501,78 +511,68 @@ public class AppDetailActivity extends Activity implements OnClickListener {
 						@Override
 						protected void onPostExecute(Void result) {
 							super.onPostExecute(result);
-							galleryAdapter = new GalleryAdapter(
-									AppDetailActivity.this, bitmaps);
-							picGallery.setAdapter(galleryAdapter);
+							final ImageView[] mImageView = new ImageView[bitmaps.size()];
+
+							for (int i = 0; i < bitmaps.size(); i++) {
+								ImageView iv = new ImageView(AppDetailActivity.this);
+								ImageView indicatorView = new ImageView(AppDetailActivity.this);
+								if (i == 0) {
+									indicatorView
+											.setImageResource(R.drawable.ball_selected);// 初始默认选中第一张为当前指引
+								} else {
+									indicatorView
+											.setImageResource(R.drawable.ball_unselected);
+								}
+								iv.setImageBitmap(bitmaps.get(i));
+								// 把指引条的图片添加到LinearLayout里面
+								LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+										LinearLayout.LayoutParams.WRAP_CONTENT,
+										LinearLayout.LayoutParams.WRAP_CONTENT);
+								lp.setMargins(6, 0, 0, 0);
+								indicatorView.setLayoutParams(lp);
+								iv.setScaleType(ScaleType.FIT_XY);
+								viewFilper
+										.addView(iv, new LayoutParams(
+												LayoutParams.FILL_PARENT,
+												LayoutParams.FILL_PARENT));
+								mImageView[i] = indicatorView;
+								indicatorLayout.addView(mImageView[i]);
+							}
+							progressBar.setVisibility(View.GONE);
+							viewFilper.setAutoStart(true); // 让viewFlipper自动播放
+							viewFilper.setFlipInterval(3000); // 间隔为3S
+							viewFilper.startFlipping();
+
+							if (viewFilper.getDisplayedChild() != 0) {
+								viewFilper.setInAnimation(AnimationUtils.loadAnimation(
+										AppDetailActivity.this, R.anim.gallery_right_in_anim)); // 进出动画
+								viewFilper.setOutAnimation(AnimationUtils.loadAnimation(
+										AppDetailActivity.this, R.anim.gallery_right_out_anim));
+							}
+
+							viewFilper
+									.setOnFacousChangedListener(new FlipperFacousChangedListener() {
+
+										@Override
+										// 实现监听接口
+										public void onFliperChanged(int index) {
+											// TODO Auto-generated method stub
+											for (int i = 0; i < mImageView.length; i++) {
+												if (i == index) {
+													mImageView[i]
+															.setImageResource(R.drawable.ball_selected);
+												} else {
+													mImageView[i]
+															.setImageResource(R.drawable.ball_unselected);
+												}
+
+											}
+										}
+									});
 						}
 
 					}.exe();
 
-					// Gallery 赋值
-					gridviewAdapter = new GridViewAdapter(
-							AppDetailActivity.this, picGallery, appImgUrl);
-					picGridview.setAdapter(gridviewAdapter);
-					gridviewAdapter.autoPlay();
-					Bitmap bmp = new BitmapFactory().decodeResource(
-							getResources(), R.drawable.ball_unselected);
-					int width = bmp.getWidth();
-					int height = bmp.getHeight();
-					picGridview.setColumnWidth(width);
-					picGridview.setHorizontalSpacing(gridviewSpac);
-					picGridview.setNumColumns(appImgUrl.length);
-					LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) picGridview
-							.getLayoutParams();
-					lp.width = width * appImgUrl.length + gridviewSpac
-							* (appImgUrl.length - 1) + (gridviewXpadding << 1);
-					lp.height = height + (gridviewYpadding << 1);
-					picGridview.setLayoutParams(lp);
-					picGridview.setPadding(gridviewXpadding, gridviewYpadding,
-							gridviewXpadding, gridviewYpadding);
-					// Gallery OnItemSelected
-					picGallery
-							.setOnItemSelectedListener(new Gallery.OnItemSelectedListener() {
-
-								@Override
-								public void onItemSelected(
-										AdapterView<?> parent, View view,
-										int position, long id) {
-									// TODO Auto-generated method stub
-									// 设置当前选中的Index
-									gridviewAdapter.currentIndex = position;
-									// 改变GridView显示
-									gridviewAdapter.notifyDataSetInvalidated();
-								}
-
-								@Override
-								public void onNothingSelected(
-										AdapterView<?> arg0) {
-									// TODO Auto-generated method stub
-
-								}
-
-							});
-					// Gallery OnItemClick
-					// picGridview
-					// .setOnItemClickListener(new OnItemClickListener() {
-					//
-					// @Override
-					// public void onItemClick(AdapterView<?> parent,
-					// View view, int position, long id) {
-					// // TODO Auto-generated method stub
-					// // 设置当前选中的Index
-					// currentIndex = position;
-					// // 改变GridView显示
-					// gridviewAdapter.notifyDataSetInvalidated();
-					// // 改变Gallery显示
-					// picGallery.setSelection(currentIndex);
-					// }
-					//
-					//		});
-					// 释放图片资源
-					if (bmp != null && !bmp.isRecycled()) {
-						bmp.recycle();
-						bmp = null;
-					}
 
 				} else {
 					Toast.makeText(AppDetailActivity.this, "获取失败",

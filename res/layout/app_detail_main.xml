@@ -26,7 +26,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center" >
 
                 <ImageView
                     android:id="@+id/ivlog_app_detail"
@@ -184,8 +184,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="70dip"
-            android:listSelector="@drawable/list_item_selector"
             android:divider="@drawable/driver1"
+            android:listSelector="@drawable/list_item_selector"
             android:visibility="gone" >
         </ListView>
 
@@ -202,7 +202,34 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical" >
 
-                <include layout="@layout/app_detail_gallery" />
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="150dp"
+                    android:longClickable="true" >
+
+                    <ProgressBar
+                        android:id="@+id/pb_viewfliper_app_detail"
+                        style="@style/circle_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:visibility="invisible" />
+
+                    <me.key.appmarket.widgets.GestureViewFliper
+                        android:id="@+id/viewfliper_app_detail"
+                        android:layout_width="fill_parent"
+                        android:layout_height="150dp" />
+
+                    <LinearLayout
+                        android:id="@+id/viewfliper_indicator_app_detail"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="2dp" >
+                    </LinearLayout>
+                </RelativeLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -290,17 +317,19 @@
                         android:text="软件介绍"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
-                    <TextView 
+
+                    <TextView
                         android:id="@+id/app_description_app_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:layout_marginRight="10dip"
                         android:layout_marginTop="8dip"
                         android:textColor="#bcbec0"
-                        android:textSize="13sp"
-                        android:layout_marginBottom="10dp"/>
+                        android:textSize="13sp" />
 
-                    <!-- <me.key.appmarket.widgets.EllipsizingTextView
+                    <!--
+                    <me.key.appmarket.widgets.EllipsizingTextView
                         android:id="@+id/app_description_app_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -325,7 +354,8 @@
                         android:paddingLeft="20dip"
                         android:paddingRight="30dip"
                         android:paddingTop="8dip"
-                        android:src="@drawable/app_detail_des_expand_button" /> -->
+                        android:src="@drawable/app_detail_des_expand_button" />
+                    -->
                 </LinearLayout>
             </LinearLayout>
         </me.key.appmarket.widgets.CustomScrollView>
