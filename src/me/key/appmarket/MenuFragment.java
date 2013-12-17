@@ -119,7 +119,6 @@ public class MenuFragment extends Fragment implements OnClickListener {
 						+ Global.APP_CATEGORY + "?type=" + 2);
 				LogUtils.d("Local", str+"menu");
 				if (str.isEmpty()) {
-					errorview.setVisibility(View.VISIBLE);
 					list_temp = new ArrayList<AppInfo>();
 				} else {
 					ParseCategoryJson(str);
