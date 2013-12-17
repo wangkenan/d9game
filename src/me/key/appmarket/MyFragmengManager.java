@@ -46,6 +46,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -472,6 +473,9 @@ public class MyFragmengManager extends SlidingFragmentActivity implements
 									etSearcher.setHint("");
 								} else {
 									etSearcher.setHint("搜索");
+									//关闭软件盘
+									InputMethodManager imm = (InputMethodManager)MyFragmengManager.this.getSystemService(Context.INPUT_METHOD_SERVICE); 
+									imm.hideSoftInputFromWindow(etSearcher.getWindowToken(), 0);
 								}
 							}
 						});
